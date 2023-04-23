@@ -1,0 +1,57 @@
+  version: '3.8'
+
+  services:
+    web:
+      image: zolweb/nginx-sf:3.0-alpine
+      environment:
+        DOMAIN: ${DOMAIN}
+        UID:
+        GID:
+      volumes:
+        - ./var/logs/nginx:/var/log/nginx:cached
+        - ./symfony:/var/www/html:delegated
+      links:
+        - php
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.sylius-api.rule=Host(`${DOMAIN}`)"
+        - "traefik.http.routers.sylius-api.tls=true"
+        - "traefik.http.services.sylius-api.loadbalancer.server.port=80"
+
+    php:
+      image: zolweb/php-fpm:8.1.10
+      environment:
+        UID:
+        GID:
+        WAIT_FOR_HOSTS: dbsyliusapi:3306
+      env_file: .env
+      volumes:
+        - ~/.composer:/var/www/.composer:cached
+        - ./symfony:/var/www/html:delegated
+        - ./var/logs/php-fpm:/var/log/php:cached
+      links:
+        - dbsyliusapi
+        - mailcatcher
+
+    dbsyliusapi:
+      image: mysql:5.7.30
+      env_file: .env
+      user: ${UID}:${GID}
+      volumes:
+        - ./data/mysql:/var/lib/mysql:delegated
+
+    mailcatcher:
+      image: zolweb/docker-mailcatcher
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.sylius-api-mailcatcher.rule=Host(`mailcatcher-${DOMAIN}`)"
+        - "traefik.http.services.sylius-api-mailcatcher.loadbalancer.server.port=1080"
+        - "traefik.frontend.rule=Host:mailcatcher-${DOMAIN}"
+        - "traefik.port=1080"
+        - "traefik.backend=sylius-api-mailcatcher"
+
+  networks:
+    default:
+      external:
+        name: reverseproxy
+

@@ -1,0 +1,46 @@
+<?php
+
+namespace App\Controller;
+
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+
+class {{ controllerName }} extends AbstractController
+{
+    public function __construct(
+        private readonly {{ handlerName }} $handler,
+        private readonly ValidatorInterface $validator,
+    ) {
+    }
+
+    #[Route('{{ path }}')]
+    public function {{ actionName }}(
+{% for param in pathParams %}
+        {{ param.type }} ${{ param.name }},
+{% endfor %}
+    ): Response {
+{% for param in pathParams %}
+{% if param.constraints %}
+        $violations = $this->validator->validate(${{ param.name }}, [
+{% for constraint in param.constraints %}
+            new {{ constraint }}(),
+{% endfor %}
+        ]);
+
+        if (count($violations) > 0) {
+            throw new \Exception('Validation failed.');
+        }
+{% endif %}
+{% endfor %}
+
+        $this->handler->{{ actionName }}(
+{% for param in pathParams %}
+            ${{ param.name }},
+{% endfor %}
+        );
+
+        return new Response('');
+    }
+}
