@@ -16,7 +16,7 @@ class Postmypathmypathparam1Controller extends AbstractController
     ) {
     }
 
-    #[Route(path: '/mypath/{mypathparam1}', methods: ['post'])]
+    #[Route(path: '/mypath/{mypathparam1}', methods: ['post'], priority: 0)]
     public function postmypathmypathparam1(
         string $mypathparam1,
     ): Response {

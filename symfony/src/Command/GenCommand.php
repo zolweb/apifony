@@ -24,24 +24,39 @@ class GenCommand extends Command
 
         var_dump($spec);
 
+        $components = [];
         $endpoints = [];
         $validators = [];
+
+        $priorities = [];
+        $bases = [];
+        foreach (array_keys($spec['paths']) as $path) {
+            $bases[strtok($path, '{')][] = $path;
+        }
+        foreach ($bases as $base => $paths) {
+            foreach ($paths as $path) {
+                $priorities[$path] = isset($path[strlen($base)]) ? 0 : 1;
+            }
+        }
 
         foreach ($spec['paths'] as $path => $pathSpec) {
             $pathParams = [];
             if (isset($pathSpec['parameters'])) {
-                $paramsSpec = $pathSpec['parameters'];
-                foreach ($paramsSpec as $paramSpec) {
-                    if ($paramSpec['in'] === 'path') {
-                        $pathParam = [
-                            'name' => $paramSpec['name'],
-                            'type' => $paramSpec['schema']['type'],
-                            'constraints' => [],
-                        ];
-                        if (isset($paramSpec['schema']['format'])) {
-                            $pathParam['constraints'][] = $this->createFormatConstraint($paramSpec['schema']['format']);
-                        }
-                        $pathParams[] = $pathParam;
+                foreach ($pathSpec['parameters'] as $paramSpec) {
+                    switch ($paramSpec['in']) {
+                        case 'path':
+                            $pathParam = [
+                                'name' => $paramSpec['name'],
+                                'type' => $paramSpec['schema']['type'],
+                                'constraints' => [],
+                            ];
+                            if (isset($paramSpec['schema']['format'])) {
+                                $pathParam['constraints'][] = $this->createFormatConstraint($paramSpec['schema']['format']);
+                            }
+                            $pathParams[] = $pathParam;
+                            break;
+                        case 'header':
+                            break;
                     }
                 }
             }
@@ -55,6 +70,7 @@ class GenCommand extends Command
                         'path' => $path,
                         'pathParams' => $pathParams,
                         'method' => $method,
+                        'priority' => $priorities[$path],
                         'actionName' => lcfirst(preg_replace('/[^a-z0-9]/i', '', $postSpec['operationId'])),
                         'handlerFileName' => ucfirst(preg_replace('/[^a-z0-9]/i', '', $postSpec['operationId'])).'Handler.php',
                         'methodName' => lcfirst(preg_replace('/[^a-z0-9]/i', '', $postSpec['operationId'])),
