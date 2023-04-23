@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -15,7 +16,7 @@ class {{ controllerName }} extends AbstractController
     ) {
     }
 
-    #[Route('{{ path }}')]
+    #[Route(path: '{{ path }}', methods: ['{{ method }}'])]
     public function {{ actionName }}(
 {% for param in pathParams %}
         {{ param.type }} ${{ param.name }},
@@ -30,7 +31,13 @@ class {{ controllerName }} extends AbstractController
         ]);
 
         if (count($violations) > 0) {
-            throw new \Exception('Validation failed.');
+            return new JsonResponse(
+                [
+                    'code' => 'validation_failed',
+                    'message' => 'Validation has failed.',
+                ],
+                Response::HTTP_BAD_REQUEST,
+            );
         }
 {% endif %}
 {% endfor %}

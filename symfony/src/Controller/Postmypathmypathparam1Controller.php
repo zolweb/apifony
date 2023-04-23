@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -15,7 +16,7 @@ class Postmypathmypathparam1Controller extends AbstractController
     ) {
     }
 
-    #[Route('/mypath/{mypathparam1}')]
+    #[Route(path: '/mypath/{mypathparam1}', methods: ['post'])]
     public function postmypathmypathparam1(
         string $mypathparam1,
     ): Response {
@@ -24,7 +25,13 @@ class Postmypathmypathparam1Controller extends AbstractController
         ]);
 
         if (count($violations) > 0) {
-            throw new \Exception('Validation failed.');
+            return new JsonResponse(
+                [
+                    'code' => 'validation_failed',
+                    'message' => 'Validation has failed.',
+                ],
+                Response::HTTP_BAD_REQUEST,
+            );
         }
 
         $this->handler->postmypathmypathparam1(

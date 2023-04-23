@@ -24,6 +24,9 @@ class GenCommand extends Command
 
         var_dump($spec);
 
+        $endpoints = [];
+        $validators = [];
+
         foreach ($spec['paths'] as $path => $pathSpec) {
             $pathParams = [];
             if (isset($pathSpec['parameters'])) {
@@ -42,26 +45,31 @@ class GenCommand extends Command
                     }
                 }
             }
-            if (isset($pathSpec['post'])) {
-                $postSpec = $pathSpec['post'];
-                $fileName = ucfirst(preg_replace('/[^a-z0-9]/i', '', $postSpec['operationId'])).'Controller.php';
-                $templateParams = [
-                    'controllerName' => ucfirst(preg_replace('/[^a-z0-9]/i', '', $postSpec['operationId'])).'Controller',
-                    'handlerName' => ucfirst(preg_replace('/[^a-z0-9]/i', '', $postSpec['operationId'])).'Handler',
-                    'path' => $path,
-                    'pathParams' => $pathParams,
-                    'actionName' => lcfirst(preg_replace('/[^a-z0-9]/i', '', $postSpec['operationId'])),
-                ];
-                file_put_contents(__DIR__."/../Controller/$fileName", $this->twig->render('controller.php.twig', $templateParams));
-
-                $fileName = ucfirst(preg_replace('/[^a-z0-9]/i', '', $postSpec['operationId'])).'Handler.php';
-                $templateParams = [
-                    'handlerName' => ucfirst(preg_replace('/[^a-z0-9]/i', '', $postSpec['operationId']).'Handler'),
-                    'pathParams' => $pathParams,
-                    'methodName' => lcfirst(preg_replace('/[^a-z0-9]/i', '', $postSpec['operationId'])),
-                ];
-                file_put_contents(__DIR__."/../Controller/$fileName", $this->twig->render('handler.php.twig', $templateParams));
+            foreach(['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'] as $method) {
+                if (isset($pathSpec[$method])) {
+                    $postSpec = $pathSpec[$method];
+                    $endpoints[] = [
+                        'controllerFileName' => ucfirst(preg_replace('/[^a-z0-9]/i', '', $postSpec['operationId'])).'Controller.php',
+                        'controllerName' => ucfirst(preg_replace('/[^a-z0-9]/i', '', $postSpec['operationId'])).'Controller',
+                        'handlerName' => ucfirst(preg_replace('/[^a-z0-9]/i', '', $postSpec['operationId'])).'Handler',
+                        'path' => $path,
+                        'pathParams' => $pathParams,
+                        'method' => $method,
+                        'actionName' => lcfirst(preg_replace('/[^a-z0-9]/i', '', $postSpec['operationId'])),
+                        'handlerFileName' => ucfirst(preg_replace('/[^a-z0-9]/i', '', $postSpec['operationId'])).'Handler.php',
+                        'methodName' => lcfirst(preg_replace('/[^a-z0-9]/i', '', $postSpec['operationId'])),
+                    ];
+                }
             }
+        }
+
+        foreach ($validators as $validator) {
+
+        }
+
+        foreach ($endpoints as $endpoint) {
+            file_put_contents(__DIR__."/../Controller/{$endpoint['controllerFileName']}", $this->twig->render('controller.php.twig', $endpoint));
+            file_put_contents(__DIR__."/../Controller/{$endpoint['handlerFileName']}", $this->twig->render('handler.php.twig', $endpoint));
         }
 
         return Command::SUCCESS;
