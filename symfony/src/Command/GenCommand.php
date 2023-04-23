@@ -24,6 +24,10 @@ class GenCommand extends Command
 
         var_dump($spec);
 
+        print($this->twig->render('template.php.twig', $spec));
+
+        exit;
+
         $components = [];
         $endpoints = [];
         $validators = [];

@@ -1,0 +1,34 @@
+{% for route, path in paths %}
+{% for method, operation in path|filter((v, k) => k in ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace']) %}
+<?php
+
+namespace App\Controller;
+
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+
+#[Route(path: '{{ route }}', methods: ['{{ method }}'])]
+class {{ operation.operationId }}Endpoint
+{
+    public function handle(
+        Request $request,
+        {{ operation.operationId }}EndpointHandler $handler,
+{% for parameter in path.parameters ?? []|merge(operation.parameters ?? [])|filter(v => v.in is same as('path')) %}
+        {{ {'string': 'string', 'integer': 'int'}[parameter.schema.type] }} ${{ parameter.name }},
+{% endfor %}
+    ): Response {
+{% for parameter in path.parameters ?? []|merge(operation.parameters ?? [])|filter(v => v.in is same as('query')) %}
+        ${{ parameter.name }} = $request->query->get('{{ parameter.name }}');
+{% endfor %}
+{% if operation.requestBody is defined %}
+        $body = $request->getContents();
+{% endif %}
+        $response = $handler->handle(
+{% for parameter in path.parameters ?? []|merge(operation.parameters ?? []) %}
+            ${{ parameter.name }},
+{% endfor %}
+        );
+    }
+}
+{% endfor %}
+{% endfor %}
