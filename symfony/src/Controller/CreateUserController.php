@@ -22,7 +22,8 @@ class CreateUserController extends \Symfony\Bundle\FrameworkBundle\Controller\Ab
         }
         $content = $request->getContent();
         $dto = $serializer->deserialize($content, UserSchema::class, \Symfony\Component\Serializer\Encoder\JsonEncoder::FORMAT);
-        $response = $handler->handle(
+        $handler->handle(
+            $dto,
         );
 
         return new \Symfony\Component\HttpFoundation\Response('');

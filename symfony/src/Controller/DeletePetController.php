@@ -11,7 +11,7 @@ class DeletePetController extends \Symfony\Bundle\FrameworkBundle\Controller\Abs
         DeletePetHandler $handler,
         int $petId,
     ): \Symfony\Component\HttpFoundation\Response {
-        $response = $handler->handle(
+        $handler->handle(
             $api_key,
             $petId,
         );

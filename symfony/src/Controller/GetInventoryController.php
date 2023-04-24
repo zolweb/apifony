@@ -10,7 +10,7 @@ class GetInventoryController extends \Symfony\Bundle\FrameworkBundle\Controller\
         \Symfony\Component\Serializer\SerializerInterface $serializer,
         GetInventoryHandler $handler,
     ): \Symfony\Component\HttpFoundation\Response {
-        $response = $handler->handle(
+        $handler->handle(
         );
 
         return new \Symfony\Component\HttpFoundation\Response('');

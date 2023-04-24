@@ -22,7 +22,8 @@ class UpdatePetController extends \Symfony\Bundle\FrameworkBundle\Controller\Abs
         }
         $content = $request->getContent();
         $dto = $serializer->deserialize($content, PetSchema::class, \Symfony\Component\Serializer\Encoder\JsonEncoder::FORMAT);
-        $response = $handler->handle(
+        $handler->handle(
+            $dto,
         );
 
         return new \Symfony\Component\HttpFoundation\Response('');

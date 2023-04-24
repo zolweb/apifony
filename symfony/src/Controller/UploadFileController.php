@@ -12,7 +12,7 @@ class UploadFileController extends \Symfony\Bundle\FrameworkBundle\Controller\Ab
         int $petId,
     ): \Symfony\Component\HttpFoundation\Response {
         $additionalMetadata = $request->query->get('additionalMetadata');
-        $response = $handler->handle(
+        $handler->handle(
             $petId,
             $additionalMetadata,
         );

@@ -11,7 +11,7 @@ class DeleteOrderController extends \Symfony\Bundle\FrameworkBundle\Controller\A
         DeleteOrderHandler $handler,
         int $orderId,
     ): \Symfony\Component\HttpFoundation\Response {
-        $response = $handler->handle(
+        $handler->handle(
             $orderId,
         );
 

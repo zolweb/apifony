@@ -11,7 +11,7 @@ class FindPetsByStatusController extends \Symfony\Bundle\FrameworkBundle\Control
         FindPetsByStatusHandler $handler,
     ): \Symfony\Component\HttpFoundation\Response {
         $status = $request->query->get('status');
-        $response = $handler->handle(
+        $handler->handle(
             $status,
         );
 

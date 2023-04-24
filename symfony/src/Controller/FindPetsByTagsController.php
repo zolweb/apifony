@@ -11,7 +11,7 @@ class FindPetsByTagsController extends \Symfony\Bundle\FrameworkBundle\Controlle
         FindPetsByTagsHandler $handler,
     ): \Symfony\Component\HttpFoundation\Response {
         $tags = $request->query->get('tags');
-        $response = $handler->handle(
+        $handler->handle(
             $tags,
         );
 

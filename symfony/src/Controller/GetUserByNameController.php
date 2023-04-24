@@ -11,7 +11,7 @@ class GetUserByNameController extends \Symfony\Bundle\FrameworkBundle\Controller
         GetUserByNameHandler $handler,
         string $username,
     ): \Symfony\Component\HttpFoundation\Response {
-        $response = $handler->handle(
+        $handler->handle(
             $username,
         );
 

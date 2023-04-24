@@ -12,7 +12,7 @@ class LoginUserController extends \Symfony\Bundle\FrameworkBundle\Controller\Abs
     ): \Symfony\Component\HttpFoundation\Response {
         $username = $request->query->get('username');
         $password = $request->query->get('password');
-        $response = $handler->handle(
+        $handler->handle(
             $username,
             $password,
         );

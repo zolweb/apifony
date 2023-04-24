@@ -13,7 +13,7 @@ class UpdatePetWithFormController extends \Symfony\Bundle\FrameworkBundle\Contro
     ): \Symfony\Component\HttpFoundation\Response {
         $name = $request->query->get('name');
         $status = $request->query->get('status');
-        $response = $handler->handle(
+        $handler->handle(
             $petId,
             $name,
             $status,

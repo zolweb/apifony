@@ -5,5 +5,6 @@ namespace App\Controller;
 interface AddPetHandler
 {
     public function handle(
+        PetSchema $dto,
     );
 }

@@ -22,7 +22,8 @@ class PlaceOrderController extends \Symfony\Bundle\FrameworkBundle\Controller\Ab
         }
         $content = $request->getContent();
         $dto = $serializer->deserialize($content, OrderSchema::class, \Symfony\Component\Serializer\Encoder\JsonEncoder::FORMAT);
-        $response = $handler->handle(
+        $handler->handle(
+            $dto,
         );
 
         return new \Symfony\Component\HttpFoundation\Response('');

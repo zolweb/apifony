@@ -8,5 +8,8 @@ interface {{ spec.paths[route][method].operationId[:1]|capitalize ~ spec.paths[r
 {% for parameter in spec.paths[route].parameters ?? []|merge(spec.paths[route][method].parameters ?? [])|filter(v => v.in is same as('path')) %}
         {{ {'string': 'string', 'integer': 'int'}[parameter.schema.type] }} ${{ parameter.name }},
 {% endfor %}
+{% if spec.paths[route][method].requestBody.content['application/json'].schema['$ref'] is defined %}
+        {{ spec.paths[route][method].requestBody.content['application/json'].schema['$ref']|ref }} $dto,
+{% endif %}
     );
 }

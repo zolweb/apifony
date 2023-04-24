@@ -11,7 +11,7 @@ class GetOrderByIdController extends \Symfony\Bundle\FrameworkBundle\Controller\
         GetOrderByIdHandler $handler,
         int $orderId,
     ): \Symfony\Component\HttpFoundation\Response {
-        $response = $handler->handle(
+        $handler->handle(
             $orderId,
         );
 

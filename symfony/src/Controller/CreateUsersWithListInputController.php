@@ -21,7 +21,8 @@ class CreateUsersWithListInputController extends \Symfony\Bundle\FrameworkBundle
             );
         }
         $content = $request->getContent();
-        $response = $handler->handle(
+        $handler->handle(
+            $dto,
         );
 
         return new \Symfony\Component\HttpFoundation\Response('');

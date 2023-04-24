@@ -24,6 +24,13 @@ class GenCommand extends Command
 
         var_dump($spec);
 
+        foreach ($spec['components']['schemas'] as $name => $class) {
+            if ($class['type'] === 'object') {
+                $template = $this->twig->render('schema.php.twig', ['spec' => $spec, 'name' => $name]);
+                file_put_contents(__DIR__.'/../Controller/'.$name.'Schema.php', $template);
+            }
+        }
+
         foreach ($spec['paths'] as $route => $path) {
             foreach (array_intersect_key($path, array_fill_keys(['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'], true)) as $method => $operation) {
                 $template = $this->twig->render('controller.php.twig', ['spec' => $spec, 'route' => $route, 'method' => $method]);

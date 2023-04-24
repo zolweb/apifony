@@ -32,10 +32,13 @@ class {{ spec.paths[route][method].operationId[:1]|capitalize ~ spec.paths[route
         $dto = $serializer->deserialize($content, {{ spec.paths[route][method].requestBody.content['application/json'].schema['$ref']|ref }}::class, \Symfony\Component\Serializer\Encoder\JsonEncoder::FORMAT);
 {% endif %}
 {% endif %}
-        $response = $handler->handle(
+        $handler->handle(
 {% for parameter in spec.paths[route].parameters ?? []|merge(spec.paths[route][method].parameters ?? []) %}
             ${{ parameter.name }},
 {% endfor %}
+{% if spec.paths[route][method].requestBody is defined %}
+            $dto,
+{% endif %}
         );
 
         return new \Symfony\Component\HttpFoundation\Response('');

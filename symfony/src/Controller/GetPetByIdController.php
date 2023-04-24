@@ -11,7 +11,7 @@ class GetPetByIdController extends \Symfony\Bundle\FrameworkBundle\Controller\Ab
         GetPetByIdHandler $handler,
         int $petId,
     ): \Symfony\Component\HttpFoundation\Response {
-        $response = $handler->handle(
+        $handler->handle(
             $petId,
         );
 

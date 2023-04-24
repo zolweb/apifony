@@ -11,7 +11,7 @@ class DeleteUserController extends \Symfony\Bundle\FrameworkBundle\Controller\Ab
         DeleteUserHandler $handler,
         string $username,
     ): \Symfony\Component\HttpFoundation\Response {
-        $response = $handler->handle(
+        $handler->handle(
             $username,
         );
 
