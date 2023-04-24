@@ -7,8 +7,8 @@ class CategorySchema
     /**
     */
     public function __construct(
-        public readonly int $id,
-        public readonly string $name,
+        public readonly ?int $id = null,
+        public readonly ?string $name = null,
     ) {
     }
 }

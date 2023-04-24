@@ -9,9 +9,9 @@ class {{ name }}Schema
     {%~ for name, property in schema.properties %}
     {%~ if property.type is defined and property.type is same as ('array') %}
     {%~ if property.items.type is defined %}
-     * @param array<{{ property.items.type|toPhpType }}> ${{ name }}
+     * @param {{ name in (schema.required ?? []) ? '' : '?' }}array<{{ property.items.type|toPhpType }}> ${{ name }}
     {%~ else %}
-    {{ genSchema(spec, property.items['$ref']) }} * @param array<{{ property.items['$ref']|toSchemaClassName }}> ${{ name }},
+    {{ genSchema(spec, property.items['$ref']) }} * @param {{ name in (schema.required ?? []) ? '' : '?' }}array<{{ property.items['$ref']|toSchemaClassName }}> ${{ name }},
     {%~ endif %}
     {%~ endif %}
     {%~ endfor %}
@@ -19,9 +19,9 @@ class {{ name }}Schema
     public function __construct(
         {%~ for name, property in schema.properties %}
         {%~ if property.type is defined %}
-        public readonly {{ property.type|toPhpType }} ${{ name }},
+        public readonly {{ name in (schema.required ?? []) ? '' : '?' }}{{ property.type|toPhpType }} ${{ name }}{{ name in (schema.required ?? []) ? '' : ' = null' }},
         {%~ else %}
-        public readonly {{ genSchema(spec, property['$ref']) }}{{ property['$ref']|toSchemaClassName }} ${{ name }},
+        public readonly {{ name in (schema.required ?? []) ? '' : '?' }}{{ genSchema(spec, property['$ref']) }}{{ property['$ref']|toSchemaClassName }} ${{ name }}{{ name in (schema.required ?? []) ? '' : ' = null' }},
         {%~ endif %}
         {%~ endfor %}
     ) {
