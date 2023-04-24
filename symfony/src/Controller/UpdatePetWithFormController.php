@@ -2,24 +2,29 @@
 
 namespace App\Controller;
 
-class UpdatePetWithFormController extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\SerializerInterface;
+
+class UpdatePetWithFormController extends AbstractController
 {
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/pet/{petId}', methods: ['post'])]
+    #[Route(path: '/pet/{petId}', methods: ['post'])]
     public function handle(
-        \Symfony\Component\HttpFoundation\Request $request,
-        \Symfony\Component\Serializer\SerializerInterface $serializer,
+        Request $request,
+        SerializerInterface $serializer,
         UpdatePetWithFormHandler $handler,
         int $petId,
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $name = $request->query->get('name');
         $status = $request->query->get('status');
         $handler->handle(
-            $petId,
-            $name,
-            $status,
         );
 
-        return new \Symfony\Component\HttpFoundation\Response('');
+        return new Response('');
     }
 }
 

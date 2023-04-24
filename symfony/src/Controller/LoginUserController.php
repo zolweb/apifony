@@ -2,22 +2,28 @@
 
 namespace App\Controller;
 
-class LoginUserController extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\SerializerInterface;
+
+class LoginUserController extends AbstractController
 {
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/user/login', methods: ['get'])]
+    #[Route(path: '/user/login', methods: ['get'])]
     public function handle(
-        \Symfony\Component\HttpFoundation\Request $request,
-        \Symfony\Component\Serializer\SerializerInterface $serializer,
+        Request $request,
+        SerializerInterface $serializer,
         LoginUserHandler $handler,
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $username = $request->query->get('username');
         $password = $request->query->get('password');
         $handler->handle(
-            $username,
-            $password,
         );
 
-        return new \Symfony\Component\HttpFoundation\Response('');
+        return new Response('');
     }
 }
 

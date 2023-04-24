@@ -2,31 +2,39 @@
 
 namespace App\Controller;
 
-class UpdatePetController extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\SerializerInterface;
+
+class UpdatePetController extends AbstractController
 {
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/pet', methods: ['put'])]
+    #[Route(path: '/pet', methods: ['put'])]
     public function handle(
-        \Symfony\Component\HttpFoundation\Request $request,
-        \Symfony\Component\Serializer\SerializerInterface $serializer,
+        Request $request,
+        SerializerInterface $serializer,
         UpdatePetHandler $handler,
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $contentType = $request->headers->get('content-type');
         if ($contentType !== 'application/json') {
-            return new \Symfony\Component\HttpFoundation\JsonResponse(
+            return new JsonResponse(
                 [
                     'code' => 'unsupported_format',
                     'message' => "The value '$contentType' received in content-type header is not a supported format.",
                 ],
-                \Symfony\Component\HttpFoundation\Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
             );
         }
         $content = $request->getContent();
-        $dto = $serializer->deserialize($content, PetSchema::class, \Symfony\Component\Serializer\Encoder\JsonEncoder::FORMAT);
+        $dto = $serializer->deserialize($content, PetSchema::class, JsonEncoder::FORMAT);
         $handler->handle(
             $dto,
         );
 
-        return new \Symfony\Component\HttpFoundation\Response('');
+        return new Response('');
     }
 }
 

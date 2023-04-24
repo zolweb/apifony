@@ -24,13 +24,6 @@ class GenCommand extends Command
 
         var_dump($spec);
 
-        foreach ($spec['components']['schemas'] as $name => $class) {
-            if ($class['type'] === 'object') {
-                $template = $this->twig->render('schema.php.twig', ['spec' => $spec, 'name' => $name]);
-                file_put_contents(__DIR__.'/../Controller/'.$name.'Schema.php', $template);
-            }
-        }
-
         foreach ($spec['paths'] as $route => $path) {
             foreach (array_intersect_key($path, array_fill_keys(['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'], true)) as $method => $operation) {
                 $template = $this->twig->render('controller.php.twig', ['spec' => $spec, 'route' => $route, 'method' => $method]);
@@ -40,104 +33,6 @@ class GenCommand extends Command
             }
         }
 
-        exit;
-
-        $components = [];
-        $endpoints = [];
-        $validators = [];
-
-        $priorities = [];
-        $bases = [];
-        foreach (array_keys($spec['paths']) as $path) {
-            $bases[strtok($path, '{')][] = $path;
-        }
-        foreach ($bases as $base => $paths) {
-            foreach ($paths as $path) {
-                $priorities[$path] = isset($path[strlen($base)]) ? 0 : 1;
-            }
-        }
-
-        foreach ($spec['paths'] as $path => $pathSpec) {
-            $pathParams = [];
-            if (isset($pathSpec['parameters'])) {
-                foreach ($pathSpec['parameters'] as $paramSpec) {
-                    switch ($paramSpec['in']) {
-                        case 'path':
-                            $pathParam = [
-                                'name' => $paramSpec['name'],
-                                'type' => $paramSpec['schema']['type'],
-                                'constraints' => [],
-                            ];
-                            if (isset($paramSpec['schema']['format'])) {
-                                $pathParam['constraints'][] = $this->createFormatConstraint($paramSpec['schema']['format']);
-                            }
-                            $pathParams[] = $pathParam;
-                            break;
-                        case 'header':
-                            break;
-                    }
-                }
-            }
-            foreach(['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'] as $method) {
-                if (isset($pathSpec[$method])) {
-                    $postSpec = $pathSpec[$method];
-                    $endpoints[] = [
-                        'controllerFileName' => ucfirst(preg_replace('/[^a-z0-9]/i', '', $postSpec['operationId'])).'Controller.php',
-                        'controllerName' => ucfirst(preg_replace('/[^a-z0-9]/i', '', $postSpec['operationId'])).'Controller',
-                        'handlerName' => ucfirst(preg_replace('/[^a-z0-9]/i', '', $postSpec['operationId'])).'Handler',
-                        'path' => $path,
-                        'pathParams' => $pathParams,
-                        'method' => $method,
-                        'priority' => $priorities[$path],
-                        'actionName' => lcfirst(preg_replace('/[^a-z0-9]/i', '', $postSpec['operationId'])),
-                        'handlerFileName' => ucfirst(preg_replace('/[^a-z0-9]/i', '', $postSpec['operationId'])).'Handler.php',
-                        'methodName' => lcfirst(preg_replace('/[^a-z0-9]/i', '', $postSpec['operationId'])),
-                    ];
-                }
-            }
-        }
-
-        foreach ($validators as $validator) {
-
-        }
-
-        foreach ($endpoints as $endpoint) {
-            file_put_contents(__DIR__."/../Controller/{$endpoint['controllerFileName']}", $this->twig->render('controller.php.twig', $endpoint));
-            file_put_contents(__DIR__."/../Controller/{$endpoint['handlerFileName']}", $this->twig->render('handler.php.twig', $endpoint));
-        }
-
-        return Command::SUCCESS;
-    }
-
-    private function createFormatConstraint(string $format): string
-    {
-        static $formats = [];
-
-        $constraintName = ucfirst(preg_replace('/[^a-z0-9]/i', '', $format));
-
-        if (!isset($formats[$format])) {
-            $fileName = ucfirst(preg_replace('/[^a-z0-9]/i', '', $format)).'.php';
-            $templateParams = [
-                'constraintName' => $constraintName,
-            ];
-            file_put_contents(__DIR__."/../Controller/$fileName", $this->twig->render('constraint.php.twig', $templateParams));
-
-            $fileName = ucfirst(preg_replace('/[^a-z0-9]/i', '', $format)).'Validator.php';
-            $templateParams = [
-                'validatorName' => $constraintName.'Validator',
-                'validatorInterfaceName' => $constraintName.'ValidatorInterface',
-            ];
-            file_put_contents(__DIR__."/../Controller/$fileName", $this->twig->render('validator.php.twig', $templateParams));
-
-            $fileName = ucfirst(preg_replace('/[^a-z0-9]/i', '', $format)).'ValidatorInterface.php';
-            $templateParams = [
-                'validatorInterfaceName' => $constraintName.'ValidatorInterface',
-            ];
-            file_put_contents(__DIR__."/../Controller/$fileName", $this->twig->render('validator-interface.php.twig', $templateParams));
-
-            $formats[] = $format;
-        }
-
-        return $constraintName;
+        return 0;
     }
 }

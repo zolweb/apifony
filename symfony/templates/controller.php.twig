@@ -2,46 +2,56 @@
 
 namespace App\Controller;
 
-class {{ spec.paths[route][method].operationId[:1]|capitalize ~ spec.paths[route][method].operationId[1:] }}Controller extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\SerializerInterface;
+
+{% set operation = spec.paths[route][method] %}
+class {{ operation.operationId|toControllerClassName }} extends AbstractController
 {
-    #[\Symfony\Component\Routing\Annotation\Route(path: '{{ route }}', methods: ['{{ method }}'])]
+    #[Route(path: '{{ route }}', methods: ['{{ method }}'])]
     public function handle(
-        \Symfony\Component\HttpFoundation\Request $request,
-        \Symfony\Component\Serializer\SerializerInterface $serializer,
-        {{ spec.paths[route][method].operationId[:1]|capitalize ~ spec.paths[route][method].operationId[1:] }}Handler $handler,
-{% for parameter in spec.paths[route].parameters ?? []|merge(spec.paths[route][method].parameters ?? [])|filter(v => v.in is same as('path')) %}
-        {{ {'string': 'string', 'integer': 'int'}[parameter.schema.type] }} ${{ parameter.name }},
-{% endfor %}
-    ): \Symfony\Component\HttpFoundation\Response {
-{% for parameter in spec.paths[route].parameters ?? []|merge(spec.paths[route][method].parameters ?? [])|filter(v => v.in is same as('query')) %}
+        Request $request,
+        SerializerInterface $serializer,
+        {{ operation.operationId|toHandlerClassName }} $handler,
+        {%~ for parameter in getOperationParams(spec, route, method, 'path') %}
+        {{ parameter.schema.type|toPhpType }} ${{ parameter.name }},
+        {%~ endfor %}
+    ): Response {
+        {%~ for parameter in getOperationParams(spec, route, method, 'query') %}
         ${{ parameter.name }} = $request->query->get('{{ parameter.name }}');
-{% endfor %}
-{% if spec.paths[route][method].requestBody is defined %}
+        {%~ endfor %}
+        {%~ if operation.requestBody.content['application/json'] is defined %}
+        {%~ set requestBody = operation.requestBody.content['application/json'] %}
         $contentType = $request->headers->get('content-type');
         if ($contentType !== 'application/json') {
-            return new \Symfony\Component\HttpFoundation\JsonResponse(
+            return new JsonResponse(
                 [
                     'code' => 'unsupported_format',
                     'message' => "The value '$contentType' received in content-type header is not a supported format.",
                 ],
-                \Symfony\Component\HttpFoundation\Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
             );
         }
         $content = $request->getContent();
-{% if spec.paths[route][method].requestBody.content['application/json'].schema['$ref'] is defined %}
-        $dto = $serializer->deserialize($content, {{ spec.paths[route][method].requestBody.content['application/json'].schema['$ref']|ref }}::class, \Symfony\Component\Serializer\Encoder\JsonEncoder::FORMAT);
-{% endif %}
-{% endif %}
+        {%~ if requestBody.schema['$ref'] is defined %}
+        {{ genSchema(spec, requestBody.schema['$ref']) }}$dto = $serializer->deserialize($content, {{ requestBody.schema['$ref']|toSchemaClassName }}::class, JsonEncoder::FORMAT);
+        {%~ endif %}
+        {%~ endif %}
         $handler->handle(
-{% for parameter in spec.paths[route].parameters ?? []|merge(spec.paths[route][method].parameters ?? []) %}
+        {%~ for parameter in getOperationParams(spec, route, method) %}
             ${{ parameter.name }},
-{% endfor %}
-{% if spec.paths[route][method].requestBody is defined %}
+        {%~ endfor %}
+        {%~ if spec.paths[route][method].requestBody is defined %}
             $dto,
-{% endif %}
+        {%~ endif %}
         );
 
-        return new \Symfony\Component\HttpFoundation\Response('');
+        return new Response('');
     }
 }
 

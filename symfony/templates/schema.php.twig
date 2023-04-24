@@ -2,6 +2,17 @@
 
 namespace App\Controller;
 
+{% set schema = spec.components.schemas[name] %}
 class {{ name }}Schema
 {
+    public function __construct(
+        {%~ for name, property in schema.properties %}
+        {%~ if property.type is defined %}
+        {{ property.type|toPhpType }} ${{ name }},
+        {%~ else %}
+        {{ genSchema(spec, property['$ref']) }}{{ property['$ref']|toSchemaClassName }} ${{ name }},
+        {%~ endif %}
+        {%~ endfor %}
+    ) {
+    }
 }

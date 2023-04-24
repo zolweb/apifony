@@ -2,20 +2,27 @@
 
 namespace App\Controller;
 
-class GetPetByIdController extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\SerializerInterface;
+
+class GetPetByIdController extends AbstractController
 {
-    #[\Symfony\Component\Routing\Annotation\Route(path: '/pet/{petId}', methods: ['get'])]
+    #[Route(path: '/pet/{petId}', methods: ['get'])]
     public function handle(
-        \Symfony\Component\HttpFoundation\Request $request,
-        \Symfony\Component\Serializer\SerializerInterface $serializer,
+        Request $request,
+        SerializerInterface $serializer,
         GetPetByIdHandler $handler,
         int $petId,
-    ): \Symfony\Component\HttpFoundation\Response {
+    ): Response {
         $handler->handle(
-            $petId,
         );
 
-        return new \Symfony\Component\HttpFoundation\Response('');
+        return new Response('');
     }
 }
 
