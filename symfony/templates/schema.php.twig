@@ -5,6 +5,13 @@ namespace App\Controller;
 {% set schema = spec.components.schemas[name] %}
 class {{ name }}Schema
 {
+    /**
+    {%~ for name, property in schema.properties %}
+    {%~ if property.type is defined and property.type is same as ('array') %}
+     * @param array<{{ property.items.type|toPhpType }}> ${{ name }},
+    {%~ endif %}
+    {%~ endfor %}
+    */
     public function __construct(
         {%~ for name, property in schema.properties %}
         {%~ if property.type is defined %}
