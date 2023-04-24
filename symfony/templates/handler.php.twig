@@ -2,11 +2,11 @@
 
 namespace App\Controller;
 
-interface {{ handlerName }}
+interface {{ spec.paths[route][method].operationId[:1]|capitalize ~ spec.paths[route][method].operationId[1:] }}Handler
 {
-    public function {{ methodName }}(
-{% for param in pathParams %}
-        {{ param.type }} ${{ param.name }},
+    public function handle(
+{% for parameter in spec.paths[route].parameters ?? []|merge(spec.paths[route][method].parameters ?? [])|filter(v => v.in is same as('path')) %}
+        {{ {'string': 'string', 'integer': 'int'}[parameter.schema.type] }} ${{ parameter.name }},
 {% endfor %}
-    ): void;
+    );
 }

@@ -3,48 +3,29 @@
 namespace App\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class {{ controllerName }} extends AbstractController
+class {{ spec.paths[route][method].operationId[:1]|capitalize ~ spec.paths[route][method].operationId[1:] }}Controller extends AbstractController
 {
-    public function __construct(
-        private readonly {{ handlerName }} $handler,
-        private readonly ValidatorInterface $validator,
-    ) {
-    }
-
-    #[Route(path: '{{ path }}', methods: ['{{ method }}'], priority: {{ priority }})]
-    public function {{ actionName }}(
-{% for param in pathParams %}
-        {{ param.type }} ${{ param.name }},
+    #[Route(path: '{{ route }}', methods: ['{{ method }}'])]
+    public function handle(
+        Request $request,
+        {{ spec.paths[route][method].operationId[:1]|capitalize ~ spec.paths[route][method].operationId[1:] }}Handler $handler,
+{% for parameter in spec.paths[route].parameters ?? []|merge(spec.paths[route][method].parameters ?? [])|filter(v => v.in is same as('path')) %}
+        {{ {'string': 'string', 'integer': 'int'}[parameter.schema.type] }} ${{ parameter.name }},
 {% endfor %}
     ): Response {
-{% for param in pathParams %}
-{% if param.constraints %}
-        $violations = $this->validator->validate(${{ param.name }}, [
-{% for constraint in param.constraints %}
-            new {{ constraint }}(),
+{% for parameter in spec.paths[route].parameters ?? []|merge(spec.paths[route][method].parameters ?? [])|filter(v => v.in is same as('query')) %}
+        ${{ parameter.name }} = $request->query->get('{{ parameter.name }}');
 {% endfor %}
-        ]);
-
-        if (count($violations) > 0) {
-            return new JsonResponse(
-                [
-                    'code' => 'validation_failed',
-                    'message' => 'Validation has failed.',
-                ],
-                Response::HTTP_BAD_REQUEST,
-            );
-        }
+{% if spec.paths[route][method].requestBody is defined %}
+        $body = $request->getContent();
 {% endif %}
-{% endfor %}
-
-        $this->handler->{{ actionName }}(
-{% for param in pathParams %}
-            ${{ param.name }},
+        $response = $handler->handle(
+{% for parameter in spec.paths[route].parameters ?? []|merge(spec.paths[route][method].parameters ?? []) %}
+            ${{ parameter.name }},
 {% endfor %}
         );
 
