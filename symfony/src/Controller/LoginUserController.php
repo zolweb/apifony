@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class LoginUserController extends AbstractController
 {
@@ -16,13 +17,13 @@ class LoginUserController extends AbstractController
     public function handle(
         Request $request,
         SerializerInterface $serializer,
+        ValidatorInterface $validator,
         LoginUserHandler $handler,
     ): Response {
         $username = $request->query->get('username');
         $password = $request->query->get('password');
         $handler->handle(
         );
-
         return new Response('');
     }
 }

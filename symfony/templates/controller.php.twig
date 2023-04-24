@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 {% set operation = spec.paths[route][method] %}
 class {{ operation.operationId|toControllerClassName }} extends AbstractController
@@ -17,6 +18,7 @@ class {{ operation.operationId|toControllerClassName }} extends AbstractControll
     public function handle(
         Request $request,
         SerializerInterface $serializer,
+        ValidatorInterface $validator,
         {{ operation.operationId|toHandlerClassName }} $handler,
         {%~ for parameter in getOperationParams(spec, route, method, 'path') %}
         {{ parameter.schema.type|toPhpType }} ${{ parameter.name }},
@@ -26,7 +28,7 @@ class {{ operation.operationId|toControllerClassName }} extends AbstractControll
         ${{ parameter.name }} = $request->query->get('{{ parameter.name }}');
         {%~ endfor %}
         {%~ if operation.requestBody.content['application/json'] is defined %}
-        {%~ set requestBody = operation.requestBody.content['application/json'] %}
+            {%~ set requestBody = operation.requestBody.content['application/json'] %}
         $contentType = $request->headers->get('content-type');
         if ($contentType !== 'application/json') {
             return new JsonResponse(
@@ -38,9 +40,26 @@ class {{ operation.operationId|toControllerClassName }} extends AbstractControll
             );
         }
         $content = $request->getContent();
-        {%~ if requestBody.schema['$ref'] is defined %}
+            {%~ if requestBody.schema['$ref'] is defined %}
         {{ genSchema(spec, requestBody.schema['$ref']) }}$dto = $serializer->deserialize($content, {{ requestBody.schema['$ref']|toSchemaClassName }}::class, JsonEncoder::FORMAT);
-        {%~ endif %}
+            {%~ endif %}
+        $violations = $validator->validate($dto);
+        if (count($violations) > 0) {
+            $errors = [];
+            foreach ($violations as $violation) {
+                $errors[$violation->getPropertyPath()][] = $violation->getMessage();
+            }
+            return new JsonResponse(
+                [
+                    'code' => 'validation_failed',
+                    'message' => 'Validation has failed.',
+                    'errors' => [
+                        'body' => $errors,
+                    ],
+                ],
+                Response::HTTP_BAD_REQUEST,
+            );
+        }
         {%~ endif %}
         $handler->handle(
         {%~ for parameter in getOperationParams(spec, route, method) %}
@@ -50,7 +69,6 @@ class {{ operation.operationId|toControllerClassName }} extends AbstractControll
             $dto,
         {%~ endif %}
         );
-
         return new Response('');
     }
 }

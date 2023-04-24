@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class FindPetsByStatusController extends AbstractController
 {
@@ -16,12 +17,12 @@ class FindPetsByStatusController extends AbstractController
     public function handle(
         Request $request,
         SerializerInterface $serializer,
+        ValidatorInterface $validator,
         FindPetsByStatusHandler $handler,
     ): Response {
         $status = $request->query->get('status');
         $handler->handle(
         );
-
         return new Response('');
     }
 }

@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class GetPetByIdController extends AbstractController
 {
@@ -16,12 +17,12 @@ class GetPetByIdController extends AbstractController
     public function handle(
         Request $request,
         SerializerInterface $serializer,
+        ValidatorInterface $validator,
         GetPetByIdHandler $handler,
         int $petId,
     ): Response {
         $handler->handle(
         );
-
         return new Response('');
     }
 }

@@ -26,3 +26,46 @@ services:
     App\Command\GenExtension:
         class: App\Command\GenExtension
         tags: ['twig.extension']
+
+    ### Serializer ###
+
+    Symfony\Component\Serializer\Encoder\JsonEncoder: ~
+
+    Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor: ~
+
+    Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor: ~
+
+    Symfony\Component\PropertyInfo\PropertyInfoExtractor:
+        arguments:
+            $typeExtractors:
+                - '@Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor'
+                - '@Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor'
+
+    Doctrine\Common\Annotations\AnnotationReader: ~
+
+    Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader:
+        arguments:
+            $reader: '@Doctrine\Common\Annotations\AnnotationReader'
+
+    Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory:
+        arguments:
+            $loader: '@Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader'
+
+    Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter: ~
+
+    Symfony\Component\Serializer\Normalizer\ObjectNormalizer:
+        arguments:
+            $propertyTypeExtractor: '@Symfony\Component\PropertyInfo\PropertyInfoExtractor'
+            $classMetadataFactory: '@Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory'
+            $nameConverter: '@Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter'
+
+    Symfony\Component\Serializer\Normalizer\ArrayDenormalizer: ~
+
+    Symfony\Component\Serializer\SerializerInterface:
+        class: 'Symfony\Component\Serializer\Serializer'
+        arguments:
+            $encoders:
+                - '@Symfony\Component\Serializer\Encoder\JsonEncoder'
+            $normalizers:
+                - '@Symfony\Component\Serializer\Normalizer\ObjectNormalizer'
+                - '@Symfony\Component\Serializer\Normalizer\ArrayDenormalizer'

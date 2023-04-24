@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UploadFileController extends AbstractController
 {
@@ -16,13 +17,13 @@ class UploadFileController extends AbstractController
     public function handle(
         Request $request,
         SerializerInterface $serializer,
+        ValidatorInterface $validator,
         UploadFileHandler $handler,
         int $petId,
     ): Response {
         $additionalMetadata = $request->query->get('additionalMetadata');
         $handler->handle(
         );
-
         return new Response('');
     }
 }

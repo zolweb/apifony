@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class PlaceOrderController extends AbstractController
 {
@@ -16,6 +17,7 @@ class PlaceOrderController extends AbstractController
     public function handle(
         Request $request,
         SerializerInterface $serializer,
+        ValidatorInterface $validator,
         PlaceOrderHandler $handler,
     ): Response {
         $contentType = $request->headers->get('content-type');
@@ -30,10 +32,26 @@ class PlaceOrderController extends AbstractController
         }
         $content = $request->getContent();
         $dto = $serializer->deserialize($content, OrderSchema::class, JsonEncoder::FORMAT);
+        $violations = $validator->validate($dto);
+        if (count($violations) > 0) {
+            $errors = [];
+            foreach ($violations as $violation) {
+                $errors[$violation->getPropertyPath()][] = $violation->getMessage();
+            }
+            return new JsonResponse(
+                [
+                    'code' => 'validation_failed',
+                    'message' => 'Validation has failed.',
+                    'errors' => [
+                        'body' => $errors,
+                    ],
+                ],
+                Response::HTTP_BAD_REQUEST,
+            );
+        }
         $handler->handle(
             $dto,
         );
-
         return new Response('');
     }
 }

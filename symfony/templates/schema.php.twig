@@ -2,27 +2,39 @@
 
 namespace App\Controller;
 
+use Symfony\Component\Validator\Constraints as Assert;
+
 {% set schema = spec.components.schemas[name] %}
 class {{ name }}Schema
 {
     /**
     {%~ for name, property in schema.properties %}
-    {%~ if property.type is defined and property.type is same as ('array') %}
-    {%~ if property.items.type is defined %}
+        {%~ if property.type is defined and property.type is same as ('array') %}
+            {%~ if property.items.type is defined %}
      * @param {{ name in (schema.required ?? []) ? '' : '?' }}array<{{ property.items.type|toPhpType }}> ${{ name }}
-    {%~ else %}
+            {%~ else %}
     {{ genSchema(spec, property.items['$ref']) }} * @param {{ name in (schema.required ?? []) ? '' : '?' }}array<{{ property.items['$ref']|toSchemaClassName }}> ${{ name }},
-    {%~ endif %}
-    {%~ endif %}
+            {%~ endif %}
+        {%~ endif %}
     {%~ endfor %}
     */
     public function __construct(
         {%~ for name, property in schema.properties %}
-        {%~ if property.type is defined %}
+            {%~ if name in (schema.required ?? []) %}
+        #[Assert\NotNull]
+            {%~ endif %}
+            {%~ if property.enum is defined %}
+        #[Assert\Choice(['{{ property.enum|join('\', \'')|raw }}'])]
+            {%~ endif %}
+            {%~ if property.type is defined %}
+                {%~ if property.type is same as ('array') and (property.items.type is not defined or property.items.type is same as ('object')) %}
+        #[Assert\Valid]
+                {%~ endif %}
         public readonly {{ name in (schema.required ?? []) ? '' : '?' }}{{ property.type|toPhpType }} ${{ name }}{{ name in (schema.required ?? []) ? '' : ' = null' }},
-        {%~ else %}
+            {%~ else %}
+        #[Assert\Valid]
         public readonly {{ name in (schema.required ?? []) ? '' : '?' }}{{ genSchema(spec, property['$ref']) }}{{ property['$ref']|toSchemaClassName }} ${{ name }}{{ name in (schema.required ?? []) ? '' : ' = null' }},
-        {%~ endif %}
+            {%~ endif %}
         {%~ endfor %}
     ) {
     }

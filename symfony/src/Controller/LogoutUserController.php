@@ -9,6 +9,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class LogoutUserController extends AbstractController
 {
@@ -16,11 +17,11 @@ class LogoutUserController extends AbstractController
     public function handle(
         Request $request,
         SerializerInterface $serializer,
+        ValidatorInterface $validator,
         LogoutUserHandler $handler,
     ): Response {
         $handler->handle(
         );
-
         return new Response('');
     }
 }
