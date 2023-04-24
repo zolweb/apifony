@@ -2,37 +2,35 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-
-class {{ spec.paths[route][method].operationId[:1]|capitalize ~ spec.paths[route][method].operationId[1:] }}Controller extends AbstractController
+class {{ spec.paths[route][method].operationId[:1]|capitalize ~ spec.paths[route][method].operationId[1:] }}Controller extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
 {
-    #[Route(path: '{{ route }}', methods: ['{{ method }}'])]
+    #[\Symfony\Component\Routing\Annotation\Route(path: '{{ route }}', methods: ['{{ method }}'])]
     public function handle(
-        Request $request,
+        \Symfony\Component\HttpFoundation\Request $request,
+        \Symfony\Component\Serializer\SerializerInterface $serializer,
         {{ spec.paths[route][method].operationId[:1]|capitalize ~ spec.paths[route][method].operationId[1:] }}Handler $handler,
 {% for parameter in spec.paths[route].parameters ?? []|merge(spec.paths[route][method].parameters ?? [])|filter(v => v.in is same as('path')) %}
         {{ {'string': 'string', 'integer': 'int'}[parameter.schema.type] }} ${{ parameter.name }},
 {% endfor %}
-    ): Response {
+    ): \Symfony\Component\HttpFoundation\Response {
 {% for parameter in spec.paths[route].parameters ?? []|merge(spec.paths[route][method].parameters ?? [])|filter(v => v.in is same as('query')) %}
         ${{ parameter.name }} = $request->query->get('{{ parameter.name }}');
 {% endfor %}
 {% if spec.paths[route][method].requestBody is defined %}
         $contentType = $request->headers->get('content-type');
         if ($contentType !== 'application/json') {
-            return new JsonResponse(
+            return new \Symfony\Component\HttpFoundation\JsonResponse(
                 [
                     'code' => 'unsupported_format',
                     'message' => "The value '$contentType' received in content-type header is not a supported format.",
                 ],
-                Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                \Symfony\Component\HttpFoundation\Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
             );
         }
-        $body = $request->getContent();
+        $content = $request->getContent();
+{% if spec.paths[route][method].requestBody.content['application/json'].schema['$ref'] is defined %}
+        $dto = $serializer->deserialize($content, {{ spec.paths[route][method].requestBody.content['application/json'].schema['$ref']|ref }}::class, \Symfony\Component\Serializer\Encoder\JsonEncoder::FORMAT);
+{% endif %}
 {% endif %}
         $response = $handler->handle(
 {% for parameter in spec.paths[route].parameters ?? []|merge(spec.paths[route][method].parameters ?? []) %}
@@ -40,17 +38,17 @@ class {{ spec.paths[route][method].operationId[:1]|capitalize ~ spec.paths[route
 {% endfor %}
         );
 
-        return new Response('');
+        return new \Symfony\Component\HttpFoundation\Response('');
     }
 }
 
 // $contentType = $request->headers->get('accept');
 // if ($contentType !== 'application/json') {
-// return new JsonResponse(
+// return new \Symfony\Component\HttpFoundation\JsonResponse(
 // [
 // 'code' => 'not_acceptable_format',
 // 'message' => "The value '$contentType' received in accept header is not an acceptable format.",
 // ],
-// Response::HTTP_NOT_ACCEPTABLE,
+// \Symfony\Component\HttpFoundation\Response::HTTP_NOT_ACCEPTABLE,
 // );
 // }

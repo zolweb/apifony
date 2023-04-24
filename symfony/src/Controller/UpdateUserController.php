@@ -2,46 +2,42 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-
-class UpdateUserController extends AbstractController
+class UpdateUserController extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
 {
-    #[Route(path: '/user/{username}', methods: ['put'])]
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/user/{username}', methods: ['put'])]
     public function handle(
-        Request $request,
+        \Symfony\Component\HttpFoundation\Request $request,
+        \Symfony\Component\Serializer\SerializerInterface $serializer,
         UpdateUserHandler $handler,
         string $username,
-    ): Response {
+    ): \Symfony\Component\HttpFoundation\Response {
         $contentType = $request->headers->get('content-type');
         if ($contentType !== 'application/json') {
-            return new JsonResponse(
+            return new \Symfony\Component\HttpFoundation\JsonResponse(
                 [
                     'code' => 'unsupported_format',
                     'message' => "The value '$contentType' received in content-type header is not a supported format.",
                 ],
-                Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                \Symfony\Component\HttpFoundation\Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
             );
         }
-        $body = $request->getContent();
+        $content = $request->getContent();
+        $dto = $serializer->deserialize($content, UserSchema::class, \Symfony\Component\Serializer\Encoder\JsonEncoder::FORMAT);
         $response = $handler->handle(
             $username,
         );
 
-        return new Response('');
+        return new \Symfony\Component\HttpFoundation\Response('');
     }
 }
 
 // $contentType = $request->headers->get('accept');
 // if ($contentType !== 'application/json') {
-// return new JsonResponse(
+// return new \Symfony\Component\HttpFoundation\JsonResponse(
 // [
 // 'code' => 'not_acceptable_format',
 // 'message' => "The value '$contentType' received in accept header is not an acceptable format.",
 // ],
-// Response::HTTP_NOT_ACCEPTABLE,
+// \Symfony\Component\HttpFoundation\Response::HTTP_NOT_ACCEPTABLE,
 // );
 // }

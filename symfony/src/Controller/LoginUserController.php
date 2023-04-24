@@ -2,19 +2,14 @@
 
 namespace App\Controller;
 
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
-
-class LoginUserController extends AbstractController
+class LoginUserController extends \Symfony\Bundle\FrameworkBundle\Controller\AbstractController
 {
-    #[Route(path: '/user/login', methods: ['get'])]
+    #[\Symfony\Component\Routing\Annotation\Route(path: '/user/login', methods: ['get'])]
     public function handle(
-        Request $request,
+        \Symfony\Component\HttpFoundation\Request $request,
+        \Symfony\Component\Serializer\SerializerInterface $serializer,
         LoginUserHandler $handler,
-    ): Response {
+    ): \Symfony\Component\HttpFoundation\Response {
         $username = $request->query->get('username');
         $password = $request->query->get('password');
         $response = $handler->handle(
@@ -22,17 +17,17 @@ class LoginUserController extends AbstractController
             $password,
         );
 
-        return new Response('');
+        return new \Symfony\Component\HttpFoundation\Response('');
     }
 }
 
 // $contentType = $request->headers->get('accept');
 // if ($contentType !== 'application/json') {
-// return new JsonResponse(
+// return new \Symfony\Component\HttpFoundation\JsonResponse(
 // [
 // 'code' => 'not_acceptable_format',
 // 'message' => "The value '$contentType' received in accept header is not an acceptable format.",
 // ],
-// Response::HTTP_NOT_ACCEPTABLE,
+// \Symfony\Component\HttpFoundation\Response::HTTP_NOT_ACCEPTABLE,
 // );
 // }
