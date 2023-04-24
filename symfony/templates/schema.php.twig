@@ -8,16 +8,20 @@ class {{ name }}Schema
     /**
     {%~ for name, property in schema.properties %}
     {%~ if property.type is defined and property.type is same as ('array') %}
-     * @param array<{{ property.items.type|toPhpType }}> ${{ name }},
+    {%~ if property.items.type is defined %}
+     * @param array<{{ property.items.type|toPhpType }}> ${{ name }}
+    {%~ else %}
+    {{ genSchema(spec, property.items['$ref']) }} * @param array<{{ property.items['$ref']|toSchemaClassName }}> ${{ name }},
+    {%~ endif %}
     {%~ endif %}
     {%~ endfor %}
     */
     public function __construct(
         {%~ for name, property in schema.properties %}
         {%~ if property.type is defined %}
-        {{ property.type|toPhpType }} ${{ name }},
+        public readonly {{ property.type|toPhpType }} ${{ name }},
         {%~ else %}
-        {{ genSchema(spec, property['$ref']) }}{{ property['$ref']|toSchemaClassName }} ${{ name }},
+        public readonly {{ genSchema(spec, property['$ref']) }}{{ property['$ref']|toSchemaClassName }} ${{ name }},
         {%~ endif %}
         {%~ endfor %}
     ) {

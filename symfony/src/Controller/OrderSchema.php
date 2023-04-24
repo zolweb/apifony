@@ -4,13 +4,15 @@ namespace App\Controller;
 
 class OrderSchema
 {
+    /**
+    */
     public function __construct(
-        int $id,
-        int $petId,
-        int $quantity,
-        string $shipDate,
-        string $status,
-        bool $complete,
+        public readonly int $id,
+        public readonly int $petId,
+        public readonly int $quantity,
+        public readonly string $shipDate,
+        public readonly string $status,
+        public readonly bool $complete,
     ) {
     }
 }
