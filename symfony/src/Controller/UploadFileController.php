@@ -54,11 +54,7 @@ class UploadFileController extends AbstractController
                 iterator_to_array($violations),
             );
         }
-        if (count($violations) > 0) {
-            $errors = [];
-            foreach ($violations as $violation) {
-                $errors[$violation->getPropertyPath()][] = $violation->getMessage();
-            }
+        if (count($errors) > 0) {
             return new JsonResponse(
                 [
                     'code' => 'validation_failed',

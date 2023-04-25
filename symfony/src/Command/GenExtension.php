@@ -21,7 +21,6 @@ class GenExtension extends AbstractExtension
             new TwigFilter('toControllerClassName', [$this, 'toControllerClassName']),
             new TwigFilter('toHandlerClassName', [$this, 'toHandlerClassName']),
             new TwigFilter('toPhpType', [$this, 'toPhpType']),
-            new TwigFilter('toSchemaClassName', [$this, 'toSchemaClassName']),
         ];
     }
 
@@ -32,7 +31,8 @@ class GenExtension extends AbstractExtension
             new TwigFunction('toRouteRequirement', [$this, 'toRouteRequirement']),
             new TwigFunction('getOperationParams', [$this, 'getOperationParams']),
             new TwigFunction('getParamConstraints', [$this, 'getParamConstraints']),
-            new TwigFunction('genSchema', [$this, 'genSchema']),
+            new TwigFunction('genObjectSchema', [$this, 'genObjectSchema']),
+            new TwigFunction('toObjectSchemaClassName', [$this, 'toObjectSchemaClassName']),
             new TwigFunction('resolveRef', [$this, 'resolveRef']),
         ];
     }
@@ -106,14 +106,22 @@ class GenExtension extends AbstractExtension
         );
     }
 
-    public function genSchema(array $spec, string $ref): void
+    public function genObjectSchema(array $spec, array $schema, string $name): void
     {
-        [,,, $name] = explode('/', $ref);
-        $component = $spec['components']['schemas'][$name];
-        if ($component['type'] === 'object') {
-            $template = $this->twig->render('schema.php.twig', ['spec' => $spec, 'name' => $name]);
-            file_put_contents(__DIR__.'/../Controller/'.$name.'Schema.php', $template);
+        $schema = $this->resolveRef($spec, $schema);
+
+        $template = $this->twig->render('schema.php.twig', ['spec' => $spec, 'schema' => $schema, 'name' => $name]);
+        file_put_contents(__DIR__.'/../Controller/'.$name.'.php', $template);
+    }
+
+    public function toObjectSchemaClassName(array $schema, string $default): string
+    {
+        if (isset($schema['$ref'])) {
+            [,,, $name] = explode('/', $schema['$ref']);
+            return "{$name}Schema";
         }
+
+        return $default;
     }
 
     public function getParamConstraints(array $spec, array $param): array

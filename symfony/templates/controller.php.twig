@@ -69,16 +69,20 @@ class {{ operation.operationId|toControllerClassName }} extends AbstractControll
             );
         }
         $content = $request->getContent();
-            {%~ if requestBody.schema['$ref'] is defined %}
-        {{ genSchema(spec, requestBody.schema['$ref']) }}$dto = $serializer->deserialize($content, {{ requestBody.schema['$ref']|toSchemaClassName }}::class, JsonEncoder::FORMAT);
-            {%~ endif %}
-        $violations = $validator->validate($dto);
+        {%~ if resolveRef(spec, requestBody.schema).type is same as ('object') %}
+        {{ genObjectSchema(spec, requestBody.schema, toObjectSchemaClassName(requestBody.schema, operation.operationId ~ 'RequestPayload')) }}
+        $dto = $serializer->deserialize($content, {{ toObjectSchemaClassName(requestBody.schema, operation.operationId ~ 'RequestPayload') }}::class, JsonEncoder::FORMAT);
+        {%~ else %}
+        // TODO
         {%~ endif %}
+        $violations = $validator->validate($dto);
         if (count($violations) > 0) {
-            $errors = [];
             foreach ($violations as $violation) {
-                $errors[$violation->getPropertyPath()][] = $violation->getMessage();
+                $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
             }
+        }
+        {%~ endif %}
+        if (count($errors) > 0) {
             return new JsonResponse(
                 [
                     'code' => 'validation_failed',

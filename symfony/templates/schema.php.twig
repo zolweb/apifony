@@ -4,23 +4,22 @@ namespace App\Controller;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-{% set schema = spec.components.schemas[name] %}
-class {{ name }}Schema
+class {{ name }}
 {
     /**
-    {%~ for name, property in schema.properties %}
+    {%~ for propertyName, property in schema.properties %}
         {%~ if property.type is defined and property.type is same as ('array') %}
             {%~ if property.items.type is defined %}
-     * @param {{ name in (schema.required ?? []) ? '' : '?' }}array<{{ property.items.type|toPhpType }}> ${{ name }}
+     * @param {{ propertyName in (schema.required ?? []) ? '' : '?' }}array<{{ property.items.type|toPhpType }}> ${{ propertyName }}
             {%~ else %}
-    {{ genSchema(spec, property.items['$ref']) }} * @param {{ name in (schema.required ?? []) ? '' : '?' }}array<{{ property.items['$ref']|toSchemaClassName }}> ${{ name }},
+    {{ genObjectSchema(spec, property.items, toObjectSchemaClassName(property.items, '{{ propertyName }}{{ name }}')) }} * @param {{ propertyName in (schema.required ?? []) ? '' : '?' }}array<{{ toObjectSchemaClassName(property.items, '{{ propertyName }}{{ name }}') }}> ${{ propertyName }},
             {%~ endif %}
         {%~ endif %}
     {%~ endfor %}
     */
     public function __construct(
-        {%~ for name, property in schema.properties %}
-            {%~ if name in (schema.required ?? []) %}
+        {%~ for propertyName, property in schema.properties %}
+            {%~ if propertyName in (schema.required ?? []) %}
         #[Assert\NotNull]
             {%~ endif %}
             {%~ if property.enum is defined %}
@@ -30,10 +29,10 @@ class {{ name }}Schema
                 {%~ if property.type is same as ('array') and (property.items.type is not defined or property.items.type is same as ('object')) %}
         #[Assert\Valid]
                 {%~ endif %}
-        public readonly {{ name in (schema.required ?? []) ? '' : '?' }}{{ property.type|toPhpType }} ${{ name }}{{ name in (schema.required ?? []) ? '' : ' = null' }},
+        public readonly {{ propertyName in (schema.required ?? []) ? '' : '?' }}{{ property.type|toPhpType }} ${{ propertyName }}{{ propertyName in (schema.required ?? []) ? '' : ' = null' }},
             {%~ else %}
         #[Assert\Valid]
-        public readonly {{ name in (schema.required ?? []) ? '' : '?' }}{{ genSchema(spec, property['$ref']) }}{{ property['$ref']|toSchemaClassName }} ${{ name }}{{ name in (schema.required ?? []) ? '' : ' = null' }},
+        public readonly {{ propertyName in (schema.required ?? []) ? '' : '?' }}{{ genObjectSchema(spec, property, toObjectSchemaClassName(property, '{{ propertyName }}{{ name }}')) }}{{ toObjectSchemaClassName(property, '{{ propertyName }}{{ name }}') }} ${{ propertyName }}{{ propertyName in (schema.required ?? []) ? '' : ' = null' }},
             {%~ endif %}
         {%~ endfor %}
     ) {

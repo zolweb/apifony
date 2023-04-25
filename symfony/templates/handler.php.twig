@@ -9,8 +9,8 @@ interface {{ operation.operationId|toHandlerClassName }}
         {%~ for parameter in getOperationParams(spec, route, method) %}
         {{ toPhpParam(spec, parameter) }}
         {%~ endfor %}
-        {%~ if operation.requestBody.content['application/json'].schema['$ref'] is defined %}
-        {{ operation.requestBody.content['application/json'].schema['$ref']|toSchemaClassName }} $dto,
+        {%~ if operation.requestBody.content['application/json'] is defined %}
+        {{ toObjectSchemaClassName(operation.requestBody.content['application/json'].schema, operation.operationId ~ 'RequestPayload') }} $dto,
         {%~ endif %}
     );
 }

@@ -39,13 +39,15 @@ class CreateUserController extends AbstractController
             );
         }
         $content = $request->getContent();
+        
         $dto = $serializer->deserialize($content, UserSchema::class, JsonEncoder::FORMAT);
         $violations = $validator->validate($dto);
         if (count($violations) > 0) {
-            $errors = [];
             foreach ($violations as $violation) {
-                $errors[$violation->getPropertyPath()][] = $violation->getMessage();
+                $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
             }
+        }
+        if (count($errors) > 0) {
             return new JsonResponse(
                 [
                     'code' => 'validation_failed',
