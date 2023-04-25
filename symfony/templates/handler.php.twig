@@ -11,5 +11,5 @@ interface {{ operation.operationId|toHandlerClassName }}
         {%~ if operation.requestBody.content['application/json'] is defined %}
         {{ toObjectSchemaClassName(operation.requestBody.content['application/json'].schema, operation.operationId|toRequestPayloadClassName) }} $dto,
         {%~ endif %}
-    ): {{ genResponses(spec, operation) }}void
-}}
+    ): {{ genResponses(spec, operation) }}void;
+}

@@ -68,7 +68,7 @@ class DeletePetController extends AbstractController
             $petId,
         );
         return new Response('');
-    %}
+    }
 }
 
 // $contentType = $request->headers->get('accept');

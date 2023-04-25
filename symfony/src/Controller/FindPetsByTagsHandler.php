@@ -6,5 +6,5 @@ interface FindPetsByTagsHandler
 {
     public function handle(
         ?array $tags,
-    ): void
-}}
+    ): void;
+}

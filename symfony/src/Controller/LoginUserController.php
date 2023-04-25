@@ -67,7 +67,7 @@ class LoginUserController extends AbstractController
             $password,
         );
         return new Response('');
-    %}
+    }
 }
 
 // $contentType = $request->headers->get('accept');

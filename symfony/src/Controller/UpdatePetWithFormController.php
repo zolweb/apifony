@@ -82,7 +82,7 @@ class UpdatePetWithFormController extends AbstractController
             $status,
         );
         return new Response('');
-    %}
+    }
 }
 
 // $contentType = $request->headers->get('accept');

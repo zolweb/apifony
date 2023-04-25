@@ -6,5 +6,5 @@ interface UpdatePetHandler
 {
     public function handle(
         PetSchema $dto,
-    ): void
-}}
+    ): void;
+}

@@ -6,5 +6,5 @@ interface GetUserByNameHandler
 {
     public function handle(
         string $username,
-    ): void
-}}
+    ): void;
+}

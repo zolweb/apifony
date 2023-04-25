@@ -146,7 +146,7 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
             $param6,
         );
         return new Response('');
-    %}
+    }
 }
 
 // $contentType = $request->headers->get('accept');

@@ -100,7 +100,7 @@ class {{ operation.operationId|toControllerClassName }} extends AbstractControll
 {%~ endif %}
         );
         return new Response('');
-    %}
+    }
 }
 
 // $contentType = $request->headers->get('accept');

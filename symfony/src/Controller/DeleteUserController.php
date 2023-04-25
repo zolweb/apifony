@@ -56,7 +56,7 @@ class DeleteUserController extends AbstractController
             $username,
         );
         return new Response('');
-    %}
+    }
 }
 
 // $contentType = $request->headers->get('accept');

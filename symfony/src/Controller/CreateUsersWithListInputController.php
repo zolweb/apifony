@@ -54,7 +54,7 @@ class CreateUsersWithListInputController extends AbstractController
             $dto,
         );
         return new Response('');
-    %}
+    }
 }
 
 // $contentType = $request->headers->get('accept');

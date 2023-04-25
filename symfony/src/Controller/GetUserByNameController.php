@@ -56,7 +56,7 @@ class GetUserByNameController extends AbstractController
             $username,
         );
         return new Response('');
-    %}
+    }
 }
 
 // $contentType = $request->headers->get('accept');

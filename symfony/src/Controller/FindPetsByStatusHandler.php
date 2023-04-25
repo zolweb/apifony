@@ -6,5 +6,5 @@ interface FindPetsByStatusHandler
 {
     public function handle(
         ?string $status,
-    ): void
-}}
+    ): void;
+}

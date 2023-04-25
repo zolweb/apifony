@@ -159,7 +159,7 @@ class GetClientController extends AbstractController
             $dto,
         );
         return new Response('');
-    %}
+    }
 }
 
 // $contentType = $request->headers->get('accept');
