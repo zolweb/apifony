@@ -8,5 +8,5 @@ interface UpdatePetWithFormHandler
         int $petId,
         ?string $name,
         ?string $status,
-    );
-}
+    ): void
+}}

@@ -54,7 +54,7 @@ class FindPetsByStatusController extends AbstractController
             $status,
         );
         return new Response('');
-    }
+    %}
 }
 
 // $contentType = $request->headers->get('accept');

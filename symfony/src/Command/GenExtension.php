@@ -33,6 +33,7 @@ class GenExtension extends AbstractExtension
             new TwigFunction('getOperationParams', [$this, 'getOperationParams']),
             new TwigFunction('getParamConstraints', [$this, 'getParamConstraints']),
             new TwigFunction('genObjectSchema', [$this, 'genObjectSchema']),
+            new TwigFunction('genResponses', [$this, 'genResponses']),
             new TwigFunction('toObjectSchemaClassName', [$this, 'toObjectSchemaClassName']),
             new TwigFunction('resolveRef', [$this, 'resolveRef']),
         ];
@@ -118,6 +119,23 @@ class GenExtension extends AbstractExtension
 
         $template = $this->twig->render('schema.php.twig', ['spec' => $spec, 'schema' => $schema, 'name' => $name]);
         file_put_contents(__DIR__.'/../Controller/'.$name.'.php', $template);
+    }
+
+    public function genResponses(array $spec, array $operation): void
+    {
+        foreach ($operation['responses'] ?? [] as $code => $response) {
+            $response = $this->resolveRef($spec, $response);
+            foreach ($response['content'] ?? ['Empty' => []] as $type => $content) {
+                $responseName = $this->toResponseName($operation['operationId'], $code, $type);
+                $template = $this->twig->render('response.php.twig', ['spec' => $spec, 'className' => $responseName, 'content' => $content]);
+                file_put_contents(__DIR__ . '/../Controller/' . $responseName . '.php', $template);
+            }
+        }
+    }
+
+    public function toResponseName(string $operationId, string $code, string $type): string
+    {
+        return u($operationId)->camel()->title().$code.u($type)->camel()->title().'Response';
     }
 
     public function toObjectSchemaClassName(array $schema, string $default): string

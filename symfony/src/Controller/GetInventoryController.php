@@ -41,7 +41,7 @@ class GetInventoryController extends AbstractController
         $handler->handle(
         );
         return new Response('');
-    }
+    %}
 }
 
 // $contentType = $request->headers->get('accept');

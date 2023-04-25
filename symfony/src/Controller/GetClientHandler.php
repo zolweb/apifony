@@ -13,5 +13,5 @@ interface GetClientHandler
         bool $param5,
         array $param6,
         GetClientRequestPayload $dto,
-    );
-}
+    ): void
+}}

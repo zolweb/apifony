@@ -71,15 +71,15 @@ class {{ operation.operationId|toControllerClassName }} extends AbstractControll
     {%~ if resolveRef(spec, requestBody.schema).type is same as ('object') %}
         {{ genObjectSchema(spec, requestBody.schema, toObjectSchemaClassName(requestBody.schema, operation.operationId ~ 'RequestPayload')) }}
         $dto = $serializer->deserialize($content, {{ toObjectSchemaClassName(requestBody.schema, operation.operationId ~ 'RequestPayload') }}::class, JsonEncoder::FORMAT);
-    {%~ else %}
-        // TODO
-    {%~ endif %}
         $violations = $validator->validate($dto);
         if (count($violations) > 0) {
             foreach ($violations as $violation) {
                 $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
             }
         }
+    {%~ else %}
+        // TODO
+    {%~ endif %}
 {%~ endif %}
         if (count($errors) > 0) {
             return new JsonResponse(
@@ -100,7 +100,7 @@ class {{ operation.operationId|toControllerClassName }} extends AbstractControll
 {%~ endif %}
         );
         return new Response('');
-    }
+    %}
 }
 
 // $contentType = $request->headers->get('accept');

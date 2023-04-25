@@ -41,7 +41,7 @@ class LogoutUserController extends AbstractController
         $handler->handle(
         );
         return new Response('');
-    }
+    %}
 }
 
 // $contentType = $request->headers->get('accept');

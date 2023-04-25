@@ -54,7 +54,7 @@ class FindPetsByTagsController extends AbstractController
             $tags,
         );
         return new Response('');
-    }
+    %}
 }
 
 // $contentType = $request->headers->get('accept');

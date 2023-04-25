@@ -138,12 +138,6 @@ class GetClientController extends AbstractController
         }
         $content = $request->getContent();
         // TODO
-        $violations = $validator->validate($dto);
-        if (count($violations) > 0) {
-            foreach ($violations as $violation) {
-                $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
-            }
-        }
         if (count($errors) > 0) {
             return new JsonResponse(
                 [
@@ -165,7 +159,7 @@ class GetClientController extends AbstractController
             $dto,
         );
         return new Response('');
-    }
+    %}
 }
 
 // $contentType = $request->headers->get('accept');
