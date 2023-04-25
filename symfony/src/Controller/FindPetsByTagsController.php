@@ -13,7 +13,12 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class FindPetsByTagsController extends AbstractController
 {
-    #[Route(path: '/pet/findByTags', methods: ['get'])]
+    #[Route(
+        path: '/pet/findByTags',
+        requirements: [
+        ],
+        methods: ['get'],
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,

@@ -13,7 +13,12 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class LogoutUserController extends AbstractController
 {
-    #[Route(path: '/user/logout', methods: ['get'])]
+    #[Route(
+        path: '/user/logout',
+        requirements: [
+        ],
+        methods: ['get'],
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,

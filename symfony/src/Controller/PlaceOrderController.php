@@ -13,7 +13,12 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class PlaceOrderController extends AbstractController
 {
-    #[Route(path: '/store/order', methods: ['post'])]
+    #[Route(
+        path: '/store/order',
+        requirements: [
+        ],
+        methods: ['post'],
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,

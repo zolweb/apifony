@@ -14,7 +14,15 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 {% set operation = spec.paths[route][method] %}
 class {{ operation.operationId|toControllerClassName }} extends AbstractController
 {
-    #[Route(path: '{{ route }}', methods: ['{{ method }}'])]
+    #[Route(
+        path: '{{ route }}',
+        requirements: [
+            {%~ for parameter in getOperationParams(spec, route, method, ['path']) %}
+            {{ toRouteRequirement(spec, parameter)|raw }}
+            {%~ endfor %}
+        ],
+        methods: ['{{ method }}'],
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,

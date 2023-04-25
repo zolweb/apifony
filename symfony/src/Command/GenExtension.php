@@ -29,6 +29,7 @@ class GenExtension extends AbstractExtension
     {
         return [
             new TwigFunction('toPhpParam', [$this, 'toPhpParam']),
+            new TwigFunction('toRouteRequirement', [$this, 'toRouteRequirement']),
             new TwigFunction('getOperationParams', [$this, 'getOperationParams']),
             new TwigFunction('genSchema', [$this, 'genSchema']),
             new TwigFunction('resolveRef', [$this, 'resolveRef']),
@@ -72,6 +73,24 @@ class GenExtension extends AbstractExtension
             ($param['required'] ?? false) ? '' : '?',
             isset($param['schema']['type']) ? $this->toPhpType($param['schema']['type']) : 'mixed',
             $param['name'],
+        );
+    }
+
+    public function toRouteRequirement(array $spec, array $param): string
+    {
+        $param = $this->resolveRef($spec, $param);
+
+        return sprintf(
+            '\'%s\' => \'%s\',',
+            $param['name'],
+            match ($param['schema']['type'] ?? 'mixed') {
+                'string' => '.+',
+                'number' => '\d+',
+                'integer' => '\d+',
+                'boolean' => 'true|false',
+                'array' => '.+',
+                'mixed' => '.+',
+            }
         );
     }
 

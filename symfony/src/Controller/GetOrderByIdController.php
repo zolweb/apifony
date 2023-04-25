@@ -13,7 +13,13 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class GetOrderByIdController extends AbstractController
 {
-    #[Route(path: '/store/order/{orderId}', methods: ['get'])]
+    #[Route(
+        path: '/store/order/{orderId}',
+        requirements: [
+            'orderId' => '\d+',
+        ],
+        methods: ['get'],
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,

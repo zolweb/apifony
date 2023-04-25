@@ -13,7 +13,13 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class DeleteOrderController extends AbstractController
 {
-    #[Route(path: '/store/order/{orderId}', methods: ['delete'])]
+    #[Route(
+        path: '/store/order/{orderId}',
+        requirements: [
+            'orderId' => '\d+',
+        ],
+        methods: ['delete'],
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,

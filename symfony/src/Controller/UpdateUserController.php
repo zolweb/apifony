@@ -13,7 +13,13 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UpdateUserController extends AbstractController
 {
-    #[Route(path: '/user/{username}', methods: ['put'])]
+    #[Route(
+        path: '/user/{username}',
+        requirements: [
+            'username' => '.+',
+        ],
+        methods: ['put'],
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,

@@ -13,7 +13,13 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class DeleteUserController extends AbstractController
 {
-    #[Route(path: '/user/{username}', methods: ['delete'])]
+    #[Route(
+        path: '/user/{username}',
+        requirements: [
+            'username' => '.+',
+        ],
+        methods: ['delete'],
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,

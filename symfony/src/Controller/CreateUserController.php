@@ -13,7 +13,12 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CreateUserController extends AbstractController
 {
-    #[Route(path: '/user', methods: ['post'])]
+    #[Route(
+        path: '/user',
+        requirements: [
+        ],
+        methods: ['post'],
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,

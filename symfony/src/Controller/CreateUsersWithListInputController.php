@@ -13,7 +13,12 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CreateUsersWithListInputController extends AbstractController
 {
-    #[Route(path: '/user/createWithList', methods: ['post'])]
+    #[Route(
+        path: '/user/createWithList',
+        requirements: [
+        ],
+        methods: ['post'],
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,

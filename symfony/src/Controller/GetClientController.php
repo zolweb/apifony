@@ -13,7 +13,19 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class GetClientController extends AbstractController
 {
-    #[Route(path: '/client/{param1}/{param2}/{param3}/{param4}/{param5}/{param6}', methods: ['get'])]
+    #[Route(
+        path: '/client/{clientId}/{param1}/{param2}/{param3}/{param4}/{param5}/{param6}',
+        requirements: [
+            'clientId' => '.+',
+            'param1' => '.+',
+            'param2' => '.+',
+            'param3' => '\d+',
+            'param4' => '\d+',
+            'param5' => 'true|false',
+            'param6' => '.+',
+        ],
+        methods: ['get'],
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,

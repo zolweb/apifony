@@ -13,7 +13,12 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class GetInventoryController extends AbstractController
 {
-    #[Route(path: '/store/inventory', methods: ['get'])]
+    #[Route(
+        path: '/store/inventory',
+        requirements: [
+        ],
+        methods: ['get'],
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,

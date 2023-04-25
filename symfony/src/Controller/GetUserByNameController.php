@@ -13,7 +13,13 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class GetUserByNameController extends AbstractController
 {
-    #[Route(path: '/user/{username}', methods: ['get'])]
+    #[Route(
+        path: '/user/{username}',
+        requirements: [
+            'username' => '.+',
+        ],
+        methods: ['get'],
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,

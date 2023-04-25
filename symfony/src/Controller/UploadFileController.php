@@ -13,7 +13,13 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UploadFileController extends AbstractController
 {
-    #[Route(path: '/pet/{petId}/uploadImage', methods: ['post'])]
+    #[Route(
+        path: '/pet/{petId}/uploadImage',
+        requirements: [
+            'petId' => '\d+',
+        ],
+        methods: ['post'],
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,

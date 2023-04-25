@@ -13,7 +13,13 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UpdatePetWithFormController extends AbstractController
 {
-    #[Route(path: '/pet/{petId}', methods: ['post'])]
+    #[Route(
+        path: '/pet/{petId}',
+        requirements: [
+            'petId' => '\d+',
+        ],
+        methods: ['post'],
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,

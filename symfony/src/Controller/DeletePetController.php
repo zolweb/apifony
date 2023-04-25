@@ -13,7 +13,13 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class DeletePetController extends AbstractController
 {
-    #[Route(path: '/pet/{petId}', methods: ['delete'])]
+    #[Route(
+        path: '/pet/{petId}',
+        requirements: [
+            'petId' => '\d+',
+        ],
+        methods: ['delete'],
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,
