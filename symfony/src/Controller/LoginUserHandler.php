@@ -7,5 +7,5 @@ interface LoginUserHandler
     public function handle(
         ?string $username,
         ?string $password,
-    ): void;
+    ): LoginUser200ApplicationJsonResponse|LoginUser400EmptyResponse;
 }

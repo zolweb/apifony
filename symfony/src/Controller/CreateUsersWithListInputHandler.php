@@ -6,5 +6,5 @@ interface CreateUsersWithListInputHandler
 {
     public function handle(
         CreateUsersWithListInputRequestPayload $dto,
-    ): void;
+    ): CreateUsersWithListInput100EmptyResponse|CreateUsersWithListInput200ApplicationJsonResponse;
 }

@@ -2,6 +2,16 @@
 
 namespace App\Controller;
 
-class FindPetsByTags400EmptyResponse
+use Symfony\Component\HttpFoundation\Response;
+
+class FindPetsByTags400EmptyResponse extends Response
 {
+    public function __construct(
+    ) {
+        parent::__construct(
+            '',
+            400,
+            [],
+        );
+    }
 }

@@ -7,5 +7,5 @@ interface DeletePetHandler
     public function handle(
         ?string $api_key,
         int $petId,
-    ): void;
+    ): DeletePet400EmptyResponse;
 }

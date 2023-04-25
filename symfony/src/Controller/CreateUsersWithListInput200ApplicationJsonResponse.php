@@ -2,6 +2,17 @@
 
 namespace App\Controller;
 
-class CreateUsersWithListInput200ApplicationJsonResponse
+use Symfony\Component\HttpFoundation\Response;
+
+class CreateUsersWithListInput200ApplicationJsonResponse extends Response
 {
+    public function __construct(
+        CreateUsersWithListInput200ApplicationJsonResponsePayload $payload,
+    ) {
+        parent::__construct(
+            '',
+            200,
+            [],
+        );
+    }
 }

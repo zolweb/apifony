@@ -6,5 +6,5 @@ interface GetUserByNameHandler
 {
     public function handle(
         string $username,
-    ): void;
+    ): GetUserByName200ApplicationJsonResponse|GetUserByName200ApplicationXmlResponse|GetUserByName400EmptyResponse|GetUserByName404EmptyResponse;
 }

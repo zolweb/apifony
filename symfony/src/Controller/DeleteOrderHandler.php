@@ -6,5 +6,5 @@ interface DeleteOrderHandler
 {
     public function handle(
         int $orderId,
-    ): void;
+    ): DeleteOrder400EmptyResponse|DeleteOrder404EmptyResponse;
 }

@@ -6,5 +6,5 @@ interface FindPetsByStatusHandler
 {
     public function handle(
         ?string $status,
-    ): void;
+    ): FindPetsByStatus200ApplicationJsonResponse|FindPetsByStatus400EmptyResponse;
 }

@@ -121,16 +121,19 @@ class GenExtension extends AbstractExtension
         file_put_contents(__DIR__.'/../Controller/'.$name.'.php', $template);
     }
 
-    public function genResponses(array $spec, array $operation): void
+    public function genResponses(array $spec, array $operation): string
     {
+        $responseNames = [];
         foreach ($operation['responses'] ?? [] as $code => $response) {
             $response = $this->resolveRef($spec, $response);
-            foreach ($response['content'] ?? ['Empty' => []] as $type => $content) {
-                $responseName = $this->toResponseName($operation['operationId'], $code, $type);
-                $template = $this->twig->render('response.php.twig', ['spec' => $spec, 'className' => $responseName, 'content' => $content]);
+            foreach ($response['content'] ?? ['empty' => []] as $type => $content) {
+                $responseNames[] = $responseName = $this->toResponseName($operation['operationId'], $code, $type);
+                $template = $this->twig->render('response.php.twig', ['spec' => $spec, 'code' => $code, 'className' => $responseName, 'type' => $type, 'content' => $content]);
                 file_put_contents(__DIR__ . '/../Controller/' . $responseName . '.php', $template);
             }
         }
+
+        return implode('|', $responseNames);
     }
 
     public function toResponseName(string $operationId, string $code, string $type): string

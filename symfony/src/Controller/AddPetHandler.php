@@ -6,5 +6,5 @@ interface AddPetHandler
 {
     public function handle(
         PetSchema $dto,
-    ): void;
+    ): AddPet200ApplicationJsonResponse|AddPet405EmptyResponse;
 }

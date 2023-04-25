@@ -2,6 +2,16 @@
 
 namespace App\Controller;
 
-class PlaceOrder405EmptyResponse
+use Symfony\Component\HttpFoundation\Response;
+
+class PlaceOrder405EmptyResponse extends Response
 {
+    public function __construct(
+    ) {
+        parent::__construct(
+            '',
+            405,
+            [],
+        );
+    }
 }

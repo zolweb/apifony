@@ -2,6 +2,16 @@
 
 namespace App\Controller;
 
-class GetUserByName400EmptyResponse
+use Symfony\Component\HttpFoundation\Response;
+
+class GetUserByName400EmptyResponse extends Response
 {
+    public function __construct(
+    ) {
+        parent::__construct(
+            '',
+            400,
+            [],
+        );
+    }
 }

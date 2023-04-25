@@ -21,7 +21,7 @@ class GenCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $spec = Yaml::parse(file_get_contents('https://stoplight.io/api/v1/projects/bfav-zol/zol-skeleton/nodes/zol-invoicing.yaml'));
+        $spec = Yaml::parse(file_get_contents(__DIR__.'/openapi.yaml'));
 
         var_dump($spec);
 

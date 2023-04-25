@@ -6,5 +6,5 @@ interface PlaceOrderHandler
 {
     public function handle(
         OrderSchema $dto,
-    ): void;
+    ): PlaceOrder200ApplicationJsonResponse|PlaceOrder405EmptyResponse;
 }

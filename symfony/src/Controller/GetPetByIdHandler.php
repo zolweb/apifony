@@ -6,5 +6,5 @@ interface GetPetByIdHandler
 {
     public function handle(
         int $petId,
-    ): void;
+    ): GetPetById200ApplicationJsonResponse|GetPetById400EmptyResponse|GetPetById404EmptyResponse;
 }

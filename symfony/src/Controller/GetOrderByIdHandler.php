@@ -6,5 +6,5 @@ interface GetOrderByIdHandler
 {
     public function handle(
         int $orderId,
-    ): void;
+    ): GetOrderById200ApplicationJsonResponse|GetOrderById400EmptyResponse|GetOrderById404EmptyResponse;
 }

@@ -2,6 +2,16 @@
 
 namespace App\Controller;
 
-class UpdatePet405EmptyResponse
+use Symfony\Component\HttpFoundation\Response;
+
+class UpdatePet405EmptyResponse extends Response
 {
+    public function __construct(
+    ) {
+        parent::__construct(
+            '',
+            405,
+            [],
+        );
+    }
 }

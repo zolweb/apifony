@@ -12,5 +12,5 @@ interface PostClientClientIdParam1Param2Param3Param4Param5Param6Handler
         int $param4,
         bool $param5,
         array $param6,
-    ): void;
+    ): PostClientClientIdParam1Param2Param3Param4Param5Param6200ApplicationJsonResponse|PostClientClientIdParam1Param2Param3Param4Param5Param6201ApplicationJsonResponse;
 }

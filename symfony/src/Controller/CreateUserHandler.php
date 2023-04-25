@@ -6,5 +6,5 @@ interface CreateUserHandler
 {
     public function handle(
         UserSchema $dto,
-    ): void;
+    ): CreateUser201ApplicationJsonResponse;
 }

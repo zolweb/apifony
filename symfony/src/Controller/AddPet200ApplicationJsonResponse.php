@@ -2,6 +2,17 @@
 
 namespace App\Controller;
 
-class AddPet200ApplicationJsonResponse
+use Symfony\Component\HttpFoundation\Response;
+
+class AddPet200ApplicationJsonResponse extends Response
 {
+    public function __construct(
+        AddPet200ApplicationJsonResponsePayload $payload,
+    ) {
+        parent::__construct(
+            '',
+            200,
+            [],
+        );
+    }
 }

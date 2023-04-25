@@ -6,5 +6,5 @@ interface FindPetsByTagsHandler
 {
     public function handle(
         ?array $tags,
-    ): void;
+    ): FindPetsByTags200ApplicationJsonResponse|FindPetsByTags400EmptyResponse;
 }

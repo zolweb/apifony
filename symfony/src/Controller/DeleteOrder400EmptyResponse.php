@@ -2,6 +2,16 @@
 
 namespace App\Controller;
 
-class DeleteOrder400EmptyResponse
+use Symfony\Component\HttpFoundation\Response;
+
+class DeleteOrder400EmptyResponse extends Response
 {
+    public function __construct(
+    ) {
+        parent::__construct(
+            '',
+            400,
+            [],
+        );
+    }
 }

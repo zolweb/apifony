@@ -5,5 +5,5 @@ namespace App\Controller;
 interface GetInventoryHandler
 {
     public function handle(
-    ): void;
+    ): GetInventory200ApplicationJsonResponse;
 }

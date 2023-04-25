@@ -7,5 +7,5 @@ interface UpdateUserHandler
     public function handle(
         string $username,
         UserSchema $dto,
-    ): void;
+    ): UpdateUser201EmptyResponse;
 }

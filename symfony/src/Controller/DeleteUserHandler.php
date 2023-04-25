@@ -6,5 +6,5 @@ interface DeleteUserHandler
 {
     public function handle(
         string $username,
-    ): void;
+    ): DeleteUser400EmptyResponse|DeleteUser404EmptyResponse;
 }
