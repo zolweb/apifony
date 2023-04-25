@@ -27,9 +27,9 @@ class GenCommand extends Command
 
         foreach ($spec['paths'] as $route => $path) {
             foreach (array_intersect_key($path, array_fill_keys(['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'], true)) as $method => $operation) {
-                $template = $this->twig->render('controller.php.twig', ['spec' => $spec, 'route' => $route, 'method' => $method]);
+                $template = $this->twig->render('controller.php.twig', ['spec' => $spec, 'operation' => $operation, 'route' => $route, 'method' => $method]);
                 file_put_contents(__DIR__.'/../Controller/'.u($operation['operationId'])->camel()->title().'Controller.php', $template);
-                $template = $this->twig->render('handler.php.twig', ['spec' => $spec, 'route' => $route, 'method' => $method]);
+                $template = $this->twig->render('handler.php.twig', ['spec' => $spec, 'operation' => $operation, 'route' => $route, 'method' => $method]);
                 file_put_contents(__DIR__.'/../Controller/'.u($operation['operationId'])->camel()->title().'Handler.php', $template);
             }
         }

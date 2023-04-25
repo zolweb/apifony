@@ -2,7 +2,6 @@
 
 namespace App\Controller;
 
-{% set operation = spec.paths[route][method] %}
 interface {{ operation.operationId|toHandlerClassName }}
 {
     public function handle(
