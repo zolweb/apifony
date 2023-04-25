@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class GetClientController extends AbstractController
+class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends AbstractController
 {
     #[Route(
         path: '/client/{clientId}/{param1}/{param2}/{param3}/{param4}/{param5}/{param6}',
@@ -26,13 +26,13 @@ class GetClientController extends AbstractController
             'param5' => 'true|false',
             'param6' => '.+',
         ],
-        methods: ['get'],
+        methods: ['post'],
     )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,
         ValidatorInterface $validator,
-        GetClientHandler $handler,
+        PostClientClientIdParam1Param2Param3Param4Param5Param6Handler $handler,
         string $clientId,
         mixed $param1,
         string $param2,
@@ -126,24 +126,6 @@ class GetClientController extends AbstractController
                 iterator_to_array($violations),
             );
         }
-        $contentType = $request->headers->get('content-type');
-        if ($contentType !== 'application/json') {
-            return new JsonResponse(
-                [
-                    'code' => 'unsupported_format',
-                    'message' => "The value '$contentType' received in content-type header is not a supported format.",
-                ],
-                Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-            );
-        }
-        $content = $request->getContent();
-        // TODO
-        $violations = $validator->validate($dto);
-        if (count($violations) > 0) {
-            foreach ($violations as $violation) {
-                $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
-            }
-        }
         if (count($errors) > 0) {
             return new JsonResponse(
                 [
@@ -162,7 +144,6 @@ class GetClientController extends AbstractController
             $param4,
             $param5,
             $param6,
-            $dto,
         );
         return new Response('');
     }

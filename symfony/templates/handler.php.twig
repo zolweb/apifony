@@ -9,7 +9,7 @@ interface {{ operation.operationId|toHandlerClassName }}
         {{ toPhpParam(spec, parameter) }}
         {%~ endfor %}
         {%~ if operation.requestBody.content['application/json'] is defined %}
-        {{ toObjectSchemaClassName(operation.requestBody.content['application/json'].schema, operation.operationId ~ 'RequestPayload') }} $dto,
+        {{ toObjectSchemaClassName(operation.requestBody.content['application/json'].schema, operation.operationId|toRequestPayloadClassName) }} $dto,
         {%~ endif %}
     );
 }

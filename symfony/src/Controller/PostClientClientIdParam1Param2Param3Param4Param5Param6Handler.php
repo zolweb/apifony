@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-interface GetClientHandler
+interface PostClientClientIdParam1Param2Param3Param4Param5Param6Handler
 {
     public function handle(
         string $clientId,
@@ -12,6 +12,5 @@ interface GetClientHandler
         int $param4,
         bool $param5,
         array $param6,
-        GetClientRequestPayload $dto,
     );
 }

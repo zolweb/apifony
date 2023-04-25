@@ -20,6 +20,7 @@ class GenExtension extends AbstractExtension
         return [
             new TwigFilter('toControllerClassName', [$this, 'toControllerClassName']),
             new TwigFilter('toHandlerClassName', [$this, 'toHandlerClassName']),
+            new TwigFilter('toRequestPayloadClassName', [$this, 'toRequestPayloadClassName']),
             new TwigFilter('toPhpType', [$this, 'toPhpType']),
         ];
     }
@@ -45,6 +46,11 @@ class GenExtension extends AbstractExtension
     public function toHandlerClassName(string $operationId): string
     {
         return u($operationId)->camel()->title().'Handler';
+    }
+
+    public function toRequestPayloadClassName(string $operationId): string
+    {
+        return u($operationId)->camel()->title().'RequestPayload';
     }
 
     public function toPhpType(string $type): string

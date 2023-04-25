@@ -18,9 +18,9 @@ class {{ operation.operationId|toControllerClassName }} extends AbstractControll
     #[Route(
         path: '{{ route }}',
         requirements: [
-            {%~ for parameter in getOperationParams(spec, route, method, ['path']) %}
+{%~ for parameter in getOperationParams(spec, route, method, ['path']) %}
             {{ toRouteRequirement(spec, parameter)|raw }}
-            {%~ endfor %}
+{%~ endfor %}
         ],
         methods: ['{{ method }}'],
     )]
@@ -29,22 +29,22 @@ class {{ operation.operationId|toControllerClassName }} extends AbstractControll
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         {{ operation.operationId|toHandlerClassName }} $handler,
-        {%~ for parameter in getOperationParams(spec, route, method, ['path']) %}
+{%~ for parameter in getOperationParams(spec, route, method, ['path']) %}
         {{ toPhpParam(spec, parameter) }}
-        {%~ endfor %}
+{%~ endfor %}
     ): Response {
-        {%~ for parameter in getOperationParams(spec, route, method, ['query']) %}
+{%~ for parameter in getOperationParams(spec, route, method, ['query']) %}
         ${{ parameter.name }} = $request->query->get('{{ parameter.name }}');
-        {%~ endfor %}
+{%~ endfor %}
         $errors = [];
-        {%~ for type in ['path', 'query', 'header', 'cookie'] %}
-            {%~ for parameter in getOperationParams(spec, route, method, [type]) %}
+{%~ for type in ['path', 'query', 'header', 'cookie'] %}
+    {%~ for parameter in getOperationParams(spec, route, method, [type]) %}
         $violations = $validator->validate(
             ${{ resolveRef(spec, parameter).name }},
             [
-                {%~ for constraint in getParamConstraints(spec, parameter) %}
+        {%~ for constraint in getParamConstraints(spec, parameter) %}
                 {{ constraint }}
-                {%~ endfor %}
+        {%~ endfor %}
             ]
         );
         if (count($violations) > 0) {
@@ -53,10 +53,10 @@ class {{ operation.operationId|toControllerClassName }} extends AbstractControll
                 iterator_to_array($violations),
             );
         }
-            {%~ endfor %}
-        {%~ endfor %}
-        {%~ if operation.requestBody.content['application/json'] is defined %}
-            {%~ set requestBody = operation.requestBody.content['application/json'] %}
+    {%~ endfor %}
+{%~ endfor %}
+{%~ if operation.requestBody.content['application/json'] is defined %}
+    {%~ set requestBody = operation.requestBody.content['application/json'] %}
         $contentType = $request->headers->get('content-type');
         if ($contentType !== 'application/json') {
             return new JsonResponse(
@@ -68,19 +68,19 @@ class {{ operation.operationId|toControllerClassName }} extends AbstractControll
             );
         }
         $content = $request->getContent();
-        {%~ if resolveRef(spec, requestBody.schema).type is same as ('object') %}
+    {%~ if resolveRef(spec, requestBody.schema).type is same as ('object') %}
         {{ genObjectSchema(spec, requestBody.schema, toObjectSchemaClassName(requestBody.schema, operation.operationId ~ 'RequestPayload')) }}
         $dto = $serializer->deserialize($content, {{ toObjectSchemaClassName(requestBody.schema, operation.operationId ~ 'RequestPayload') }}::class, JsonEncoder::FORMAT);
-        {%~ else %}
+    {%~ else %}
         // TODO
-        {%~ endif %}
+    {%~ endif %}
         $violations = $validator->validate($dto);
         if (count($violations) > 0) {
             foreach ($violations as $violation) {
                 $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
             }
         }
-        {%~ endif %}
+{%~ endif %}
         if (count($errors) > 0) {
             return new JsonResponse(
                 [
@@ -92,12 +92,12 @@ class {{ operation.operationId|toControllerClassName }} extends AbstractControll
             );
         }
         $handler->handle(
-        {%~ for parameter in getOperationParams(spec, route, method) %}
+{%~ for parameter in getOperationParams(spec, route, method) %}
             ${{ resolveRef(spec, parameter).name }},
-        {%~ endfor %}
-        {%~ if spec.paths[route][method].requestBody is defined %}
+{%~ endfor %}
+{%~ if spec.paths[route][method].requestBody is defined %}
             $dto,
-        {%~ endif %}
+{%~ endif %}
         );
         return new Response('');
     }
