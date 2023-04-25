@@ -23,6 +23,8 @@ class LoginUserController extends AbstractController
         $username = $request->query->get('username');
         $password = $request->query->get('password');
         $handler->handle(
+            $username,
+            $password,
         );
         return new Response('');
     }

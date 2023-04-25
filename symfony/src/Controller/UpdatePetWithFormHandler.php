@@ -6,5 +6,7 @@ interface UpdatePetWithFormHandler
 {
     public function handle(
         int $petId,
+        ?string $name,
+        ?string $status,
     );
 }

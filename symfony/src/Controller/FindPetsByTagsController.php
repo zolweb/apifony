@@ -22,6 +22,7 @@ class FindPetsByTagsController extends AbstractController
     ): Response {
         $tags = $request->query->get('tags');
         $handler->handle(
+            $tags,
         );
         return new Response('');
     }

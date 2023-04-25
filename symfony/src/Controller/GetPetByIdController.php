@@ -22,6 +22,7 @@ class GetPetByIdController extends AbstractController
         int $petId,
     ): Response {
         $handler->handle(
+            $petId,
         );
         return new Response('');
     }

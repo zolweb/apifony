@@ -22,6 +22,8 @@ class DeletePetController extends AbstractController
         int $petId,
     ): Response {
         $handler->handle(
+            $api_key,
+            $petId,
         );
         return new Response('');
     }

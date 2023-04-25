@@ -11,18 +11,30 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class DeleteUserController extends AbstractController
+class GetClientController extends AbstractController
 {
-    #[Route(path: '/user/{username}', methods: ['delete'])]
+    #[Route(path: '/client/{param1}/{param2}/{param3}/{param4}/{param5}/{param6}', methods: ['get'])]
     public function handle(
         Request $request,
         SerializerInterface $serializer,
         ValidatorInterface $validator,
-        DeleteUserHandler $handler,
-        string $username,
+        GetClientHandler $handler,
+        string $clientId,
+        mixed $param1,
+        string $param2,
+        float $param3,
+        int $param4,
+        bool $param5,
+        array $param6,
     ): Response {
         $handler->handle(
-            $username,
+            $clientId,
+            $param1,
+            $param2,
+            $param3,
+            $param4,
+            $param5,
+            $param6,
         );
         return new Response('');
     }

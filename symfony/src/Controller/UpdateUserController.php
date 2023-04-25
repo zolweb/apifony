@@ -51,6 +51,7 @@ class UpdateUserController extends AbstractController
             );
         }
         $handler->handle(
+            $username,
             $dto,
         );
         return new Response('');

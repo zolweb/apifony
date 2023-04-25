@@ -52,5 +52,5 @@ build-aws: clean-app build composer-install composer-dump yarn-install webpack-b
 
 gen:
 	rm -rf symfony/src/Controller/*
-	@$(RUNNER_DOCKER_EXEC) '$(symfony_console_path) gen'
+	@$(RUNNER_DOCKER_EXEC) '$(symfony_console_path) gen -vvv'
 	make cc

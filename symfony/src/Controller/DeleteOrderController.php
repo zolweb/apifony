@@ -22,6 +22,7 @@ class DeleteOrderController extends AbstractController
         int $orderId,
     ): Response {
         $handler->handle(
+            $orderId,
         );
         return new Response('');
     }

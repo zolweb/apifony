@@ -20,11 +20,11 @@ class {{ operation.operationId|toControllerClassName }} extends AbstractControll
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         {{ operation.operationId|toHandlerClassName }} $handler,
-        {%~ for parameter in getOperationParams(spec, route, method, 'path') %}
-        {{ parameter.schema.type|toPhpType }} ${{ parameter.name }},
+        {%~ for parameter in getOperationParams(spec, route, method, ['path']) %}
+        {{ toPhpParam(spec, parameter) }}
         {%~ endfor %}
     ): Response {
-        {%~ for parameter in getOperationParams(spec, route, method, 'query') %}
+        {%~ for parameter in getOperationParams(spec, route, method, ['query']) %}
         ${{ parameter.name }} = $request->query->get('{{ parameter.name }}');
         {%~ endfor %}
         {%~ if operation.requestBody.content['application/json'] is defined %}
@@ -63,7 +63,7 @@ class {{ operation.operationId|toControllerClassName }} extends AbstractControll
         {%~ endif %}
         $handler->handle(
         {%~ for parameter in getOperationParams(spec, route, method) %}
-            ${{ parameter.name }},
+            ${{ resolveRef(spec, parameter).name }},
         {%~ endfor %}
         {%~ if spec.paths[route][method].requestBody is defined %}
             $dto,

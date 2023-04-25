@@ -24,6 +24,9 @@ class UpdatePetWithFormController extends AbstractController
         $name = $request->query->get('name');
         $status = $request->query->get('status');
         $handler->handle(
+            $petId,
+            $name,
+            $status,
         );
         return new Response('');
     }

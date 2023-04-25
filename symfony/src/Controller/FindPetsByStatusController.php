@@ -22,6 +22,7 @@ class FindPetsByStatusController extends AbstractController
     ): Response {
         $status = $request->query->get('status');
         $handler->handle(
+            $status,
         );
         return new Response('');
     }

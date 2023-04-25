@@ -23,6 +23,9 @@ class UploadFileController extends AbstractController
     ): Response {
         $additionalMetadata = $request->query->get('additionalMetadata');
         $handler->handle(
+            $petId,
+            $additionalMetadata,
+            $dto,
         );
         return new Response('');
     }

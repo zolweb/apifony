@@ -22,6 +22,7 @@ class GetUserByNameController extends AbstractController
         string $username,
     ): Response {
         $handler->handle(
+            $username,
         );
         return new Response('');
     }
