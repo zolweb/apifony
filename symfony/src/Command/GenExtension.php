@@ -31,6 +31,7 @@ class GenExtension extends AbstractExtension
             new TwigFunction('toPhpParam', [$this, 'toPhpParam']),
             new TwigFunction('toRouteRequirement', [$this, 'toRouteRequirement']),
             new TwigFunction('getOperationParams', [$this, 'getOperationParams']),
+            new TwigFunction('getParamConstraints', [$this, 'getParamConstraints']),
             new TwigFunction('genSchema', [$this, 'genSchema']),
             new TwigFunction('resolveRef', [$this, 'resolveRef']),
         ];
@@ -113,6 +114,19 @@ class GenExtension extends AbstractExtension
             $template = $this->twig->render('schema.php.twig', ['spec' => $spec, 'name' => $name]);
             file_put_contents(__DIR__.'/../Controller/'.$name.'Schema.php', $template);
         }
+    }
+
+    public function getParamConstraints(array $spec, array $param): array
+    {
+        $param = $this->resolveRef($spec, $param);
+
+        $constraints = [];
+
+        if ($param['required'] ?? false) {
+            $constraints[] = 'new Assert\NotNull(),';
+        }
+
+        return $constraints;
     }
 
     public function resolveRef(array $spec, array $mixed): array

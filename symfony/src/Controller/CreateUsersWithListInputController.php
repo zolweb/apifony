@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class CreateUsersWithListInputController extends AbstractController
@@ -25,6 +27,7 @@ class CreateUsersWithListInputController extends AbstractController
         ValidatorInterface $validator,
         CreateUsersWithListInputHandler $handler,
     ): Response {
+        $errors = [];
         $contentType = $request->headers->get('content-type');
         if ($contentType !== 'application/json') {
             return new JsonResponse(
@@ -46,9 +49,7 @@ class CreateUsersWithListInputController extends AbstractController
                 [
                     'code' => 'validation_failed',
                     'message' => 'Validation has failed.',
-                    'errors' => [
-                        'body' => $errors,
-                    ],
+                    'errors' => $errors,
                 ],
                 Response::HTTP_BAD_REQUEST,
             );

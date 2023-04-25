@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class GetClientController extends AbstractController
@@ -39,6 +41,105 @@ class GetClientController extends AbstractController
         bool $param5,
         array $param6,
     ): Response {
+        $errors = [];
+        $violations = $validator->validate(
+            $clientId,
+            [
+                new Assert\NotNull(),
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['path']['clientId'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $validator->validate(
+            $param1,
+            [
+                new Assert\NotNull(),
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['path']['param1'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $validator->validate(
+            $param2,
+            [
+                new Assert\NotNull(),
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['path']['param2'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $validator->validate(
+            $param3,
+            [
+                new Assert\NotNull(),
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['path']['param3'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $validator->validate(
+            $param4,
+            [
+                new Assert\NotNull(),
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['path']['param4'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $validator->validate(
+            $param5,
+            [
+                new Assert\NotNull(),
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['path']['param5'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $validator->validate(
+            $param6,
+            [
+                new Assert\NotNull(),
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['path']['param6'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        if (count($violations) > 0) {
+            $errors = [];
+            foreach ($violations as $violation) {
+                $errors[$violation->getPropertyPath()][] = $violation->getMessage();
+            }
+            return new JsonResponse(
+                [
+                    'code' => 'validation_failed',
+                    'message' => 'Validation has failed.',
+                    'errors' => $errors,
+                ],
+                Response::HTTP_BAD_REQUEST,
+            );
+        }
         $handler->handle(
             $clientId,
             $param1,

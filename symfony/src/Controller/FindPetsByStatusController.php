@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class FindPetsByStatusController extends AbstractController
@@ -26,6 +28,32 @@ class FindPetsByStatusController extends AbstractController
         FindPetsByStatusHandler $handler,
     ): Response {
         $status = $request->query->get('status');
+        $errors = [];
+        $violations = $validator->validate(
+            $status,
+            [
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['query']['status'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        if (count($violations) > 0) {
+            $errors = [];
+            foreach ($violations as $violation) {
+                $errors[$violation->getPropertyPath()][] = $violation->getMessage();
+            }
+            return new JsonResponse(
+                [
+                    'code' => 'validation_failed',
+                    'message' => 'Validation has failed.',
+                    'errors' => $errors,
+                ],
+                Response::HTTP_BAD_REQUEST,
+            );
+        }
         $handler->handle(
             $status,
         );

@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class LoginUserController extends AbstractController
@@ -27,6 +29,43 @@ class LoginUserController extends AbstractController
     ): Response {
         $username = $request->query->get('username');
         $password = $request->query->get('password');
+        $errors = [];
+        $violations = $validator->validate(
+            $username,
+            [
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['query']['username'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $validator->validate(
+            $password,
+            [
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['query']['password'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        if (count($violations) > 0) {
+            $errors = [];
+            foreach ($violations as $violation) {
+                $errors[$violation->getPropertyPath()][] = $violation->getMessage();
+            }
+            return new JsonResponse(
+                [
+                    'code' => 'validation_failed',
+                    'message' => 'Validation has failed.',
+                    'errors' => $errors,
+                ],
+                Response::HTTP_BAD_REQUEST,
+            );
+        }
         $handler->handle(
             $username,
             $password,

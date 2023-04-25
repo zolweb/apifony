@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class GetPetByIdController extends AbstractController
@@ -27,6 +29,33 @@ class GetPetByIdController extends AbstractController
         GetPetByIdHandler $handler,
         int $petId,
     ): Response {
+        $errors = [];
+        $violations = $validator->validate(
+            $petId,
+            [
+                new Assert\NotNull(),
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['path']['petId'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        if (count($violations) > 0) {
+            $errors = [];
+            foreach ($violations as $violation) {
+                $errors[$violation->getPropertyPath()][] = $violation->getMessage();
+            }
+            return new JsonResponse(
+                [
+                    'code' => 'validation_failed',
+                    'message' => 'Validation has failed.',
+                    'errors' => $errors,
+                ],
+                Response::HTTP_BAD_REQUEST,
+            );
+        }
         $handler->handle(
             $petId,
         );

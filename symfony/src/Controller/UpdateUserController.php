@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UpdateUserController extends AbstractController
@@ -27,6 +29,19 @@ class UpdateUserController extends AbstractController
         UpdateUserHandler $handler,
         string $username,
     ): Response {
+        $errors = [];
+        $violations = $validator->validate(
+            $username,
+            [
+                new Assert\NotNull(),
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['path']['username'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
         $contentType = $request->headers->get('content-type');
         if ($contentType !== 'application/json') {
             return new JsonResponse(
@@ -49,9 +64,7 @@ class UpdateUserController extends AbstractController
                 [
                     'code' => 'validation_failed',
                     'message' => 'Validation has failed.',
-                    'errors' => [
-                        'body' => $errors,
-                    ],
+                    'errors' => $errors,
                 ],
                 Response::HTTP_BAD_REQUEST,
             );

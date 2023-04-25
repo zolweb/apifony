@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 {% set operation = spec.paths[route][method] %}
@@ -35,6 +37,25 @@ class {{ operation.operationId|toControllerClassName }} extends AbstractControll
         {%~ for parameter in getOperationParams(spec, route, method, ['query']) %}
         ${{ parameter.name }} = $request->query->get('{{ parameter.name }}');
         {%~ endfor %}
+        $errors = [];
+        {%~ for type in ['path', 'query', 'header', 'cookie'] %}
+            {%~ for parameter in getOperationParams(spec, route, method, [type]) %}
+        $violations = $validator->validate(
+            ${{ resolveRef(spec, parameter).name }},
+            [
+                {%~ for constraint in getParamConstraints(spec, parameter) %}
+                {{ constraint }}
+                {%~ endfor %}
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['{{ type }}']['{{ resolveRef(spec, parameter).name }}'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+            {%~ endfor %}
+        {%~ endfor %}
         {%~ if operation.requestBody.content['application/json'] is defined %}
             {%~ set requestBody = operation.requestBody.content['application/json'] %}
         $contentType = $request->headers->get('content-type');
@@ -52,6 +73,7 @@ class {{ operation.operationId|toControllerClassName }} extends AbstractControll
         {{ genSchema(spec, requestBody.schema['$ref']) }}$dto = $serializer->deserialize($content, {{ requestBody.schema['$ref']|toSchemaClassName }}::class, JsonEncoder::FORMAT);
             {%~ endif %}
         $violations = $validator->validate($dto);
+        {%~ endif %}
         if (count($violations) > 0) {
             $errors = [];
             foreach ($violations as $violation) {
@@ -61,14 +83,11 @@ class {{ operation.operationId|toControllerClassName }} extends AbstractControll
                 [
                     'code' => 'validation_failed',
                     'message' => 'Validation has failed.',
-                    'errors' => [
-                        'body' => $errors,
-                    ],
+                    'errors' => $errors,
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        {%~ endif %}
         $handler->handle(
         {%~ for parameter in getOperationParams(spec, route, method) %}
             ${{ resolveRef(spec, parameter).name }},
