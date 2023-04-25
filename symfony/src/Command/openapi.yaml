@@ -68,22 +68,47 @@ paths:
               properties: {}
     parameters:
       - $ref: '#/components/parameters/clientId'
-      - schema: {}
+      - schema:
+          format: format
+          default: default
+          enum:
+            - item
+            - item2
+          example: example
         name: param1
         in: path
         required: true
       - schema:
           type: string
-          format: time
-          pattern: ab
+          format: format
+          default: default
+          enum:
+            - item
+            - item1
+          example: example
+          pattern: a-Z
+          minLength: 1
+          maxLength: 10
         name: param2
         in: path
         required: true
+        style: matrix
       - schema:
           type: number
+          default: default
+          enum:
+            - 1
+            - 2
+          example: example
+          minimum: 1
+          exclusiveMinimum: true
+          exclusiveMaximum: true
+          maximum: 2
+          multipleOf: 1
         name: param3
         in: path
         required: true
+        style: matrix
       - schema:
           type: integer
         name: param4

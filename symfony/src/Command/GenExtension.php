@@ -161,6 +161,68 @@ class GenExtension extends AbstractExtension
             $constraints[] = 'new Assert\NotNull(),';
         }
 
+        if (isset($param['schema']['format'])) {
+            $formatName = u($param['schema']['format'])->camel()->title();
+            $constraintName = $formatName;
+            $validatorName = "{$formatName}Validator";
+            $validatorInterfaceName = "{$formatName}ValidatorInterface";
+            $template = $this->twig->render('constraint.php.twig', ['constraintName' => $constraintName]);
+            file_put_contents(__DIR__.'/../Controller/'.$constraintName.'.php', $template);
+            $template = $this->twig->render('validator.php.twig', ['validatorName' => $validatorName, 'validatorInterfaceName' => $validatorInterfaceName]);
+            file_put_contents(__DIR__.'/../Controller/'.$validatorName.'.php', $template);
+            $template = $this->twig->render('validator-interface.php.twig', ['validatorInterfaceName' => $validatorInterfaceName]);
+            file_put_contents(__DIR__.'/../Controller/'.$validatorInterfaceName.'.php', $template);
+
+            $constraints[] = sprintf(
+                'new %s(),',
+                $constraintName,
+            );
+        }
+
+        if (isset($param['schema']['pattern'])) {
+            $constraints[] = sprintf(
+                'new Assert\Regex(\'/%s/\'),',
+                $param['schema']['pattern'],
+            );
+        }
+
+        if (isset($param['schema']['minLength'])) {
+            $constraints[] = sprintf(
+                'new Assert\Length(min: %d),',
+                $param['schema']['minLength'],
+            );
+        }
+
+        if (isset($param['schema']['maxLength'])) {
+            $constraints[] = sprintf(
+                'new Assert\Length(max: %d),',
+                $param['schema']['maxLength'],
+            );
+        }
+
+        if (isset($param['schema']['minimum'])) {
+            $constraints[] = sprintf(
+                'new Assert\%s(%d),',
+                $param['schema']['exclusiveMinimum'] ?? false ? 'GreaterThan' : 'GreaterThanOrEqual',
+                $param['schema']['minimum'],
+            );
+        }
+
+        if (isset($param['schema']['maximum'])) {
+            $constraints[] = sprintf(
+                'new Assert\%s(%d),',
+                    $param['schema']['exclusiveMaximum'] ?? false ? 'LessThan' : 'LessThanOrEqual',
+                $param['schema']['maximum'],
+            );
+        }
+
+        if (isset($param['schema']['enum'])) {
+            $constraints[] = sprintf(
+                'new Assert\Choice([\'%s\']),',
+                implode('\', \'', $param['schema']['enum']),
+            );
+        }
+
         return $constraints;
     }
 

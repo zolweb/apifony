@@ -58,6 +58,8 @@ class GetClientController extends AbstractController
             $param1,
             [
                 new Assert\NotNull(),
+                new Format(),
+                new Assert\Choice(['item', 'item2']),
             ]
         );
         if (count($violations) > 0) {
@@ -70,6 +72,11 @@ class GetClientController extends AbstractController
             $param2,
             [
                 new Assert\NotNull(),
+                new Format(),
+                new Assert\Regex('/a-Z/'),
+                new Assert\Length(min: 1),
+                new Assert\Length(max: 10),
+                new Assert\Choice(['item', 'item1']),
             ]
         );
         if (count($violations) > 0) {
@@ -82,6 +89,9 @@ class GetClientController extends AbstractController
             $param3,
             [
                 new Assert\NotNull(),
+                new Assert\GreaterThan(1),
+                new Assert\LessThan(2),
+                new Assert\Choice(['1', '2']),
             ]
         );
         if (count($violations) > 0) {

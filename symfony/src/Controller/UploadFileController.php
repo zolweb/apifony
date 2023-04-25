@@ -35,6 +35,7 @@ class UploadFileController extends AbstractController
             $petId,
             [
                 new Assert\NotNull(),
+                new Int64(),
             ]
         );
         if (count($violations) > 0) {

@@ -32,6 +32,7 @@ class FindPetsByStatusController extends AbstractController
         $violations = $validator->validate(
             $status,
             [
+                new Assert\Choice(['available', 'pending', 'sold']),
             ]
         );
         if (count($violations) > 0) {

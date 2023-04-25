@@ -34,6 +34,7 @@ class DeleteOrderController extends AbstractController
             $orderId,
             [
                 new Assert\NotNull(),
+                new Int64(),
             ]
         );
         if (count($violations) > 0) {

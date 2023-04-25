@@ -43,7 +43,7 @@ class {{ operation.operationId|toControllerClassName }} extends AbstractControll
             ${{ resolveRef(spec, parameter).name }},
             [
         {%~ for constraint in getParamConstraints(spec, parameter) %}
-                {{ constraint }}
+                {{ constraint|raw }}
         {%~ endfor %}
             ]
         );
