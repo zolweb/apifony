@@ -18,15 +18,16 @@ class GetClientController extends AbstractController
     #[Route(
         path: '/client/{clientId}/{param1}/{param2}/{param3}/{param4}/{param5}/{param6}',
         requirements: [
-            'clientId' => '.+',
-            'param1' => '.+',
-            'param2' => '.+',
+            'clientId' => '[^/]+',
+            'param1' => '[^/]+',
+            'param2' => '[^/]+',
             'param3' => '\d+',
             'param4' => '\d+',
             'param5' => 'true|false',
-            'param6' => '.+',
+            'param6' => '[^/]+',
         ],
         methods: ['get'],
+        priority: 0
     )]
     public function handle(
         Request $request,

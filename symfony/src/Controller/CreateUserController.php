@@ -20,6 +20,7 @@ class CreateUserController extends AbstractController
         requirements: [
         ],
         methods: ['post'],
+        priority: 0
     )]
     public function handle(
         Request $request,

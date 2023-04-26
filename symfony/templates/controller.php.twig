@@ -23,6 +23,7 @@ class {{ operation.operationId|toControllerClassName }} extends AbstractControll
 {%~ endfor %}
         ],
         methods: ['{{ method }}'],
+        priority: {{ operartion['x-priotity'] ?? 0 }},
     )]
     public function handle(
         Request $request,

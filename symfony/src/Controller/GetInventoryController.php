@@ -20,6 +20,7 @@ class GetInventoryController extends AbstractController
         requirements: [
         ],
         methods: ['get'],
+        priority: 0
     )]
     public function handle(
         Request $request,

@@ -21,6 +21,7 @@ class GetPetByIdController extends AbstractController
             'petId' => '\d+',
         ],
         methods: ['get'],
+        priority: 0
     )]
     public function handle(
         Request $request,

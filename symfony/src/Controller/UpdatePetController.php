@@ -20,6 +20,7 @@ class UpdatePetController extends AbstractController
         requirements: [
         ],
         methods: ['put'],
+        priority: 0
     )]
     public function handle(
         Request $request,

@@ -21,6 +21,7 @@ class DeleteOrderController extends AbstractController
             'orderId' => '\d+',
         ],
         methods: ['delete'],
+        priority: 0
     )]
     public function handle(
         Request $request,

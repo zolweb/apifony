@@ -21,6 +21,7 @@ class UploadFileController extends AbstractController
             'petId' => '\d+',
         ],
         methods: ['post'],
+        priority: 0
     )]
     public function handle(
         Request $request,

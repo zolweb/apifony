@@ -21,6 +21,7 @@ class GetOrderByIdController extends AbstractController
             'orderId' => '\d+',
         ],
         methods: ['get'],
+        priority: 0
     )]
     public function handle(
         Request $request,

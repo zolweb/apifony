@@ -92,12 +92,12 @@ class GenExtension extends AbstractExtension
             '\'%s\' => \'%s\',',
             $param['name'],
             match ($param['schema']['type'] ?? 'mixed') {
-                'string' => '.+',
+                'string' => '[^/]+',
                 'number' => '\d+',
                 'integer' => '\d+',
                 'boolean' => 'true|false',
-                'array' => '.+',
-                'mixed' => '.+',
+                'array' => '[^/]+',
+                'mixed' => '[^/]+',
             }
         );
     }

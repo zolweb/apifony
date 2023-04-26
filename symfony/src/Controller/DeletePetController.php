@@ -21,6 +21,7 @@ class DeletePetController extends AbstractController
             'petId' => '\d+',
         ],
         methods: ['delete'],
+        priority: 0
     )]
     public function handle(
         Request $request,
