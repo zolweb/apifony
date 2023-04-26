@@ -15,9 +15,14 @@ interface {{ interfaceName }}
      * {{ operation.description|raw }}
 {%~ endif %}
 {%~ if operation.externalDocs is defined and operation.externalDocs is not empty %}
+     *
     {%~ for doc in operation.externalDocs %}
      * @see {{ doc.url }} {{- doc.description ?? '' }}
     {%~ endfor %}
+{%~ endif %}
+{%~ if operation.deprecated ?? false %}
+     *
+     * @deprecated
 {%~ endif %}
      */
     public function handle(
