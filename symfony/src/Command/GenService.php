@@ -89,14 +89,29 @@ class GenService extends AbstractExtension
         static $params = [];
 
         if (!isset($params[$route][$method])) {
-            $pathParams = array_map(fn (array $param) => $this->resolveRef($spec, $param), $spec['paths'][$route]['parameters'] ?? []);
-            $operationParams = array_map(fn (array $param) => $this->resolveRef($spec, $param), $spec['paths'][$route][$method]['parameters'] ?? []);
-            $pathParams = array_combine(array_map(fn (array $param) => "{$param['in']}:{$param['name']}", $pathParams), $pathParams);
-            $operationParams = array_combine(array_map(fn (array $param) => "{$param['in']}:{$param['name']}", $operationParams), $operationParams);
+            $pathParams = array_map(
+                fn (array $param) => $this->resolveRef($spec, $param),
+                $spec['paths'][$route]['parameters'] ?? [],
+            );
+            $operationParams = array_map(
+                fn (array $param) => $this->resolveRef($spec, $param),
+                $spec['paths'][$route][$method]['parameters'] ?? [],
+            );
+            $pathParams = array_combine(
+                array_map(fn (array $param) => "{$param['in']}:{$param['name']}", $pathParams),
+                $pathParams,
+            );
+            $operationParams = array_combine(
+                array_map(fn (array $param) => "{$param['in']}:{$param['name']}", $operationParams),
+                $operationParams,
+            );
             $params[$route][$method] = array_values(array_merge($pathParams, $operationParams));
         }
 
-        return array_filter($params[$route][$method], fn (array $param) => in_array($param['in'], $in, true));
+        return array_filter(
+            $params[$route][$method],
+            fn (array $param) => in_array($param['in'], $in, true),
+        );
     }
 
     public function toRequestPayloadClassName(string $operationId): string
