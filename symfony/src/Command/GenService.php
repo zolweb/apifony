@@ -96,13 +96,6 @@ class GenService extends AbstractExtension
         ][$type];
     }
 
-    public function toSchemaClassName($ref): string
-    {
-        [,, $type, $class] = explode('/', $ref);
-
-        return $class . ucfirst(substr($type, 0, -1));
-    }
-
     public function toPhpParam(array $spec, array $param): string
     {
         $param = $this->resolveRef($spec, $param);

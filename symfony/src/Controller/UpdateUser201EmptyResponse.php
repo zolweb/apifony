@@ -1,0 +1,17 @@
+<?php
+
+namespace App\Controller;
+
+use Symfony\Component\HttpFoundation\Response;
+
+class UpdateUser201EmptyResponse extends Response
+{
+    public function __construct(
+    ) {
+        parent::__construct(
+            '',
+            201,
+            [],
+        );
+    }
+}

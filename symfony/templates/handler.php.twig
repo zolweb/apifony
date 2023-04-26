@@ -4,6 +4,17 @@ namespace App\Controller;
 
 interface {{ interfaceName }}
 {
+    /**
+     * OperationId: {{ operation.operationId }}
+{%~ if operation.summary is defined and operation.summary is not empty %}
+     *
+     * {{ operation.summary|raw }}
+{%~ endif %}
+{%~ if operation.description is defined and operation.description is not empty %}
+     *
+     * {{ operation.description|raw }}
+{%~ endif %}
+     */
     public function handle(
         {%~ for parameter in getOperationParams(spec, route, method) %}
         {{ toPhpParam(spec, parameter) }}
