@@ -19,11 +19,11 @@ class {{ className }} extends AbstractController
         path: '{{ route }}',
         requirements: [
 {%~ for parameter in getOperationParams(spec, route, method, ['path']) %}
-            {{ toRouteRequirement(spec, parameter)|raw }}
+            {{ toRouteRequirement(parameter)|raw }}
 {%~ endfor %}
         ],
         methods: ['{{ method }}'],
-        priority: {{ operartion['x-priotity'] ?? 0 }},
+        priority: {{ operartion['x-priotity'] ?? 0 }},{# TODO https://spec.openapis.org/oas/latest.html#path-templating-matching #}
     )]
     public function handle(
         Request $request,
@@ -102,7 +102,7 @@ class {{ className }} extends AbstractController
         );
         return new Response('');
     }
-}
+#}
 
 // $contentType = $request->headers->get('accept');
 // if ($contentType !== 'application/json') {

@@ -74,6 +74,7 @@ class GenService extends AbstractExtension
                                 ],
                             ),
                         );
+                        // TODO Security field https://spec.openapis.org/oas/latest.html#fixed-fields-7
                     }
                 }
             }
@@ -114,6 +115,27 @@ class GenService extends AbstractExtension
         );
     }
 
+    public function toRouteRequirement(array $param): string
+    {
+        switch ($param['schema']['type'] ?? 'mixed') {
+            case 'string':
+
+        }
+
+        return sprintf(
+            '\'%s\' => \'%s\',',
+            $param['name'],
+            match ($param['schema']['type'] ?? 'mixed') {
+                'string' => '[^/]+',
+                'number' => '\d+',
+                'integer' => '\d+',
+                'boolean' => 'true|false',
+                'array' => '[^/]+',
+                'mixed' => '[^/]+',
+            }
+        );
+    }
+
     public function toRequestPayloadClassName(string $operationId): string
     {
         return u($operationId)->camel()->title().'RequestPayload';
@@ -139,24 +161,6 @@ class GenService extends AbstractExtension
             ($param['required'] ?? false) ? '' : '?',
             isset($param['schema']['type']) ? $this->toPhpType($param['schema']['type']) : 'mixed',
             $param['name'],
-        );
-    }
-
-    public function toRouteRequirement(array $spec, array $param): string
-    {
-        $param = $this->resolveRef($spec, $param);
-
-        return sprintf(
-            '\'%s\' => \'%s\',',
-            $param['name'],
-            match ($param['schema']['type'] ?? 'mixed') {
-                'string' => '[^/]+',
-                'number' => '\d+',
-                'integer' => '\d+',
-                'boolean' => 'true|false',
-                'array' => '[^/]+',
-                'mixed' => '[^/]+',
-            }
         );
     }
 
@@ -276,6 +280,7 @@ class GenService extends AbstractExtension
     public function resolveRef(array $spec, array $mixed): array
     {
         if (isset($mixed['$ref'])) {
+            // TODO https://spec.openapis.org/oas/latest.html#referenceObject
             [,, $type, $name] = explode('/', $mixed['$ref']);
             return $spec['components'][$type][$name];
         }
