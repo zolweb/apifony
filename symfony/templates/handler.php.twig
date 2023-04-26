@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-interface {{ operation.operationId|toHandlerClassName }}
+interface {{ interfaceName }}
 {
     public function handle(
         {%~ for parameter in getOperationParams(spec, route, method) %}

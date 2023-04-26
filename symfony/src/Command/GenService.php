@@ -8,7 +8,7 @@ use Twig\TwigFilter;
 use Twig\TwigFunction;
 use function Symfony\Component\String\u;
 
-class GenExtension extends AbstractExtension
+class GenService extends AbstractExtension
 {
     public function __construct(
         private readonly Environment $twig,
@@ -18,8 +18,6 @@ class GenExtension extends AbstractExtension
     public function getFilters(): array
     {
         return [
-            new TwigFilter('toControllerClassName', [$this, 'toControllerClassName']),
-            new TwigFilter('toHandlerClassName', [$this, 'toHandlerClassName']),
             new TwigFilter('toRequestPayloadClassName', [$this, 'toRequestPayloadClassName']),
             new TwigFilter('toPhpType', [$this, 'toPhpType']),
         ];
@@ -39,14 +37,47 @@ class GenExtension extends AbstractExtension
         ];
     }
 
-    public function toControllerClassName(string $operationId): string
+    public function generate(array $spec): void
     {
-        return u($operationId)->camel()->title().'Controller';
-    }
-
-    public function toHandlerClassName(string $operationId): string
-    {
-        return u($operationId)->camel()->title().'Handler';
+        foreach ($spec['paths'] as $route => $path) {
+            if ($route[0] === '/') {
+                $path = $this->resolveRef($spec, $path);
+                foreach ($path as $method => $operation) {
+                    if (in_array($method, ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'], true)) {
+                        $baseName = u($operation['operationId'])->camel()->title();
+                        $controllerClassName = "{$baseName}Controller";
+                        $handlerInterfaceName = "{$baseName}HandlerInterface";
+                        file_put_contents(
+                            __DIR__."/../Controller/{$controllerClassName}.php",
+                            $this->twig->render(
+                                'controller.php.twig',
+                                [
+                                    'className' => $controllerClassName,
+                                    'handlerClassName' => $handlerInterfaceName,
+                                    'spec' => $spec,
+                                    'operation' => $operation,
+                                    'route' => $route,
+                                    'method' => $method,
+                                ],
+                            ),
+                        );
+                        file_put_contents(
+                            __DIR__."/../Controller/{$handlerInterfaceName}.php",
+                            $this->twig->render(
+                                'handler.php.twig',
+                                [
+                                    'interfaceName' => $handlerInterfaceName,
+                                    'spec' => $spec,
+                                    'operation' => $operation,
+                                    'route' => $route,
+                                    'method' => $method,
+                                ],
+                            ),
+                        );
+                    }
+                }
+            }
+        }
     }
 
     public function toRequestPayloadClassName(string $operationId): string

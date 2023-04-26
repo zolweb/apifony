@@ -13,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class {{ operation.operationId|toControllerClassName }} extends AbstractController
+class {{ className }} extends AbstractController
 {
     #[Route(
         path: '{{ route }}',
@@ -29,7 +29,7 @@ class {{ operation.operationId|toControllerClassName }} extends AbstractControll
         Request $request,
         SerializerInterface $serializer,
         ValidatorInterface $validator,
-        {{ operation.operationId|toHandlerClassName }} $handler,
+        {{ handlerClassName }} $handler,
 {%~ for parameter in getOperationParams(spec, route, method, ['path']) %}
         {{ toPhpParam(spec, parameter) }}
 {%~ endfor %}

@@ -23,8 +23,8 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    App\Command\GenExtension:
-        class: App\Command\GenExtension
+    App\Command\GenService:
+        class: App\Command\GenService
         tags: ['twig.extension']
 
     ### Serializer ###
