@@ -31,7 +31,7 @@ class {{ className }} extends AbstractController
         ValidatorInterface $validator,
         {{ handlerClassName }} $handler,
 {%~ for parameter in getOperationParams(spec, route, method, ['path']) %}
-        {{ toPhpParam(spec, parameter) }}
+        {{ toMethodParam(parameter)|raw }}
 {%~ endfor %}
     ): Response {
 {%~ for parameter in getOperationParams(spec, route, method, ['query']) %}

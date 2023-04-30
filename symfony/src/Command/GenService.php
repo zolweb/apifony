@@ -26,7 +26,7 @@ class GenService extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('toPhpParam', [$this, 'toPhpParam']),
+            new TwigFunction('toMethodParam', [$this, 'toMethodParam']),
             new TwigFunction('toRouteRequirement', [$this, 'toRouteRequirement']),
             new TwigFunction('getOperationParams', [$this, 'getOperationParams']),
             new TwigFunction('getParamConstraints', [$this, 'getParamConstraints']),
@@ -148,15 +148,22 @@ class GenService extends AbstractExtension
         ][$type];
     }
 
-    public function toPhpParam(array $spec, array $param): string
+    public function toMethodParam(array $param): string
     {
-        $param = $this->resolveRef($spec, $param);
+        $default = null;
+        if (isset($param['schema']['type']) && isset($param['schema']['default'])) {
+            $default = match ($param['schema']['type']) {
+                'string' => sprintf('\'%s\'', str_replace('\'', '\\\'', $param['schema']['default'])),
+                default => $param['schema']['default'],
+            };
+        }
 
         return sprintf(
-            '%s%s $%s,',
+            '%s%s $%s%s,',
             ($param['required'] ?? false) ? '' : '?',
             isset($param['schema']['type']) ? $this->toPhpType($param['schema']['type']) : 'mixed',
             $param['name'],
+            $default !== null ? sprintf(' = %s', $default) : '',
         );
     }
 

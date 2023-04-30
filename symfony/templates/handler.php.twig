@@ -27,7 +27,7 @@ interface {{ interfaceName }}
      */
     public function handle(
         {%~ for parameter in getOperationParams(spec, route, method) %}
-        {{ toPhpParam(spec, parameter) }}
+        {{ toMethodParam(parameter)|raw }}
         {%~ endfor %}
         {%~ if operation.requestBody.content['application/json'] is defined %}
         {{ toObjectSchemaClassName(operation.requestBody.content['application/json'].schema, operation.operationId|toRequestPayloadClassName) }} $dto,

@@ -66,6 +66,7 @@ paths:
             schema:
               type: object
               properties: {}
+      x-priority: 1
     parameters:
       - $ref: '#/components/parameters/clientId'
       - schema:
@@ -95,7 +96,7 @@ paths:
         style: matrix
       - schema:
           type: number
-          default: default
+          default: 5.3e-7
           enum:
             - 1
             - 2
