@@ -12,6 +12,6 @@ interface DeleteUserHandlerInterface
      * This can only be done by the logged in user.
      */
     public function handle(
-        string $username,
+        string $username = null,
     ): DeleteUser400EmptyResponse|DeleteUser404EmptyResponse;
 }

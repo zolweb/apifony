@@ -27,7 +27,7 @@ class GetOrderByIdController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         GetOrderByIdHandlerInterface $handler,
-        int $orderId,
+        int $orderId = null,
     ): Response {
         $errors = [];
         $violations = $validator->validate(

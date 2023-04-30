@@ -33,13 +33,13 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         PostClientClientIdParam1Param2Param3Param4Param5Param6HandlerInterface $handler,
-        string $clientId,
-        mixed $param1,
+        string $clientId = null,
+        mixed $param1 = null,
         string $param2 = 'default',
         float $param3 = 5.3E-7,
-        int $param4,
-        bool $param5,
-        array $param6,
+        int $param4 = null,
+        bool $param5 = null,
+        array $param6 = null,
     ): Response {
         $errors = [];
         $violations = $validator->validate(

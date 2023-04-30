@@ -27,7 +27,7 @@ class FindPetsByTagsController extends AbstractController
         ValidatorInterface $validator,
         FindPetsByTagsHandlerInterface $handler,
     ): Response {
-        $tags = $request->query->get('tags');
+        $tags = ($request->query->get('tags', null));
         $errors = [];
         $violations = $validator->validate(
             $tags,

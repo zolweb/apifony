@@ -33,14 +33,18 @@ class GetClientController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         GetClientHandlerInterface $handler,
-        string $clientId,
-        mixed $param1,
+        string $clientId = null,
+        mixed $param1 = null,
         string $param2 = 'default',
         float $param3 = 5.3E-7,
-        int $param4,
-        bool $param5,
-        array $param6,
+        int $param4 = null,
+        bool $param5 = null,
+        array $param6 = null,
     ): Response {
+        $azef = ($request->headers->get('azef', null));
+        $agrez = floatval($request->query->get('agrez', null));
+        $azgrzeg = intval($request->cookies->get('azgrzeg', 10));
+        $gegzer = boolval($request->headers->get('gegzer', true));
         $errors = [];
         $violations = $validator->validate(
             $clientId,
@@ -136,6 +140,52 @@ class GetClientController extends AbstractController
                 iterator_to_array($violations),
             );
         }
+        $violations = $validator->validate(
+            $agrez,
+            [
+                new Assert\NotNull(),
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['query']['agrez'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $validator->validate(
+            $azef,
+            [
+                new Assert\NotNull(),
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['header']['azef'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $validator->validate(
+            $gegzer,
+            [
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['header']['gegzer'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $validator->validate(
+            $azgrzeg,
+            [
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['cookie']['azgrzeg'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
         $contentType = $request->headers->get('content-type');
         if ($contentType !== 'application/json') {
             return new JsonResponse(
@@ -166,6 +216,10 @@ class GetClientController extends AbstractController
             $param4,
             $param5,
             $param6,
+            $azef,
+            $agrez,
+            $azgrzeg,
+            $gegzer,
             $dto,
         );
         return new Response('');

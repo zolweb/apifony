@@ -67,6 +67,27 @@ paths:
               type: object
               properties: {}
       x-priority: 1
+      parameters:
+        - schema:
+            type: string
+          in: header
+          name: azef
+          required: true
+        - schema:
+            type: number
+          in: query
+          name: agrez
+          required: true
+        - schema:
+            type: integer
+            default: 10
+          in: cookie
+          name: azgrzeg
+        - schema:
+            type: boolean
+            default: 'true'
+          in: header
+          name: gegzer
     parameters:
       - $ref: '#/components/parameters/clientId'
       - schema:

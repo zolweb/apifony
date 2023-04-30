@@ -34,6 +34,7 @@ class GenService extends AbstractExtension
             new TwigFunction('genResponses', [$this, 'genResponses']),
             new TwigFunction('toObjectSchemaClassName', [$this, 'toObjectSchemaClassName']),
             new TwigFunction('resolveRef', [$this, 'resolveRef']),
+            new TwigFunction('getParamFromRequest', [$this, 'getParamFromRequest']),
         ];
     }
 
@@ -150,20 +151,12 @@ class GenService extends AbstractExtension
 
     public function toMethodParam(array $param): string
     {
-        $default = null;
-        if (isset($param['schema']['type']) && isset($param['schema']['default'])) {
-            $default = match ($param['schema']['type']) {
-                'string' => sprintf('\'%s\'', str_replace('\'', '\\\'', $param['schema']['default'])),
-                default => $param['schema']['default'],
-            };
-        }
-
         return sprintf(
             '%s%s $%s%s,',
             ($param['required'] ?? false) ? '' : '?',
             isset($param['schema']['type']) ? $this->toPhpType($param['schema']['type']) : 'mixed',
             $param['name'],
-            $default !== null ? sprintf(' = %s', $default) : '',
+            ($default = $this->getParamDefault($param)) !== null ? sprintf(' = %s', $default) : '',
         );
     }
 
@@ -270,6 +263,18 @@ class GenService extends AbstractExtension
         return $constraints;
     }
 
+    public function getParamFromRequest(array $param): string
+    {
+        return sprintf(
+            '$%s = %s($request->%s->get(\'%s\', %s));',
+            $param['name'],
+            ['number' => 'floatval', 'integer' => 'intval', 'boolean' => 'boolval'][$param['schema']['type']] ?? '',
+            ['query' => 'query', 'header' => 'headers', 'cookie' => 'cookies'][$param['in']],
+            $param['name'],
+            $this->getParamDefault($param),
+        );
+    }
+
     public function resolveRef(array $spec, array $mixed): array
     {
         if (isset($mixed['$ref'])) {
@@ -279,6 +284,18 @@ class GenService extends AbstractExtension
         }
 
         return $mixed;
+    }
+
+    public function getParamDefault(array $param): string
+    {
+        if (isset($param['schema']['type']) && isset($param['schema']['default'])) {
+            return match ($param['schema']['type']) {
+                'string' => sprintf('\'%s\'', str_replace('\'', '\\\'', $param['schema']['default'])),
+                default => $param['schema']['default'],
+            };
+        }
+
+        return 'null';
     }
 
     private function generateFormatClasses(string $format): array

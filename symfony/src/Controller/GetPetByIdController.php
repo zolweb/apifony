@@ -27,7 +27,7 @@ class GetPetByIdController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         GetPetByIdHandlerInterface $handler,
-        int $petId,
+        int $petId = null,
     ): Response {
         $errors = [];
         $violations = $validator->validate(

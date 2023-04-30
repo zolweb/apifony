@@ -27,8 +27,9 @@ class DeletePetController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         DeletePetHandlerInterface $handler,
-        int $petId,
+        int $petId = null,
     ): Response {
+        $api_key = ($request->headers->get('api_key', null));
         $errors = [];
         $violations = $validator->validate(
             $petId,

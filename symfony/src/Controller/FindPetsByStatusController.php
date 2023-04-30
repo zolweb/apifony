@@ -27,7 +27,7 @@ class FindPetsByStatusController extends AbstractController
         ValidatorInterface $validator,
         FindPetsByStatusHandlerInterface $handler,
     ): Response {
-        $status = $request->query->get('status');
+        $status = ($request->query->get('status', 'available'));
         $errors = [];
         $violations = $validator->validate(
             $status,

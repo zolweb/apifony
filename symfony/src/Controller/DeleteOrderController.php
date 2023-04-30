@@ -27,7 +27,7 @@ class DeleteOrderController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         DeleteOrderHandlerInterface $handler,
-        int $orderId,
+        int $orderId = null,
     ): Response {
         $errors = [];
         $violations = $validator->validate(

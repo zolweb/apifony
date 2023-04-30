@@ -18,8 +18,8 @@ class {{ className }} extends AbstractController
     #[Route(
         path: '{{ route }}',
         requirements: [
-{%~ for parameter in getOperationParams(spec, route, method, ['path']) %}
-            {{ toRouteRequirement(parameter)|raw }}
+{%~ for param in getOperationParams(spec, route, method, ['path']) %}
+            {{ toRouteRequirement(param)|raw }}
 {%~ endfor %}
         ],
         methods: ['{{ method }}'],
@@ -30,26 +30,26 @@ class {{ className }} extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         {{ handlerClassName }} $handler,
-{%~ for parameter in getOperationParams(spec, route, method, ['path']) %}
-        {{ toMethodParam(parameter)|raw }}
+{%~ for param in getOperationParams(spec, route, method, ['path']) %}
+        {{ toMethodParam(param)|raw }}
 {%~ endfor %}
     ): Response {
-{%~ for parameter in getOperationParams(spec, route, method, ['query']) %}
-        ${{ parameter.name }} = $request->query->get('{{ parameter.name }}');
+{%~ for param in getOperationParams(spec, route, method, ['query', 'header', 'cookie']) %}
+        {{ getParamFromRequest(param)|raw }}
 {%~ endfor %}
         $errors = [];
 {%~ for type in ['path', 'query', 'header', 'cookie'] %}
-    {%~ for parameter in getOperationParams(spec, route, method, [type]) %}
+    {%~ for param in getOperationParams(spec, route, method, [type]) %}
         $violations = $validator->validate(
-            ${{ resolveRef(spec, parameter).name }},
+            ${{ resolveRef(spec, param).name }},
             [
-        {%~ for constraint in getParamConstraints(spec, parameter) %}
+        {%~ for constraint in getParamConstraints(spec, param) %}
                 {{ constraint|raw }}
         {%~ endfor %}
             ]
         );
         if (count($violations) > 0) {
-            $errors['{{ type }}']['{{ resolveRef(spec, parameter).name }}'] = array_map(
+            $errors['{{ type }}']['{{ resolveRef(spec, param).name }}'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -93,8 +93,8 @@ class {{ className }} extends AbstractController
             );
         }
         $handler->handle(
-{%~ for parameter in getOperationParams(spec, route, method) %}
-            ${{ resolveRef(spec, parameter).name }},
+{%~ for param in getOperationParams(spec, route, method) %}
+            ${{ resolveRef(spec, param).name }},
 {%~ endfor %}
 {%~ if spec.paths[route][method].requestBody is defined %}
             $dto,

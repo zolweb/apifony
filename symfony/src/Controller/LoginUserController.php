@@ -27,8 +27,8 @@ class LoginUserController extends AbstractController
         ValidatorInterface $validator,
         LoginUserHandlerInterface $handler,
     ): Response {
-        $username = $request->query->get('username');
-        $password = $request->query->get('password');
+        $username = ($request->query->get('username', null));
+        $password = ($request->query->get('password', null));
         $errors = [];
         $violations = $validator->validate(
             $username,
