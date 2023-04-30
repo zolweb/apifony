@@ -117,21 +117,17 @@ class GenService extends AbstractExtension
 
     public function toRouteRequirement(array $param): string
     {
-        switch ($param['schema']['type'] ?? 'mixed') {
-            case 'string':
-
-        }
-
+        // TODO https://spec.openapis.org/oas/latest.html#style-values
         return sprintf(
             '\'%s\' => \'%s\',',
             $param['name'],
             match ($param['schema']['type'] ?? 'mixed') {
-                'string' => '[^/]+',
-                'number' => '\d+',
-                'integer' => '\d+',
+                // TODO https://datatracker.ietf.org/doc/html/draft-bhutton-json-schema-validation-00#section-7.3
+                'string' => $param['schema']['pattern'] ?? '[^:/?#[]@!$&\\\'()*+,;=]+',
+                'number' => '-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?',
+                'integer' => '-?(0|[1-9]\d*)',
                 'boolean' => 'true|false',
-                'array' => '[^/]+',
-                'mixed' => '[^/]+',
+                default => '[^:/?#[]@!$&\\\'()*+,;=]+',
             }
         );
     }
@@ -213,20 +209,10 @@ class GenService extends AbstractExtension
         }
 
         if (isset($param['schema']['format'])) {
-            $formatName = u($param['schema']['format'])->camel()->title();
-            $constraintName = $formatName;
-            $validatorName = "{$formatName}Validator";
-            $validatorInterfaceName = "{$formatName}ValidatorInterface";
-            $template = $this->twig->render('constraint.php.twig', ['constraintName' => $constraintName]);
-            file_put_contents(__DIR__.'/../Controller/'.$constraintName.'.php', $template);
-            $template = $this->twig->render('validator.php.twig', ['validatorName' => $validatorName, 'validatorInterfaceName' => $validatorInterfaceName]);
-            file_put_contents(__DIR__.'/../Controller/'.$validatorName.'.php', $template);
-            $template = $this->twig->render('validator-interface.php.twig', ['validatorInterfaceName' => $validatorInterfaceName]);
-            file_put_contents(__DIR__.'/../Controller/'.$validatorInterfaceName.'.php', $template);
-
+            $formatClasses = $this->generateFormatClasses($param['schema']['format']);
             $constraints[] = sprintf(
                 'new %s(),',
-                $constraintName,
+                $formatClasses['constraintClassName'],
             );
         }
 
@@ -286,5 +272,52 @@ class GenService extends AbstractExtension
         }
 
         return $mixed;
+    }
+
+    private function generateFormatClasses(string $format): array
+    {
+        static $formats = [];
+
+        if (!isset($formats[$format])) {
+            $baseName = u($format)->camel()->title();
+            $validatorClassName = "{$baseName}Validator";
+            $definitionInterfaceName = "{$baseName}Definition";
+            file_put_contents(
+                __DIR__."/../Controller/{$baseName}.php",
+                $this->twig->render(
+                    'format-constraint.php.twig',
+                    [
+                        'className' => $baseName,
+                    ],
+                ),
+            );
+            file_put_contents(
+                __DIR__."/../Controller/{$validatorClassName}.php",
+                $this->twig->render(
+                    'format-validator.php.twig',
+                    [
+                        'className' => $validatorClassName,
+                        'definitionInterfaceName' => $definitionInterfaceName,
+                    ],
+                ),
+            );
+            file_put_contents(
+                __DIR__."/../Controller/{$definitionInterfaceName}.php",
+                $this->twig->render(
+                    'format-definition.php.twig',
+                    [
+                        'className' => $definitionInterfaceName,
+                    ],
+                ),
+            );
+
+            $formats[$format] = [
+                'constraintClassName' => $baseName,
+                'validatorClassName' => $validatorClassName,
+                'definitionInterfaceName' => $definitionInterfaceName,
+            ];
+        }
+
+        return $formats[$format];
     }
 }

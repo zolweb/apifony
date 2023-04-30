@@ -18,11 +18,10 @@ class UpdateUserController extends AbstractController
     #[Route(
         path: '/user/{username}',
         requirements: [
-            'username' => '[^/]+',
+            'username' => '[^:/?#[]@!$&\'()*+,;=]+',
         ],
         methods: ['put'],
-        priority: 0,
-    )]
+        priority: 0,    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,

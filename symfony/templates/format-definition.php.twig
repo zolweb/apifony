@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
-interface FormatValidatorInterface
+interface {{ className }}
 {
     /**
      * @return array<string>
      */
-    public function validate($value): array;
+    public function validate(string $value): array;
 }

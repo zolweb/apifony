@@ -18,17 +18,16 @@ class GetClientController extends AbstractController
     #[Route(
         path: '/client/{clientId}/{param1}/{param2}/{param3}/{param4}/{param5}/{param6}',
         requirements: [
-            'clientId' => '[^/]+',
-            'param1' => '[^/]+',
-            'param2' => '[^/]+',
-            'param3' => '\d+',
-            'param4' => '\d+',
+            'clientId' => '[^:/?#[]@!$&\'()*+,;=]+',
+            'param1' => '[^:/?#[]@!$&\'()*+,;=]+',
+            'param2' => 'a-Z',
+            'param3' => '-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?',
+            'param4' => '-?(0|[1-9]\d*)',
             'param5' => 'true|false',
-            'param6' => '[^/]+',
+            'param6' => '[^:/?#[]@!$&\'()*+,;=]+',
         ],
         methods: ['get'],
-        priority: 0,
-    )]
+        priority: 0,    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,

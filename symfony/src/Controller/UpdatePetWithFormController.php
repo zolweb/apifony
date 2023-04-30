@@ -18,11 +18,10 @@ class UpdatePetWithFormController extends AbstractController
     #[Route(
         path: '/pet/{petId}',
         requirements: [
-            'petId' => '\d+',
+            'petId' => '-?(0|[1-9]\d*)',
         ],
         methods: ['post'],
-        priority: 0,
-    )]
+        priority: 0,    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,

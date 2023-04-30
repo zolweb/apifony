@@ -2,10 +2,10 @@
 
 namespace App\Controller;
 
-interface Int64ValidatorInterface
+interface FormatDefinition
 {
     /**
      * @return array<string>
      */
-    public function validate($value): array;
+    public function validate(string $value): array;
 }

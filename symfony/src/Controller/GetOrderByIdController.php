@@ -18,11 +18,10 @@ class GetOrderByIdController extends AbstractController
     #[Route(
         path: '/store/order/{orderId}',
         requirements: [
-            'orderId' => '\d+',
+            'orderId' => '-?(0|[1-9]\d*)',
         ],
         methods: ['get'],
-        priority: 0,
-    )]
+        priority: 0,    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,

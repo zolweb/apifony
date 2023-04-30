@@ -5,16 +5,16 @@ namespace App\Controller;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
-class {{ validatorName }} extends ConstraintValidator
+class {{ className }} extends ConstraintValidator
 {
     public function __construct(
-        private readonly {{ validatorInterfaceName }} $validator,
+        private readonly {{ definitionInterfaceName }} $formatDefinition,
     ) {
     }
 
     public function validate($value, Constraint $constraint): void
     {
-        foreach ($this->validator->validate($value) as $violation) {
+        foreach ($this->formatDefinition->validate($value) as $violation) {
             $this->context->buildViolation($violation)->addViolation();
         }
     }
