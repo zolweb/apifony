@@ -199,10 +199,8 @@ class GenService extends AbstractExtension
         return $default;
     }
 
-    public function getParamConstraints(array $spec, array $param): array
+    public function getParamConstraints(array $param): array
     {
-        $param = $this->resolveRef($spec, $param);
-
         $constraints = [];
 
         if ($param['required'] ?? false) {

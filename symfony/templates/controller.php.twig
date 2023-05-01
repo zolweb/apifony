@@ -44,7 +44,7 @@ class {{ className }} extends AbstractController
         $violations = $validator->validate(
             ${{ toVariableName(param) }},
             [
-        {%~ for constraint in getParamConstraints(spec, param) %}
+        {%~ for constraint in getParamConstraints(param) %}
                 {{ constraint|raw }}
         {%~ endfor %}
             ]
