@@ -18,39 +18,40 @@ class UploadFileController extends AbstractController
     #[Route(
         path: '/pet/{petId}/uploadImage',
         requirements: [
-            'petId' => '-?(0|[1-9]\d*)',
+            'pPetId' => '-?(0|[1-9]\d*)',
         ],
         methods: ['post'],
-        priority: 0,    )]
+        priority: 0,
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         UploadFileHandlerInterface $handler,
-        int $petId = null,
+        int $pPetId = null,
     ): Response {
-        $additionalMetadata = ($request->query->get('additionalMetadata', null));
+        $qAdditionalMetadata = ($request->query->get('additionalMetadata', null));
         $errors = [];
         $violations = $validator->validate(
-            $petId,
+            $pPetId,
             [
                 new Assert\NotNull(),
                 new Int64(),
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['petId'] = array_map(
+            $errors['path']['pPetId'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
         $violations = $validator->validate(
-            $additionalMetadata,
+            $qAdditionalMetadata,
             [
             ]
         );
         if (count($violations) > 0) {
-            $errors['query']['additionalMetadata'] = array_map(
+            $errors['query']['qAdditionalMetadata'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -65,12 +66,11 @@ class UploadFileController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $handler->handle(
-            $petId,
-            $additionalMetadata,
-            $dto,
+        return $handler->handle(
+            $pPetId,
+            $qAdditionalMetadata,
+            $payload,
         );
-        return new Response('');
     }
 }
 

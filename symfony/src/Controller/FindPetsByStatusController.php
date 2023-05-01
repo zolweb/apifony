@@ -20,23 +20,24 @@ class FindPetsByStatusController extends AbstractController
         requirements: [
         ],
         methods: ['get'],
-        priority: 0,    )]
+        priority: 0,
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         FindPetsByStatusHandlerInterface $handler,
     ): Response {
-        $status = ($request->query->get('status', 'available'));
+        $qStatus = ($request->query->get('status', 'available'));
         $errors = [];
         $violations = $validator->validate(
-            $status,
+            $qStatus,
             [
                 new Assert\Choice(['available', 'pending', 'sold']),
             ]
         );
         if (count($violations) > 0) {
-            $errors['query']['status'] = array_map(
+            $errors['query']['qStatus'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -51,10 +52,9 @@ class FindPetsByStatusController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $handler->handle(
-            $status,
+        return $handler->handle(
+            $qStatus,
         );
-        return new Response('');
     }
 }
 

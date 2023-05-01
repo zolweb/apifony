@@ -18,27 +18,28 @@ class GetPetByIdController extends AbstractController
     #[Route(
         path: '/pet/{petId}',
         requirements: [
-            'petId' => '-?(0|[1-9]\d*)',
+            'pPetId' => '-?(0|[1-9]\d*)',
         ],
         methods: ['get'],
-        priority: 0,    )]
+        priority: 0,
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         GetPetByIdHandlerInterface $handler,
-        int $petId = null,
+        int $pPetId = null,
     ): Response {
         $errors = [];
         $violations = $validator->validate(
-            $petId,
+            $pPetId,
             [
                 new Assert\NotNull(),
                 new Int64(),
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['petId'] = array_map(
+            $errors['path']['pPetId'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -53,10 +54,9 @@ class GetPetByIdController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $handler->handle(
-            $petId,
+        return $handler->handle(
+            $pPetId,
         );
-        return new Response('');
     }
 }
 

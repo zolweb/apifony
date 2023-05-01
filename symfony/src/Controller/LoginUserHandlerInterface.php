@@ -10,7 +10,7 @@ interface LoginUserHandlerInterface
      * Logs user into the system
      */
     public function handle(
-        ?string $username = null,
-        ?string $password = null,
+        ?string $qUsername = null,
+        ?string $qPassword = null,
     ): LoginUser200ApplicationJsonResponse|LoginUser400EmptyResponse;
 }

@@ -20,34 +20,35 @@ class LoginUserController extends AbstractController
         requirements: [
         ],
         methods: ['get'],
-        priority: 0,    )]
+        priority: 0,
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         LoginUserHandlerInterface $handler,
     ): Response {
-        $username = ($request->query->get('username', null));
-        $password = ($request->query->get('password', null));
+        $qUsername = ($request->query->get('username', null));
+        $qPassword = ($request->query->get('password', null));
         $errors = [];
         $violations = $validator->validate(
-            $username,
+            $qUsername,
             [
             ]
         );
         if (count($violations) > 0) {
-            $errors['query']['username'] = array_map(
+            $errors['query']['qUsername'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
         $violations = $validator->validate(
-            $password,
+            $qPassword,
             [
             ]
         );
         if (count($violations) > 0) {
-            $errors['query']['password'] = array_map(
+            $errors['query']['qPassword'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -62,11 +63,10 @@ class LoginUserController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $handler->handle(
-            $username,
-            $password,
+        return $handler->handle(
+            $qUsername,
+            $qPassword,
         );
-        return new Response('');
     }
 }
 

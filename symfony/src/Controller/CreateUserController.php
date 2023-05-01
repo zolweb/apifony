@@ -20,7 +20,8 @@ class CreateUserController extends AbstractController
         requirements: [
         ],
         methods: ['post'],
-        priority: 0,    )]
+        priority: 0,
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,
@@ -40,8 +41,8 @@ class CreateUserController extends AbstractController
         }
         $content = $request->getContent();
         
-        $dto = $serializer->deserialize($content, UserSchema::class, JsonEncoder::FORMAT);
-        $violations = $validator->validate($dto);
+        $payload = $serializer->deserialize($content, UserSchema::class, JsonEncoder::FORMAT);
+        $violations = $validator->validate($payload);
         if (count($violations) > 0) {
             foreach ($violations as $violation) {
                 $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
@@ -57,10 +58,9 @@ class CreateUserController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $handler->handle(
-            $dto,
+        return $handler->handle(
+            $payload,
         );
-        return new Response('');
     }
 }
 

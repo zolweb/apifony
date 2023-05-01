@@ -12,6 +12,6 @@ interface GetPetByIdHandlerInterface
      * Returns a single pet
      */
     public function handle(
-        int $petId = null,
+        int $pPetId = null,
     ): GetPetById200ApplicationJsonResponse|GetPetById400EmptyResponse|GetPetById404EmptyResponse;
 }

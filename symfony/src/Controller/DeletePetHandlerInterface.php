@@ -12,7 +12,7 @@ interface DeletePetHandlerInterface
      * delete a pet
      */
     public function handle(
-        ?string $api_key = null,
-        int $petId = null,
+        ?string $hApi_key = null,
+        int $pPetId = null,
     ): DeletePet400EmptyResponse;
 }

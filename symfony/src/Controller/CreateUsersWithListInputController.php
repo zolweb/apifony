@@ -20,7 +20,8 @@ class CreateUsersWithListInputController extends AbstractController
         requirements: [
         ],
         methods: ['post'],
-        priority: 0,    )]
+        priority: 0,
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,
@@ -50,10 +51,9 @@ class CreateUsersWithListInputController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $handler->handle(
-            $dto,
+        return $handler->handle(
+            $payload,
         );
-        return new Response('');
     }
 }
 

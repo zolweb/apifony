@@ -12,6 +12,6 @@ interface FindPetsByStatusHandlerInterface
      * Multiple status values can be provided with comma separated strings
      */
     public function handle(
-        ?string $status = 'available',
+        ?string $qStatus = 'available',
     ): FindPetsByStatus200ApplicationJsonResponse|FindPetsByStatus400EmptyResponse;
 }

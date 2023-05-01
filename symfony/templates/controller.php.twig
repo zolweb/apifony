@@ -23,7 +23,8 @@ class {{ className }} extends AbstractController
 {%~ endfor %}
         ],
         methods: ['{{ method }}'],
-        priority: {{ operartion['x-priotity'] ?? 0 }},{# TODO https://spec.openapis.org/oas/latest.html#path-templating-matching #}
+        {#~ TODO https://spec.openapis.org/oas/latest.html#path-templating-matching #}
+        priority: {{ operartion['x-priotity'] ?? 0 }},
     )]
     public function handle(
         Request $request,
@@ -41,7 +42,7 @@ class {{ className }} extends AbstractController
 {%~ for type in ['path', 'query', 'header', 'cookie'] %}
     {%~ for param in getOperationParams(spec, route, method, [type]) %}
         $violations = $validator->validate(
-            ${{ resolveRef(spec, param).name }},
+            ${{ toVariableName(param) }},
             [
         {%~ for constraint in getParamConstraints(spec, param) %}
                 {{ constraint|raw }}
@@ -49,7 +50,7 @@ class {{ className }} extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['{{ type }}']['{{ resolveRef(spec, param).name }}'] = array_map(
+            $errors['{{ type }}']['{{ toVariableName(param) }}'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -71,8 +72,8 @@ class {{ className }} extends AbstractController
         $content = $request->getContent();
     {%~ if resolveRef(spec, requestBody.schema).type is same as ('object') %}
         {{ genObjectSchema(spec, requestBody.schema, toObjectSchemaClassName(requestBody.schema, operation.operationId ~ 'RequestPayload')) }}
-        $dto = $serializer->deserialize($content, {{ toObjectSchemaClassName(requestBody.schema, operation.operationId ~ 'RequestPayload') }}::class, JsonEncoder::FORMAT);
-        $violations = $validator->validate($dto);
+        $payload = $serializer->deserialize($content, {{ toObjectSchemaClassName(requestBody.schema, operation.operationId ~ 'RequestPayload') }}::class, JsonEncoder::FORMAT);
+        $violations = $validator->validate($payload);
         if (count($violations) > 0) {
             foreach ($violations as $violation) {
                 $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
@@ -92,15 +93,14 @@ class {{ className }} extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $handler->handle(
+        return $handler->handle(
 {%~ for param in getOperationParams(spec, route, method) %}
-            ${{ resolveRef(spec, param).name }},
+            ${{ toVariableName(param) }},
 {%~ endfor %}
 {%~ if spec.paths[route][method].requestBody is defined %}
-            $dto,
+            $payload,
 {%~ endif %}
         );
-        return new Response('');
     }
 }
 

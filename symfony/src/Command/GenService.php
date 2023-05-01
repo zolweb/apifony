@@ -33,6 +33,7 @@ class GenService extends AbstractExtension
             new TwigFunction('genObjectSchema', [$this, 'genObjectSchema']),
             new TwigFunction('genResponses', [$this, 'genResponses']),
             new TwigFunction('toObjectSchemaClassName', [$this, 'toObjectSchemaClassName']),
+            new TwigFunction('toVariableName', [$this, 'toVariableName']),
             new TwigFunction('resolveRef', [$this, 'resolveRef']),
             new TwigFunction('getParamFromRequest', [$this, 'getParamFromRequest']),
         ];
@@ -121,7 +122,7 @@ class GenService extends AbstractExtension
         // TODO https://spec.openapis.org/oas/latest.html#style-values
         return sprintf(
             '\'%s\' => \'%s\',',
-            $param['name'],
+            $this->toVariableName($param),
             match ($param['schema']['type'] ?? 'mixed') {
                 // TODO https://datatracker.ietf.org/doc/html/draft-bhutton-json-schema-validation-00#section-7.3
                 'string' => $param['schema']['pattern'] ?? '[^:/?#[]@!$&\\\'()*+,;=]+',
@@ -155,7 +156,7 @@ class GenService extends AbstractExtension
             '%s%s $%s%s,',
             ($param['required'] ?? false) ? '' : '?',
             isset($param['schema']['type']) ? $this->toPhpType($param['schema']['type']) : 'mixed',
-            $param['name'],
+            $this->toVariableName($param),
             ($default = $this->getParamDefault($param)) !== null ? sprintf(' = %s', $default) : '',
         );
     }
@@ -267,7 +268,7 @@ class GenService extends AbstractExtension
     {
         return sprintf(
             '$%s = %s($request->%s->get(\'%s\', %s));',
-            $param['name'],
+            $this->toVariableName($param),
             ['number' => 'floatval', 'integer' => 'intval', 'boolean' => 'boolval'][$param['schema']['type']] ?? '',
             ['query' => 'query', 'header' => 'headers', 'cookie' => 'cookies'][$param['in']],
             $param['name'],
@@ -296,6 +297,15 @@ class GenService extends AbstractExtension
         }
 
         return 'null';
+    }
+
+    public function toVariableName(array $param): string
+    {
+        return sprintf(
+            '%s%s',
+            ['path' => 'p', 'query' => 'q', 'cookie' => 'c', 'header' => 'h'][$param['in']],
+            ucfirst($param['name']),
+        );
     }
 
     private function generateFormatClasses(string $format): array

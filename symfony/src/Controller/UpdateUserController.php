@@ -18,26 +18,27 @@ class UpdateUserController extends AbstractController
     #[Route(
         path: '/user/{username}',
         requirements: [
-            'username' => '[^:/?#[]@!$&\'()*+,;=]+',
+            'pUsername' => '[^:/?#[]@!$&\'()*+,;=]+',
         ],
         methods: ['put'],
-        priority: 0,    )]
+        priority: 0,
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         UpdateUserHandlerInterface $handler,
-        string $username = null,
+        string $pUsername = null,
     ): Response {
         $errors = [];
         $violations = $validator->validate(
-            $username,
+            $pUsername,
             [
                 new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['username'] = array_map(
+            $errors['path']['pUsername'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -54,8 +55,8 @@ class UpdateUserController extends AbstractController
         }
         $content = $request->getContent();
         
-        $dto = $serializer->deserialize($content, UserSchema::class, JsonEncoder::FORMAT);
-        $violations = $validator->validate($dto);
+        $payload = $serializer->deserialize($content, UserSchema::class, JsonEncoder::FORMAT);
+        $violations = $validator->validate($payload);
         if (count($violations) > 0) {
             foreach ($violations as $violation) {
                 $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
@@ -71,11 +72,10 @@ class UpdateUserController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $handler->handle(
-            $username,
-            $dto,
+        return $handler->handle(
+            $pUsername,
+            $payload,
         );
-        return new Response('');
     }
 }
 

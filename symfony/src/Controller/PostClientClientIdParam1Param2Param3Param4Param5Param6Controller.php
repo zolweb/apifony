@@ -18,44 +18,45 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
     #[Route(
         path: '/client/{clientId}/{param1}/{param2}/{param3}/{param4}/{param5}/{param6}',
         requirements: [
-            'clientId' => '[^:/?#[]@!$&\'()*+,;=]+',
-            'param1' => '[^:/?#[]@!$&\'()*+,;=]+',
-            'param2' => 'a-Z',
-            'param3' => '-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?',
-            'param4' => '-?(0|[1-9]\d*)',
-            'param5' => 'true|false',
-            'param6' => '[^:/?#[]@!$&\'()*+,;=]+',
+            'pClientId' => '[^:/?#[]@!$&\'()*+,;=]+',
+            'pParam1' => '[^:/?#[]@!$&\'()*+,;=]+',
+            'pParam2' => 'a-Z',
+            'pParam3' => '-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?',
+            'pParam4' => '-?(0|[1-9]\d*)',
+            'pParam5' => 'true|false',
+            'pParam6' => '[^:/?#[]@!$&\'()*+,;=]+',
         ],
         methods: ['post'],
-        priority: 0,    )]
+        priority: 0,
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         PostClientClientIdParam1Param2Param3Param4Param5Param6HandlerInterface $handler,
-        string $clientId = null,
-        mixed $param1 = null,
-        string $param2 = 'default',
-        float $param3 = 5.3E-7,
-        int $param4 = null,
-        bool $param5 = null,
-        array $param6 = null,
+        string $pClientId = null,
+        mixed $pParam1 = null,
+        string $pParam2 = 'default',
+        float $pParam3 = 5.3E-7,
+        int $pParam4 = null,
+        bool $pParam5 = null,
+        array $pParam6 = null,
     ): Response {
         $errors = [];
         $violations = $validator->validate(
-            $clientId,
+            $pClientId,
             [
                 new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['clientId'] = array_map(
+            $errors['path']['pClientId'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
         $violations = $validator->validate(
-            $param1,
+            $pParam1,
             [
                 new Assert\NotNull(),
                 new Format(),
@@ -63,13 +64,13 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['param1'] = array_map(
+            $errors['path']['pParam1'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
         $violations = $validator->validate(
-            $param2,
+            $pParam2,
             [
                 new Assert\NotNull(),
                 new Format(),
@@ -80,13 +81,13 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['param2'] = array_map(
+            $errors['path']['pParam2'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
         $violations = $validator->validate(
-            $param3,
+            $pParam3,
             [
                 new Assert\NotNull(),
                 new Assert\GreaterThan(1),
@@ -95,43 +96,43 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['param3'] = array_map(
+            $errors['path']['pParam3'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
         $violations = $validator->validate(
-            $param4,
+            $pParam4,
             [
                 new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['param4'] = array_map(
+            $errors['path']['pParam4'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
         $violations = $validator->validate(
-            $param5,
+            $pParam5,
             [
                 new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['param5'] = array_map(
+            $errors['path']['pParam5'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
         $violations = $validator->validate(
-            $param6,
+            $pParam6,
             [
                 new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['param6'] = array_map(
+            $errors['path']['pParam6'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -146,16 +147,15 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $handler->handle(
-            $clientId,
-            $param1,
-            $param2,
-            $param3,
-            $param4,
-            $param5,
-            $param6,
+        return $handler->handle(
+            $pClientId,
+            $pParam1,
+            $pParam2,
+            $pParam3,
+            $pParam4,
+            $pParam5,
+            $pParam6,
         );
-        return new Response('');
     }
 }
 

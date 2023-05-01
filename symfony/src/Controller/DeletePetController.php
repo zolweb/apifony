@@ -18,39 +18,40 @@ class DeletePetController extends AbstractController
     #[Route(
         path: '/pet/{petId}',
         requirements: [
-            'petId' => '-?(0|[1-9]\d*)',
+            'pPetId' => '-?(0|[1-9]\d*)',
         ],
         methods: ['delete'],
-        priority: 0,    )]
+        priority: 0,
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         DeletePetHandlerInterface $handler,
-        int $petId = null,
+        int $pPetId = null,
     ): Response {
-        $api_key = ($request->headers->get('api_key', null));
+        $hApi_key = ($request->headers->get('api_key', null));
         $errors = [];
         $violations = $validator->validate(
-            $petId,
+            $pPetId,
             [
                 new Assert\NotNull(),
                 new Int64(),
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['petId'] = array_map(
+            $errors['path']['pPetId'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
         $violations = $validator->validate(
-            $api_key,
+            $hApi_key,
             [
             ]
         );
         if (count($violations) > 0) {
-            $errors['header']['api_key'] = array_map(
+            $errors['header']['hApi_key'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -65,11 +66,10 @@ class DeletePetController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $handler->handle(
-            $api_key,
-            $petId,
+        return $handler->handle(
+            $hApi_key,
+            $pPetId,
         );
-        return new Response('');
     }
 }
 

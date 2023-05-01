@@ -18,27 +18,28 @@ class DeleteOrderController extends AbstractController
     #[Route(
         path: '/store/order/{orderId}',
         requirements: [
-            'orderId' => '-?(0|[1-9]\d*)',
+            'pOrderId' => '-?(0|[1-9]\d*)',
         ],
         methods: ['delete'],
-        priority: 0,    )]
+        priority: 0,
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         DeleteOrderHandlerInterface $handler,
-        int $orderId = null,
+        int $pOrderId = null,
     ): Response {
         $errors = [];
         $violations = $validator->validate(
-            $orderId,
+            $pOrderId,
             [
                 new Assert\NotNull(),
                 new Int64(),
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['orderId'] = array_map(
+            $errors['path']['pOrderId'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -53,10 +54,9 @@ class DeleteOrderController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $handler->handle(
-            $orderId,
+        return $handler->handle(
+            $pOrderId,
         );
-        return new Response('');
     }
 }
 

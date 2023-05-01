@@ -20,22 +20,23 @@ class FindPetsByTagsController extends AbstractController
         requirements: [
         ],
         methods: ['get'],
-        priority: 0,    )]
+        priority: 0,
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         FindPetsByTagsHandlerInterface $handler,
     ): Response {
-        $tags = ($request->query->get('tags', null));
+        $qTags = ($request->query->get('tags', null));
         $errors = [];
         $violations = $validator->validate(
-            $tags,
+            $qTags,
             [
             ]
         );
         if (count($violations) > 0) {
-            $errors['query']['tags'] = array_map(
+            $errors['query']['qTags'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -50,10 +51,9 @@ class FindPetsByTagsController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $handler->handle(
-            $tags,
+        return $handler->handle(
+            $qTags,
         );
-        return new Response('');
     }
 }
 

@@ -12,6 +12,6 @@ interface DeleteOrderHandlerInterface
      * For valid response try integer IDs with value < 1000. Anything above 1000 or nonintegers will generate API errors
      */
     public function handle(
-        int $orderId = null,
+        int $pOrderId = null,
     ): DeleteOrder400EmptyResponse|DeleteOrder404EmptyResponse;
 }

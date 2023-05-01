@@ -10,8 +10,8 @@ interface UpdatePetWithFormHandlerInterface
      * Updates a pet in the store with form data
      */
     public function handle(
-        int $petId = null,
-        ?string $name = null,
-        ?string $status = null,
+        int $pPetId = null,
+        ?string $qName = null,
+        ?string $qStatus = null,
     ): UpdatePetWithForm405EmptyResponse;
 }

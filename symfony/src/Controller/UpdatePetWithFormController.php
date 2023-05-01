@@ -18,51 +18,52 @@ class UpdatePetWithFormController extends AbstractController
     #[Route(
         path: '/pet/{petId}',
         requirements: [
-            'petId' => '-?(0|[1-9]\d*)',
+            'pPetId' => '-?(0|[1-9]\d*)',
         ],
         methods: ['post'],
-        priority: 0,    )]
+        priority: 0,
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         UpdatePetWithFormHandlerInterface $handler,
-        int $petId = null,
+        int $pPetId = null,
     ): Response {
-        $name = ($request->query->get('name', null));
-        $status = ($request->query->get('status', null));
+        $qName = ($request->query->get('name', null));
+        $qStatus = ($request->query->get('status', null));
         $errors = [];
         $violations = $validator->validate(
-            $petId,
+            $pPetId,
             [
                 new Assert\NotNull(),
                 new Int64(),
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['petId'] = array_map(
+            $errors['path']['pPetId'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
         $violations = $validator->validate(
-            $name,
+            $qName,
             [
             ]
         );
         if (count($violations) > 0) {
-            $errors['query']['name'] = array_map(
+            $errors['query']['qName'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
         $violations = $validator->validate(
-            $status,
+            $qStatus,
             [
             ]
         );
         if (count($violations) > 0) {
-            $errors['query']['status'] = array_map(
+            $errors['query']['qStatus'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -77,12 +78,11 @@ class UpdatePetWithFormController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $handler->handle(
-            $petId,
-            $name,
-            $status,
+        return $handler->handle(
+            $pPetId,
+            $qName,
+            $qStatus,
         );
-        return new Response('');
     }
 }
 

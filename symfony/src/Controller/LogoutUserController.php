@@ -20,7 +20,8 @@ class LogoutUserController extends AbstractController
         requirements: [
         ],
         methods: ['get'],
-        priority: 0,    )]
+        priority: 0,
+    )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,
@@ -38,9 +39,8 @@ class LogoutUserController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $handler->handle(
+        return $handler->handle(
         );
-        return new Response('');
     }
 }
 
