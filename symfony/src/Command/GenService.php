@@ -30,7 +30,6 @@ class GenService extends AbstractExtension
             new TwigFunction('toRouteRequirement', [$this, 'toRouteRequirement']),
             new TwigFunction('getOperationParams', [$this, 'getOperationParams']),
             new TwigFunction('getParamConstraints', [$this, 'getParamConstraints']),
-            new TwigFunction('genObjectSchema', [$this, 'genObjectSchema']),
             new TwigFunction('genResponses', [$this, 'genResponses']),
             new TwigFunction('toObjectSchemaClassName', [$this, 'toObjectSchemaClassName']),
             new TwigFunction('toVariableName', [$this, 'toVariableName']),
@@ -56,6 +55,7 @@ class GenService extends AbstractExtension
                                 [
                                     'className' => $controllerClassName,
                                     'handlerClassName' => $handlerInterfaceName,
+                                    'operationName' => $baseName,
                                     'spec' => $spec,
                                     'operation' => $operation,
                                     'route' => $route,
@@ -161,14 +161,6 @@ class GenService extends AbstractExtension
         );
     }
 
-    public function genObjectSchema(array $spec, array $schema, string $name): void
-    {
-        $schema = $this->resolveRef($spec, $schema);
-
-        $template = $this->twig->render('schema.php.twig', ['spec' => $spec, 'schema' => $schema, 'name' => $name]);
-        file_put_contents(__DIR__.'/../Controller/'.$name.'.php', $template);
-    }
-
     public function genResponses(array $spec, array $operation): string
     {
         $responseNames = [];
@@ -189,14 +181,36 @@ class GenService extends AbstractExtension
         return u($operationId)->camel()->title().$code.u($type)->camel()->title().'Response';
     }
 
-    public function toObjectSchemaClassName(array $schema, string $default): string
+    public function toObjectSchemaClassName(array $spec, array $schema, string $default): string
     {
+        $schemaClassName = $default;
+
+        // TODO https://spec.openapis.org/oas/latest.html#referenceObject
         if (isset($schema['$ref'])) {
-            [,,, $name] = explode('/', $schema['$ref']);
-            return "{$name}Schema";
+            [,,, $schemaName] = explode('/', $schema['$ref']);
+            $schemaClassName = "{$schemaName}Schema";
+            $schema = $this->resolveRef($spec, $schema);
         }
 
-        return $default;
+        static $schemaClassNames = [];
+
+        if (!isset($schemaClassNames[$schemaClassName])) {
+            file_put_contents(
+                __DIR__."/../Controller/{$schemaClassName}.php",
+                $this->twig->render(
+                    'schema.php.twig',
+                    [
+                        'spec' => $spec,
+                        'schema' => $schema,
+                        'className' => $schemaClassName,
+                    ],
+                ),
+            );
+
+            $schemaClassNames[$schemaClassName] = true;
+        }
+
+        return $schemaClassName;
     }
 
     public function getParamConstraints(array $param): array
@@ -264,6 +278,7 @@ class GenService extends AbstractExtension
 
     public function getParamFromRequest(array $param): string
     {
+        // TODO content field https://spec.openapis.org/oas/v3.1.0#fixed-fields-9
         return sprintf(
             '$%s = %s($request->%s->get(\'%s\', %s));',
             $this->toVariableName($param),

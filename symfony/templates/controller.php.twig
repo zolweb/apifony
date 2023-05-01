@@ -57,30 +57,33 @@ class {{ className }} extends AbstractController
         }
     {%~ endfor %}
 {%~ endfor %}
-{%~ if operation.requestBody.content['application/json'] is defined %}
-    {%~ set requestBody = operation.requestBody.content['application/json'] %}
-        $contentType = $request->headers->get('content-type');
-        if ($contentType !== 'application/json') {
-            return new JsonResponse(
-                [
-                    'code' => 'unsupported_format',
-                    'message' => "The value '$contentType' received in content-type header is not a supported format.",
-                ],
-                Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-            );
-        }
-        $content = $request->getContent();
-    {%~ if resolveRef(spec, requestBody.schema).type is same as ('object') %}
-        {{ genObjectSchema(spec, requestBody.schema, toObjectSchemaClassName(requestBody.schema, operation.operationId ~ 'RequestPayload')) }}
-        $payload = $serializer->deserialize($content, {{ toObjectSchemaClassName(requestBody.schema, operation.operationId ~ 'RequestPayload') }}::class, JsonEncoder::FORMAT);
-        $violations = $validator->validate($payload);
-        if (count($violations) > 0) {
-            foreach ($violations as $violation) {
-                $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+{%~ if operation.requestBody is defined %}
+    {%~ set requestBody = resolveRef(spec, operation.requestBody) %}
+    $contentType = $request->headers->get('content-type');
+    if (!in_array($contentType, ['{{ requestBody.content|keys|join('\', \'') }}'], true) {
+        return new JsonResponse(
+            [
+                'code' => 'unsupported_format',
+                'message' => "The value '$contentType' received in content-type header is not a supported format.",
+            ],
+            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+        );
+    }
+    {%~ if requestBody.content['application/json'] is defined %}
+        {%~ set content = requestBody.content['application/json'] %}
+        if ($contentType === 'application/json') {
+            $content = $request->getContent();
+        {#~ TODO other types #}
+        {%~ if resolveRef(spec, content.schema).type is same as ('object') %}
+            $payload = $serializer->deserialize($content, {{ toObjectSchemaClassName(spec, content.schema, operationName ~ 'RequestPayload') }}::class, JsonEncoder::FORMAT);
+            $violations = $validator->validate($payload);
+            if (count($violations) > 0) {
+                foreach ($violations as $violation) {
+                    $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+                }
             }
         }
-    {%~ else %}
-        // TODO
+        {%~ endif %}
     {%~ endif %}
 {%~ endif %}
         if (count($errors) > 0) {

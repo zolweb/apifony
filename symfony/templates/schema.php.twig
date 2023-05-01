@@ -4,37 +4,37 @@ namespace App\Controller;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class {{ name }}
+class {{ className }}
 {
     /**
-    {%~ for propertyName, property in schema.properties %}
-        {%~ if property.type is defined and property.type is same as ('array') %}
-            {%~ if property.items.type is defined %}
+{%~ for propertyName, property in schema.properties %}
+    {%~ if property.type is defined and property.type is same as ('array') %}
+        {%~ if property.items.type is defined %}
      * @param {{ propertyName in (schema.required ?? []) ? '' : '?' }}array<{{ property.items.type|toPhpType }}> ${{ propertyName }}
-            {%~ else %}
-    {{ genObjectSchema(spec, property.items, toObjectSchemaClassName(property.items, '{{ propertyName }}{{ name }}')) }} * @param {{ propertyName in (schema.required ?? []) ? '' : '?' }}array<{{ toObjectSchemaClassName(property.items, '{{ propertyName }}{{ name }}') }}> ${{ propertyName }},
-            {%~ endif %}
+        {%~ else %}
+     * @param {{ propertyName in (schema.required ?? []) ? '' : '?' }}array<{{ toObjectSchemaClassName(spec, property.items, '{{ propertyName }}{{ name }}') }}> ${{ propertyName }},
         {%~ endif %}
-    {%~ endfor %}
+    {%~ endif %}
+{%~ endfor %}
     */
     public function __construct(
-        {%~ for propertyName, property in schema.properties %}
-            {%~ if propertyName in (schema.required ?? []) %}
+{%~ for propertyName, property in schema.properties %}
+    {%~ if propertyName in (schema.required ?? []) %}
         #[Assert\NotNull]
-            {%~ endif %}
-            {%~ if property.enum is defined %}
+    {%~ endif %}
+    {%~ if property.enum is defined %}
         #[Assert\Choice(['{{ property.enum|join('\', \'')|raw }}'])]
-            {%~ endif %}
-            {%~ if property.type is defined %}
-                {%~ if property.type is same as ('array') and (property.items.type is not defined or property.items.type is same as ('object')) %}
+    {%~ endif %}
+    {%~ if property.type is defined %}
+        {%~ if property.type is same as ('array') and (property.items.type is not defined or property.items.type is same as ('object')) %}
         #[Assert\Valid]
-                {%~ endif %}
+        {%~ endif %}
         public readonly {{ propertyName in (schema.required ?? []) ? '' : '?' }}{{ property.type|toPhpType }} ${{ propertyName }}{{ propertyName in (schema.required ?? []) ? '' : ' = null' }},
-            {%~ else %}
+    {%~ else %}
         #[Assert\Valid]
-        public readonly {{ propertyName in (schema.required ?? []) ? '' : '?' }}{{ genObjectSchema(spec, property, toObjectSchemaClassName(property, '{{ propertyName }}{{ name }}')) }}{{ toObjectSchemaClassName(property, '{{ propertyName }}{{ name }}') }} ${{ propertyName }}{{ propertyName in (schema.required ?? []) ? '' : ' = null' }},
-            {%~ endif %}
-        {%~ endfor %}
+        public readonly {{ propertyName in (schema.required ?? []) ? '' : '?' }}{{ toObjectSchemaClassName(spec, property, '{{ propertyName }}{{ name }}') }} ${{ propertyName }}{{ propertyName in (schema.required ?? []) ? '' : ' = null' }},
+    {%~ endif %}
+{%~ endfor %}
     ) {
     }
 }

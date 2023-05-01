@@ -26,11 +26,11 @@ interface {{ interfaceName }}
 {%~ endif %}
      */
     public function handle(
-        {%~ for parameter in getOperationParams(spec, route, method) %}
+{%~ for parameter in getOperationParams(spec, route, method) %}
         {{ toMethodParam(parameter)|raw }}
-        {%~ endfor %}
-        {%~ if operation.requestBody.content['application/json'] is defined %}
+{%~ endfor %}
+{%~ if operation.requestBody.content['application/json'] is defined %}
         {{ toObjectSchemaClassName(operation.requestBody.content['application/json'].schema, operation.operationId|toRequestPayloadClassName) }} $dto,
-        {%~ endif %}
+{%~ endif %}
     ): {{ genResponses(spec, operation) }};
 }
