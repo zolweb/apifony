@@ -50,7 +50,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pClientId,
             [
-                new new Assert\NotNull(),,
+                new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {
@@ -62,9 +62,9 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam1,
             [
-                new new Assert\NotNull(),,
-                new Format(),,
-                new Assert\Choice(['item', 'item2']),,
+                new Assert\NotNull(),
+                new Format(),
+                new Assert\Choice(['item', 'item2']),
             ]
         );
         if (count($violations) > 0) {
@@ -76,12 +76,12 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam2,
             [
-                new new Assert\NotNull(),,
-                new Format(),,
-                new Assert\Regex('/a-Z/'),,
-                new Assert\Length(min: 1),,
-                new Assert\Length(max: 10),,
-                new Assert\Choice(['item', 'item1']),,
+                new Assert\NotNull(),
+                new Format(),
+                new Assert\Regex('/a-Z/'),
+                new Assert\Length(min: 1),
+                new Assert\Length(max: 10),
+                new Assert\Choice(['item', 'item1']),
             ]
         );
         if (count($violations) > 0) {
@@ -93,10 +93,10 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam3,
             [
-                new new Assert\NotNull(),,
-                new Assert\GreaterThan(1),,
-                new Assert\LessThan(2),,
-                new Assert\Choice(['1', '2']),,
+                new Assert\NotNull(),
+                new Assert\GreaterThan(1),
+                new Assert\LessThan(2),
+                new Assert\Choice(['1', '2']),
             ]
         );
         if (count($violations) > 0) {
@@ -108,7 +108,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam4,
             [
-                new new Assert\NotNull(),,
+                new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {
@@ -120,7 +120,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam5,
             [
-                new new Assert\NotNull(),,
+                new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {
@@ -132,7 +132,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam6,
             [
-                new new Assert\NotNull(),,
+                new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {
@@ -144,7 +144,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $qAgrez,
             [
-                new new Assert\NotNull(),,
+                new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {
@@ -156,7 +156,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $hAzef,
             [
-                new new Assert\NotNull(),,
+                new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {
@@ -187,18 +187,19 @@ class GetClientController extends AbstractController
                 iterator_to_array($violations),
             );
         }
-    $contentType = $request->headers->get('content-type');
-    if (!in_array($contentType, ['application/json&#039;, &#039;application/xml'], true) {
-        return new JsonResponse(
-            [
-                'code' => 'unsupported_format',
-                'message' => "The value '$contentType' received in content-type header is not a supported format.",
-            ],
-            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-        );
-    }
+        $contentType = $request->headers->get('content-type');
+        if (!in_array($contentType, ['application/json&#039;, &#039;application/xml'], true)) {
+            return new JsonResponse(
+                [
+                    'code' => 'unsupported_format',
+                    'message' => "The value '$contentType' received in content-type header is not a supported format.",
+                ],
+                Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+            );
+        }
         if ($contentType === 'application/json') {
             $content = $request->getContent();
+        }
         if (count($errors) > 0) {
             return new JsonResponse(
                 [

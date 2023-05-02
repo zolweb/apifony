@@ -59,16 +59,16 @@ class {{ className }} extends AbstractController
 {%~ endfor %}
 {%~ if operation.requestBody is defined %}
     {%~ set requestBody = resolveRef(spec, operation.requestBody) %}
-    $contentType = $request->headers->get('content-type');
-    if (!in_array($contentType, ['{{ requestBody.content|keys|join('\', \'') }}'], true) {
-        return new JsonResponse(
-            [
-                'code' => 'unsupported_format',
-                'message' => "The value '$contentType' received in content-type header is not a supported format.",
-            ],
-            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-        );
-    }
+        $contentType = $request->headers->get('content-type');
+        if (!in_array($contentType, ['{{ requestBody.content|keys|join('\', \'') }}'], true)) {
+            return new JsonResponse(
+                [
+                    'code' => 'unsupported_format',
+                    'message' => "The value '$contentType' received in content-type header is not a supported format.",
+                ],
+                Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+            );
+        }
     {#~ TODO other content types #}
     {%~ if requestBody.content['application/json'] is defined %}
         {%~ set content = requestBody.content['application/json'] %}
@@ -83,8 +83,8 @@ class {{ className }} extends AbstractController
                     $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
                 }
             }
-        }
         {%~ endif %}
+        }
     {%~ endif %}
 {%~ endif %}
         if (count($errors) > 0) {

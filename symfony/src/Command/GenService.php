@@ -151,12 +151,26 @@ class GenService extends AbstractExtension
         );
     }
 
-    public function propertyToMethodParam(array $schema, array $property, string $propertyName): string
-    {
+    public function propertyToMethodParam(
+        array $spec,
+        string $parentSchemaName,
+        array $schema,
+        array $property,
+        string $propertyName,
+    ): string {
         return sprintf(
-            '%s%s $%s%s,',
-            in_array($propertyName, $schema['required'], true) ? '' : '?',
-            $this->toPhpType($schema['type']),
+            '%s%s $%s%s',
+            in_array($propertyName, $schema['required'] ?? [], true) ? '' : '?',
+            // TODO array type
+            match ($property['type'] ?? 'mixed') {
+                'string' => 'string',
+                'number' => 'float',
+                'integer' => 'int',
+                'boolean' => 'bool',
+                'array' => 'array',
+                'object' => $this->toObjectSchemaClassName($spec, $schema, "{$propertyName}{$parentSchemaName}"),
+                'mixed' => 'mixed',
+            },
             $propertyName,
             ($default = $this->getSchemaDefault($property)) !== null ? sprintf(' = %s', $default) : '',
         );
@@ -172,12 +186,13 @@ class GenService extends AbstractExtension
         return sprintf(
             '@param %sarray<%s> $%s',
             in_array($propertyName, $schema['required'], true) ? '' : '?',
-            // TODO array type
             match ($property['type']) {
                 'string' => 'string',
                 'number' => 'float',
-                'interger' => 'int',
+                'integer' => 'int',
                 'boolean' => 'bool',
+                // TODO array elements type
+                'array' => 'array',
                 'object' => $this->toObjectSchemaClassName($spec, $schema, "{$propertyName}{$parentSchemaName}"),
             },
             $propertyName,
@@ -243,7 +258,7 @@ class GenService extends AbstractExtension
 
     public function getPropertyConstraints(array $schema, array $property, string $propertyName): array
     {
-        return $this->getConstraints(in_array($propertyName, $schema['required'], true), $property);
+        return $this->getConstraints(in_array($propertyName, $schema['required'] ?? [], true), $property);
     }
 
     public function getConstraints(bool $required, array $schema): array
@@ -251,41 +266,41 @@ class GenService extends AbstractExtension
         $constraints = [];
 
         if ($required) {
-            $constraints[] = 'new Assert\NotNull(),';
+            $constraints[] = 'Assert\NotNull()';
         }
 
         if (isset($schema['format'])) {
             $formatClasses = $this->generateFormatClasses($schema['format']);
             $constraints[] = sprintf(
-                '%s(),',
+                '%s()',
                 $formatClasses['constraintClassName'],
             );
         }
 
         if (isset($schema['pattern'])) {
             $constraints[] = sprintf(
-                'Assert\Regex(\'/%s/\'),',
+                'Assert\Regex(\'/%s/\')',
                 $schema['pattern'],
             );
         }
 
         if (isset($schema['minLength'])) {
             $constraints[] = sprintf(
-                'Assert\Length(min: %d),',
+                'Assert\Length(min: %d)',
                 $schema['minLength'],
             );
         }
 
         if (isset($schema['maxLength'])) {
             $constraints[] = sprintf(
-                'Assert\Length(max: %d),',
+                'Assert\Length(max: %d)',
                 $schema['maxLength'],
             );
         }
 
         if (isset($schema['minimum'])) {
             $constraints[] = sprintf(
-                'Assert\%s(%d),',
+                'Assert\%s(%d)',
                     $schema['exclusiveMinimum'] ?? false ? 'GreaterThan' : 'GreaterThanOrEqual',
                 $schema['minimum'],
             );
@@ -293,7 +308,7 @@ class GenService extends AbstractExtension
 
         if (isset($schema['maximum'])) {
             $constraints[] = sprintf(
-                'Assert\%s(%d),',
+                'Assert\%s(%d)',
                     $schema['exclusiveMaximum'] ?? false ? 'LessThan' : 'LessThanOrEqual',
                 $schema['maximum'],
             );
@@ -301,7 +316,7 @@ class GenService extends AbstractExtension
 
         if (isset($schema['enum'])) {
             $constraints[] = sprintf(
-                'Assert\Choice([\'%s\']),',
+                'Assert\Choice([\'%s\'])',
                 implode('\', \'', $schema['enum']),
             );
         }

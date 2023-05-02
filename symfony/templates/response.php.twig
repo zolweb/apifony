@@ -8,7 +8,7 @@ class {{ className }} extends Response
 {
     public function __construct(
 {%~ if content.schema is defined and resolveRef(spec, content.schema).type is same as ('object') %}
-        {{ genObjectSchema(spec, content.schema, className ~ 'Payload') }}{{ className ~ 'Payload' }} $payload,
+        {{ toObjectSchemaClassName(spec, content.schema, className ~ 'Payload') }}{{ className ~ 'Payload' }} $payload,
 {%~ endif %}
     ) {
         parent::__construct(
