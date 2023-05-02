@@ -9,31 +9,16 @@ class {{ className }}
     /**
 {%~ for propertyName, property in schema.properties %}
     {%~ if property.type is defined and property.type is same as ('array') %}
-        {%~ if property.items.type is defined %}
-     * @param {{ propertyName in (schema.required ?? []) ? '' : '?' }}array<{{ property.items.type|toPhpType }}> ${{ propertyName }}
-        {%~ else %}
-     * @param {{ propertyName in (schema.required ?? []) ? '' : '?' }}array<{{ toObjectSchemaClassName(spec, property.items, '{{ propertyName }}{{ name }}') }}> ${{ propertyName }},
-        {%~ endif %}
+     * @param {{ toParamArrayAnnotation(spec, className, schema, property, propertyName ) }}
     {%~ endif %}
 {%~ endfor %}
     */
     public function __construct(
 {%~ for propertyName, property in schema.properties %}
-    {%~ if propertyName in (schema.required ?? []) %}
-        #[Assert\NotNull]
-    {%~ endif %}
-    {%~ if property.enum is defined %}
-        #[Assert\Choice(['{{ property.enum|join('\', \'')|raw }}'])]
-    {%~ endif %}
-    {%~ if property.type is defined %}
-        {%~ if property.type is same as ('array') and (property.items.type is not defined or property.items.type is same as ('object')) %}
-        #[Assert\Valid]
-        {%~ endif %}
-        public readonly {{ propertyName in (schema.required ?? []) ? '' : '?' }}{{ property.type|toPhpType }} ${{ propertyName }}{{ propertyName in (schema.required ?? []) ? '' : ' = null' }},
-    {%~ else %}
-        #[Assert\Valid]
-        public readonly {{ propertyName in (schema.required ?? []) ? '' : '?' }}{{ toObjectSchemaClassName(spec, property, '{{ propertyName }}{{ name }}') }} ${{ propertyName }}{{ propertyName in (schema.required ?? []) ? '' : ' = null' }},
-    {%~ endif %}
+    {%~ for constraint in getParamConstraints(param) %}
+        #[{{ constraint|raw }}]
+    {%~ endfor %}
+        public readonly {{ propertyToMethodParam(schema, property, propertyName) }},
 {%~ endfor %}
     ) {
     }

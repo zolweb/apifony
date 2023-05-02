@@ -29,8 +29,14 @@ interface {{ interfaceName }}
 {%~ for parameter in getOperationParams(spec, route, method) %}
         {{ toMethodParam(parameter)|raw }}
 {%~ endfor %}
-{%~ if operation.requestBody.content['application/json'] is defined %}
-        {{ toObjectSchemaClassName(operation.requestBody.content['application/json'].schema, operation.operationId|toRequestPayloadClassName) }} $dto,
+{%~ if operation.requestBody is defined %}
+    {%~ set requestBody = resolveRef(spec, operation.requestBody) %}
+    {%~ if requestBody.content['application/json'] is defined %}
+        {%~ set content = requestBody.content['application/json'] %}
+        {%~ if resolveRef(spec, content.schema).type is same as ('object') %}
+        {{ toObjectSchemaClassName(spec, content.schema, operationName ~ 'RequestPayload') }} $payload,
+        {%~ endif %}
+    {%~ endif %}
 {%~ endif %}
     ): {{ genResponses(spec, operation) }};
 }

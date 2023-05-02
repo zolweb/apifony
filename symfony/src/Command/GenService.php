@@ -4,7 +4,6 @@ namespace App\Command;
 
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
-use Twig\TwigFilter;
 use Twig\TwigFunction;
 use function Symfony\Component\String\u;
 
@@ -15,23 +14,18 @@ class GenService extends AbstractExtension
     ) {
     }
 
-    public function getFilters(): array
-    {
-        return [
-            new TwigFilter('toRequestPayloadClassName', [$this, 'toRequestPayloadClassName']),
-            new TwigFilter('toPhpType', [$this, 'toPhpType']),
-        ];
-    }
-
     public function getFunctions(): array
     {
         return [
             new TwigFunction('toMethodParam', [$this, 'toMethodParam']),
+            new TwigFunction('propertyToMethodParam', [$this, 'propertyToMethodParam']),
             new TwigFunction('toRouteRequirement', [$this, 'toRouteRequirement']),
             new TwigFunction('getOperationParams', [$this, 'getOperationParams']),
             new TwigFunction('getParamConstraints', [$this, 'getParamConstraints']),
+            new TwigFunction('getPropertyConstraints', [$this, 'getPropertyConstraints']),
             new TwigFunction('genResponses', [$this, 'genResponses']),
             new TwigFunction('toObjectSchemaClassName', [$this, 'toObjectSchemaClassName']),
+            new TwigFunction('toParamArrayAnnotation', [$this, 'toParamArrayAnnotation']),
             new TwigFunction('toVariableName', [$this, 'toVariableName']),
             new TwigFunction('resolveRef', [$this, 'resolveRef']),
             new TwigFunction('getParamFromRequest', [$this, 'getParamFromRequest']),
@@ -69,6 +63,7 @@ class GenService extends AbstractExtension
                                 'handler.php.twig',
                                 [
                                     'interfaceName' => $handlerInterfaceName,
+                                    'operationName' => $baseName,
                                     'spec' => $spec,
                                     'operation' => $operation,
                                     'route' => $route,
@@ -134,11 +129,6 @@ class GenService extends AbstractExtension
         );
     }
 
-    public function toRequestPayloadClassName(string $operationId): string
-    {
-        return u($operationId)->camel()->title().'RequestPayload';
-    }
-
     public function toPhpType(string $type): string
     {
         return [
@@ -157,7 +147,40 @@ class GenService extends AbstractExtension
             ($param['required'] ?? false) ? '' : '?',
             isset($param['schema']['type']) ? $this->toPhpType($param['schema']['type']) : 'mixed',
             $this->toVariableName($param),
-            ($default = $this->getParamDefault($param)) !== null ? sprintf(' = %s', $default) : '',
+            ($default = $this->getSchemaDefault($param['schema'])) !== null ? sprintf(' = %s', $default) : '',
+        );
+    }
+
+    public function propertyToMethodParam(array $schema, array $property, string $propertyName): string
+    {
+        return sprintf(
+            '%s%s $%s%s,',
+            in_array($propertyName, $schema['required'], true) ? '' : '?',
+            $this->toPhpType($schema['type']),
+            $propertyName,
+            ($default = $this->getSchemaDefault($property)) !== null ? sprintf(' = %s', $default) : '',
+        );
+    }
+
+    public function toParamArrayAnnotation(
+        array $spec,
+        string $parentSchemaName,
+        array $schema,
+        array $property,
+        string $propertyName,
+    ): string {
+        return sprintf(
+            '@param %sarray<%s> $%s',
+            in_array($propertyName, $schema['required'], true) ? '' : '?',
+            // TODO array type
+            match ($property['type']) {
+                'string' => 'string',
+                'number' => 'float',
+                'interger' => 'int',
+                'boolean' => 'bool',
+                'object' => $this->toObjectSchemaClassName($spec, $schema, "{$propertyName}{$parentSchemaName}"),
+            },
+            $propertyName,
         );
     }
 
@@ -181,9 +204,9 @@ class GenService extends AbstractExtension
         return u($operationId)->camel()->title().$code.u($type)->camel()->title().'Response';
     }
 
-    public function toObjectSchemaClassName(array $spec, array $schema, string $default): string
+    public function toObjectSchemaClassName(array $spec, array $schema, string $defaultClassName): string
     {
-        $schemaClassName = $default;
+        $schemaClassName = $defaultClassName;
 
         // TODO https://spec.openapis.org/oas/latest.html#referenceObject
         if (isset($schema['$ref'])) {
@@ -215,61 +238,71 @@ class GenService extends AbstractExtension
 
     public function getParamConstraints(array $param): array
     {
+        return $this->getConstraints($param['required'] ?? false, $param['schema']);
+    }
+
+    public function getPropertyConstraints(array $schema, array $property, string $propertyName): array
+    {
+        return $this->getConstraints(in_array($propertyName, $schema['required'], true), $property);
+    }
+
+    public function getConstraints(bool $required, array $schema): array
+    {
         $constraints = [];
 
-        if ($param['required'] ?? false) {
+        if ($required) {
             $constraints[] = 'new Assert\NotNull(),';
         }
 
-        if (isset($param['schema']['format'])) {
-            $formatClasses = $this->generateFormatClasses($param['schema']['format']);
+        if (isset($schema['format'])) {
+            $formatClasses = $this->generateFormatClasses($schema['format']);
             $constraints[] = sprintf(
-                'new %s(),',
+                '%s(),',
                 $formatClasses['constraintClassName'],
             );
         }
 
-        if (isset($param['schema']['pattern'])) {
+        if (isset($schema['pattern'])) {
             $constraints[] = sprintf(
-                'new Assert\Regex(\'/%s/\'),',
-                $param['schema']['pattern'],
+                'Assert\Regex(\'/%s/\'),',
+                $schema['pattern'],
             );
         }
 
-        if (isset($param['schema']['minLength'])) {
+        if (isset($schema['minLength'])) {
             $constraints[] = sprintf(
-                'new Assert\Length(min: %d),',
-                $param['schema']['minLength'],
+                'Assert\Length(min: %d),',
+                $schema['minLength'],
             );
         }
 
-        if (isset($param['schema']['maxLength'])) {
+        if (isset($schema['maxLength'])) {
             $constraints[] = sprintf(
-                'new Assert\Length(max: %d),',
-                $param['schema']['maxLength'],
+                'Assert\Length(max: %d),',
+                $schema['maxLength'],
             );
         }
 
-        if (isset($param['schema']['minimum'])) {
+        if (isset($schema['minimum'])) {
             $constraints[] = sprintf(
-                'new Assert\%s(%d),',
-                $param['schema']['exclusiveMinimum'] ?? false ? 'GreaterThan' : 'GreaterThanOrEqual',
-                $param['schema']['minimum'],
+                'Assert\%s(%d),',
+                    $schema['exclusiveMinimum'] ?? false ? 'GreaterThan' : 'GreaterThanOrEqual',
+                $schema['minimum'],
             );
         }
 
-        if (isset($param['schema']['maximum'])) {
+        if (isset($schema['maximum'])) {
             $constraints[] = sprintf(
-                'new Assert\%s(%d),',
-                    $param['schema']['exclusiveMaximum'] ?? false ? 'LessThan' : 'LessThanOrEqual',
-                $param['schema']['maximum'],
+                'Assert\%s(%d),',
+                    $schema['exclusiveMaximum'] ?? false ? 'LessThan' : 'LessThanOrEqual',
+                $schema['maximum'],
             );
         }
 
-        if (isset($param['schema']['enum'])) {
+        if (isset($schema['enum'])) {
             $constraints[] = sprintf(
-                'new Assert\Choice([\'%s\']),',
-                implode('\', \'', $param['schema']['enum']),
+                'Assert\Choice([\'%s\']),',
+                implode('\', \'', $schema['enum']),
             );
         }
 
@@ -285,7 +318,7 @@ class GenService extends AbstractExtension
             ['number' => 'floatval', 'integer' => 'intval', 'boolean' => 'boolval'][$param['schema']['type']] ?? '',
             ['query' => 'query', 'header' => 'headers', 'cookie' => 'cookies'][$param['in']],
             $param['name'],
-            $this->getParamDefault($param),
+            $this->getSchemaDefault($param['schema']),
         );
     }
 
@@ -300,12 +333,12 @@ class GenService extends AbstractExtension
         return $mixed;
     }
 
-    public function getParamDefault(array $param): string
+    public function getSchemaDefault(array $schema): string
     {
-        if (isset($param['schema']['type']) && isset($param['schema']['default'])) {
-            return match ($param['schema']['type']) {
-                'string' => sprintf('\'%s\'', str_replace('\'', '\\\'', $param['schema']['default'])),
-                default => $param['schema']['default'],
+        if (isset($schema['type']) && isset($schema['default'])) {
+            return match ($schema['type']) {
+                'string' => sprintf('\'%s\'', str_replace('\'', '\\\'', $schema['default'])),
+                default => $schema['default'],
             };
         }
 

@@ -50,7 +50,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pClientId,
             [
-                new Assert\NotNull(),
+                new new Assert\NotNull(),,
             ]
         );
         if (count($violations) > 0) {
@@ -62,9 +62,9 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam1,
             [
-                new Assert\NotNull(),
-                new Format(),
-                new Assert\Choice(['item', 'item2']),
+                new new Assert\NotNull(),,
+                new Format(),,
+                new Assert\Choice(['item', 'item2']),,
             ]
         );
         if (count($violations) > 0) {
@@ -76,12 +76,12 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam2,
             [
-                new Assert\NotNull(),
-                new Format(),
-                new Assert\Regex('/a-Z/'),
-                new Assert\Length(min: 1),
-                new Assert\Length(max: 10),
-                new Assert\Choice(['item', 'item1']),
+                new new Assert\NotNull(),,
+                new Format(),,
+                new Assert\Regex('/a-Z/'),,
+                new Assert\Length(min: 1),,
+                new Assert\Length(max: 10),,
+                new Assert\Choice(['item', 'item1']),,
             ]
         );
         if (count($violations) > 0) {
@@ -93,10 +93,10 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam3,
             [
-                new Assert\NotNull(),
-                new Assert\GreaterThan(1),
-                new Assert\LessThan(2),
-                new Assert\Choice(['1', '2']),
+                new new Assert\NotNull(),,
+                new Assert\GreaterThan(1),,
+                new Assert\LessThan(2),,
+                new Assert\Choice(['1', '2']),,
             ]
         );
         if (count($violations) > 0) {
@@ -108,7 +108,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam4,
             [
-                new Assert\NotNull(),
+                new new Assert\NotNull(),,
             ]
         );
         if (count($violations) > 0) {
@@ -120,7 +120,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam5,
             [
-                new Assert\NotNull(),
+                new new Assert\NotNull(),,
             ]
         );
         if (count($violations) > 0) {
@@ -132,7 +132,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam6,
             [
-                new Assert\NotNull(),
+                new new Assert\NotNull(),,
             ]
         );
         if (count($violations) > 0) {
@@ -144,7 +144,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $qAgrez,
             [
-                new Assert\NotNull(),
+                new new Assert\NotNull(),,
             ]
         );
         if (count($violations) > 0) {
@@ -156,7 +156,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $hAzef,
             [
-                new Assert\NotNull(),
+                new new Assert\NotNull(),,
             ]
         );
         if (count($violations) > 0) {
@@ -223,7 +223,7 @@ class GetClientController extends AbstractController
             $hGegzer,
             $payload,
         );
-    }}
+    }
 }
 
 // $contentType = $request->headers->get('accept');
