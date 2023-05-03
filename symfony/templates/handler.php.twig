@@ -26,7 +26,7 @@ interface {{ interfaceName }}
 {%~ endif %}
      */
     public function handle(
-{%~ for parameter in getOperationParams(spec, route, method) %}
+{%~ for parameter in getOperationParams(path, method) %}
         {{ toMethodParam(parameter)|raw }}
 {%~ endfor %}
 {%~ if operation.requestBody is defined %}
@@ -34,9 +34,9 @@ interface {{ interfaceName }}
     {%~ if requestBody.content['application/json'] is defined %}
         {%~ set content = requestBody.content['application/json'] %}
         {%~ if content.schema.type is same as ('object') %}
-        {{ toObjectSchemaClassName(spec, content.schema, operationName ~ 'RequestPayload') }} $payload,
+        {{ toObjectSchemaClassName(content.schema, operationName ~ 'RequestPayload') }} $payload,
         {%~ endif %}
     {%~ endif %}
 {%~ endif %}
-    ): {{ genResponses(spec, operation) }};
+    ): {{ genResponses(operation) }};
 }

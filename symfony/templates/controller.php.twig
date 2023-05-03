@@ -18,7 +18,7 @@ class {{ className }} extends AbstractController
     #[Route(
         path: '{{ route }}',
         requirements: [
-{%~ for param in getOperationParams(spec, route, method, ['path']) %}
+{%~ for param in getOperationParams(path, method, ['path']) %}
             {{ toRouteRequirement(param)|raw }}
 {%~ endfor %}
         ],
@@ -31,16 +31,16 @@ class {{ className }} extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         {{ handlerClassName }} $handler,
-{%~ for param in getOperationParams(spec, route, method, ['path']) %}
+{%~ for param in getOperationParams(path, method, ['path']) %}
         {{ toMethodParam(param)|raw }}
 {%~ endfor %}
     ): Response {
-{%~ for param in getOperationParams(spec, route, method, ['query', 'header', 'cookie']) %}
+{%~ for param in getOperationParams(path, method, ['query', 'header', 'cookie']) %}
         {{ getParamFromRequest(param)|raw }}
 {%~ endfor %}
         $errors = [];
 {%~ for type in ['path', 'query', 'header', 'cookie'] %}
-    {%~ for param in getOperationParams(spec, route, method, [type]) %}
+    {%~ for param in getOperationParams(path, method, [type]) %}
         $violations = $validator->validate(
             ${{ toVariableName(param) }},
             [
@@ -76,7 +76,7 @@ class {{ className }} extends AbstractController
             $content = $request->getContent();
         {#~ TODO other schema types #}
         {%~ if content.schema.type is same as ('object') %}
-            $payload = $serializer->deserialize($content, {{ toObjectSchemaClassName(spec, content.schema, operationName ~ 'RequestPayload') }}::class, JsonEncoder::FORMAT);
+            $payload = $serializer->deserialize($content, {{ toObjectSchemaClassName(content.schema, operationName ~ 'RequestPayload') }}::class, JsonEncoder::FORMAT);
             $violations = $validator->validate($payload);
             if (count($violations) > 0) {
                 foreach ($violations as $violation) {
@@ -98,16 +98,17 @@ class {{ className }} extends AbstractController
             );
         }
         return $handler->handle(
-{%~ for param in getOperationParams(spec, route, method) %}
+{%~ for param in getOperationParams(path, method) %}
             ${{ toVariableName(param) }},
 {%~ endfor %}
-{%~ if spec.paths[route][method].requestBody is defined %}
+{%~ if path[method].requestBody is defined %}
             $payload,
 {%~ endif %}
         );
     }
 }
 
+{# TODO
 // $contentType = $request->headers->get('accept');
 // if ($contentType !== 'application/json') {
 // return new \Symfony\Component\HttpFoundation\JsonResponse(
@@ -118,3 +119,4 @@ class {{ className }} extends AbstractController
 // \Symfony\Component\HttpFoundation\Response::HTTP_NOT_ACCEPTABLE,
 // );
 // }
+#}

@@ -227,13 +227,3 @@ class GetClientController extends AbstractController
     }
 }
 
-// $contentType = $request->headers->get('accept');
-// if ($contentType !== 'application/json') {
-// return new \Symfony\Component\HttpFoundation\JsonResponse(
-// [
-// 'code' => 'not_acceptable_format',
-// 'message' => "The value '$contentType' received in accept header is not an acceptable format.",
-// ],
-// \Symfony\Component\HttpFoundation\Response::HTTP_NOT_ACCEPTABLE,
-// );
-// }

@@ -50,9 +50,9 @@ class GenService extends AbstractExtension
                                     'className' => $controllerClassName,
                                     'handlerClassName' => $handlerInterfaceName,
                                     'operationName' => $baseName,
-                                    'spec' => $spec,
-                                    'operation' => $operation,
+                                    'path' => $path,
                                     'route' => $route,
+                                    'operation' => $operation,
                                     'method' => $method,
                                 ],
                             ),
@@ -64,9 +64,8 @@ class GenService extends AbstractExtension
                                 [
                                     'interfaceName' => $handlerInterfaceName,
                                     'operationName' => $baseName,
-                                    'spec' => $spec,
+                                    'path' => $path,
                                     'operation' => $operation,
-                                    'route' => $route,
                                     'method' => $method,
                                 ],
                             ),
@@ -79,29 +78,23 @@ class GenService extends AbstractExtension
     }
 
     public function getOperationParams(
-        array $spec,
-        string $route,
+        array $path,
         string $method,
         array $in = ['path', 'query', 'header', 'cookie'],
     ): array {
-        static $params = [];
-
-        if (!isset($params[$route][$method])) {
-            $pathParams = $spec['paths'][$route]['parameters'] ?? [];
-            $operationParams = $spec['paths'][$route][$method]['parameters'] ?? [];
-            $pathParams = array_combine(
-                array_map(fn (array $param) => "{$param['in']}:{$param['name']}", $pathParams),
-                $pathParams,
-            );
-            $operationParams = array_combine(
-                array_map(fn (array $param) => "{$param['in']}:{$param['name']}", $operationParams),
-                $operationParams,
-            );
-            $params[$route][$method] = array_values(array_merge($pathParams, $operationParams));
-        }
+        $pathParams = $path['parameters'] ?? [];
+        $operationParams = $path[$method]['parameters'] ?? [];
+        $pathParams = array_combine(
+            array_map(fn (array $param) => "{$param['in']}:{$param['name']}", $pathParams),
+            $pathParams,
+        );
+        $operationParams = array_combine(
+            array_map(fn (array $param) => "{$param['in']}:{$param['name']}", $operationParams),
+            $operationParams,
+        );
 
         return array_filter(
-            $params[$route][$method],
+            array_values(array_merge($pathParams, $operationParams)),
             fn (array $param) => in_array($param['in'], $in, true),
         );
     }
@@ -146,7 +139,6 @@ class GenService extends AbstractExtension
     }
 
     public function propertyToMethodParam(
-        array $spec,
         string $parentSchemaName,
         array $schema,
         array $property,
@@ -162,7 +154,7 @@ class GenService extends AbstractExtension
                 'integer' => 'int',
                 'boolean' => 'bool',
                 'array' => 'array',
-                'object' => $this->toObjectSchemaClassName($spec, $property, ucfirst("{$propertyName}{$parentSchemaName}")),
+                'object' => $this->toObjectSchemaClassName($property, ucfirst("{$propertyName}{$parentSchemaName}")),
                 'mixed' => 'mixed',
             },
             $propertyName,
@@ -171,7 +163,6 @@ class GenService extends AbstractExtension
     }
 
     public function toParamArrayAnnotation(
-        array $spec,
         string $parentSchemaName,
         array $schema,
         array $property,
@@ -187,19 +178,19 @@ class GenService extends AbstractExtension
                 'boolean' => 'bool',
                 // TODO array elements type
                 'array' => 'array',
-                'object' => $this->toObjectSchemaClassName($spec, $property['items'], ucfirst("{$propertyName}{$parentSchemaName}")),
+                'object' => $this->toObjectSchemaClassName($property['items'], ucfirst("{$propertyName}{$parentSchemaName}")),
             },
             $propertyName,
         );
     }
 
-    public function genResponses(array $spec, array $operation): string
+    public function genResponses(array $operation): string
     {
         $responseNames = [];
         foreach ($operation['responses'] ?? [] as $code => $response) {
             foreach ($response['content'] ?? ['empty' => []] as $type => $content) {
                 $responseNames[] = $responseName = $this->toResponseName($operation['operationId'], $code, $type);
-                $template = $this->twig->render('response.php.twig', ['spec' => $spec, 'code' => $code, 'className' => $responseName, 'type' => $type, 'content' => $content]);
+                $template = $this->twig->render('response.php.twig', ['code' => $code, 'className' => $responseName, 'type' => $type, 'content' => $content]);
                 file_put_contents(__DIR__ . '/../Controller/' . $responseName . '.php', $template);
             }
         }
@@ -212,14 +203,13 @@ class GenService extends AbstractExtension
         return u($operationId)->camel()->title().$code.u($type)->camel()->title().'Response';
     }
 
-    public function toObjectSchemaClassName(array $spec, array $schema, string $defaultClassName): string
+    public function toObjectSchemaClassName(array $schema, string $defaultClassName): string
     {
         file_put_contents(
             __DIR__."/../Controller/{$defaultClassName}.php",
             $this->twig->render(
                 'schema.php.twig',
                 [
-                    'spec' => $spec,
                     'schema' => $schema,
                     'className' => $defaultClassName,
                 ],
