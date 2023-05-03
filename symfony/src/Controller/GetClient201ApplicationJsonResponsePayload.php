@@ -9,7 +9,7 @@ class GetClient201ApplicationJsonResponsePayload
     /**
     */
     public function __construct(
-        public readonly ?string $id = null,
+        public readonly ?string $id,
     ) {
     }
 }

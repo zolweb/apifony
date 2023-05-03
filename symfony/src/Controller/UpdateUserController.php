@@ -28,7 +28,7 @@ class UpdateUserController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         UpdateUserHandlerInterface $handler,
-        string $pUsername = null,
+        string $pUsername,
     ): Response {
         $errors = [];
         $violations = $validator->validate(

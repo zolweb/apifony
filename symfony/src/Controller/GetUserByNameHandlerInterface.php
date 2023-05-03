@@ -10,6 +10,6 @@ interface GetUserByNameHandlerInterface
      * Get user by user name
      */
     public function handle(
-        string $pUsername = null,
+        string $pUsername,
     ): GetUserByName200ApplicationJsonResponse|GetUserByName200ApplicationXmlResponse|GetUserByName400EmptyResponse|GetUserByName404EmptyResponse;
 }

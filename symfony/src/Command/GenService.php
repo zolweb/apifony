@@ -2,6 +2,7 @@
 
 namespace App\Command;
 
+use Symfony\Component\Config\Definition\Exception\Exception;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -158,9 +159,10 @@ class GenService extends AbstractExtension
         array $property,
         string $propertyName,
     ): string {
+        $property = $this->resolveRef($spec, $property);
         return sprintf(
             '%s%s $%s%s',
-            in_array($propertyName, $schema['required'] ?? [], true) ? '' : '?',
+            in_array($propertyName, $schema['required'] ?? [], true) || !isset($property['type']) ? '' : '?',
             // TODO array type
             match ($property['type'] ?? 'mixed') {
                 'string' => 'string',
@@ -168,7 +170,7 @@ class GenService extends AbstractExtension
                 'integer' => 'int',
                 'boolean' => 'bool',
                 'array' => 'array',
-                'object' => $this->toObjectSchemaClassName($spec, $schema, "{$propertyName}{$parentSchemaName}"),
+                'object' => $this->toObjectSchemaClassName($spec, $property, ucfirst("{$propertyName}{$parentSchemaName}")),
                 'mixed' => 'mixed',
             },
             $propertyName,
@@ -183,17 +185,18 @@ class GenService extends AbstractExtension
         array $property,
         string $propertyName,
     ): string {
+        $items = $this->resolveRef($spec, $property['items']);
         return sprintf(
             '@param %sarray<%s> $%s',
             in_array($propertyName, $schema['required'], true) ? '' : '?',
-            match ($property['type']) {
+            match ($items['type']) {
                 'string' => 'string',
                 'number' => 'float',
                 'integer' => 'int',
                 'boolean' => 'bool',
                 // TODO array elements type
                 'array' => 'array',
-                'object' => $this->toObjectSchemaClassName($spec, $schema, "{$propertyName}{$parentSchemaName}"),
+                'object' => $this->toObjectSchemaClassName($spec, $items, ucfirst("{$propertyName}{$parentSchemaName}")),
             },
             $propertyName,
         );
@@ -333,7 +336,7 @@ class GenService extends AbstractExtension
             ['number' => 'floatval', 'integer' => 'intval', 'boolean' => 'boolval'][$param['schema']['type']] ?? '',
             ['query' => 'query', 'header' => 'headers', 'cookie' => 'cookies'][$param['in']],
             $param['name'],
-            $this->getSchemaDefault($param['schema']),
+            $this->getSchemaDefault($param['schema']) ?? 'null',
         );
     }
 
@@ -348,7 +351,7 @@ class GenService extends AbstractExtension
         return $mixed;
     }
 
-    public function getSchemaDefault(array $schema): string
+    public function getSchemaDefault(array $schema): ?string
     {
         if (isset($schema['type']) && isset($schema['default'])) {
             return match ($schema['type']) {
@@ -357,7 +360,7 @@ class GenService extends AbstractExtension
             };
         }
 
-        return 'null';
+        return null;
     }
 
     public function toVariableName(array $param): string

@@ -12,7 +12,7 @@ interface UpdateUserHandlerInterface
      * This can only be done by the logged in user.
      */
     public function handle(
-        string $pUsername = null,
+        string $pUsername,
         UserSchema $payload,
     ): UpdateUser201EmptyResponse;
 }

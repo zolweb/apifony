@@ -34,13 +34,13 @@ class GetClientController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         GetClientHandlerInterface $handler,
-        string $pClientId = null,
-        mixed $pParam1 = null,
+        string $pClientId,
+        mixed $pParam1,
         string $pParam2 = 'default',
         float $pParam3 = 5.3E-7,
-        int $pParam4 = null,
-        bool $pParam5 = null,
-        array $pParam6 = null,
+        int $pParam4,
+        bool $pParam5,
+        array $pParam6,
     ): Response {
         $hAzef = ($request->headers->get('azef', null));
         $qAgrez = floatval($request->query->get('agrez', null));

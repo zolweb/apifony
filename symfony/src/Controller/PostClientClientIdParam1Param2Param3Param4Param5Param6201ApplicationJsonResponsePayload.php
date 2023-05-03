@@ -9,7 +9,7 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6201ApplicationJsonRe
     /**
     */
     public function __construct(
-        public readonly ?string $id = null,
+        public readonly ?string $id,
     ) {
     }
 }

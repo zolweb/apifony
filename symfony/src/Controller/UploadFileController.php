@@ -28,7 +28,7 @@ class UploadFileController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         UploadFileHandlerInterface $handler,
-        int $pPetId = null,
+        int $pPetId,
     ): Response {
         $qAdditionalMetadata = ($request->query->get('additionalMetadata', null));
         $errors = [];

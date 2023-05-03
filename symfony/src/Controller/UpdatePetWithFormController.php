@@ -28,7 +28,7 @@ class UpdatePetWithFormController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         UpdatePetWithFormHandlerInterface $handler,
-        int $pPetId = null,
+        int $pPetId,
     ): Response {
         $qName = ($request->query->get('name', null));
         $qStatus = ($request->query->get('status', null));

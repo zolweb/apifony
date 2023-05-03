@@ -21,8 +21,6 @@ class GenCommand extends Command
     {
         $spec = Yaml::parse(file_get_contents(__DIR__.'/openapi.yaml'));
 
-        var_dump($spec);
-
         $this->genService->generate($spec);
 
         return 0;

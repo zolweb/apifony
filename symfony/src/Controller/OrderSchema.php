@@ -10,16 +10,16 @@ class OrderSchema
     */
     public function __construct(
         #[Int64()]
-        public readonly ?int $id = null,
+        public readonly ?int $id,
         #[Int64()]
-        public readonly ?int $petId = null,
+        public readonly ?int $petId,
         #[Int32()]
-        public readonly ?int $quantity = null,
+        public readonly ?int $quantity,
         #[DateTime()]
-        public readonly ?string $shipDate = null,
+        public readonly ?string $shipDate,
         #[Assert\Choice(['placed', 'approved', 'delivered'])]
-        public readonly ?string $status = null,
-        public readonly ?bool $complete = null,
+        public readonly ?string $status,
+        public readonly ?bool $complete,
     ) {
     }
 }
