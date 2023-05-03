@@ -33,7 +33,21 @@ class GenService extends AbstractExtension
 
     public function generate(array $spec): void
     {
-        $this->resolveRefs($spec, $spec);
+        $resolveRefs = function (array &$parentNode) use (&$resolveRefs, $spec): void {
+            foreach ($parentNode as &$childNode) {
+                if (is_array($childNode)) {
+                    if (isset($childNode['$ref'])) {
+                        // TODO https://spec.openapis.org/oas/latest.html#referenceObject
+                        [, , $type, $name] = explode('/', $childNode['$ref']);
+                        $childNode = $spec['components'][$type][$name];
+                    }
+
+                    $resolveRefs($childNode);
+                }
+            }
+        };
+
+        $resolveRefs($spec);
 
         foreach ($spec['paths'] as $route => $path) {
             if ($route[0] === '/') {
@@ -363,20 +377,5 @@ class GenService extends AbstractExtension
         }
 
         return $formats[$format];
-    }
-
-    private function resolveRefs(array $spec, array &$parentNode): void
-    {
-        foreach ($parentNode as &$childNode) {
-            if (is_array($childNode)) {
-                if (isset($childNode['$ref'])) {
-                    // TODO https://spec.openapis.org/oas/latest.html#referenceObject
-                    [, , $type, $name] = explode('/', $childNode['$ref']);
-                    $childNode = $spec['components'][$type][$name];
-                }
-
-                $this->resolveRefs($spec, $childNode);
-            }
-        }
     }
 }
