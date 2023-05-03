@@ -116,23 +116,14 @@ class GenService extends AbstractExtension
         );
     }
 
-    public function toPhpType(string $type): string
-    {
-        return [
-            'string' => 'string',
-            'number' => 'float',
-            'integer' => 'int',
-            'boolean' => 'bool',
-            'array' => 'array',
-        ][$type];
-    }
-
     public function toMethodParam(array $param): string
     {
         return sprintf(
             '%s%s $%s%s,',
             ($param['required'] ?? false) ? '' : '?',
-            isset($param['schema']['type']) ? $this->toPhpType($param['schema']['type']) : 'mixed',
+            isset($param['schema']['type']) ?
+                ['string' => 'string', 'number' => 'float', 'integer' => 'int', 'boolean' => 'bool', 'array' => 'array'][$param['schema']['type']] :
+                'mixed',
             $this->toVariableName($param),
             ($default = $this->getSchemaDefault($param['schema'])) !== null ? sprintf(' = %s', $default) : '',
         );
