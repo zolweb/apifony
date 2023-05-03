@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 class AddPet200ApplicationJsonResponse extends Response
 {
     public function __construct(
-        PetSchemaAddPet200ApplicationJsonResponsePayload $payload,
+        AddPet200ApplicationJsonResponsePayloadAddPet200ApplicationJsonResponsePayload $payload,
     ) {
         parent::__construct(
             '',

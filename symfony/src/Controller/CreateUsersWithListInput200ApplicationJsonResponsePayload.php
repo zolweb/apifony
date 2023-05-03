@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class UserSchema
+class CreateUsersWithListInput200ApplicationJsonResponsePayload
 {
     /**
     */

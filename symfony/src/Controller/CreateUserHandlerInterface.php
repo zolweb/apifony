@@ -12,6 +12,6 @@ interface CreateUserHandlerInterface
      * This can only be done by the logged in user.
      */
     public function handle(
-        UserSchema $payload,
+        CreateUserRequestPayload $payload,
     ): CreateUser201ApplicationJsonResponse;
 }

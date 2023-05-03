@@ -12,6 +12,6 @@ interface UpdatePetHandlerInterface
      * Update an existing pet by Id
      */
     public function handle(
-        PetSchema $payload,
+        UpdatePetRequestPayload $payload,
     ): UpdatePet200ApplicationJsonResponse|UpdatePet400EmptyResponse|UpdatePet404EmptyResponse|UpdatePet405EmptyResponse;
 }

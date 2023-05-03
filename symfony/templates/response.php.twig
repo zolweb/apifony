@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 class {{ className }} extends Response
 {
     public function __construct(
-{%~ if content.schema is defined and resolveRef(spec, content.schema).type is same as ('object') %}
+{%~ if content.schema is defined and content.schema.type is same as ('object') %}
         {{ toObjectSchemaClassName(spec, content.schema, className ~ 'Payload') }}{{ className ~ 'Payload' }} $payload,
 {%~ endif %}
     ) {

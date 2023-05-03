@@ -2,7 +2,6 @@
 
 namespace App\Command;
 
-use Symfony\Component\Config\Definition\Exception\Exception;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
@@ -28,16 +27,16 @@ class GenService extends AbstractExtension
             new TwigFunction('toObjectSchemaClassName', [$this, 'toObjectSchemaClassName']),
             new TwigFunction('toParamArrayAnnotation', [$this, 'toParamArrayAnnotation']),
             new TwigFunction('toVariableName', [$this, 'toVariableName']),
-            new TwigFunction('resolveRef', [$this, 'resolveRef']),
             new TwigFunction('getParamFromRequest', [$this, 'getParamFromRequest']),
         ];
     }
 
     public function generate(array $spec): void
     {
+        $this->resolveRefs($spec, $spec);
+
         foreach ($spec['paths'] as $route => $path) {
             if ($route[0] === '/') {
-                $path = $this->resolveRef($spec, $path);
                 foreach ($path as $method => $operation) {
                     if (in_array($method, ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'], true)) {
                         $baseName = u($operation['operationId'])->camel()->title();
@@ -88,14 +87,8 @@ class GenService extends AbstractExtension
         static $params = [];
 
         if (!isset($params[$route][$method])) {
-            $pathParams = array_map(
-                fn (array $param) => $this->resolveRef($spec, $param),
-                $spec['paths'][$route]['parameters'] ?? [],
-            );
-            $operationParams = array_map(
-                fn (array $param) => $this->resolveRef($spec, $param),
-                $spec['paths'][$route][$method]['parameters'] ?? [],
-            );
+            $pathParams = $spec['paths'][$route]['parameters'] ?? [];
+            $operationParams = $spec['paths'][$route][$method]['parameters'] ?? [];
             $pathParams = array_combine(
                 array_map(fn (array $param) => "{$param['in']}:{$param['name']}", $pathParams),
                 $pathParams,
@@ -159,7 +152,6 @@ class GenService extends AbstractExtension
         array $property,
         string $propertyName,
     ): string {
-        $property = $this->resolveRef($spec, $property);
         return sprintf(
             '%s%s $%s%s',
             in_array($propertyName, $schema['required'] ?? [], true) || !isset($property['type']) ? '' : '?',
@@ -185,18 +177,17 @@ class GenService extends AbstractExtension
         array $property,
         string $propertyName,
     ): string {
-        $items = $this->resolveRef($spec, $property['items']);
         return sprintf(
             '@param %sarray<%s> $%s',
             in_array($propertyName, $schema['required'], true) ? '' : '?',
-            match ($items['type']) {
+            match ($property['items']['type']) {
                 'string' => 'string',
                 'number' => 'float',
                 'integer' => 'int',
                 'boolean' => 'bool',
                 // TODO array elements type
                 'array' => 'array',
-                'object' => $this->toObjectSchemaClassName($spec, $items, ucfirst("{$propertyName}{$parentSchemaName}")),
+                'object' => $this->toObjectSchemaClassName($spec, $property['items'], ucfirst("{$propertyName}{$parentSchemaName}")),
             },
             $propertyName,
         );
@@ -206,7 +197,6 @@ class GenService extends AbstractExtension
     {
         $responseNames = [];
         foreach ($operation['responses'] ?? [] as $code => $response) {
-            $response = $this->resolveRef($spec, $response);
             foreach ($response['content'] ?? ['empty' => []] as $type => $content) {
                 $responseNames[] = $responseName = $this->toResponseName($operation['operationId'], $code, $type);
                 $template = $this->twig->render('response.php.twig', ['spec' => $spec, 'code' => $code, 'className' => $responseName, 'type' => $type, 'content' => $content]);
@@ -224,34 +214,20 @@ class GenService extends AbstractExtension
 
     public function toObjectSchemaClassName(array $spec, array $schema, string $defaultClassName): string
     {
-        $schemaClassName = $defaultClassName;
+        file_put_contents(
+            __DIR__."/../Controller/{$defaultClassName}.php",
+            $this->twig->render(
+                'schema.php.twig',
+                [
+                    'spec' => $spec,
+                    'schema' => $schema,
+                    'className' => $defaultClassName,
+                ],
+            ),
+        );
 
-        // TODO https://spec.openapis.org/oas/latest.html#referenceObject
-        if (isset($schema['$ref'])) {
-            [,,, $schemaName] = explode('/', $schema['$ref']);
-            $schemaClassName = "{$schemaName}Schema";
-            $schema = $this->resolveRef($spec, $schema);
-        }
-
-        static $schemaClassNames = [];
-
-        if (!isset($schemaClassNames[$schemaClassName])) {
-            file_put_contents(
-                __DIR__."/../Controller/{$schemaClassName}.php",
-                $this->twig->render(
-                    'schema.php.twig',
-                    [
-                        'spec' => $spec,
-                        'schema' => $schema,
-                        'className' => $schemaClassName,
-                    ],
-                ),
-            );
-
-            $schemaClassNames[$schemaClassName] = true;
-        }
-
-        return $schemaClassName;
+        // TODO Strange that this method returns one of its params unmodified
+        return $defaultClassName;
     }
 
     public function getParamConstraints(array $param): array
@@ -340,17 +316,6 @@ class GenService extends AbstractExtension
         );
     }
 
-    public function resolveRef(array $spec, array $mixed): array
-    {
-        if (isset($mixed['$ref'])) {
-            // TODO https://spec.openapis.org/oas/latest.html#referenceObject
-            [,, $type, $name] = explode('/', $mixed['$ref']);
-            return $spec['components'][$type][$name];
-        }
-
-        return $mixed;
-    }
-
     public function getSchemaDefault(array $schema): ?string
     {
         if (isset($schema['type']) && isset($schema['default'])) {
@@ -417,5 +382,20 @@ class GenService extends AbstractExtension
         }
 
         return $formats[$format];
+    }
+
+    private function resolveRefs(array $spec, array &$parentNode): void
+    {
+        foreach ($parentNode as &$childNode) {
+            if (is_array($childNode)) {
+                if (isset($childNode['$ref'])) {
+                    // TODO https://spec.openapis.org/oas/latest.html#referenceObject
+                    [, , $type, $name] = explode('/', $childNode['$ref']);
+                    $childNode = $spec['components'][$type][$name];
+                }
+
+                $this->resolveRefs($spec, $childNode);
+            }
+        }
     }
 }

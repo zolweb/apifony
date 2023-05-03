@@ -58,7 +58,7 @@ class {{ className }} extends AbstractController
     {%~ endfor %}
 {%~ endfor %}
 {%~ if operation.requestBody is defined %}
-    {%~ set requestBody = resolveRef(spec, operation.requestBody) %}
+    {%~ set requestBody = operation.requestBody %}
         $contentType = $request->headers->get('content-type');
         if (!in_array($contentType, ['{{ requestBody.content|keys|join('\', \'') }}'], true)) {
             return new JsonResponse(
@@ -75,7 +75,7 @@ class {{ className }} extends AbstractController
         if ($contentType === 'application/json') {
             $content = $request->getContent();
         {#~ TODO other schema types #}
-        {%~ if resolveRef(spec, content.schema).type is same as ('object') %}
+        {%~ if content.schema.type is same as ('object') %}
             $payload = $serializer->deserialize($content, {{ toObjectSchemaClassName(spec, content.schema, operationName ~ 'RequestPayload') }}::class, JsonEncoder::FORMAT);
             $violations = $validator->validate($payload);
             if (count($violations) > 0) {

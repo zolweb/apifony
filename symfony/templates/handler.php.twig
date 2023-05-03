@@ -30,10 +30,10 @@ interface {{ interfaceName }}
         {{ toMethodParam(parameter)|raw }}
 {%~ endfor %}
 {%~ if operation.requestBody is defined %}
-    {%~ set requestBody = resolveRef(spec, operation.requestBody) %}
+    {%~ set requestBody = operation.requestBody %}
     {%~ if requestBody.content['application/json'] is defined %}
         {%~ set content = requestBody.content['application/json'] %}
-        {%~ if resolveRef(spec, content.schema).type is same as ('object') %}
+        {%~ if content.schema.type is same as ('object') %}
         {{ toObjectSchemaClassName(spec, content.schema, operationName ~ 'RequestPayload') }} $payload,
         {%~ endif %}
     {%~ endif %}

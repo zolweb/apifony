@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 class GetUserByName200ApplicationXmlResponse extends Response
 {
     public function __construct(
-        UserSchemaGetUserByName200ApplicationXmlResponsePayload $payload,
+        GetUserByName200ApplicationXmlResponsePayloadGetUserByName200ApplicationXmlResponsePayload $payload,
     ) {
         parent::__construct(
             '',

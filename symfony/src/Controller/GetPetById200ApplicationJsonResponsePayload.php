@@ -4,18 +4,18 @@ namespace App\Controller;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class PetSchema
+class GetPetById200ApplicationJsonResponsePayload
 {
     /**
      * @param @param array<string> $photoUrls
-     * @param @param ?array<TagsPetSchema> $tags
+     * @param @param ?array<TagsGetPetById200ApplicationJsonResponsePayload> $tags
     */
     public function __construct(
         #[Int64()]
         public readonly ?int $id,
         #[Assert\NotNull()]
         public readonly string $name,
-        public readonly ?CategoryPetSchema $category,
+        public readonly ?CategoryGetPetById200ApplicationJsonResponsePayload $category,
         #[Assert\NotNull()]
         public readonly array $photoUrls,
         public readonly ?array $tags,
