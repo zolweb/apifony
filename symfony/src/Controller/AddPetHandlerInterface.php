@@ -12,6 +12,6 @@ interface AddPetHandlerInterface
      * Add a new pet to the store
      */
     public function handle(
-        AddPetRequestPayload $payload,
+        PetSchema $payload,
     ): AddPet200ApplicationJsonResponse|AddPet405EmptyResponse;
 }

@@ -8,7 +8,7 @@ class {{ className }} extends Response
 {
     public function __construct(
 {%~ if content.schema is defined and content.schema.type is same as ('object') %}
-        {{ toObjectSchemaClassName(content.schema, className ~ 'Payload') }}{{ className ~ 'Payload' }} $payload,
+        {{ toObjectSchemaClassName(content.schema, className ~ 'Payload') }} $payload,
 {%~ endif %}
     ) {
         parent::__construct(

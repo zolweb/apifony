@@ -13,6 +13,6 @@ interface UpdateUserHandlerInterface
      */
     public function handle(
         string $pUsername,
-        UpdateUserRequestPayload $payload,
+        UserSchema $payload,
     ): UpdateUser201EmptyResponse;
 }

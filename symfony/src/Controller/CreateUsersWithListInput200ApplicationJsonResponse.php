@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 class CreateUsersWithListInput200ApplicationJsonResponse extends Response
 {
     public function __construct(
-        CreateUsersWithListInput200ApplicationJsonResponsePayloadCreateUsersWithListInput200ApplicationJsonResponsePayload $payload,
+        UserSchema $payload,
     ) {
         parent::__construct(
             '',

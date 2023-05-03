@@ -41,7 +41,7 @@ class AddPetController extends AbstractController
         }
         if ($contentType === 'application/json') {
             $content = $request->getContent();
-            $payload = $serializer->deserialize($content, AddPetRequestPayload::class, JsonEncoder::FORMAT);
+            $payload = $serializer->deserialize($content, PetSchema::class, JsonEncoder::FORMAT);
             $violations = $validator->validate($payload);
             if (count($violations) > 0) {
                 foreach ($violations as $violation) {

@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 class GetInventory200ApplicationJsonResponse extends Response
 {
     public function __construct(
-        GetInventory200ApplicationJsonResponsePayloadGetInventory200ApplicationJsonResponsePayload $payload,
+        GetInventory200ApplicationJsonResponsePayload $payload,
     ) {
         parent::__construct(
             '',

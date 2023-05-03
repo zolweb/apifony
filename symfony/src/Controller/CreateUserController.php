@@ -41,7 +41,7 @@ class CreateUserController extends AbstractController
         }
         if ($contentType === 'application/json') {
             $content = $request->getContent();
-            $payload = $serializer->deserialize($content, CreateUserRequestPayload::class, JsonEncoder::FORMAT);
+            $payload = $serializer->deserialize($content, UserSchema::class, JsonEncoder::FORMAT);
             $violations = $validator->validate($payload);
             if (count($violations) > 0) {
                 foreach ($violations as $violation) {

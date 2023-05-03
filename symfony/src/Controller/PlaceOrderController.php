@@ -41,7 +41,7 @@ class PlaceOrderController extends AbstractController
         }
         if ($contentType === 'application/json') {
             $content = $request->getContent();
-            $payload = $serializer->deserialize($content, PlaceOrderRequestPayload::class, JsonEncoder::FORMAT);
+            $payload = $serializer->deserialize($content, OrderSchema::class, JsonEncoder::FORMAT);
             $violations = $validator->validate($payload);
             if (count($violations) > 0) {
                 foreach ($violations as $violation) {

@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 class GetUserByName200ApplicationJsonResponse extends Response
 {
     public function __construct(
-        GetUserByName200ApplicationJsonResponsePayloadGetUserByName200ApplicationJsonResponsePayload $payload,
+        UserSchema $payload,
     ) {
         parent::__construct(
             '',

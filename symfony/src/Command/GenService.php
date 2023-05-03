@@ -40,6 +40,7 @@ class GenService extends AbstractExtension
                         // TODO https://spec.openapis.org/oas/latest.html#referenceObject
                         [, , $type, $name] = explode('/', $childNode['$ref']);
                         $childNode = $spec['components'][$type][$name];
+                        $childNode['x-ref'] = ['name' => $name];
                     }
 
                     $resolveRefs($childNode);
@@ -210,19 +211,30 @@ class GenService extends AbstractExtension
 
     public function toObjectSchemaClassName(array $schema, string $defaultClassName): string
     {
-        file_put_contents(
-            __DIR__."/../Controller/{$defaultClassName}.php",
-            $this->twig->render(
-                'schema.php.twig',
-                [
-                    'schema' => $schema,
-                    'className' => $defaultClassName,
-                ],
-            ),
-        );
+        $className = $defaultClassName;
 
-        // TODO Strange that this method returns one of its params unmodified
-        return $defaultClassName;
+        if (isset($schema['x-ref'])) {
+            $className = "{$schema['x-ref']['name']}Schema";
+        }
+
+        static $classNames = [];
+
+        if (!isset($classNames[$className])) {
+            file_put_contents(
+                __DIR__."/../Controller/{$className}.php",
+                $this->twig->render(
+                    'schema.php.twig',
+                    [
+                        'schema' => $schema,
+                        'className' => $className,
+                    ],
+                ),
+            );
+
+            $classNames[$className] = true;
+        }
+
+        return $className;
     }
 
     public function getParamConstraints(array $param): array

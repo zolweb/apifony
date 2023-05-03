@@ -12,6 +12,6 @@ interface PlaceOrderHandlerInterface
      * Place a new order in the store
      */
     public function handle(
-        PlaceOrderRequestPayload $payload,
+        OrderSchema $payload,
     ): PlaceOrder200ApplicationJsonResponse|PlaceOrder405EmptyResponse;
 }

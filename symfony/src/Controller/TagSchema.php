@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class TagsUpdatePet200ApplicationJsonResponsePayload
+class TagSchema
 {
     /**
     */

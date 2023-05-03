@@ -7,7 +7,7 @@ use Symfony\Component\HttpFoundation\Response;
 class PlaceOrder200ApplicationJsonResponse extends Response
 {
     public function __construct(
-        PlaceOrder200ApplicationJsonResponsePayloadPlaceOrder200ApplicationJsonResponsePayload $payload,
+        OrderSchema $payload,
     ) {
         parent::__construct(
             '',
