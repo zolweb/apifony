@@ -307,6 +307,28 @@ class GenService extends AbstractExtension
             );
         }
 
+        if (isset($schema['minItems'])) {
+            $constraints[] = sprintf(
+                'Assert\Count(min: %d)',
+                $schema['minItems'],
+            );
+        }
+
+        if (isset($schema['maxItems'])) {
+            $constraints[] = sprintf(
+                'Assert\Count(max: %d)',
+                $schema['maxItems'],
+            );
+        }
+
+        if (isset($schema['uniqueItems'])) {
+            $constraints[] = 'Assert\Unique()';
+        }
+
+        if (($schema['type'] ?? 'mixed') === 'object') {
+            $constraints[] = 'Assert\Valid()';
+        }
+
         return $constraints;
     }
 

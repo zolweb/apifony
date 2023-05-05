@@ -15,9 +15,13 @@ class PetSchema
         public readonly ?int $id,
         #[Assert\NotNull()]
         public readonly string $name,
+        #[Assert\Valid()]
         public readonly ?CategorySchema $category,
         #[Assert\NotNull()]
         public readonly array $photoUrls,
+        #[Assert\Count(min: 2)]
+        #[Assert\Count(max: 5)]
+        #[Assert\Unique()]
         public readonly ?array $tags,
         #[Assert\Choice(['available', 'pending', 'sold'])]
         public readonly ?string $status,
