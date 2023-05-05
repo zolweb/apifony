@@ -229,4 +229,3 @@ class GetClientController extends AbstractController
         );
     }
 }
-

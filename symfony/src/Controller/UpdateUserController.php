@@ -79,4 +79,3 @@ class UpdateUserController extends AbstractController
         );
     }
 }
-

@@ -57,4 +57,3 @@ class FindPetsByStatusController extends AbstractController
         );
     }
 }
-

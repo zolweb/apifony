@@ -64,4 +64,3 @@ class UpdatePetController extends AbstractController
         );
     }
 }
-

@@ -64,4 +64,3 @@ class CreateUserController extends AbstractController
         );
     }
 }
-

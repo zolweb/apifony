@@ -59,4 +59,3 @@ class DeleteOrderController extends AbstractController
         );
     }
 }
-

@@ -43,4 +43,3 @@ class GetInventoryController extends AbstractController
         );
     }
 }
-

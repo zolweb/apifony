@@ -58,4 +58,3 @@ class FindPetsByTagsController extends AbstractController
         );
     }
 }
-

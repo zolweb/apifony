@@ -43,4 +43,3 @@ class LogoutUserController extends AbstractController
         );
     }
 }
-
