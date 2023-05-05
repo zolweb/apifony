@@ -820,6 +820,8 @@ components:
             type: string
             xml:
               name: photoUrl
+            minLength: 3
+            maxLength: 10
         tags:
           type: array
           xml:

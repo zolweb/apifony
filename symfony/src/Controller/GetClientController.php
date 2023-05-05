@@ -133,6 +133,9 @@ class GetClientController extends AbstractController
             $pParam6,
             [
                 new Assert\NotNull(),
+                new Assert\All([
+			new Assert\NotNull(),
+		]),
             ]
         );
         if (count($violations) > 0) {

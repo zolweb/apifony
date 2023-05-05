@@ -5,6 +5,7 @@ namespace App\Command;
 use Twig\Environment;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
+
 use function Symfony\Component\String\u;
 
 class GenService extends AbstractExtension
@@ -51,7 +52,7 @@ class GenService extends AbstractExtension
         $resolveRefs($spec);
 
         foreach ($spec['paths'] as $route => $path) {
-            if ($route[0] === '/') {
+            if ('/' === $route[0]) {
                 foreach ($path as $method => $operation) {
                     if (in_array($method, ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'], true)) {
                         $baseName = u($operation['operationId'])->camel()->title();
@@ -197,7 +198,7 @@ class GenService extends AbstractExtension
             foreach ($response['content'] ?? ['empty' => []] as $type => $content) {
                 $responseNames[] = $responseName = $this->toResponseName($operation['operationId'], $code, $type);
                 $template = $this->twig->render('response.php.twig', ['code' => $code, 'className' => $responseName, 'type' => $type, 'content' => $content]);
-                file_put_contents(__DIR__ . '/../Controller/' . $responseName . '.php', $template);
+                file_put_contents(__DIR__.'/../Controller/'.$responseName.'.php', $template);
             }
         }
 
@@ -287,7 +288,7 @@ class GenService extends AbstractExtension
         if (isset($schema['minimum'])) {
             $constraints[] = sprintf(
                 'Assert\%s(%d)',
-                    $schema['exclusiveMinimum'] ?? false ? 'GreaterThan' : 'GreaterThanOrEqual',
+                $schema['exclusiveMinimum'] ?? false ? 'GreaterThan' : 'GreaterThanOrEqual',
                 $schema['minimum'],
             );
         }
@@ -295,7 +296,7 @@ class GenService extends AbstractExtension
         if (isset($schema['maximum'])) {
             $constraints[] = sprintf(
                 'Assert\%s(%d)',
-                    $schema['exclusiveMaximum'] ?? false ? 'LessThan' : 'LessThanOrEqual',
+                $schema['exclusiveMaximum'] ?? false ? 'LessThan' : 'LessThanOrEqual',
                 $schema['maximum'],
             );
         }
@@ -327,6 +328,19 @@ class GenService extends AbstractExtension
 
         if (($schema['type'] ?? 'mixed') === 'object') {
             $constraints[] = 'Assert\Valid()';
+        }
+
+        if (($schema['type'] ?? 'mixed') === 'array') {
+            $constraints[] = sprintf(
+                "Assert\All([%s\n\t\t])",
+                implode(
+                    '',
+                    array_map(
+                        static fn (string $c) => "\n\t\t\tnew $c,",
+                        $this->getConstraints($required, $schema['items'] ?? []),
+                    ),
+                ),
+            );
         }
 
         return $constraints;

@@ -129,6 +129,9 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
             $pParam6,
             [
                 new Assert\NotNull(),
+                new Assert\All([
+			new Assert\NotNull(),
+		]),
             ]
         );
         if (count($violations) > 0) {

@@ -18,10 +18,18 @@ class PetSchema
         #[Assert\Valid()]
         public readonly ?CategorySchema $category,
         #[Assert\NotNull()]
+        #[Assert\All([
+			new Assert\NotNull(),
+			new Assert\Length(min: 3),
+			new Assert\Length(max: 10),
+		])]
         public readonly array $photoUrls,
         #[Assert\Count(min: 2)]
         #[Assert\Count(max: 5)]
         #[Assert\Unique()]
+        #[Assert\All([
+			new Assert\Valid(),
+		])]
         public readonly ?array $tags,
         #[Assert\Choice(['available', 'pending', 'sold'])]
         public readonly ?string $status,
