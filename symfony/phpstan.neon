@@ -1,0 +1,17 @@
+parameters:
+    level: max
+    paths:
+        - src
+    exceptions:
+        check:
+            missingCheckedExceptionInThrows: true
+            tooWideThrowType: true
+        uncheckedExceptionClasses:
+            - 'RuntimeException'
+            - 'LogicException'
+            - 'Error'
+    symfony:
+        containerXmlPath: var/cache/dev/App_KernelDevDebugContainer.xml
+        consoleApplicationLoader: tests/console-application.php
+includes:
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon

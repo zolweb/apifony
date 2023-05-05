@@ -7,8 +7,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 class PetSchema
 {
     /**
-     * @param @param array<string> $photoUrls
-     * @param @param ?array<TagSchema> $tags
+     * @param array<string> $photoUrls
+     * @param ?array<TagSchema> $tags
     */
     public function __construct(
         #[Int64()]

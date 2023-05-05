@@ -9,7 +9,7 @@ class {{ className }}
     /**
 {%~ for propertyName, property in schema.properties %}
     {%~ if property.type is defined and property.type is same as ('array') %}
-     * @param {{ toParamArrayAnnotation(className, schema, property, propertyName)|raw }}
+     * {{ toParamArrayAnnotation(className, schema, property, propertyName)|raw }}
     {%~ endif %}
 {%~ endfor %}
     */
