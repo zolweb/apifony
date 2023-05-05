@@ -79,8 +79,8 @@ class UpdatePetWithFormController extends AbstractController
             );
         }
         return $handler->handle(
-            $pPetId,
             $qName,
+            $pPetId,
             $qStatus,
         );
     }

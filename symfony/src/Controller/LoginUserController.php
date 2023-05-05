@@ -28,20 +28,9 @@ class LoginUserController extends AbstractController
         ValidatorInterface $validator,
         LoginUserHandlerInterface $handler,
     ): Response {
-        $qUsername = ($request->query->get('username', null));
         $qPassword = ($request->query->get('password', null));
+        $qUsername = ($request->query->get('username', null));
         $errors = [];
-        $violations = $validator->validate(
-            $qUsername,
-            [
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['query']['qUsername'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
         $violations = $validator->validate(
             $qPassword,
             [
@@ -49,6 +38,17 @@ class LoginUserController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['query']['qPassword'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $validator->validate(
+            $qUsername,
+            [
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['query']['qUsername'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -64,8 +64,8 @@ class LoginUserController extends AbstractController
             );
         }
         return $handler->handle(
-            $qUsername,
             $qPassword,
+            $qUsername,
         );
     }
 }

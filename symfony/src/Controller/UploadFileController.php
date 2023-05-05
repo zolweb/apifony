@@ -77,8 +77,8 @@ class UploadFileController extends AbstractController
             );
         }
         return $handler->handle(
-            $pPetId,
             $qAdditionalMetadata,
+            $pPetId,
             $payload,
         );
     }

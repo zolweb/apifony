@@ -9,11 +9,11 @@ interface PostClientClientIdParam1Param2Param3Param4Param5Param6HandlerInterface
      */
     public function handle(
         string $pClientId,
-        mixed $pParam1,
-        string $pParam2 = 'default',
-        float $pParam3 = 5.3E-7,
         int $pParam4,
         bool $pParam5,
         array $pParam6,
+        mixed $pParam1,
+        string $pParam2 = 'default',
+        float $pParam3 = 5.3E-7,
     ): PostClientClientIdParam1Param2Param3Param4Param5Param6200ApplicationJsonResponse|PostClientClientIdParam1Param2Param3Param4Param5Param6201ApplicationJsonResponse;
 }

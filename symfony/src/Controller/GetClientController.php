@@ -19,12 +19,12 @@ class GetClientController extends AbstractController
         path: '/client/{clientId}/{param1}/{param2}/{param3}/{param4}/{param5}/{param6}',
         requirements: [
             'pClientId' => '[^:/?#[]@!$&\'()*+,;=]+',
-            'pParam1' => '[^:/?#[]@!$&\'()*+,;=]+',
-            'pParam2' => 'a-Z',
-            'pParam3' => '-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?',
             'pParam4' => '-?(0|[1-9]\d*)',
             'pParam5' => 'true|false',
             'pParam6' => '[^:/?#[]@!$&\'()*+,;=]+',
+            'pParam1' => '[^:/?#[]@!$&\'()*+,;=]+',
+            'pParam2' => 'a-Z',
+            'pParam3' => '-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?',
         ],
         methods: ['get'],
         priority: 0,
@@ -35,15 +35,15 @@ class GetClientController extends AbstractController
         ValidatorInterface $validator,
         GetClientHandlerInterface $handler,
         string $pClientId,
-        mixed $pParam1,
-        string $pParam2 = 'default',
-        float $pParam3 = 5.3E-7,
         int $pParam4,
         bool $pParam5,
         array $pParam6,
+        mixed $pParam1,
+        string $pParam2 = 'default',
+        float $pParam3 = 5.3E-7,
     ): Response {
-        $hAzef = ($request->headers->get('azef', null));
         $qAgrez = floatval($request->query->get('agrez', null));
+        $hAzef = ($request->headers->get('azef', null));
         $cAzgrzeg = intval($request->cookies->get('azgrzeg', 10));
         $hGegzer = boolval($request->headers->get('gegzer', true));
         $errors = [];
@@ -55,6 +55,45 @@ class GetClientController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['pClientId'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $validator->validate(
+            $pParam4,
+            [
+                new Assert\NotNull(),
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['path']['pParam4'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $validator->validate(
+            $pParam5,
+            [
+                new Assert\NotNull(),
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['path']['pParam5'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $validator->validate(
+            $pParam6,
+            [
+                new Assert\NotNull(),
+                new Assert\All([
+			new Assert\NotNull(),
+		]),
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['path']['pParam6'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -101,45 +140,6 @@ class GetClientController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['pParam3'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
-        $violations = $validator->validate(
-            $pParam4,
-            [
-                new Assert\NotNull(),
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['path']['pParam4'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
-        $violations = $validator->validate(
-            $pParam5,
-            [
-                new Assert\NotNull(),
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['path']['pParam5'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
-        $violations = $validator->validate(
-            $pParam6,
-            [
-                new Assert\NotNull(),
-                new Assert\All([
-			new Assert\NotNull(),
-		]),
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['path']['pParam6'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -214,17 +214,17 @@ class GetClientController extends AbstractController
             );
         }
         return $handler->handle(
+            $qAgrez,
+            $hAzef,
             $pClientId,
-            $pParam1,
-            $pParam2,
-            $pParam3,
             $pParam4,
             $pParam5,
             $pParam6,
-            $hAzef,
-            $qAgrez,
             $cAzgrzeg,
             $hGegzer,
+            $pParam1,
+            $pParam2,
+            $pParam3,
             $payload,
         );
     }

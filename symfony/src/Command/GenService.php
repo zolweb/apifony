@@ -109,10 +109,19 @@ class GenService extends AbstractExtension
             $operationParams,
         );
 
-        return array_filter(
+        $params = array_filter(
             array_values(array_merge($pathParams, $operationParams)),
             fn (array $param) => in_array($param['in'], $in, true),
         );
+
+        usort(
+            $params,
+            static fn (array $param1, array $param2) =>
+            ((int)isset($param1['schema']['default']) - (int)isset($param2['schema']['default'])) ?:
+                strcmp($param1['name'], $param2['name']),
+        );
+
+        return $params;
     }
 
     public function toRouteRequirement(array $param): string

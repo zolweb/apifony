@@ -10,7 +10,7 @@ interface UploadFileHandlerInterface
      * uploads an image
      */
     public function handle(
-        int $pPetId,
         ?string $qAdditionalMetadata,
+        int $pPetId,
     ): UploadFile200ApplicationJsonResponse;
 }
