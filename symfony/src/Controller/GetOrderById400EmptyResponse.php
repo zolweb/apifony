@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
 class GetOrderById400EmptyResponse extends Response

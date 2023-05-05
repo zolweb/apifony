@@ -2,17 +2,22 @@
 
 namespace App\Controller;
 
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-class {{ className }} extends Response
+class {{ className }} extends {{ type is same as('application/json') ? 'Json' : '' }}Response
 {
     public function __construct(
-{%~ if content.schema is defined and content.schema.type is same as ('object') %}
+{%~ if content.schema is defined and content.schema.type is same as('object') %}
         {{ toObjectSchemaClassName(content.schema, className ~ 'Payload') }} $payload,
 {%~ endif %}
     ) {
         parent::__construct(
+{%~ if type is same as('application/json') %}
+            $payload,
+{%~ else %}
             '',
+{%~ endif %}
             {{ code }},
             [],
         );

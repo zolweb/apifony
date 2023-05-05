@@ -205,18 +205,18 @@ class GenService extends AbstractExtension
         $responseNames = [];
         foreach ($operation['responses'] ?? [] as $code => $response) {
             foreach ($response['content'] ?? ['empty' => []] as $type => $content) {
-                $responseNames[] = $responseName = $this->toResponseName($operation['operationId'], $code, $type);
+                $responseNames[] = $responseName = sprintf(
+                    '%s%s%sResponse',
+                    u($operation['operationId'])->camel()->title(),
+                    $code,
+                    u($type)->camel()->title(),
+                );
                 $template = $this->twig->render('response.php.twig', ['code' => $code, 'className' => $responseName, 'type' => $type, 'content' => $content]);
                 file_put_contents(__DIR__.'/../Controller/'.$responseName.'.php', $template);
             }
         }
 
         return implode('|', $responseNames);
-    }
-
-    public function toResponseName(string $operationId, string $code, string $type): string
-    {
-        return u($operationId)->camel()->title().$code.u($type)->camel()->title().'Response';
     }
 
     public function toObjectSchemaClassName(array $schema, string $defaultClassName): string
