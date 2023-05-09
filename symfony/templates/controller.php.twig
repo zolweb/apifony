@@ -59,33 +59,34 @@ class {{ className }} extends AbstractController
 {%~ endfor %}
 {%~ if operation.requestBody is defined %}
     {%~ set requestBody = operation.requestBody %}
-        $contentType = $request->headers->get('content-type');
-        if (!in_array($contentType, ['{{ requestBody.content|keys|join('\', \'') }}'], true)) {
-            return new JsonResponse(
-                [
-                    'code' => 'unsupported_format',
-                    'message' => "The value '$contentType' received in content-type header is not a supported format.",
-                ],
-                Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-            );
-        }
+        switch ($contentType = $request->headers->get('content-type', 'unspecified')) {
     {#~ TODO other content types #}
     {%~ if requestBody.content['application/json'] is defined %}
         {%~ set content = requestBody.content['application/json'] %}
-        if ($contentType === 'application/json') {
-            $content = $request->getContent();
+            case 'application/json':
+                $content = $request->getContent();
         {#~ TODO other schema types #}
         {%~ if content.schema.type is same as ('object') %}
-            $payload = $serializer->deserialize($content, {{ toObjectSchemaClassName(content.schema, operationName ~ 'RequestPayload') }}::class, JsonEncoder::FORMAT);
-            $violations = $validator->validate($payload);
-            if (count($violations) > 0) {
-                foreach ($violations as $violation) {
-                    $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+                $payload = $serializer->deserialize($content, {{ toObjectSchemaClassName(content.schema, operationName ~ 'RequestPayload') }}::class, JsonEncoder::FORMAT);
+                $violations = $validator->validate($payload);
+                if (count($violations) > 0) {
+                    foreach ($violations as $violation) {
+                        $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+                    }
                 }
-            }
         {%~ endif %}
-        }
+
+                break;
     {%~ endif %}
+            default:
+                return new JsonResponse(
+                    [
+                        'code' => 'unsupported_format',
+                        'message' => "The value '$contentType' received in content-type header is not a supported format.",
+                    ],
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                );
+        }
 {%~ endif %}
         if (count($errors) > 0) {
             return new JsonResponse(

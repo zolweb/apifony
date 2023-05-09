@@ -56,15 +56,15 @@ class UploadFileController extends AbstractController
                 iterator_to_array($violations),
             );
         }
-        $contentType = $request->headers->get('content-type');
-        if (!in_array($contentType, ['application/octet-stream'], true)) {
-            return new JsonResponse(
-                [
-                    'code' => 'unsupported_format',
-                    'message' => "The value '$contentType' received in content-type header is not a supported format.",
-                ],
-                Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-            );
+        switch ($contentType = $request->headers->get('content-type', 'unspecified')) {
+            default:
+                return new JsonResponse(
+                    [
+                        'code' => 'unsupported_format',
+                        'message' => "The value '$contentType' received in content-type header is not a supported format.",
+                    ],
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                );
         }
         if (count($errors) > 0) {
             return new JsonResponse(

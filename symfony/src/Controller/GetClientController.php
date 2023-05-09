@@ -190,18 +190,19 @@ class GetClientController extends AbstractController
                 iterator_to_array($violations),
             );
         }
-        $contentType = $request->headers->get('content-type');
-        if (!in_array($contentType, ['application/json&#039;, &#039;application/xml'], true)) {
-            return new JsonResponse(
-                [
-                    'code' => 'unsupported_format',
-                    'message' => "The value '$contentType' received in content-type header is not a supported format.",
-                ],
-                Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-            );
-        }
-        if ($contentType === 'application/json') {
-            $content = $request->getContent();
+        switch ($contentType = $request->headers->get('content-type', 'unspecified')) {
+            case 'application/json':
+                $content = $request->getContent();
+
+                break;
+            default:
+                return new JsonResponse(
+                    [
+                        'code' => 'unsupported_format',
+                        'message' => "The value '$contentType' received in content-type header is not a supported format.",
+                    ],
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                );
         }
         if (count($errors) > 0) {
             return new JsonResponse(

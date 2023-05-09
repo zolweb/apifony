@@ -29,25 +29,26 @@ class AddPetController extends AbstractController
         AddPetHandlerInterface $handler,
     ): Response {
         $errors = [];
-        $contentType = $request->headers->get('content-type');
-        if (!in_array($contentType, ['application/json'], true)) {
-            return new JsonResponse(
-                [
-                    'code' => 'unsupported_format',
-                    'message' => "The value '$contentType' received in content-type header is not a supported format.",
-                ],
-                Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-            );
-        }
-        if ($contentType === 'application/json') {
-            $content = $request->getContent();
-            $payload = $serializer->deserialize($content, PetSchema::class, JsonEncoder::FORMAT);
-            $violations = $validator->validate($payload);
-            if (count($violations) > 0) {
-                foreach ($violations as $violation) {
-                    $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+        switch ($contentType = $request->headers->get('content-type', 'unspecified')) {
+            case 'application/json':
+                $content = $request->getContent();
+                $payload = $serializer->deserialize($content, PetSchema::class, JsonEncoder::FORMAT);
+                $violations = $validator->validate($payload);
+                if (count($violations) > 0) {
+                    foreach ($violations as $violation) {
+                        $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+                    }
                 }
-            }
+
+                break;
+            default:
+                return new JsonResponse(
+                    [
+                        'code' => 'unsupported_format',
+                        'message' => "The value '$contentType' received in content-type header is not a supported format.",
+                    ],
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                );
         }
         if (count($errors) > 0) {
             return new JsonResponse(
