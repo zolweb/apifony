@@ -11,7 +11,7 @@ class GetUserByName200ApplicationXmlResponse extends Response
         UserSchema $payload,
     ) {
         parent::__construct(
-            '',
+            $payload,
             200,
             [],
         );

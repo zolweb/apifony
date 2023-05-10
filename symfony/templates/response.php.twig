@@ -13,7 +13,7 @@ class {{ className }} extends {{ type is same as('application/json') ? 'Json' : 
 {%~ endif %}
     ) {
         parent::__construct(
-{%~ if type is same as('application/json') %}
+{%~ if content.schema is defined and content.schema.type is same as('object') %}
             $payload,
 {%~ else %}
             '',

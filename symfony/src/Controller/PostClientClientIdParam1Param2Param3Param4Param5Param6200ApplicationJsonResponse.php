@@ -10,7 +10,7 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6200ApplicationJsonRe
     public function __construct(
     ) {
         parent::__construct(
-            $payload,
+            '',
             200,
             [],
         );

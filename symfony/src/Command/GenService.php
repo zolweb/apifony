@@ -217,8 +217,18 @@ class GenService extends AbstractExtension
                     $code,
                     u($type)->camel()->title(),
                 );
-                $template = $this->twig->render('response.php.twig', ['code' => $code, 'className' => $responseName, 'type' => $type, 'content' => $content]);
-                file_put_contents(__DIR__.'/../Controller/'.$responseName.'.php', $template);
+                file_put_contents(
+                    __DIR__.'/../Controller/'.$responseName.'.php',
+                    $this->twig->render(
+                        'response.php.twig',
+                        [
+                            'code' => $code,
+                            'className' => $responseName,
+                            'type' => $type,
+                            'content' => $content,
+                        ],
+                    ),
+                );
             }
         }
 

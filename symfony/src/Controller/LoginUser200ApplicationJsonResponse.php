@@ -10,7 +10,7 @@ class LoginUser200ApplicationJsonResponse extends JsonResponse
     public function __construct(
     ) {
         parent::__construct(
-            $payload,
+            '',
             200,
             [],
         );
