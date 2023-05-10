@@ -13,10 +13,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class FindPetsByTagsController extends AbstractController
+class GetTestController extends AbstractController
 {
     #[Route(
-        path: '/pet/findByTags',
+        path: '/test',
         requirements: [
         ],
         methods: ['get'],
@@ -26,21 +26,9 @@ class FindPetsByTagsController extends AbstractController
         Request $request,
         SerializerInterface $serializer,
         ValidatorInterface $validator,
-        FindPetsByTagsHandlerInterface $handler,
+        GetTestHandlerInterface $handler,
     ): Response {
-        $qTags = ($request->query->get('tags', null));
         $errors = [];
-        $violations = $validator->validate(
-            $qTags,
-            [
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['query']['qTags'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
         if (count($errors) > 0) {
             return new JsonResponse(
                 [
@@ -52,7 +40,6 @@ class FindPetsByTagsController extends AbstractController
             );
         }
         return $handler->handle(
-            $qTags,
         );
     }
 }

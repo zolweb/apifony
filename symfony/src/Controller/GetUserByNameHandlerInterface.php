@@ -8,6 +8,8 @@ interface GetUserByNameHandlerInterface
      * OperationId: getUserByName
      *
      * Get user by user name
+     *
+     * desc
      */
     public function handle(
         string $pUsername,

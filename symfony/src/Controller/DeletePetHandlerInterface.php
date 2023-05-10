@@ -14,5 +14,5 @@ interface DeletePetHandlerInterface
     public function handle(
         ?string $hApi_key,
         int $pPetId,
-    ): DeletePet400EmptyResponse;
+    ): DeletePet200EmptyResponse|DeletePet400EmptyResponse;
 }

@@ -13,5 +13,5 @@ interface DeleteOrderHandlerInterface
      */
     public function handle(
         int $pOrderId,
-    ): DeleteOrder400EmptyResponse|DeleteOrder404EmptyResponse;
+    ): DeleteOrder200EmptyResponse|DeleteOrder400EmptyResponse|DeleteOrder404EmptyResponse;
 }

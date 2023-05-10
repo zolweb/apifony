@@ -13,5 +13,5 @@ interface DeleteUserHandlerInterface
      */
     public function handle(
         string $pUsername,
-    ): DeleteUser400EmptyResponse|DeleteUser404EmptyResponse;
+    ): DeleteUser200EmptyResponse|DeleteUser400EmptyResponse|DeleteUser404EmptyResponse;
 }

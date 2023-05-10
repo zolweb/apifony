@@ -114,6 +114,12 @@ class GenService extends AbstractExtension
             fn (array $param) => in_array($param['in'], $in, true),
         );
 
+        foreach ($params as $param) {
+            if (($param['schema']['type'] ?? '') === 'array') {
+                throw new \RuntimeException('Param of array type are not supported yet.');
+            }
+        }
+
         usort(
             $params,
             static fn (array $param1, array $param2) =>
@@ -373,6 +379,7 @@ class GenService extends AbstractExtension
         if (isset($schema['type']) && isset($schema['default'])) {
             return match ($schema['type']) {
                 'string' => sprintf('\'%s\'', str_replace('\'', '\\\'', $schema['default'])),
+                'boolean' => $schema['default'] ? 'true' : 'false',
                 default => $schema['default'],
             };
         }

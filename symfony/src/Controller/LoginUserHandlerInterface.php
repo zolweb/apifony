@@ -8,6 +8,8 @@ interface LoginUserHandlerInterface
      * OperationId: loginUser
      *
      * Logs user into the system
+     *
+     * desc
      */
     public function handle(
         ?string $qPassword,

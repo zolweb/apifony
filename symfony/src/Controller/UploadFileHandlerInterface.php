@@ -8,6 +8,8 @@ interface UploadFileHandlerInterface
      * OperationId: uploadFile
      *
      * uploads an image
+     *
+     * desc
      */
     public function handle(
         ?string $qAdditionalMetadata,
