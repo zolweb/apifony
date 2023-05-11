@@ -1,0 +1,42 @@
+<?php
+
+namespace App\Command;
+
+class Path
+{
+    public readonly array $parameters;
+    private readonly array $operations;
+
+    public function __construct(
+        private readonly Specification $specification,
+        public readonly string $route,
+        array $data,
+    ) {
+        $this->parameters = array_map(
+            fn (array $data) => Parameter::fromPath($this, $data),
+            $data['parameters'] ?? []
+        );
+
+        $this->operations = array_map(
+            fn (string $method) => new Operation($this, $method, $data[$method]),
+            array_keys(
+                array_filter(
+                    $data,
+                    static fn (string $method) => in_array($method, ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'], true),
+                    ARRAY_FILTER_USE_KEY,
+                ),
+            ),
+        );
+    }
+
+    public function getFiles(): array
+    {
+        $files = [];
+
+        foreach ($this->operations as $operation) {
+            $files = array_merge($files, $operation->getFiles());
+        }
+
+        return $files;
+    }
+}

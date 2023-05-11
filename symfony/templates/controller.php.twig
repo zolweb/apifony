@@ -13,39 +13,39 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class {{ className }} extends AbstractController
+class {{ operation.controllerClassName }} extends AbstractController
 {
     #[Route(
-        path: '{{ route }}',
+        path: '{{ operation.route }}',
+{%~ if operation.allSortedParameters(['path']) %}
         requirements: [
-{%~ for param in getOperationParams(path, method, ['path']) %}
-            {{ toRouteRequirement(param)|raw }}
-{%~ endfor %}
+    {%~ for param in operation.allSortedParameters(['path']) %}
+            {{ param.toRouteRequirement }}
+    {%~ endfor %}
         ],
-        methods: ['{{ method }}'],
-        {#~ TODO https://spec.openapis.org/oas/latest.html#path-templating-matching #}
-        priority: {{ operartion['x-priotity'] ?? 0 }},
+{%~ endif %}
+        methods: ['{{ operation.method }}'],
+        priority: {{ operation.priority }},
     )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,
         ValidatorInterface $validator,
-        {{ handlerClassName }} $handler,
-{%~ for param in getOperationParams(path, method, ['path']) %}
-        {{ toMethodParam(param)|raw }}
+        {{ operation.handlerInterfaceName }} $handler,
+{%~ for param in operation.allSortedParameters(['path']) %}
+        {{ param.toMethodParameter }}
 {%~ endfor %}
     ): Response {
-{%~ for param in getOperationParams(path, method, ['query', 'header', 'cookie']) %}
-        {{ getParamFromRequest(param)|raw }}
+{%~ for param in operation.allSortedParameters(['query', 'header', 'cookie']) %}
+        {{ param.toFromRequestVariableInitialization }}
 {%~ endfor %}
         $errors = [];
-{%~ for type in ['path', 'query', 'header', 'cookie'] %}
-    {%~ for param in getOperationParams(path, method, [type]) %}
+{%~ for param in operation.allSortedParameters %}
         $violations = $validator->validate(
-            ${{ toVariableName(param) }},
+            ${{ param.toVariableName }},
             [
-        {%~ for constraint in getParamConstraints(param) %}
-                new {{ constraint|raw }},
+        {%~ for constraint in param.constraints %}
+                new {{ constraint }},
         {%~ endfor %}
             ]
         );
@@ -55,7 +55,6 @@ class {{ className }} extends AbstractController
                 iterator_to_array($violations),
             );
         }
-    {%~ endfor %}
 {%~ endfor %}
 {%~ if operation.requestBody is defined %}
     {%~ set requestBody = operation.requestBody %}
@@ -107,4 +106,4 @@ class {{ className }} extends AbstractController
 {%~ endif %}
         );
     }
-}
+%}

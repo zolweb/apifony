@@ -3,6 +3,9 @@
 namespace App\Command;
 
 use Twig\Environment;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFunction;
 
@@ -32,66 +35,36 @@ class GenService extends AbstractExtension
         ];
     }
 
+    /**
+     * @throws RuntimeError
+     * @throws SyntaxError
+     * @throws LoaderError
+     */
     public function generate(array $spec): void
     {
-        $resolveRefs = function (array &$parentNode) use (&$resolveRefs, $spec): void {
-            foreach ($parentNode as &$childNode) {
-                if (is_array($childNode)) {
-                    if (isset($childNode['$ref'])) {
-                        // TODO https://spec.openapis.org/oas/latest.html#referenceObject
-                        [, , $type, $name] = explode('/', $childNode['$ref']);
-                        $childNode = $spec['components'][$type][$name];
-                        $childNode['x-ref'] = ['name' => $name];
-                    }
-
-                    $resolveRefs($childNode);
-                }
-            }
-        };
-
-        $resolveRefs($spec);
-
-        foreach ($spec['paths'] as $route => $path) {
-            if ('/' === $route[0]) {
-                foreach ($path as $method => $operation) {
-                    if (in_array($method, ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'], true)) {
-                        $baseName = u($operation['operationId'])->camel()->title();
-                        $controllerClassName = "{$baseName}Controller";
-                        $handlerInterfaceName = "{$baseName}HandlerInterface";
-                        file_put_contents(
-                            __DIR__."/../Controller/{$controllerClassName}.php",
-                            $this->twig->render(
-                                'controller.php.twig',
-                                [
-                                    'className' => $controllerClassName,
-                                    'handlerClassName' => $handlerInterfaceName,
-                                    'operationName' => $baseName,
-                                    'path' => $path,
-                                    'route' => $route,
-                                    'operation' => $operation,
-                                    'method' => $method,
-                                ],
-                            ),
-                        );
-                        file_put_contents(
-                            __DIR__."/../Controller/{$handlerInterfaceName}.php",
-                            $this->twig->render(
-                                'handler.php.twig',
-                                [
-                                    'interfaceName' => $handlerInterfaceName,
-                                    'operationName' => $baseName,
-                                    'path' => $path,
-                                    'operation' => $operation,
-                                    'method' => $method,
-                                ],
-                            ),
-                        );
-                        // TODO Security field https://spec.openapis.org/oas/latest.html#fixed-fields-7
-                    }
-                }
-            }
+        foreach ((new Specification($spec))->getFiles() as $fileName => $file) {
+            file_put_contents(
+                __DIR__."/../Controller/{$fileName}.php",
+                $this->twig->render($file['template'], $file['params']));
         }
     }
+
+    // $resolveRefs = function (array &$parentNode) use (&$resolveRefs, $spec): void {
+    //     foreach ($parentNode as &$childNode) {
+    //         if (is_array($childNode)) {
+    //             if (isset($childNode['$ref'])) {
+    //                 // TODO https://spec.openapis.org/oas/latest.html#referenceObject
+    //                 [, , $type, $name] = explode('/', $childNode['$ref']);
+    //                 $childNode = $spec['components'][$type][$name];
+    //                 $childNode['x-ref'] = ['name' => $name];
+    //             }
+
+    //             $resolveRefs($childNode);
+    //         }
+    //     }
+    // };
+
+    // $resolveRefs($spec);
 
     public function getOperationParams(
         array $path,

@@ -52,6 +52,6 @@ build-aws: clean-app build composer-install composer-dump yarn-install webpack-b
 
 gen:
 	rm -rf symfony/src/Controller/*
-	wget -O symfony/src/Command/openapi.yaml https://stoplight.io/api/v1/projects/bfav-zol/zol-skeleton/nodes/zol-invoicing.yaml
+	# wget -O symfony/src/Command/openapi.yaml https://stoplight.io/api/v1/projects/bfav-zol/zol-skeleton/nodes/zol-invoicing.yaml
 	@$(RUNNER_DOCKER_EXEC) '$(symfony_console_path) gen -vvv'
 	make cc
