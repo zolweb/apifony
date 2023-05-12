@@ -21,17 +21,17 @@ class GenService extends AbstractExtension
     public function getFunctions(): array
     {
         return [
-            new TwigFunction('toMethodParam', [$this, 'toMethodParam']),
-            new TwigFunction('propertyToMethodParam', [$this, 'propertyToMethodParam']),
-            new TwigFunction('toRouteRequirement', [$this, 'toRouteRequirement']),
-            new TwigFunction('getOperationParams', [$this, 'getOperationParams']),
-            new TwigFunction('getParamConstraints', [$this, 'getParamConstraints']),
-            new TwigFunction('getPropertyConstraints', [$this, 'getPropertyConstraints']),
-            new TwigFunction('genResponses', [$this, 'genResponses']),
-            new TwigFunction('toObjectSchemaClassName', [$this, 'toObjectSchemaClassName']),
-            new TwigFunction('toParamArrayAnnotation', [$this, 'toParamArrayAnnotation']),
-            new TwigFunction('toVariableName', [$this, 'toVariableName']),
-            new TwigFunction('getParamFromRequest', [$this, 'getParamFromRequest']),
+            // new TwigFunction('toMethodParam', [$this, 'toMethodParam']),
+            // new TwigFunction('propertyToMethodParam', [$this, 'propertyToMethodParam']),
+            // new TwigFunction('toRouteRequirement', [$this, 'toRouteRequirement']),
+            // new TwigFunction('getOperationParams', [$this, 'getOperationParams']),
+            // new TwigFunction('getParamConstraints', [$this, 'getParamConstraints']),
+            // new TwigFunction('getPropertyConstraints', [$this, 'getPropertyConstraints']),
+            // new TwigFunction('genResponses', [$this, 'genResponses']),
+            // new TwigFunction('toObjectSchemaClassName', [$this, 'toObjectSchemaClassName']),
+            // new TwigFunction('toParamArrayAnnotation', [$this, 'toParamArrayAnnotation']),
+            // new TwigFunction('toVariableName', [$this, 'toVariableName']),
+            // new TwigFunction('getParamFromRequest', [$this, 'getParamFromRequest']),
         ];
     }
 

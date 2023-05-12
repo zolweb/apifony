@@ -6,9 +6,10 @@ use function Symfony\Component\String\u;
 
 class Operation
 {
-    private readonly array $parameters;
     private readonly string $id;
+    private readonly array $parameters;
     public readonly int $priority;
+    public readonly ?RequestBody $requestBody;
 
     public function __construct(
         private readonly Path $path,
@@ -22,6 +23,7 @@ class Operation
 
         $this->id = $data['operationId'];
         $this->priority = $data['x-priority'] ?? 0;
+        $this->requestBody = isset($data['requestBody']) ? new RequestBody($data['requestBody']) : null;
     }
 
     public function getRoute(): string
@@ -44,12 +46,13 @@ class Operation
         return u($this->id)->camel()->title();
     }
 
-    public function getAllSortedParameters(array $in): array
+    public function getAllSortedParameters(array $in = ['path', 'query', 'cookie', 'header']): array
     {
         $pathParams = array_combine(
             array_map(fn (Parameter $param) => "{$param->in}:{$param->name}", $this->path->parameters),
             $this->path->parameters,
         );
+
         $operationParams = array_combine(
             array_map(fn (Parameter $param) => "{$param->in}:{$param->name}", $this->parameters),
             $this->parameters,

@@ -1,4 +1,3 @@
-{% autoescape false %}
 <?php
 
 namespace App\Controller;
@@ -14,54 +13,22 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class {{ operation.controllerClassName }} extends AbstractController
+class CreateUsersWithListInputController extends AbstractController
 {
     #[Route(
-        path: '{{ operation.route }}',
-{%~ if operation.allSortedParameters(['path']) %}
-        requirements: [
-    {%~ for param in operation.allSortedParameters(['path']) %}
-            {{ param.toRouteRequirement }}
-    {%~ endfor %}
-        ],
-{%~ endif %}
-        methods: ['{{ operation.method }}'],
-        priority: {{ operation.priority }},
+        path: '/user/createWithList',
+        methods: ['post'],
+        priority: 0,
     )]
     public function handle(
         Request $request,
         SerializerInterface $serializer,
         ValidatorInterface $validator,
-        {{ operation.handlerInterfaceName }} $handler,
-{%~ for param in operation.allSortedParameters(['path']) %}
-        {{ param.toMethodParameter }}
-{%~ endfor %}
+        CreateUsersWithListInputHandlerInterface $handler,
     ): Response {
-{%~ for param in operation.allSortedParameters(['query', 'header', 'cookie']) %}
-        {{ param.toFromRequestVariableInitialization }}
-{%~ endfor %}
         $errors = [];
-{%~ for param in operation.allSortedParameters %}
-        $violations = $validator->validate(
-            ${{ param.toVariableName }},
-            [
-        {%~ for constraint in param.constraints %}
-                new {{ constraint }},
-        {%~ endfor %}
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['{{ param.in }}']['{{ param.toVariableName }}'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
-{%~ endfor %}
-{%~ if operation.requestBody %}
         switch ($contentType = $request->headers->get('content-type', 'unspecified')) {
-    {%~ for content in operation.requestBody.contents %}
-            case '{{ content.type }}':
-        {%~ if content.type is same as ('application/json') %}
+            case 'application/json':
                 $content = $request->getContent();
                 $payload = $serializer->deserialize($content, Lol::class, JsonEncoder::FORMAT);
                 $violations = $validator->validate($payload);
@@ -70,10 +37,8 @@ class {{ operation.controllerClassName }} extends AbstractController
                         $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
                     }
                 }
-        {%~ endif %}
 
                 break;
-    {%~ endfor %}
             default:
                 return new JsonResponse(
                     [
@@ -83,7 +48,6 @@ class {{ operation.controllerClassName }} extends AbstractController
                     Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 );
         }
-{%~ endif %}
         if (count($errors) > 0) {
             return new JsonResponse(
                 [
@@ -95,15 +59,6 @@ class {{ operation.controllerClassName }} extends AbstractController
             );
         }
         return $handler->handle(
-{%~ for param in operation.allSortedParameters %}
-            ${{ param.toVariableName }},
-{%~ endfor %}
-{#
-{%~ if path[method].requestBody is defined %}
-            $payload,
-{%~ endif %}
-#}
         );
     }
 }
-{% endautoescape %}
