@@ -46,6 +46,7 @@ class UploadFileController extends AbstractController
         $violations = $validator->validate(
             $pPetId,
             [
+                new Assert\NotNull(),
                 new Lol(),
             ]
         );
@@ -78,6 +79,7 @@ class UploadFileController extends AbstractController
         return $handler->handle(
             $qAdditionalMetadata,
             $pPetId,
+            $payload,
         );
     }
 }

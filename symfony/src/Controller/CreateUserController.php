@@ -59,6 +59,7 @@ class CreateUserController extends AbstractController
             );
         }
         return $handler->handle(
+            $payload,
         );
     }
 }

@@ -46,6 +46,7 @@ class DeletePetController extends AbstractController
         $violations = $validator->validate(
             $pPetId,
             [
+                new Assert\NotNull(),
                 new Lol(),
             ]
         );

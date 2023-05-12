@@ -59,9 +59,9 @@ class {{ operation.controllerClassName }} extends AbstractController
 {%~ endfor %}
 {%~ if operation.requestBody %}
         switch ($contentType = $request->headers->get('content-type', 'unspecified')) {
-    {%~ for content in operation.requestBody.contents %}
-            case '{{ content.type }}':
-        {%~ if content.type is same as ('application/json') %}
+    {%~ for mediaType in operation.requestBody.mediaTypes %}
+            case '{{ mediaType.type }}':
+        {%~ if mediaType.type is same as ('application/json') %}
                 $content = $request->getContent();
                 $payload = $serializer->deserialize($content, Lol::class, JsonEncoder::FORMAT);
                 $violations = $validator->validate($payload);
@@ -98,11 +98,9 @@ class {{ operation.controllerClassName }} extends AbstractController
 {%~ for param in operation.allSortedParameters %}
             ${{ param.toVariableName }},
 {%~ endfor %}
-{#
-{%~ if path[method].requestBody is defined %}
+{%~ if operation.requestBody %}
             $payload,
 {%~ endif %}
-#}
         );
     }
 }

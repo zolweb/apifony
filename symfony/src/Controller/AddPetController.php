@@ -59,6 +59,7 @@ class AddPetController extends AbstractController
             );
         }
         return $handler->handle(
+            $payload,
         );
     }
 }

@@ -34,6 +34,7 @@ class GetOrderByIdController extends AbstractController
         $violations = $validator->validate(
             $pOrderId,
             [
+                new Assert\NotNull(),
                 new Lol(),
             ]
         );

@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-class Specification
+class Specification implements Node
 {
     private readonly array $paths;
 
@@ -22,12 +22,11 @@ class Specification
 
     public function getFiles(): array
     {
-        $files = [];
-
-        foreach ($this->paths as $path) {
-            $files = array_merge($files, $path->getFiles());
-        }
-
-        return $files;
+        return array_merge(
+            ...array_map(
+                static fn (Path $path) => $path->getFiles(),
+                $this->paths,
+            ),
+        );
     }
 }

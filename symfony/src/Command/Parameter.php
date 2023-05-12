@@ -30,7 +30,7 @@ class Parameter
 
         $this->in = $data['in'];
         $this->name = $data['name'];
-        $this->schema = new Schema($data['schema']);
+        $this->schema = new Schema($data['required'] ?? false, $data['schema']);
         $this->required = $data['required'] ?? false;
     }
 

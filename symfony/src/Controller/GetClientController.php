@@ -48,6 +48,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $qAgrez,
             [
+                new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {
@@ -59,6 +60,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $hAzef,
             [
+                new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {
@@ -70,6 +72,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pClientId,
             [
+                new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {
@@ -81,6 +84,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam3,
             [
+                new Assert\NotNull(),
                 new Assert\LessThanOrEqual(2),
             ]
         );
@@ -93,6 +97,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam4,
             [
+                new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {
@@ -104,6 +109,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam5,
             [
+                new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {
@@ -137,6 +143,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam1,
             [
+                new Assert\NotNull(),
                 new Lol(),
                 new Assert\Choice(['item', 'item2']),
             ]
@@ -150,6 +157,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam2,
             [
+                new Assert\NotNull(),
                 new Lol(),
                 new Assert\Regex('/item/'),
                 new Assert\Length(min: 1),
@@ -205,6 +213,7 @@ class GetClientController extends AbstractController
             $hGegzer,
             $pParam1,
             $pParam2,
+            $payload,
         );
     }
 }

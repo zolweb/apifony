@@ -1,19 +1,19 @@
-{#
+{% autoescape false %}
 <?php
 
 namespace App\Controller;
 
-interface {{ interfaceName }}
+interface {{ operation.handlerInterfaceName }}
 {
     /**
-     * OperationId: {{ operation.operationId }}
+     * OperationId: {{ operation.id }}
 {%~ if operation.summary is defined and operation.summary is not empty %}
      *
-     * {{ operation.summary|raw }}
+     * {{ operation.summary }}
 {%~ endif %}
 {%~ if operation.description is defined and operation.description is not empty %}
      *
-     * {{ operation.description|raw }}
+     * {{ operation.description }}
 {%~ endif %}
 {%~ if operation.externalDocs is defined and operation.externalDocs is not empty %}
      *
@@ -27,17 +27,18 @@ interface {{ interfaceName }}
 {%~ endif %}
      */
     public function handle(
-{%~ for parameter in getOperationParams(path, method) %}
-        {{ toMethodParam(parameter)|raw }}
+{%~ for parameter in operation.allSortedParameters %}
+        {{ parameter.toMethodParameter }}
 {%~ endfor %}
 {%~ if operation.requestBody is defined %}
     {%~ set requestBody = operation.requestBody %}
     {%~ if requestBody.content['application/json'] is defined %}
         {%~ set content = requestBody.content['application/json'] %}
         {%~ if content.schema.type is same as ('object') %}
-        {{ toObjectSchemaClassName(content.schema, operationName ~ 'RequestPayload') }} $payload,
+        Lol $payload,
         {%~ endif %}
     {%~ endif %}
 {%~ endif %}
-    ): {{ genResponses(operation) }};
-}  #}
+    ): {# { genResponses(operation) }} #};
+}
+{% endautoescape %}

@@ -34,6 +34,7 @@ class UpdateUserController extends AbstractController
         $violations = $validator->validate(
             $pUsername,
             [
+                new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {
@@ -75,6 +76,7 @@ class UpdateUserController extends AbstractController
         }
         return $handler->handle(
             $pUsername,
+            $payload,
         );
     }
 }

@@ -4,10 +4,10 @@ namespace App\Command;
 
 use function Symfony\Component\String\u;
 
-class Operation
+class Operation implements Node
 {
-    private readonly string $id;
     private readonly array $parameters;
+    public readonly string $id;
     public readonly int $priority;
     public readonly ?RequestBody $requestBody;
 
@@ -41,7 +41,7 @@ class Operation
         return "{$this->getNormalizedName()}HandlerInterface";
     }
 
-    private function getNormalizedName(): string
+    public function getNormalizedName(): string
     {
         return u($this->id)->camel()->title();
     }
@@ -74,11 +74,14 @@ class Operation
 
     public function getFiles(): array
     {
-        return [
-            $this->getControllerClassName() =>
-                ['template' => 'controller.php.twig', 'params' => ['operation' => $this]],
-            $this->getHandlerInterfaceName() =>
-                ['template' => 'handler.php.twig', 'params' => ['operation' => $this]],
-        ];
+        return array_merge(
+            [
+                $this->getControllerClassName() =>
+                    ['template' => 'controller.php.twig', 'params' => ['operation' => $this]],
+                $this->getHandlerInterfaceName() =>
+                    ['template' => 'handler.php.twig', 'params' => ['operation' => $this]],
+            ],
+            $this->requestBody?->getFiles() ?? [],
+        );
     }
 }

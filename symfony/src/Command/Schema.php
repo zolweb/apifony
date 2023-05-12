@@ -2,11 +2,10 @@
 
 namespace App\Command;
 
-class Schema
+class Schema implements Node
 {
     public readonly ?string $type;
     public readonly mixed $default;
-    private readonly bool $required;
     private readonly ?string $format;
     private readonly ?string $pattern;
     private readonly ?int $minLength;
@@ -19,13 +18,15 @@ class Schema
     private readonly ?array $minItems;
     private readonly ?array $maxItems;
     private readonly bool $uniqueItems;
+    private readonly ?Schema $items;
+    private readonly ?array $properties;
 
     public function __construct(
+        private readonly bool $required,
         array $data,
     ) {
         $this->type = $data['type'] ?? null;
         $this->default = $data['default'] ?? null;
-        $this->required = $data['required'] ?? false;
         $this->format = $data['format'] ?? null;
         $this->pattern = $data['pattern'] ?? null;
         $this->minLength = $data['minLength'] ?? null;
@@ -38,6 +39,12 @@ class Schema
         $this->minItems = $data['exclusiveMaximum'] ?? null;
         $this->maxItems = $data['exclusiveMaximum'] ?? null;
         $this->uniqueItems = $data['uniqueItems'] ?? false;
+        $this->items = isset($data['items']) ? new Schema(false, $data['items']) : null;
+        $this->properties = isset($data['properties']) ?
+            array_map(
+                static fn (array $property) => new Schema(isset($data['required'][$property['name']]), $data['items']),
+                $data['properties'],
+            ) : null;
     }
 
     public function getDefaultAsMethodParameterDefault(): ?string
@@ -150,5 +157,25 @@ class Schema
         // }
 
         return $constraints;
+    }
+
+    public function getFiles(): array
+    {
+        return match ($this->type) {
+            'object' => array_merge(
+                [uniqid() => ['template' => 'response.php.twig', 'param' => ['schema' => $this]]],
+                array_map(
+                    static fn (Schema $property) => $property->getFiles(),
+                    $this->properties,
+                ),
+            ),
+            'array' => $this->items->getFiles(),
+            'string' => $this->format !== null ? [
+                uniqid() => ['template' => 'format-definition.php.twig', 'param' => ['schema' => $this]],
+                uniqid() => ['template' => 'format-constraint.php.twig', 'param' => ['schema' => $this]],
+                uniqid() => ['template' => 'format-validator.php.twig', 'param' => ['schema' => $this]],
+            ] : [],
+            default => [],
+        };
     }
 }

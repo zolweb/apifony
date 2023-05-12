@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-class Path
+class Path implements Node
 {
     public readonly array $parameters;
     private readonly array $operations;
@@ -31,12 +31,11 @@ class Path
 
     public function getFiles(): array
     {
-        $files = [];
-
-        foreach ($this->operations as $operation) {
-            $files = array_merge($files, $operation->getFiles());
-        }
-
-        return $files;
+        return array_merge(
+            ...array_map(
+                static fn (Operation $operation) => $operation->getFiles(),
+                $this->operations,
+            ),
+        );
     }
 }
