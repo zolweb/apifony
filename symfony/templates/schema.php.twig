@@ -4,13 +4,11 @@ namespace App\Controller;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class {{ className }}
+class {{ schema.className }}
 {
     /**
-{%~ for propertyName, property in schema.properties %}
-    {%~ if property.type is defined and property.type is same as ('array') %}
+{%~ for property in schema.arrayProperties %}
      * {{ toParamArrayAnnotation(className, schema, property, propertyName)|raw }}
-    {%~ endif %}
 {%~ endfor %}
     */
     public function __construct(

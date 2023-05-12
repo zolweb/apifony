@@ -17,13 +17,13 @@ class Operation implements Node
         array $data,
     ) {
         $this->parameters = array_map(
-            fn (array $data) => Parameter::fromOperation($this, $data),
+            fn (array $data) => new Parameter($this, $data),
             $data['parameters'] ?? []
         );
 
         $this->id = $data['operationId'];
         $this->priority = $data['x-priority'] ?? 0;
-        $this->requestBody = isset($data['requestBody']) ? new RequestBody($data['requestBody']) : null;
+        $this->requestBody = isset($data['requestBody']) ? new RequestBody($this, $data['requestBody']) : null;
     }
 
     public function getRoute(): string
@@ -83,5 +83,10 @@ class Operation implements Node
             ],
             $this->requestBody?->getFiles() ?? [],
         );
+    }
+
+    public function resolveReference(string $reference): array
+    {
+        return $this->path->resolveReference($reference);
     }
 }

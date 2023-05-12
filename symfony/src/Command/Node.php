@@ -4,5 +4,5 @@ namespace App\Command;
 
 interface Node
 {
-    public function getFiles(): array;
+    public function resolveReference(string $reference): array;
 }

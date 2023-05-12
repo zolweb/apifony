@@ -13,7 +13,7 @@ class Path implements Node
         array $data,
     ) {
         $this->parameters = array_map(
-            fn (array $data) => Parameter::fromPath($this, $data),
+            fn (array $data) => new Parameter($this, $data),
             $data['parameters'] ?? []
         );
 
@@ -37,5 +37,10 @@ class Path implements Node
                 $this->operations,
             ),
         );
+    }
+
+    public function resolveReference(string $reference): array
+    {
+        return $this->specification->resolveReference($reference);
     }
 }

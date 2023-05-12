@@ -22,9 +22,14 @@ class Schema implements Node
     private readonly ?array $properties;
 
     public function __construct(
+        private readonly Node $parent,
         private readonly bool $required,
         array $data,
     ) {
+        if (isset($data['$ref'])) {
+            $data = $parent->resolveReference($data['$ref']);
+        }
+
         $this->type = $data['type'] ?? null;
         $this->default = $data['default'] ?? null;
         $this->format = $data['format'] ?? null;
@@ -39,12 +44,25 @@ class Schema implements Node
         $this->minItems = $data['exclusiveMaximum'] ?? null;
         $this->maxItems = $data['exclusiveMaximum'] ?? null;
         $this->uniqueItems = $data['uniqueItems'] ?? false;
-        $this->items = isset($data['items']) ? new Schema(false, $data['items']) : null;
+        $this->items = isset($data['items']) ? new Schema($this, false, $data['items']) : null;
         $this->properties = isset($data['properties']) ?
             array_map(
-                static fn (array $property) => new Schema(isset($data['required'][$property['name']]), $data['items']),
-                $data['properties'],
+                fn (string $name) => new Schema($this, isset($data['required'][$name]), $data['properties'][$name]),
+                array_keys($data['properties']),
             ) : null;
+    }
+
+    public function getClassName(): string
+    {
+        return uniqid();
+    }
+
+    public function getArrayProperties(): array
+    {
+        return array_filter(
+            $this->properties,
+            static fn (Schema $property) => $property->type === 'array',
+        );
     }
 
     public function getDefaultAsMethodParameterDefault(): ?string
@@ -58,6 +76,28 @@ class Schema implements Node
         }
 
         return null;
+    }
+
+    public function toParamArrayAnnotation(
+        string $parentSchemaName,
+        array $schema,
+        array $property,
+        string $propertyName,
+    ): string {
+        return sprintf(
+            '@param %sarray<%s> $%s',
+            in_array($propertyName, $schema['required'], true) ? '' : '?',
+            match ($property['items']['type']) {
+                'string' => 'string',
+                'number' => 'float',
+                'integer' => 'int',
+                'boolean' => 'bool',
+                // TODO array elements type
+                'array' => 'array',
+                'object' => $this->toObjectSchemaClassName($property['items'], ucfirst("{$propertyName}{$parentSchemaName}")),
+            },
+            $propertyName,
+        );
     }
 
     public function getConstraints(): array
@@ -163,7 +203,7 @@ class Schema implements Node
     {
         return match ($this->type) {
             'object' => array_merge(
-                [uniqid() => ['template' => 'response.php.twig', 'param' => ['schema' => $this]]],
+                [uniqid() => ['template' => 'schema.php.twig', 'params' => ['schema' => $this]]],
                 array_map(
                     static fn (Schema $property) => $property->getFiles(),
                     $this->properties,
@@ -171,11 +211,16 @@ class Schema implements Node
             ),
             'array' => $this->items->getFiles(),
             'string' => $this->format !== null ? [
-                uniqid() => ['template' => 'format-definition.php.twig', 'param' => ['schema' => $this]],
-                uniqid() => ['template' => 'format-constraint.php.twig', 'param' => ['schema' => $this]],
-                uniqid() => ['template' => 'format-validator.php.twig', 'param' => ['schema' => $this]],
+                uniqid() => ['template' => 'format-definition.php.twig', 'params' => ['schema' => $this]],
+                uniqid() => ['template' => 'format-constraint.php.twig', 'params' => ['schema' => $this]],
+                uniqid() => ['template' => 'format-validator.php.twig', 'params' => ['schema' => $this]],
             ] : [],
             default => [],
         };
+    }
+
+    public function resolveReference(string $reference): array
+    {
+        return $this->parent->resolveReference($reference);
     }
 }

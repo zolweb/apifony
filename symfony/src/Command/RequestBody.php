@@ -7,10 +7,11 @@ class RequestBody implements Node
     public readonly array $mediaTypes;
 
     public function __construct(
+        private readonly Operation $operation,
         array $data,
     ) {
         $this->mediaTypes = array_map(
-            fn (string $type) => new MediaType($type, $data['content'][$type]),
+            fn (string $type) => new MediaType($this, $type, $data['content'][$type]),
             array_keys(
                 array_filter(
                     $data['content'],
@@ -29,5 +30,10 @@ class RequestBody implements Node
                 $this->mediaTypes,
             ),
         );
+    }
+
+    public function resolveReference(string $reference): array
+    {
+        return $this->operation->resolveReference($reference);
     }
 }

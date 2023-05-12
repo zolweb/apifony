@@ -2,26 +2,15 @@
 
 namespace App\Command;
 
-class Parameter
+class Parameter implements Node
 {
     public readonly string $in;
     public readonly string $name;
     private readonly Schema $schema;
     private readonly bool $required;
 
-    public static function fromPath(Path $path, array $data): self
-    {
-        return new self($path, null, $data);
-    }
-
-    public static function fromOperation(Operation $operation, array $data): self
-    {
-        return new self(null, $operation, $data);
-    }
-
-    private function __construct(
-        private readonly ?Path $path,
-        private readonly ?Operation $operation,
+    public function __construct(
+        private readonly Node $parent,
         array $data,
     ) {
         if (($data['schema']['type'] ?? '') === 'array') {
@@ -30,7 +19,7 @@ class Parameter
 
         $this->in = $data['in'];
         $this->name = $data['name'];
-        $this->schema = new Schema($data['required'] ?? false, $data['schema']);
+        $this->schema = new Schema($this, $data['required'] ?? false, $data['schema']);
         $this->required = $data['required'] ?? false;
     }
 
@@ -98,5 +87,10 @@ class Parameter
         // }
 
         return $this->schema->getConstraints();
+    }
+
+    public function resolveReference(string $reference): array
+    {
+        return $this->parent->resolveReference($reference);
     }
 }

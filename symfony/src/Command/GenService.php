@@ -157,28 +157,6 @@ class GenService extends AbstractExtension
         );
     }
 
-    public function toParamArrayAnnotation(
-        string $parentSchemaName,
-        array $schema,
-        array $property,
-        string $propertyName,
-    ): string {
-        return sprintf(
-            '@param %sarray<%s> $%s',
-            in_array($propertyName, $schema['required'], true) ? '' : '?',
-            match ($property['items']['type']) {
-                'string' => 'string',
-                'number' => 'float',
-                'integer' => 'int',
-                'boolean' => 'bool',
-                // TODO array elements type
-                'array' => 'array',
-                'object' => $this->toObjectSchemaClassName($property['items'], ucfirst("{$propertyName}{$parentSchemaName}")),
-            },
-            $propertyName,
-        );
-    }
-
     public function genResponses(array $operation): string
     {
         $responseNames = [];
