@@ -5,27 +5,6 @@ namespace App\Controller;
 
 interface {{ operation.handlerInterfaceName }}
 {
-    /**
-     * OperationId: {{ operation.id }}
-{%~ if operation.summary is defined and operation.summary is not empty %}
-     *
-     * {{ operation.summary }}
-{%~ endif %}
-{%~ if operation.description is defined and operation.description is not empty %}
-     *
-     * {{ operation.description }}
-{%~ endif %}
-{%~ if operation.externalDocs is defined and operation.externalDocs is not empty %}
-     *
-    {%~ for doc in operation.externalDocs %}
-     * @see {{ doc.url }} {{- doc.description ?? '' }}
-    {%~ endfor %}
-{%~ endif %}
-{%~ if operation.deprecated ?? false %}
-     *
-     * @deprecated
-{%~ endif %}
-     */
     public function handle(
 {%~ for parameter in operation.allSortedParameters %}
         {{ parameter.methodParameter }}
