@@ -7,11 +7,13 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class {{ schema.className }}
 {
+{%~ if schema.arrayProperties %}
     /**
-{%~ for property in schema.arrayProperties %}
-     * {{ schema.type }}
-{%~ endfor %}
-    */
+    {%~ for property in schema.arrayProperties %}
+     * {{ property.toPhpDocArrayParameterAnnotation }}
+    {%~ endfor %}
+     */
+{%~ endif %}
     public function __construct(
 {%~ for property in schema.properties %}
     {%~ for constraint in property.constraints %}

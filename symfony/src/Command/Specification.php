@@ -4,12 +4,12 @@ namespace App\Command;
 
 class Specification
 {
+    private readonly array $componentsData;
     private readonly array $paths;
-    private readonly array $components;
 
     public function __construct(array $data)
     {
-        $this->components = $data['components'] ?? [];
+        $this->componentsData = $data['components'] ?? [];
 
         $this->paths = array_map(
             fn (string $route) => new Path($this, $route, $data['paths'][$route]),
@@ -40,7 +40,7 @@ class Specification
         return [
             'type' => $type,
             'name' => $name,
-            'data' => $this->components[$type][$name],
+            'data' => $this->componentsData[$type][$name],
         ];
     }
 }

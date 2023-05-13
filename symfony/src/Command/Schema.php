@@ -99,7 +99,7 @@ class Schema
         return null;
     }
 
-    public function toPhpDocArrayParamAnnotation(): string
+    public function toPhpDocArrayParameterAnnotation(): string
     {
         return sprintf(
             '@param %sarray<%s> $%s',

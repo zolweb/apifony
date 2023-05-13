@@ -7,9 +7,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Pet
 {
     /**
-     * object
-     * object
-    */
+     * @param ?array<string> $photoUrls
+     * @param ?array<PetTags> $tags
+     */
     public function __construct(
         #[Lol()]
         public readonly ?int $id,

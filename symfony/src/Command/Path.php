@@ -29,18 +29,18 @@ class Path
         );
     }
 
+    public function resolveReference(string $reference): array
+    {
+        return $this->specification->resolveReference($reference);
+    }
+
     public function getFiles(): array
     {
         return array_merge(
-            ...array_map(
+                ...array_map(
                 static fn (Operation $operation) => $operation->getFiles(),
                 $this->operations,
             ),
         );
-    }
-
-    public function resolveReference(string $reference): array
-    {
-        return $this->specification->resolveReference($reference);
     }
 }

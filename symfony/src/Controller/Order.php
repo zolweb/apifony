@@ -6,8 +6,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class Order
 {
-    /**
-    */
     public function __construct(
         #[Lol()]
         public readonly ?int $id,

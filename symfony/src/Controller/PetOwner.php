@@ -6,8 +6,6 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class PetOwner
 {
-    /**
-    */
     public function __construct(
         public readonly ?string $firstname,
         public readonly ?string $lastname,
