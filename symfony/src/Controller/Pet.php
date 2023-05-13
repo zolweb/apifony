@@ -8,8 +8,8 @@ class Pet
 {
     /**
      * @param array<string> $photoUrls
-     * @param array<Tag> $tags
-     * @param array<array<PetParentArray>> $parentArray
+     * @param ?array<Tag> $tags
+     * @param ?array<array<PetParentArray>> $parentArray
      */
     public function __construct(
         public readonly ?int $id,
@@ -21,7 +21,7 @@ class Pet
             'flex',
             'lol',
         ])]
-        public readonly ?string $name,
+        public readonly string $name,
 
         #[Assert\Valid]
         public readonly ?Category $category,
@@ -30,7 +30,7 @@ class Pet
             new Assert\Length(min: 3),
             new Assert\Length(max: 10),
         ])]
-        public readonly ?array $photoUrls,
+        public readonly array $photoUrls,
 
         #[Assert\Count(min: 2)]
         #[Assert\Count(max: 5)]

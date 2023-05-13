@@ -42,7 +42,7 @@ abstract class Schema
     {
         return sprintf(
             '@param %s%s $%s',
-            $this->required ? '?' : '',
+            $this->required ? '' : '?',
             $this->getPhpDocParameterAnnotationType(),
             $this->name,
         );

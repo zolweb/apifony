@@ -16,7 +16,12 @@ class ObjectSchema extends Schema
         parent::__construct($name, $required);
 
         $this->properties = array_map(
-            fn (string $name) => Schema::build($this, $name, isset($data['required'][$name]), $data['properties'][$name]),
+            fn (string $name) => Schema::build(
+                $this,
+                $name,
+                in_array($name, $data['required'] ?? [], true),
+                $data['properties'][$name],
+            ),
             array_keys($data['properties']),
         );
     }
