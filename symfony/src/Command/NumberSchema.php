@@ -5,10 +5,11 @@ namespace App\Command;
 class NumberSchema extends Schema
 {
     private readonly ?float $default;
-    private readonly ?int $minimum;
-    private readonly ?int $maximum;
-    private readonly ?int $exclusiveMinimum;
-    private readonly ?int $exclusiveMaximum;
+    private readonly ?float $multipleOf;
+    private readonly ?float $minimum;
+    private readonly ?float $maximum;
+    private readonly ?float $exclusiveMinimum;
+    private readonly ?float $exclusiveMaximum;
     private readonly ?array $enum;
 
     public function __construct(
@@ -18,6 +19,7 @@ class NumberSchema extends Schema
     ) {
         parent::__construct($name, $required);
         $this->default = $data['default'] ?? null;
+        $this->multipleOf = $data['multipleOf'] ?? null;
         $this->minimum = $data['minimum'] ?? null;
         $this->maximum = $data['maximum'] ?? null;
         $this->exclusiveMinimum = $data['exclusiveMinimum'] ?? null;
@@ -56,6 +58,10 @@ class NumberSchema extends Schema
 
         if ($this->required) {
             $constraints[] = new Constraint('Assert\NotNull', []);
+        }
+
+        if ($this->multipleOf !== null) {
+            $constraints[] = new Constraint('Assert\DivisibleBy', ['value' => $this->multipleOf]);
         }
 
         if ($this->minimum !== null) {

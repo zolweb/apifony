@@ -5,6 +5,7 @@ namespace App\Command;
 class IntegerSchema extends Schema
 {
     private readonly ?int $default;
+    private readonly ?int $multipleOf;
     private readonly ?int $minimum;
     private readonly ?int $maximum;
     private readonly ?int $exclusiveMinimum;
@@ -18,6 +19,7 @@ class IntegerSchema extends Schema
     ) {
         parent::__construct($name, $required);
         $this->default = $data['default'] ?? null;
+        $this->multipleOf = $data['multipleOf'] ?? null;
         $this->minimum = $data['minimum'] ?? null;
         $this->maximum = $data['maximum'] ?? null;
         $this->exclusiveMinimum = $data['exclusiveMinimum'] ?? null;
@@ -56,6 +58,10 @@ class IntegerSchema extends Schema
 
         if ($this->required) {
             $constraints[] = new Constraint('Assert\NotNull', []);
+        }
+
+        if ($this->multipleOf !== null) {
+            $constraints[] = new Constraint('Assert\DivisibleBy', ['value' => $this->multipleOf]);
         }
 
         if ($this->minimum !== null) {
