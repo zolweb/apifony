@@ -1,3 +1,4 @@
+{% autoescape false %}
 <?php
 
 namespace App\Controller;
@@ -8,16 +9,17 @@ class {{ schema.className }}
 {
     /**
 {%~ for property in schema.arrayProperties %}
-     * {{ toParamArrayAnnotation(className, schema, property, propertyName)|raw }}
+     * {{ schema.type }}
 {%~ endfor %}
     */
     public function __construct(
-{%~ for propertyName, property in schema.properties %}
-    {%~ for constraint in getPropertyConstraints(schema, property, propertyName) %}
-        #[{{ constraint|raw }}]
+{%~ for property in schema.properties %}
+    {%~ for constraint in property.constraints %}
+        #[{{ constraint }}]
     {%~ endfor %}
-        public readonly {{ propertyToMethodParam(className, schema, property, propertyName) }},
+        public readonly {{ property.toMethodParameter }},
 {%~ endfor %}
     ) {
     }
 }
+{% endautoescape %}

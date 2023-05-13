@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-class Schema implements Node
+class Schema
 {
     public readonly ?string $type;
     public readonly mixed $default;
@@ -19,10 +19,10 @@ class Schema implements Node
     private readonly ?array $maxItems;
     private readonly bool $uniqueItems;
     private readonly ?Schema $items;
-    private readonly ?array $properties;
+    public readonly ?array $properties;
 
     public function __construct(
-        private readonly Node $parent,
+        private readonly ?string $name,
         private readonly bool $required,
         array $data,
     ) {
@@ -44,10 +44,10 @@ class Schema implements Node
         $this->minItems = $data['exclusiveMaximum'] ?? null;
         $this->maxItems = $data['exclusiveMaximum'] ?? null;
         $this->uniqueItems = $data['uniqueItems'] ?? false;
-        $this->items = isset($data['items']) ? new Schema($this, false, $data['items']) : null;
+        $this->items = isset($data['items']) ? new Schema($this, null, false, $data['items']) : null;
         $this->properties = isset($data['properties']) ?
             array_map(
-                fn (string $name) => new Schema($this, isset($data['required'][$name]), $data['properties'][$name]),
+                fn (string $name) => new Schema($this, $name, isset($data['required'][$name]), $data['properties'][$name]),
                 array_keys($data['properties']),
             ) : null;
     }
@@ -65,6 +65,25 @@ class Schema implements Node
         );
     }
 
+    public function toMethodParameter(): string
+    {
+        return sprintf(
+            '%s%s $%s%s',
+            $this->required || $this->type === null ? '' : '?',
+            match ($this->type ?? 'mixed') {
+                'string' => 'string',
+                'number' => 'float',
+                'integer' => 'int',
+                'boolean' => 'bool',
+                'array' => 'array',
+                'object' => 'Lol', // $this->toObjectSchemaClassName($property, ucfirst("{$propertyName}{$parentSchemaName}")),
+                'mixed' => 'mixed',
+            },
+            $this->name,
+            '', //($default = $this->getSchemaDefault($property)) !== null ? sprintf(' = %s', $default) : '',
+        );
+    }
+
     public function getDefaultAsMethodParameterDefault(): ?string
     {
         if (isset($this->type) && isset($this->default)) {
@@ -78,25 +97,20 @@ class Schema implements Node
         return null;
     }
 
-    public function toParamArrayAnnotation(
-        string $parentSchemaName,
-        array $schema,
-        array $property,
-        string $propertyName,
-    ): string {
+    public function toPhpDocArrayParamAnnotation(): string
+    {
         return sprintf(
             '@param %sarray<%s> $%s',
-            in_array($propertyName, $schema['required'], true) ? '' : '?',
-            match ($property['items']['type']) {
+            $this->required ? '' : '?',
+            match ($this->items->type) {
                 'string' => 'string',
                 'number' => 'float',
                 'integer' => 'int',
                 'boolean' => 'bool',
-                // TODO array elements type
                 'array' => 'array',
-                'object' => $this->toObjectSchemaClassName($property['items'], ucfirst("{$propertyName}{$parentSchemaName}")),
+                'object' => 'Lol', // $this->toObjectSchemaClassName($property['items'], ucfirst("{$propertyName}{$parentSchemaName}")),
             },
-            $propertyName,
+            $this->name,
         );
     }
 
@@ -204,23 +218,18 @@ class Schema implements Node
         return match ($this->type) {
             'object' => array_merge(
                 [uniqid() => ['template' => 'schema.php.twig', 'params' => ['schema' => $this]]],
-                array_map(
+                ...array_map(
                     static fn (Schema $property) => $property->getFiles(),
                     $this->properties,
                 ),
             ),
             'array' => $this->items->getFiles(),
-            'string' => $this->format !== null ? [
-                uniqid() => ['template' => 'format-definition.php.twig', 'params' => ['schema' => $this]],
-                uniqid() => ['template' => 'format-constraint.php.twig', 'params' => ['schema' => $this]],
-                uniqid() => ['template' => 'format-validator.php.twig', 'params' => ['schema' => $this]],
-            ] : [],
+            // 'string' => $this->format !== null ? [
+            //     uniqid() => ['template' => 'format-definition.php.twig', 'params' => ['schema' => $this]],
+            //     uniqid() => ['template' => 'format-constraint.php.twig', 'params' => ['schema' => $this]],
+            //     uniqid() => ['template' => 'format-validator.php.twig', 'params' => ['schema' => $this]],
+            // ] : [],
             default => [],
         };
-    }
-
-    public function resolveReference(string $reference): array
-    {
-        return $this->parent->resolveReference($reference);
     }
 }

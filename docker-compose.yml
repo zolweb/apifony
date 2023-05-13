@@ -19,7 +19,7 @@
         - "traefik.http.services.sylius-api.loadbalancer.server.port=80"
 
     php:
-      image: zolweb/php-fpm:8.1.10
+      build: docker/php
       environment:
         UID:
         GID:

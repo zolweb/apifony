@@ -2,18 +2,17 @@
 
 namespace App\Command;
 
-class Path implements Node
+class Path
 {
     public readonly array $parameters;
     private readonly array $operations;
 
     public function __construct(
-        private readonly Specification $specification,
         public readonly string $route,
         array $data,
     ) {
         $this->parameters = array_map(
-            fn (array $data) => new Parameter($this, $data),
+            fn (array $data) => new Parameter($data),
             $data['parameters'] ?? []
         );
 
@@ -37,10 +36,5 @@ class Path implements Node
                 $this->operations,
             ),
         );
-    }
-
-    public function resolveReference(string $reference): array
-    {
-        return $this->specification->resolveReference($reference);
     }
 }

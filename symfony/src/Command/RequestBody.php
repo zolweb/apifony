@@ -2,16 +2,15 @@
 
 namespace App\Command;
 
-class RequestBody implements Node
+class RequestBody
 {
     public readonly array $mediaTypes;
 
     public function __construct(
-        private readonly Operation $operation,
         array $data,
     ) {
         $this->mediaTypes = array_map(
-            fn (string $type) => new MediaType($this, $type, $data['content'][$type]),
+            fn (string $type) => new MediaType($type, $data['content'][$type]),
             array_keys(
                 array_filter(
                     $data['content'],
@@ -26,14 +25,9 @@ class RequestBody implements Node
     {
         return array_merge(
             ...array_map(
-                static fn (MediaType $content) => $content->getFiles(),
+                static fn (MediaType $mediaType) => $mediaType->getFiles(),
                 $this->mediaTypes,
             ),
         );
-    }
-
-    public function resolveReference(string $reference): array
-    {
-        return $this->operation->resolveReference($reference);
     }
 }
