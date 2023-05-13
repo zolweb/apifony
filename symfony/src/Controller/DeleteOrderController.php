@@ -34,6 +34,7 @@ class DeleteOrderController extends AbstractController
         $violations = $validator->validate(
             $pOrderId,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {

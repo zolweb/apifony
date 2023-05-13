@@ -13,7 +13,7 @@ class NumberSchema extends Schema
 
     public function __construct(
         ?string $name,
-        bool $required,
+        private readonly bool $required,
         array $data,
     ) {
         parent::__construct($name, $required);
@@ -27,43 +27,33 @@ class NumberSchema extends Schema
 
     public function getConstraints(): array
     {
-        return [];
         $constraints = [];
 
+        if ($this->required) {
+            $constraints[] = new Constraint('Assert\NotNull', []);
+        }
+
         if ($this->minimum !== null) {
-            $constraints[] = sprintf(
-                'Assert\GreaterThanOrEqual(%d)',
-                $this->minimum,
-            );
+            $constraints[] = new Constraint('Assert\GreaterThanOrEqual', ['value' => $this->minimum]);
         }
 
         if ($this->maximum !== null) {
-            $constraints[] = sprintf(
-                'Assert\LessThanOrEqual(%d)',
-                $this->maximum,
-            );
+            $constraints[] = new Constraint('Assert\LessThanOrEqual', ['value' => $this->maximum]);
         }
 
         if ($this->exclusiveMinimum !== null) {
-            $constraints[] = sprintf(
-                'Assert\GreaterThan(%d)',
-                $this->exclusiveMinimum,
-            );
+            $constraints[] = new Constraint('Assert\GreaterThan', ['value' => $this->exclusiveMinimum]);
         }
 
         if ($this->exclusiveMaximum !== null) {
-            $constraints[] = sprintf(
-                'Assert\LessThan(%d)',
-                $this->exclusiveMaximum,
-            );
+            $constraints[] = new Constraint('Assert\LessThan', ['value' => $this->exclusiveMaximum]);
         }
 
         if ($this->enum !== null) {
-            $constraints[] = sprintf(
-                'Assert\Choice([\'%s\'])',
-                implode('\', \'', $this->enum),
-            );
+            $constraints[] = new Constraint('Assert\Choice', ['choices' => $this->enum]);
         }
+
+        return $constraints;
     }
 
     public function getPhpDocParameterAnnotationType(): string

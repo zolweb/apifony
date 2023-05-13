@@ -34,6 +34,7 @@ class GetUserByNameController extends AbstractController
         $violations = $validator->validate(
             $pUsername,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {

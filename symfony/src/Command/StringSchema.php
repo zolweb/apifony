@@ -13,7 +13,7 @@ class StringSchema extends Schema
 
     public function __construct(
         ?string $name,
-        bool $required,
+        private readonly bool $required,
         array $data,
     ) {
         parent::__construct($name, $required);
@@ -44,6 +44,10 @@ class StringSchema extends Schema
     public function getConstraints(): array
     {
         $constraints = [];
+
+        if ($this->required) {
+            $constraints[] = new Constraint('Assert\NotNull', []);
+        }
 
         if ($this->format !== null) {
             $constraints[] = new Constraint($this->format, []);

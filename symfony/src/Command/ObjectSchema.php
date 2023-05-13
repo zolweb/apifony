@@ -10,7 +10,7 @@ class ObjectSchema extends Schema
         private readonly MediaType|Parameter|ObjectSchema|ArraySchema $context,
         private readonly ?string $schemaName,
         private readonly ?string $name,
-        bool $required,
+        private readonly bool $required,
         array $data,
     ) {
         parent::__construct($name, $required);
@@ -61,7 +61,15 @@ class ObjectSchema extends Schema
 
     public function getConstraints(): array
     {
-        return [new Constraint('Assert\Valid', [])];
+        $constraints = [
+            new Constraint('Assert\Valid', []),
+        ];
+
+        if ($this->required) {
+            $constraints[] = new Constraint('Assert\NotNull', []);
+        }
+
+        return $constraints;
     }
 
     public function getFiles(): array

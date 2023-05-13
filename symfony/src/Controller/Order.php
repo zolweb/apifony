@@ -11,6 +11,7 @@ class Order
 
         public readonly ?int $petId,
 
+        #[Assert\GreaterThan(value: 5)]
         public readonly ?int $quantity,
 
         #[date-time]

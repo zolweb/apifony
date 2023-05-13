@@ -48,6 +48,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $qAgrez,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {
@@ -59,6 +60,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $hAzef,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {
@@ -81,6 +83,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pClientId,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {
@@ -103,6 +106,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam1,
             [
+                new Assert\NotNull,
                 new format,
                 new Assert\Choice(choices: [
                     'item',
@@ -119,6 +123,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam2,
             [
+                new Assert\NotNull,
                 new format,
                 new Assert\Regex(pattern: 'item'),
                 new Assert\Length(min: 1),
@@ -138,6 +143,8 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam3,
             [
+                new Assert\NotNull,
+                new Assert\LessThanOrEqual(value: 2),
             ]
         );
         if (count($violations) > 0) {
@@ -149,6 +156,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam4,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {
@@ -160,6 +168,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam5,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {

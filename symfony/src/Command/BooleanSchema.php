@@ -8,7 +8,7 @@ class BooleanSchema extends Schema
 
     public function __construct(
         ?string $name,
-        bool $required,
+        private readonly bool $required,
         array $data,
     ) {
         parent::__construct($name, $required);
@@ -33,7 +33,13 @@ class BooleanSchema extends Schema
 
     public function getConstraints(): array
     {
-        return [];
+        $constraints = [];
+
+        if ($this->required) {
+            $constraints[] = new Constraint('Assert\NotNull', []);
+        }
+
+        return $constraints;
     }
 
     public function getFiles(): array

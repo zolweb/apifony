@@ -14,6 +14,7 @@ class Pet
     public function __construct(
         public readonly ?int $id,
 
+        #[Assert\NotNull]
         #[Assert\Length(min: 2)]
         #[Assert\Length(max: 5)]
         #[Assert\Choice(choices: [
@@ -26,6 +27,7 @@ class Pet
         #[Assert\Valid]
         public readonly ?Category $category,
 
+        #[Assert\NotNull]
         #[Assert\All(constraints: [
             new Assert\Length(min: 3),
             new Assert\Length(max: 10),

@@ -12,7 +12,7 @@ class ArraySchema extends Schema
     public function __construct(
         private readonly MediaType|Parameter|ObjectSchema|ArraySchema $context,
         private readonly ?string $name,
-        bool $required,
+        private readonly bool $required,
         array $data,
     ) {
         parent::__construct($name, $required);
@@ -50,6 +50,10 @@ class ArraySchema extends Schema
     public function getConstraints(): array
     {
         $constraints = [];
+
+        if ($this->required) {
+            $constraints[] = new Constraint('Assert\NotNull', []);
+        }
 
         if ($this->minItems !== null) {
             $constraints[] = new Constraint('Assert\Count', ['min' => $this->minItems]);
