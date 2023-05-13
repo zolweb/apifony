@@ -2,6 +2,8 @@
 
 namespace App\Command;
 
+use function Symfony\Component\String\u;
+
 class StringSchema extends Schema
 {
     private readonly ?string $default;
@@ -24,6 +26,26 @@ class StringSchema extends Schema
         $this->minLength = $data['minLength'] ?? null;
         $this->maxLength = $data['maxLength'] ?? null;
         $this->enum = $data['enum'] ?? null;
+    }
+
+    public function getFormatDefinitionInterfaceName(): string
+    {
+        return "{$this->getNormalizedFormat()}Definition";
+    }
+
+    public function getFormatConstraintClassName(): string
+    {
+        return $this->getNormalizedFormat();
+    }
+
+    public function getFormatValidatorClassName(): string
+    {
+        return "{$this->getNormalizedFormat()}Validator";
+    }
+
+    public function getNormalizedFormat(): string
+    {
+        return u($this->format)->camel()->title();
     }
 
     public function getPhpDocParameterAnnotationType(): string
@@ -66,7 +88,7 @@ class StringSchema extends Schema
         }
 
         if ($this->format !== null) {
-            $constraints[] = new Constraint($this->format, []);
+            $constraints[] = new Constraint($this->getNormalizedFormat(), []);
         }
 
         if ($this->pattern !== null) {
@@ -90,6 +112,11 @@ class StringSchema extends Schema
 
     public function getFiles(): array
     {
-        return [];
+        return $this->format !== null ?
+            [
+                $this->getFormatDefinitionInterfaceName() => ['template' => 'format-definition.php.twig', 'params' => ['schema' => $this]],
+                $this->getFormatConstraintClassName() => ['template' => 'format-constraint.php.twig', 'params' => ['schema' => $this]],
+                $this->getFormatValidatorClassName() => ['template' => 'format-validator.php.twig', 'params' => ['schema' => $this]],
+            ] : [];
     }
 }

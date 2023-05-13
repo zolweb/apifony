@@ -2,7 +2,7 @@
 
 namespace App\Controller;
 
-interface {{ schema.formatDefinitionInterfaceName }}
+interface DateTimeDefinition
 {
     /**
      * @return array<string>

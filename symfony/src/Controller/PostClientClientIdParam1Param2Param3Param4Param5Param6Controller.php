@@ -94,7 +94,7 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
             $pParam1,
             [
                 new Assert\NotNull,
-                new format,
+                new Format,
                 new Assert\Choice(choices: [
                     'item',
                     'item2',
@@ -111,7 +111,7 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
             $pParam2,
             [
                 new Assert\NotNull,
-                new format,
+                new Format,
                 new Assert\Regex(pattern: 'item'),
                 new Assert\Length(min: 1),
                 new Assert\Length(max: 10),

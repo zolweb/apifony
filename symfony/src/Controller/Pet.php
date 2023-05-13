@@ -42,6 +42,7 @@ class Pet
         ])]
         public readonly ?array $tags,
 
+        #[DateTime]
         #[Assert\Regex(pattern: 'A-z')]
         #[Assert\Choice(choices: [
             'available',

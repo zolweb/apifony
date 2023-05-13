@@ -144,7 +144,7 @@ class GetClientController extends AbstractController
             $pParam1,
             [
                 new Assert\NotNull,
-                new format,
+                new Format,
                 new Assert\Choice(choices: [
                     'item',
                     'item2',
@@ -161,7 +161,7 @@ class GetClientController extends AbstractController
             $pParam2,
             [
                 new Assert\NotNull,
-                new format,
+                new Format,
                 new Assert\Regex(pattern: 'item'),
                 new Assert\Length(min: 1),
                 new Assert\Length(max: 10),

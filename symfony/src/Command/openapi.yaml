@@ -834,6 +834,7 @@ components:
             - pending
             - sold
           pattern: A-z
+          format: date-time
         owner:
           type: object
           x-stoplight:
@@ -904,7 +905,7 @@ components:
                 id: crbmn8ygpaml6
               type: object
               properties:
-                id:
+                id-id:
                   type: integer
                   x-stoplight:
                     id: g5ps9lcygv93j

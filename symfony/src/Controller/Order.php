@@ -14,7 +14,7 @@ class Order
         #[Assert\GreaterThan(value: 5)]
         public readonly ?int $quantity,
 
-        #[date-time]
+        #[DateTime]
         public readonly ?string $shipDate = '',
 
         #[Assert\Choice(choices: [
