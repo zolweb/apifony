@@ -878,6 +878,32 @@ components:
                             type: string
                             x-stoplight:
                               id: qc64juw48ej54
+        parentArray:
+          type: array
+          x-stoplight:
+            id: e9rjsa2kfku51
+          minItems: 1
+          maxItems: 6
+          uniqueItems: true
+          items:
+            x-stoplight:
+              id: l5ygvsk1h3kwv
+            type: array
+            minItems: 7
+            maxItems: 9
+            items:
+              x-stoplight:
+                id: crbmn8ygpaml6
+              type: object
+              properties:
+                id:
+                  type: integer
+                  x-stoplight:
+                    id: g5ps9lcygv93j
+                name:
+                  type: string
+                  x-stoplight:
+                    id: 88qwhhbkawqi3
       required:
         - name
         - photoUrls

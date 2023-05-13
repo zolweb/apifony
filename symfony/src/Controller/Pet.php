@@ -9,6 +9,7 @@ class Pet
     /**
      * @param array<string> $photoUrls
      * @param array<Tag> $tags
+     * @param array<array<PetParentArray>> $parentArray
      */
     public function __construct(
         public readonly ?int $id,
@@ -18,6 +19,7 @@ class Pet
         public readonly ?array $tags,
         public readonly ?string $status,
         public readonly ?PetOwner $owner,
+        public readonly ?array $parentArray,
     ) {
     }
 }
