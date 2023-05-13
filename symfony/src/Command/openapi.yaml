@@ -797,10 +797,13 @@ components:
           example: 10
         name:
           type: string
-          example: doggie
+          example: cool
           minLength: 2
           maxLength: 5
-          pattern: A-z
+          enum:
+            - cool
+            - flex
+            - lol
         category:
           $ref: '#/components/schemas/Category'
         photoUrls:
@@ -829,6 +832,7 @@ components:
             - available
             - pending
             - sold
+          pattern: A-z
         owner:
           type: object
           x-stoplight:

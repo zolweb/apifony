@@ -13,40 +13,54 @@ class Pet
      */
     public function __construct(
         public readonly ?int $id,
-        #[Assert\Regex(pattern: 'A-z')]
+
         #[Assert\Length(min: 2)]
         #[Assert\Length(max: 5)]
+        #[Assert\Choice(choices: [
+            'cool',
+            'flex',
+            'lol',
+        ])]
         public readonly ?string $name,
+
         #[Assert\Valid]
         public readonly ?Category $category,
+
         #[Assert\All(constraints: [
-                0,
-1,
-                ])]
+            new Assert\Length(min: 3),
+            new Assert\Length(max: 10),
+        ])]
         public readonly ?array $photoUrls,
+
         #[Assert\Count(min: 2)]
         #[Assert\Count(max: 5)]
         #[Assert\Unique]
         #[Assert\All(constraints: [
-                0,
-                ])]
+            new Assert\Valid,
+        ])]
         public readonly ?array $tags,
+
+        #[Assert\Regex(pattern: 'A-z')]
         #[Assert\Choice(choices: [
-                0,
-1,
-2,
-                ])]
+            'available',
+            'pending',
+            'sold',
+        ])]
         public readonly ?string $status,
+
         #[Assert\Valid]
         public readonly ?PetOwner $owner,
+
         #[Assert\Count(min: 1)]
         #[Assert\Count(max: 6)]
         #[Assert\Unique]
         #[Assert\All(constraints: [
-                0,
-1,
-2,
-                ])]
+            new Assert\Count(min: 7),
+            new Assert\Count(max: 9),
+            new Assert\All(constraints: [
+                new Assert\Valid,
+            ]),
+        ])]
         public readonly ?array $parentArray,
     ) {
     }

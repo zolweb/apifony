@@ -20,6 +20,9 @@ class {{ schema.className }}
         {{~ constraint.annotation(2) }}
     {%~ endfor %}
         public readonly {{ property.methodParameter }},
+    {%~ if not loop.last %}
+
+    {%~ endif %}
 {%~ endfor %}
     ) {
     }
