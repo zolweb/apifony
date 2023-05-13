@@ -12,8 +12,8 @@ class Schema
     private readonly ?int $maxLength;
     private readonly null|int|float $minimum;
     private readonly null|int|float $maximum;
-    private readonly bool $exclusiveMinimum;
-    private readonly bool $exclusiveMaximum;
+    private readonly null|int|float $exclusiveMinimum;
+    private readonly null|int|float $exclusiveMaximum;
     private readonly ?array $enum;
     private readonly ?array $minItems;
     private readonly ?array $maxItems;
@@ -40,8 +40,8 @@ class Schema
         $this->maxLength = $data['maxLength'] ?? null;
         $this->minimum = $data['minimum'] ?? null;
         $this->maximum = $data['maximum'] ?? null;
-        $this->exclusiveMinimum = $data['exclusiveMinimum'] ?? false;
-        $this->exclusiveMaximum = $data['exclusiveMaximum'] ?? false;
+        $this->exclusiveMinimum = $data['exclusiveMinimum'] ?? null;
+        $this->exclusiveMaximum = $data['exclusiveMaximum'] ?? null;
         $this->enum = $data['enum'] ?? null;
         $this->minItems = $data['exclusiveMaximum'] ?? null;
         $this->maxItems = $data['exclusiveMaximum'] ?? null;
@@ -156,17 +156,29 @@ class Schema
 
         if ($this->minimum !== null) {
             $constraints[] = sprintf(
-                'Assert\%s(%d)',
-                    $this->exclusiveMinimum ?? false ? 'GreaterThan' : 'GreaterThanOrEqual',
+                'Assert\GreaterThanOrEqual(%d)',
                 $this->minimum,
             );
         }
 
         if ($this->maximum !== null) {
             $constraints[] = sprintf(
-                'Assert\%s(%d)',
-                    $this->exclusiveMaximum ?? false ? 'LessThan' : 'LessThanOrEqual',
+                'Assert\LessThanOrEqual(%d)',
                 $this->maximum,
+            );
+        }
+
+        if ($this->exclusiveMinimum !== null) {
+            $constraints[] = sprintf(
+                'Assert\GreaterThan(%d)',
+                $this->exclusiveMinimum,
+            );
+        }
+
+        if ($this->exclusiveMaximum !== null) {
+            $constraints[] = sprintf(
+                'Assert\LessThan(%d)',
+                $this->exclusiveMaximum,
             );
         }
 
