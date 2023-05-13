@@ -110,7 +110,7 @@ class Schema
                 'integer' => 'int',
                 'boolean' => 'bool',
                 'array' => 'array',
-                'object' => $this->getClassName(),
+                'object' => $this->items->getClassName(),
             },
             $this->name,
         );

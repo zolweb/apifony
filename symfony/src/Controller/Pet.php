@@ -8,7 +8,7 @@ class Pet
 {
     /**
      * @param ?array<string> $photoUrls
-     * @param ?array<PetTags> $tags
+     * @param ?array<Tag> $tags
      */
     public function __construct(
         #[Lol()]
