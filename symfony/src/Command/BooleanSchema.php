@@ -36,6 +36,11 @@ class BooleanSchema extends Schema
         return "'{$this->name}' => 'true|false',";
     }
 
+    public function getStringToTypeCastFunction(): string
+    {
+        return 'boolval';
+    }
+
     public function getConstraints(): array
     {
         $constraints = [];

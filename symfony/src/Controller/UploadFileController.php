@@ -30,7 +30,7 @@ class UploadFileController extends AbstractController
         UploadFileHandlerInterface $handler,
         int $pPetId,
     ): Response {
-        
+        $qAdditionalMetadata = strval($request->query->get('additionalMetadata', ''));
         $errors = [];
         $violations = $validator->validate(
             $pPetId,

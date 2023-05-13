@@ -45,6 +45,11 @@ class NumberSchema extends Schema
         return "'{$this->name}' => '-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?',";
     }
 
+    public function getStringToTypeCastFunction(): string
+    {
+        return 'floatval';
+    }
+
     public function getConstraints(): array
     {
         $constraints = [];

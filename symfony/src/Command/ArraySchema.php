@@ -57,6 +57,14 @@ class ArraySchema extends Schema
         throw new Exception('Array parameters in path are not supported.');
     }
 
+    /**
+     * @throws Exception
+     */
+    public function getStringToTypeCastFunction(): string
+    {
+        throw new Exception('Array parameters are not supported.');
+    }
+
     public function getConstraints(): array
     {
         $constraints = [];

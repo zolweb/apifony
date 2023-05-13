@@ -38,7 +38,7 @@ class {{ operation.controllerClassName }} extends AbstractController
 {%~ endfor %}
     ): Response {
 {%~ for param in operation.allSortedParameters(['query', 'header', 'cookie']) %}
-        {{ param.toFromRequestVariableInitialization }}
+        {{ param.initializationFromRequest }}
 {%~ endfor %}
         $errors = [];
 {%~ for param in operation.allSortedParameters %}

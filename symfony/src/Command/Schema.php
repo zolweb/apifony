@@ -70,6 +70,8 @@ abstract class Schema
 
     public abstract function getRouteRequirement(): string;
 
+    public abstract function getStringToTypeCastFunction(): string;
+
     public abstract function getConstraints(): array;
 
     public abstract function getFiles(): array;

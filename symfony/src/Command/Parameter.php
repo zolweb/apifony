@@ -50,16 +50,19 @@ class Parameter
         return $this->schema->getMethodParameter();
     }
 
-    public function toFromRequestVariableInitialization(): string
+    public function getInitializationFromRequest(): string
     {
-        return '';
         return sprintf(
-            '$%s = %s($request->%s->get(\'%s\', %s));',
+            '$%s = %s($request->%s->get(\'%s\'%s));',
             $this->toVariableName(),
-            ['number' => 'floatval', 'integer' => 'intval', 'boolean' => 'boolval'][$this->schema->type] ?? '',
+            $this->schema->getStringToTypeCastFunction(),
             ['query' => 'query', 'header' => 'headers', 'cookie' => 'cookies'][$this->in],
             $this->name,
-            // $this->schema->default ?? 'null',
+            $this->schema->getMethodParameterDefault() !== null ?
+                sprintf(
+                    ', %s',
+                    $this->schema->getMethodParameterDefault(),
+                ) : '',
         );
     }
 

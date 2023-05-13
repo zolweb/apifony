@@ -30,7 +30,7 @@ class DeletePetController extends AbstractController
         DeletePetHandlerInterface $handler,
         int $pPetId,
     ): Response {
-        
+        $hApi_key = strval($request->headers->get('api_key', ''));
         $errors = [];
         $violations = $validator->validate(
             $pPetId,

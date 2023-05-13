@@ -40,10 +40,10 @@ class GetClientController extends AbstractController
         string $pParam1 = 'item',
         string $pParam2 = 'item',
     ): Response {
-        
-        
-        
-        
+        $qAgrez = floatval($request->query->get('agrez'));
+        $hAzef = strval($request->headers->get('azef', ''));
+        $cAzgrzeg = intval($request->cookies->get('azgrzeg', 10));
+        $hGegzer = boolval($request->headers->get('gegzer', true));
         $errors = [];
         $violations = $validator->validate(
             $qAgrez,

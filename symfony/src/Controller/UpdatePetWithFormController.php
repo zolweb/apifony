@@ -30,8 +30,8 @@ class UpdatePetWithFormController extends AbstractController
         UpdatePetWithFormHandlerInterface $handler,
         int $pPetId,
     ): Response {
-        
-        
+        $qName = strval($request->query->get('name', ''));
+        $qStatus = strval($request->query->get('status', ''));
         $errors = [];
         $violations = $validator->validate(
             $pPetId,

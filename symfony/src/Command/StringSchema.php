@@ -52,6 +52,11 @@ class StringSchema extends Schema
         );
     }
 
+    public function getStringToTypeCastFunction(): string
+    {
+        return 'strval';
+    }
+
     public function getConstraints(): array
     {
         $constraints = [];

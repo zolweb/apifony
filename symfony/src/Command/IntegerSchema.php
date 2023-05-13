@@ -45,6 +45,11 @@ class IntegerSchema extends Schema
         return "'{$this->name}' => '-?(0|[1-9]\d*)',";
     }
 
+    public function getStringToTypeCastFunction(): string
+    {
+        return 'intval';
+    }
+
     public function getConstraints(): array
     {
         $constraints = [];

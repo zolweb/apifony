@@ -2,6 +2,8 @@
 
 namespace App\Command;
 
+use Exception;
+
 class ObjectSchema extends Schema
 {
     public readonly ?array $properties;
@@ -65,6 +67,14 @@ class ObjectSchema extends Schema
     public function getRouteRequirement(): string
     {
         throw new Exception('Object parameters in path are not supported.');
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getStringToTypeCastFunction(): string
+    {
+        throw new Exception('Object parameters are not supported.');
     }
 
     public function getConstraints(): array
