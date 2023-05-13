@@ -9,7 +9,6 @@ class Pet
     /**
      * @param array<string> $photoUrls
      * @param ?array<Tag> $tags
-     * @param ?array<array<PetParentArray>> $parentArray
      */
     public function __construct(
         public readonly ?int $id,
@@ -53,18 +52,6 @@ class Pet
 
         #[Assert\Valid]
         public readonly ?PetOwner $owner,
-
-        #[Assert\Count(min: 1)]
-        #[Assert\Count(max: 6)]
-        #[Assert\Unique]
-        #[Assert\All(constraints: [
-            new Assert\Count(min: 7),
-            new Assert\Count(max: 9),
-            new Assert\All(constraints: [
-                new Assert\Valid,
-            ]),
-        ])]
-        public readonly ?array $parentArray,
     ) {
     }
 }

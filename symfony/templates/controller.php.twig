@@ -62,9 +62,8 @@ class {{ operation.controllerClassName }} extends AbstractController
     {%~ for mediaType in operation.requestBody.mediaTypes %}
             case '{{ mediaType.type }}':
         {%~ if mediaType.type is same as ('application/json') %}
-                $content = $request->getContent();
-                $payload = $serializer->deserialize($content, Lol::class, JsonEncoder::FORMAT);
-                $violations = $validator->validate($payload);
+                {{ mediaType.contentInitializationFromRequest }}
+                {{ mediaType.contentValidationViolationsInitialization }}
                 if (count($violations) > 0) {
                     foreach ($violations as $violation) {
                         $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();

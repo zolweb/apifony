@@ -61,6 +61,7 @@ class GetClientController extends AbstractController
             $pParam3,
             [
                 new Assert\NotNull,
+                new Assert\DivisibleBy(value: 1),
                 new Assert\LessThanOrEqual(value: 2),
             ]
         );
@@ -179,9 +180,10 @@ class GetClientController extends AbstractController
         }
         switch ($contentType = $request->headers->get('content-type', 'unspecified')) {
             case 'application/json':
-                $content = $request->getContent();
-                $payload = $serializer->deserialize($content, Lol::class, JsonEncoder::FORMAT);
-                $violations = $validator->validate($payload);
+                $content = json_decode($request->getContent(), true);
+                $violations = $validator->validate($content, [
+
+]);
                 if (count($violations) > 0) {
                     foreach ($violations as $violation) {
                         $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();

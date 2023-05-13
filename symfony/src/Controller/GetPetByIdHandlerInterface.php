@@ -4,9 +4,6 @@ namespace App\Controller;
 
 interface GetPetByIdHandlerInterface
 {
-    /**
-     * OperationId: getPetById
-     */
     public function handle(
         int $pPetId
     ): ;

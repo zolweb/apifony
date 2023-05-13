@@ -77,6 +77,16 @@ class ObjectSchema extends Schema
         throw new Exception('Object parameters are not supported.');
     }
 
+    public function getContentInitializationFromRequest(): string
+    {
+        return "\$content = \$serializer->deserialize(\$request->getContent(), '{$this->getClassName()}', JsonEncoder::FORMAT);";
+    }
+
+    public function getContentValidationViolationsInitialization(): string
+    {
+        return '$violations = $validator->validate($content);';
+    }
+
     public function getConstraints(): array
     {
         $constraints = [

@@ -45,6 +45,7 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
             $pParam3,
             [
                 new Assert\NotNull,
+                new Assert\DivisibleBy(value: 1),
                 new Assert\LessThanOrEqual(value: 2),
             ]
         );

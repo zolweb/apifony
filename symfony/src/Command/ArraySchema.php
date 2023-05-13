@@ -11,12 +11,19 @@ class ArraySchema extends Schema
     private readonly ?int $maxItems;
     private readonly bool $uniqueItems;
 
+    /**
+     * @throws Exception
+     */
     public function __construct(
         private readonly MediaType|Parameter|ObjectSchema|ArraySchema $context,
         ?string $name,
         bool $required,
         array $data,
     ) {
+        if (($data['items']['type'] ?? null) === 'array') {
+            throw new Exception('Array schemas of arrays are not supported.');
+        }
+
         parent::__construct($name, $required);
         $this->minItems = $data['minItems'] ?? null;
         $this->maxItems = $data['maxItems'] ?? null;
@@ -63,6 +70,29 @@ class ArraySchema extends Schema
     public function getStringToTypeCastFunction(): string
     {
         throw new Exception('Array parameters are not supported.');
+    }
+
+    public function getContentInitializationFromRequest(): string
+    {
+        return $this->items instanceof ObjectSchema ?
+            "\$content = \$serializer->deserialize(\$request->getContent(), '{$this->getClassName()}[]', JsonEncoder::FORMAT);" :
+            '$content = json_decode($request->getContent(), true)';
+    }
+
+    public function getContentValidationViolationsInitialization(): string
+    {
+        return $this->items instanceof ObjectSchema ?
+            '$violations = $validator->validate($content, [new Assert\Valid()]);' :
+            sprintf(
+                "\$violations = \$validator->validate(\$content, [\n%s\n]);",
+                implode(
+                    '',
+                    array_map(
+                        static fn (Constraint $constraint) => $constraint->getInstantiation(5),
+                        $this->getConstraints(),
+                    ),
+                ),
+            );
     }
 
     public function getConstraints(): array

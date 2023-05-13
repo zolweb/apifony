@@ -41,6 +41,25 @@ class BooleanSchema extends Schema
         return 'boolval';
     }
 
+    public function getContentInitializationFromRequest(): string
+    {
+        return '$content = json_decode($request->getContent(), true);';
+    }
+
+    public function getContentValidationViolationsInitialization(): string
+    {
+        return sprintf(
+            "\$violations = \$validator->validate(\$content, [\n%s\n]);",
+            implode(
+                '',
+                array_map(
+                    static fn (Constraint $constraint) => $constraint->getInstantiation(5),
+                    $this->getConstraints(),
+                ),
+            ),
+        );
+    }
+
     public function getConstraints(): array
     {
         $constraints = [];

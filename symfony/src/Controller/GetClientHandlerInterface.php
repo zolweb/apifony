@@ -4,9 +4,6 @@ namespace App\Controller;
 
 interface GetClientHandlerInterface
 {
-    /**
-     * OperationId: get-client
-     */
     public function handle(
         float $qAgrez
         float $pParam3

@@ -17,18 +17,28 @@ class MediaType
         $this->schema = Schema::build($this, null, false, $data['schema']);
     }
 
+    public function resolveReference(string $reference): array
+    {
+        return $this->requestBody->resolveReference($reference);
+    }
+
     public function getClassName(): string
     {
         return "{$this->requestBody->getClassName()}{$this->type}";
     }
 
+    public function getContentInitializationFromRequest(): string
+    {
+        return $this->schema->getContentInitializationFromRequest();
+    }
+
+    public function getContentValidationViolationsInitialization(): string
+    {
+        return $this->schema->getContentValidationViolationsInitialization();
+    }
+
     public function getFiles(): array
     {
         return $this->schema->getFiles();
-    }
-
-    public function resolveReference(string $reference): array
-    {
-        return $this->requestBody->resolveReference($reference);
     }
 }

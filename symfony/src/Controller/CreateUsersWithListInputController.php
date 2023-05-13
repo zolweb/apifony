@@ -29,9 +29,8 @@ class CreateUsersWithListInputController extends AbstractController
         $errors = [];
         switch ($contentType = $request->headers->get('content-type', 'unspecified')) {
             case 'application/json':
-                $content = $request->getContent();
-                $payload = $serializer->deserialize($content, Lol::class, JsonEncoder::FORMAT);
-                $violations = $validator->validate($payload);
+                $content = $serializer->deserialize($request->getContent(), 'CreateUsersWithListInputRequestapplication/json[]', JsonEncoder::FORMAT);
+                $violations = $validator->validate($content, [new Assert\Valid()]);
                 if (count($violations) > 0) {
                     foreach ($violations as $violation) {
                         $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
