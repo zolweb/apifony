@@ -12,6 +12,9 @@ class PetOwnerAddress
     public function __construct(
         public readonly ?string $street,
         public readonly ?string $country,
+        #[Assert\All(constraints: [
+                0,
+                ])]
         public readonly ?array $phoneNumbers,
     ) {
     }

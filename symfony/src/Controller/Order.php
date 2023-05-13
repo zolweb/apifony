@@ -12,6 +12,11 @@ class Order
         public readonly ?int $quantity,
         #[date-time]
         public readonly ?string $shipDate,
+        #[Assert\Choice(choices: [
+                0,
+1,
+2,
+                ])]
         public readonly ?string $status,
         public readonly ?bool $complete,
     ) {

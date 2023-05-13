@@ -104,6 +104,7 @@ class GetClientController extends AbstractController
             $pParam1,
             [
                 new format,
+                new Assert\Choice,
             ]
         );
         if (count($violations) > 0) {
@@ -119,6 +120,7 @@ class GetClientController extends AbstractController
                 new Assert\Regex,
                 new Assert\Length,
                 new Assert\Length,
+                new Assert\Choice,
             ]
         );
         if (count($violations) > 0) {

@@ -49,37 +49,23 @@ class ArraySchema extends Schema
 
     public function getConstraints(): array
     {
-        return [];
         $constraints = [];
 
         if ($this->minItems !== null) {
-            $constraints[] = sprintf(
-                'Assert\Count(min: %d)',
-                $this->minItems,
-            );
+            $constraints[] = new Constraint('Assert\Count', ['min' => $this->minItems]);
         }
 
         if ($this->maxItems) {
-            $constraints[] = sprintf(
-                'Assert\Count(max: %d)',
-                $this->maxItems,
-            );
+            $constraints[] = new Constraint('Assert\Count', ['max' => $this->maxItems]);
         }
 
         if ($this->uniqueItems) {
-            $constraints[] = 'Assert\Unique()';
+            $constraints[] = new Constraint('Assert\Unique', []);
         }
 
-        $constraints[] = sprintf(
-            "Assert\All([%s\n\t\t])",
-            implode(
-                '',
-                array_map(
-                    static fn (string $c) => "\n\t\t\tnew $c,",
-                    $this->getConstraints($required, $schema['items'] ?? []),
-                ),
-            ),
-        );
+        if (count($this->items->getConstraints()) > 0) {
+            $constraints[] = new Constraint('Assert\All', ['constraints' => $this->items->getConstraints()]);
+        }
 
         return $constraints;
     }

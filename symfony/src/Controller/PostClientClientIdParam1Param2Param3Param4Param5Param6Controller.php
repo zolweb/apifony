@@ -56,6 +56,7 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
             $pParam1,
             [
                 new format,
+                new Assert\Choice,
             ]
         );
         if (count($violations) > 0) {
@@ -71,6 +72,7 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
                 new Assert\Regex,
                 new Assert\Length,
                 new Assert\Length,
+                new Assert\Choice,
             ]
         );
         if (count($violations) > 0) {

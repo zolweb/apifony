@@ -9,6 +9,7 @@ class StringSchema extends Schema
     private readonly ?string $pattern;
     private readonly ?int $minLength;
     private readonly ?int $maxLength;
+    private readonly ?array $enum;
 
     public function __construct(
         ?string $name,
@@ -22,6 +23,7 @@ class StringSchema extends Schema
         $this->pattern = $data['pattern'] ?? null;
         $this->minLength = $data['minLength'] ?? null;
         $this->maxLength = $data['maxLength'] ?? null;
+        $this->enum = $data['enum'] ?? null;
     }
 
     public function getPhpDocParameterAnnotationType(): string
@@ -57,6 +59,10 @@ class StringSchema extends Schema
 
         if ($this->maxLength !== null) {
             $constraints[] = new Constraint('Assert\Length', ['max' => $this->maxLength]);
+        }
+
+        if ($this->enum !== null) {
+            $constraints[] = new Constraint('Assert\Choice', ['choices' => $this->enum]);
         }
 
         return $constraints;
