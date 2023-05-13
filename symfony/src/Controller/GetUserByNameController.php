@@ -28,7 +28,7 @@ class GetUserByNameController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         GetUserByNameHandlerInterface $handler,
-        string $username
+        string $username = ''
     ): Response {
         $errors = [];
         $violations = $validator->validate(

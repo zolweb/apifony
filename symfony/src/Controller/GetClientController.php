@@ -33,9 +33,9 @@ class GetClientController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         GetClientHandlerInterface $handler,
-        string $clientId
-        string $param1
-        string $param2
+        string $clientId = ''
+        string $param1 = 'item'
+        string $param2 = 'item'
         float $param3
         int $param4
         bool $param5

@@ -51,10 +51,14 @@ abstract class Schema
     public function getMethodParameter(): string
     {
         return sprintf(
-            '%s%s $%s',
+            '%s%s $%s%s',
             $this->required ? '' : '?',
             $this->getMethodParameterType(),
             $this->name,
+            $this->getMethodParameterDefault() !== null ? sprintf(
+                ' = %s',
+                $this->getMethodParameterDefault(),
+            ) : '',
         );
     }
 

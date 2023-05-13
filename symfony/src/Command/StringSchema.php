@@ -38,7 +38,7 @@ class StringSchema extends Schema
 
     public function getMethodParameterDefault(): ?string
     {
-        return $this->default;
+        return sprintf('\'%s\'', str_replace('\'', '\\\'', $this->default));
     }
 
     public function getConstraints(): array

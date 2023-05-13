@@ -33,9 +33,9 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         PostClientClientIdParam1Param2Param3Param4Param5Param6HandlerInterface $handler,
-        string $clientId
-        string $param1
-        string $param2
+        string $clientId = ''
+        string $param1 = 'item'
+        string $param2 = 'item'
         float $param3
         int $param4
         bool $param5

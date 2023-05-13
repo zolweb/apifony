@@ -8,7 +8,7 @@ interface LoginUserHandlerInterface
      * OperationId: loginUser
      */
     public function handle(
-        ?string $password
-        ?string $username
+        ?string $password = ''
+        ?string $username = ''
     ): ;
 }

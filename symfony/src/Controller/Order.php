@@ -15,14 +15,14 @@ class Order
         public readonly ?int $quantity,
 
         #[date-time]
-        public readonly ?string $shipDate,
+        public readonly ?string $shipDate = '',
 
         #[Assert\Choice(choices: [
             'placed',
             'approved',
             'delivered',
         ])]
-        public readonly ?string $status,
+        public readonly ?string $status = '',
 
         public readonly ?bool $complete,
     ) {

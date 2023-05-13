@@ -8,8 +8,8 @@ interface UpdatePetWithFormHandlerInterface
      * OperationId: updatePetWithForm
      */
     public function handle(
-        ?string $name
+        ?string $name = ''
         int $petId
-        ?string $status
+        ?string $status = ''
     ): ;
 }

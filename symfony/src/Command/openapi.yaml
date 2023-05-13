@@ -804,6 +804,7 @@ components:
             - cool
             - flex
             - lol
+          default: cool
         category:
           $ref: '#/components/schemas/Category'
         photoUrls:

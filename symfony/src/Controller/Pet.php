@@ -22,7 +22,7 @@ class Pet
             'flex',
             'lol',
         ])]
-        public readonly string $name,
+        public readonly string $name = 'cool',
 
         #[Assert\Valid]
         public readonly ?Category $category,
@@ -48,7 +48,7 @@ class Pet
             'pending',
             'sold',
         ])]
-        public readonly ?string $status,
+        public readonly ?string $status = '',
 
         #[Assert\Valid]
         public readonly ?PetOwner $owner,
