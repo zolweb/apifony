@@ -56,7 +56,10 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
             $pParam1,
             [
                 new format,
-                new Assert\Choice,
+                new Assert\Choice(choices: [
+                    'item',
+                    'item2',
+                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -69,10 +72,13 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
             $pParam2,
             [
                 new format,
-                new Assert\Regex,
-                new Assert\Length,
-                new Assert\Length,
-                new Assert\Choice,
+                new Assert\Regex(pattern: 'item'),
+                new Assert\Length(min: 1),
+                new Assert\Length(max: 10),
+                new Assert\Choice(choices: [
+                    'item',
+                    'item1',
+                ]),
             ]
         );
         if (count($violations) > 0) {
