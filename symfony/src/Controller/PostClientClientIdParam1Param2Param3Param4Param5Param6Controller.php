@@ -19,11 +19,11 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
         path: '/client/{clientId}/{param1}/{param2}/{param3}/{param4}/{param5}',
         requirements: [
             'pClientId' => '[^:/?#[]@!$&\'()*+,;=]+',
+            'pParam1' => '[^:/?#[]@!$&\'()*+,;=]+',
+            'pParam2' => '[^:/?#[]@!$&\'()*+,;=]+',
             'pParam3' => '[^:/?#[]@!$&\'()*+,;=]+',
             'pParam4' => '[^:/?#[]@!$&\'()*+,;=]+',
             'pParam5' => '[^:/?#[]@!$&\'()*+,;=]+',
-            'pParam1' => '[^:/?#[]@!$&\'()*+,;=]+',
-            'pParam2' => '[^:/?#[]@!$&\'()*+,;=]+',
         ],
         methods: ['post'],
         priority: 0,
@@ -34,11 +34,11 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
         ValidatorInterface $validator,
         PostClientClientIdParam1Param2Param3Param4Param5Param6HandlerInterface $handler,
         string $clientId
+        string $param1
+        string $param2
         float $param3
         int $param4
         bool $param5
-        string $param1
-        string $param2
     ): Response {
         $errors = [];
         $violations = $validator->validate(
@@ -48,6 +48,33 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
         );
         if (count($violations) > 0) {
             $errors['path']['pClientId'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $validator->validate(
+            $pParam1,
+            [
+                new format,
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['path']['pParam1'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $validator->validate(
+            $pParam2,
+            [
+                new format,
+                new Assert\Regex,
+                new Assert\Length,
+                new Assert\Length,
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['path']['pParam2'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -85,28 +112,6 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
                 iterator_to_array($violations),
             );
         }
-        $violations = $validator->validate(
-            $pParam1,
-            [
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['path']['pParam1'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
-        $violations = $validator->validate(
-            $pParam2,
-            [
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['path']['pParam2'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
         if (count($errors) > 0) {
             return new JsonResponse(
                 [
@@ -119,11 +124,11 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
         }
         return $handler->handle(
             $pClientId,
+            $pParam1,
+            $pParam2,
             $pParam3,
             $pParam4,
             $pParam5,
-            $pParam1,
-            $pParam2,
         );
     }
 }

@@ -4,7 +4,7 @@ namespace App\Command;
 
 class IntegerSchema extends Schema
 {
-    public readonly ?int $default;
+    private readonly ?int $default;
     private readonly ?int $minimum;
     private readonly ?int $maximum;
     private readonly ?int $exclusiveMinimum;

@@ -10,13 +10,13 @@ interface GetClientHandlerInterface
     public function handle(
         float $agrez
         string $azef
-        string $clientId
-        float $param3
-        int $param4
-        bool $param5
         ?int $azgrzeg
+        string $clientId
         ?bool $gegzer
         string $param1
         string $param2
+        float $param3
+        int $param4
+        bool $param5
     ): ;
 }

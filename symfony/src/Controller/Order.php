@@ -10,6 +10,7 @@ class Order
         public readonly ?int $id,
         public readonly ?int $petId,
         public readonly ?int $quantity,
+        #[date-time]
         public readonly ?string $shipDate,
         public readonly ?string $status,
         public readonly ?bool $complete,

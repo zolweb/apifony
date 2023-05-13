@@ -798,6 +798,9 @@ components:
         name:
           type: string
           example: doggie
+          minLength: 2
+          maxLength: 5
+          pattern: A-z
         category:
           $ref: '#/components/schemas/Category'
         photoUrls:

@@ -4,7 +4,7 @@ namespace App\Command;
 
 class NumberSchema extends Schema
 {
-    public readonly ?float $default;
+    private readonly ?float $default;
     private readonly ?int $minimum;
     private readonly ?int $maximum;
     private readonly ?int $exclusiveMinimum;

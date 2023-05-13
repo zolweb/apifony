@@ -4,7 +4,7 @@ namespace App\Command;
 
 class BooleanSchema extends Schema
 {
-    public readonly ?bool $default;
+    private readonly ?bool $default;
 
     public function __construct(
         ?string $name,

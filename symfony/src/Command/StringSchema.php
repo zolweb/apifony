@@ -4,7 +4,7 @@ namespace App\Command;
 
 class StringSchema extends Schema
 {
-    public readonly ?string $default;
+    private readonly ?string $default;
     private readonly ?string $format;
     private readonly ?string $pattern;
     private readonly ?int $minLength;
@@ -41,38 +41,25 @@ class StringSchema extends Schema
 
     public function getConstraints(): array
     {
-        return [];
         $constraints = [];
 
         if ($this->format !== null) {
-            // $formatClasses = $this->generateFormatClasses($schema['format']);
-            $formatClasses = ['constraintClassName' => 'Lol'];
-            $constraints[] = sprintf(
-                '%s()',
-                $formatClasses['constraintClassName'],
-            );
+            $constraints[] = new Constraint($this->format, []);
         }
 
         if ($this->pattern !== null) {
-            $constraints[] = sprintf(
-                'Assert\Regex(\'/%s/\')',
-                $this->pattern,
-            );
+            $constraints[] = new Constraint('Assert\Regex', ['pattern' => $this->pattern]);
         }
 
         if ($this->minLength !== null) {
-            $constraints[] = sprintf(
-                'Assert\Length(min: %d)',
-                $this->minLength,
-            );
+            $constraints[] = new Constraint('Assert\Length', ['min' => $this->minLength]);
         }
 
         if ($this->maxLength !== null) {
-            $constraints[] = sprintf(
-                'Assert\Length(max: %d)',
-                $this->maxLength,
-            );
+            $constraints[] = new Constraint('Assert\Length', ['max' => $this->maxLength]);
         }
+
+        return $constraints;
     }
 
     public function getFiles(): array

@@ -9,10 +9,10 @@ interface PostClientClientIdParam1Param2Param3Param4Param5Param6HandlerInterface
      */
     public function handle(
         string $clientId
+        string $param1
+        string $param2
         float $param3
         int $param4
         bool $param5
-        string $param1
-        string $param2
     ): ;
 }

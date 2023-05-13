@@ -17,7 +17,7 @@ class {{ schema.className }}
     public function __construct(
 {%~ for property in schema.properties %}
     {%~ for constraint in property.constraints %}
-        #[{{ constraint }}]
+        {{~ constraint.annotation(2) }}
     {%~ endfor %}
         public readonly {{ property.methodParameter }},
 {%~ endfor %}

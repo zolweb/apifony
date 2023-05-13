@@ -56,12 +56,7 @@ class ObjectSchema extends Schema
 
     public function getConstraints(): array
     {
-        return [];
-        $constraints = [];
-
-        $constraints[] = 'Assert\Valid()';
-
-        return $constraints;
+        return [new Constraint('Assert\Valid', [])];
     }
 
     public function getFiles(): array

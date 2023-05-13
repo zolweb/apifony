@@ -25,7 +25,7 @@ class Parameter
 
     public function hasDefault(): bool
     {
-        return $this->schema->default !== null;
+        return false;
     }
 
     public function toVariableName(): string
@@ -67,7 +67,7 @@ class Parameter
             ['number' => 'floatval', 'integer' => 'intval', 'boolean' => 'boolval'][$this->schema->type] ?? '',
             ['query' => 'query', 'header' => 'headers', 'cookie' => 'cookies'][$this->in],
             $this->name,
-            $this->schema->default ?? 'null',
+            // $this->schema->default ?? 'null',
         );
     }
 
