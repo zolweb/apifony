@@ -20,14 +20,16 @@ class Schema
     private readonly bool $uniqueItems;
     private readonly ?Schema $items;
     public readonly ?array $properties;
+    private readonly ?string $schemaName;
 
     public function __construct(
+        private readonly MediaType|Parameter|Schema $context,
         private readonly ?string $name,
         private readonly bool $required,
         array $data,
     ) {
         if (isset($data['$ref'])) {
-            $data = $parent->resolveReference($data['$ref']);
+            ['name' => $this->schemaName, 'data' => $data] = $context->resolveReference($data['$ref']);
         }
 
         $this->type = $data['type'] ?? null;
@@ -54,7 +56,7 @@ class Schema
 
     public function getClassName(): string
     {
-        return uniqid();
+        return $this->schemaName ?? sprintf('%s%s', $this->context->getClassName(), ucfirst($this->name ?? ''));
     }
 
     public function getArrayProperties(): array
@@ -76,7 +78,7 @@ class Schema
                 'integer' => 'int',
                 'boolean' => 'bool',
                 'array' => 'array',
-                'object' => 'Lol', // $this->toObjectSchemaClassName($property, ucfirst("{$propertyName}{$parentSchemaName}")),
+                'object' => $this->getClassName(),
                 'mixed' => 'mixed',
             },
             $this->name,
@@ -108,7 +110,7 @@ class Schema
                 'integer' => 'int',
                 'boolean' => 'bool',
                 'array' => 'array',
-                'object' => 'Lol', // $this->toObjectSchemaClassName($property['items'], ucfirst("{$propertyName}{$parentSchemaName}")),
+                'object' => $this->getClassName(),
             },
             $this->name,
         );
@@ -217,7 +219,7 @@ class Schema
     {
         return match ($this->type) {
             'object' => array_merge(
-                [uniqid() => ['template' => 'schema.php.twig', 'params' => ['schema' => $this]]],
+                [$this->getClassName() => ['template' => 'schema.php.twig', 'params' => ['schema' => $this]]],
                 ...array_map(
                     static fn (Schema $property) => $property->getFiles(),
                     $this->properties,
@@ -231,5 +233,10 @@ class Schema
             // ] : [],
             default => [],
         };
+    }
+
+    public function resolveReference(string $reference): array
+    {
+        return $this->context->resolveReference($reference);
     }
 }

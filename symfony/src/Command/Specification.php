@@ -5,27 +5,14 @@ namespace App\Command;
 class Specification
 {
     private readonly array $paths;
+    private readonly array $components;
 
     public function __construct(array $data)
     {
-        $resolveReferences = function (array &$parentNode) use (&$resolveReferences, $data): void {
-            foreach ($parentNode as &$childNode) {
-                if (is_array($childNode)) {
-                    if (isset($childNode['$ref'])) {
-                        [, , $type, $name] = explode('/', $childNode['$ref']);
-                        $childNode = $data['components'][$type][$name];
-                        $childNode['x-ref'] = ['name' => $name];
-                    }
-
-                    $resolveReferences($childNode);
-                }
-            }
-        };
-
-        $resolveReferences($data);
+        $this->components = $data['components'] ?? [];
 
         $this->paths = array_map(
-            fn (string $route) => new Path($route, $data['paths'][$route]),
+            fn (string $route) => new Path($this, $route, $data['paths'][$route]),
             array_keys(
                 array_filter(
                     $data['paths'],
@@ -44,5 +31,16 @@ class Specification
                 $this->paths,
             ),
         );
+    }
+
+    public function resolveReference(string $reference): array
+    {
+        [, , $type, $name] = explode('/', $reference);
+
+        return [
+            'type' => $type,
+            'name' => $name,
+            'data' => $this->components[$type][$name],
+        ];
     }
 }

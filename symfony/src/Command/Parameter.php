@@ -10,6 +10,7 @@ class Parameter
     private readonly bool $required;
 
     public function __construct(
+        private readonly Operation|Path $parent,
         array $data,
     ) {
         if (($data['schema']['type'] ?? '') === 'array') {
@@ -18,7 +19,7 @@ class Parameter
 
         $this->in = $data['in'];
         $this->name = $data['name'];
-        $this->schema = new Schema($this->name, $data['required'] ?? false, $data['schema']);
+        $this->schema = new Schema($this, $this->name, $data['required'] ?? false, $data['schema']);
         $this->required = $data['required'] ?? false;
     }
 
@@ -86,5 +87,10 @@ class Parameter
         // }
 
         return $this->schema->getConstraints();
+    }
+
+    public function resolveReference(string $reference): array
+    {
+        return $this->parent->resolveReference($reference);
     }
 }

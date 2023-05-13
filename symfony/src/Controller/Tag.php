@@ -4,7 +4,7 @@ namespace App\Controller;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class 645f3da8614c5
+class Tag
 {
     /**
     */

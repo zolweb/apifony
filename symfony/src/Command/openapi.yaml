@@ -824,6 +824,58 @@ components:
             - available
             - pending
             - sold
+        owner:
+          type: object
+          x-stoplight:
+            id: 0em7itmmdbnm5
+          properties:
+            firstname:
+              type: string
+              x-stoplight:
+                id: abf3ntn4xmcxe
+            lastname:
+              type: string
+              x-stoplight:
+                id: lfgj7re4ed0wa
+            address:
+              type: object
+              x-stoplight:
+                id: v1yiv638ii6im
+              properties:
+                street:
+                  type: string
+                  x-stoplight:
+                    id: wuw0bjk7c0ssp
+                country:
+                  type: string
+                  x-stoplight:
+                    id: dg2sfsigybipf
+                phoneNumbers:
+                  type: array
+                  x-stoplight:
+                    id: txv1rs6eu9zft
+                  items:
+                    x-stoplight:
+                      id: h66e4buhjn6xh
+                    type: object
+                    properties:
+                      number:
+                        type: string
+                        x-stoplight:
+                          id: 9farc6m0v9uu8
+                      comment:
+                        type: object
+                        x-stoplight:
+                          id: ul29v2jes7x0w
+                        properties:
+                          title:
+                            type: string
+                            x-stoplight:
+                              id: uentaa5kznx2y
+                          description:
+                            type: string
+                            x-stoplight:
+                              id: qc64juw48ej54
       required:
         - name
         - photoUrls

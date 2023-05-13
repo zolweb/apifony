@@ -8,11 +8,12 @@ class Path
     private readonly array $operations;
 
     public function __construct(
+        private readonly Specification $specification,
         public readonly string $route,
         array $data,
     ) {
         $this->parameters = array_map(
-            fn (array $data) => new Parameter($data),
+            fn (array $data) => new Parameter($this, $data),
             $data['parameters'] ?? []
         );
 
@@ -36,5 +37,10 @@ class Path
                 $this->operations,
             ),
         );
+    }
+
+    public function resolveReference(string $reference): array
+    {
+        return $this->specification->resolveReference($reference);
     }
 }

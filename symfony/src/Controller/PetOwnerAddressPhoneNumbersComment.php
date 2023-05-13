@@ -4,14 +4,13 @@ namespace App\Controller;
 
 use Symfony\Component\Validator\Constraints as Assert;
 
-class 645f3da8616e6
+class PetOwnerAddressPhoneNumbersComment
 {
     /**
     */
     public function __construct(
-        #[Lol()]
-        public readonly ?int $id,
-        public readonly ?string $name,
+        public readonly ?string $title,
+        public readonly ?string $description,
     ) {
     }
 }
