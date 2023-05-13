@@ -5,8 +5,8 @@ namespace App\Command;
 class Constraint
 {
     public function __construct(
-        public readonly string $name,
-        public readonly array $parameters,
+        private readonly string $name,
+        private readonly array $parameters,
     ) {
     }
 
