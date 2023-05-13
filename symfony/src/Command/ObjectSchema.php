@@ -9,8 +9,8 @@ class ObjectSchema extends Schema
     public function __construct(
         private readonly MediaType|Parameter|ObjectSchema|ArraySchema $context,
         private readonly ?string $schemaName,
-        private readonly ?string $name,
-        private readonly bool $required,
+        ?string $name,
+        bool $required,
         array $data,
     ) {
         parent::__construct($name, $required);

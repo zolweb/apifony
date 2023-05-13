@@ -33,8 +33,8 @@ abstract class Schema
     }
 
     public function __construct(
-        private readonly ?string $name,
-        private readonly bool $required,
+        protected readonly ?string $name,
+        protected readonly bool $required,
     ) {
     }
 

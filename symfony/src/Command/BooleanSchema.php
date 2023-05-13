@@ -8,7 +8,7 @@ class BooleanSchema extends Schema
 
     public function __construct(
         ?string $name,
-        private readonly bool $required,
+        bool $required,
         array $data,
     ) {
         parent::__construct($name, $required);
