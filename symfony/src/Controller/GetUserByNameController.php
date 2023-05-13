@@ -28,13 +28,12 @@ class GetUserByNameController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         GetUserByNameHandlerInterface $handler,
-        ?mixed $pUsername,
+        string $username
     ): Response {
         $errors = [];
         $violations = $validator->validate(
             $pUsername,
             [
-                new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {

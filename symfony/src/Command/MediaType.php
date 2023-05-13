@@ -6,12 +6,15 @@ class MediaType
 {
     private readonly Schema $schema;
 
+    /**
+     * @throws \Exception
+     */
     public function __construct(
         public readonly RequestBody $requestBody,
         public readonly string $type,
         array $data,
     ) {
-        $this->schema = new Schema($this, null, false, $data['schema']);
+        $this->schema = Schema::build($this, null, false, $data['schema']);
     }
 
     public function getClassName(): string

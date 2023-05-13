@@ -26,12 +26,11 @@ class FindPetsByStatusController extends AbstractController
         ValidatorInterface $validator,
         FindPetsByStatusHandlerInterface $handler,
     ): Response {
-        $qStatus = ($request->query->get('status', available));
+        
         $errors = [];
         $violations = $validator->validate(
             $qStatus,
             [
-                new Assert\Choice(['available', 'pending', 'sold']),
             ]
         );
         if (count($violations) > 0) {

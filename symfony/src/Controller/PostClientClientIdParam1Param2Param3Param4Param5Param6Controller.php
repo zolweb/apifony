@@ -33,18 +33,17 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         PostClientClientIdParam1Param2Param3Param4Param5Param6HandlerInterface $handler,
-        ?mixed $pClientId,
-        ?mixed $pParam3,
-        ?mixed $pParam4,
-        ?mixed $pParam5,
-        ?mixed $pParam1,
-        ?mixed $pParam2 = 'item',
+        string $clientId
+        float $param3
+        int $param4
+        bool $param5
+        string $param1
+        string $param2
     ): Response {
         $errors = [];
         $violations = $validator->validate(
             $pClientId,
             [
-                new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {
@@ -56,8 +55,6 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
         $violations = $validator->validate(
             $pParam3,
             [
-                new Assert\NotNull(),
-                new Assert\LessThanOrEqual(2),
             ]
         );
         if (count($violations) > 0) {
@@ -69,7 +66,6 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
         $violations = $validator->validate(
             $pParam4,
             [
-                new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {
@@ -81,7 +77,6 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
         $violations = $validator->validate(
             $pParam5,
             [
-                new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {
@@ -93,9 +88,6 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
         $violations = $validator->validate(
             $pParam1,
             [
-                new Assert\NotNull(),
-                new Lol(),
-                new Assert\Choice(['item', 'item2']),
             ]
         );
         if (count($violations) > 0) {
@@ -107,12 +99,6 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
         $violations = $validator->validate(
             $pParam2,
             [
-                new Assert\NotNull(),
-                new Lol(),
-                new Assert\Regex('/item/'),
-                new Assert\Length(min: 1),
-                new Assert\Length(max: 10),
-                new Assert\Choice(['item', 'item1']),
             ]
         );
         if (count($violations) > 0) {

@@ -8,6 +8,6 @@ interface GetUserByNameHandlerInterface
      * OperationId: getUserByName
      */
     public function handle(
-        ?mixed $pUsername,
+        string $username
     ): ;
 }

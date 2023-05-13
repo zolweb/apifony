@@ -8,6 +8,6 @@ interface UpdateUserHandlerInterface
      * OperationId: updateUser
      */
     public function handle(
-        ?mixed $pUsername,
+        string $username
     ): ;
 }

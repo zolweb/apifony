@@ -28,9 +28,9 @@ class UploadFileController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         UploadFileHandlerInterface $handler,
-        ?mixed $pPetId,
+        int $petId
     ): Response {
-        $qAdditionalMetadata = ($request->query->get('additionalMetadata', null));
+        
         $errors = [];
         $violations = $validator->validate(
             $qAdditionalMetadata,
@@ -46,8 +46,6 @@ class UploadFileController extends AbstractController
         $violations = $validator->validate(
             $pPetId,
             [
-                new Assert\NotNull(),
-                new Lol(),
             ]
         );
         if (count($violations) > 0) {

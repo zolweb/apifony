@@ -10,7 +10,7 @@ class {{ schema.className }}
 {%~ if schema.arrayProperties %}
     /**
     {%~ for property in schema.arrayProperties %}
-     * {{ property.toPhpDocArrayParameterAnnotation }}
+     * {{ property.phpDocParameterAnnotation }}
     {%~ endfor %}
      */
 {%~ endif %}
@@ -19,7 +19,7 @@ class {{ schema.className }}
     {%~ for constraint in property.constraints %}
         #[{{ constraint }}]
     {%~ endfor %}
-        public readonly {{ property.toMethodParameter }},
+        public readonly {{ property.methodParameter }},
 {%~ endfor %}
     ) {
     }

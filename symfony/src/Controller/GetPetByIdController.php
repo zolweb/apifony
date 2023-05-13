@@ -28,14 +28,12 @@ class GetPetByIdController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         GetPetByIdHandlerInterface $handler,
-        ?mixed $pPetId,
+        int $petId
     ): Response {
         $errors = [];
         $violations = $validator->validate(
             $pPetId,
             [
-                new Assert\NotNull(),
-                new Lol(),
             ]
         );
         if (count($violations) > 0) {

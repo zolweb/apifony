@@ -28,14 +28,12 @@ class GetOrderByIdController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         GetOrderByIdHandlerInterface $handler,
-        ?mixed $pOrderId,
+        int $orderId
     ): Response {
         $errors = [];
         $violations = $validator->validate(
             $pOrderId,
             [
-                new Assert\NotNull(),
-                new Lol(),
             ]
         );
         if (count($violations) > 0) {

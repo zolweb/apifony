@@ -34,7 +34,7 @@ class {{ operation.controllerClassName }} extends AbstractController
         ValidatorInterface $validator,
         {{ operation.handlerInterfaceName }} $handler,
 {%~ for param in operation.allSortedParameters(['path']) %}
-        {{ param.toMethodParameter }}
+        {{ param.methodParameter }}
 {%~ endfor %}
     ): Response {
 {%~ for param in operation.allSortedParameters(['query', 'header', 'cookie']) %}

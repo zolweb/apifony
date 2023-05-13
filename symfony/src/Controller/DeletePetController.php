@@ -28,9 +28,9 @@ class DeletePetController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         DeletePetHandlerInterface $handler,
-        ?mixed $pPetId,
+        int $petId
     ): Response {
-        $hApi_key = ($request->headers->get('api_key', null));
+        
         $errors = [];
         $violations = $validator->validate(
             $hApi_key,
@@ -46,8 +46,6 @@ class DeletePetController extends AbstractController
         $violations = $validator->validate(
             $pPetId,
             [
-                new Assert\NotNull(),
-                new Lol(),
             ]
         );
         if (count($violations) > 0) {

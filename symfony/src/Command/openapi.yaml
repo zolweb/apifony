@@ -108,6 +108,7 @@ paths:
             - item
             - item2
           example: item
+          type: string
         name: param1
         in: path
         required: true
@@ -702,6 +703,8 @@ components:
   schemas:
     Order:
       type: object
+      xml:
+        name: order
       properties:
         id:
           type: integer
@@ -715,6 +718,7 @@ components:
           type: integer
           format: int32
           example: 7
+          exclusiveMinimum: 5
         shipDate:
           type: string
           format: date-time
@@ -728,8 +732,6 @@ components:
             - delivered
         complete:
           type: boolean
-      xml:
-        name: order
     Category:
       type: object
       properties:

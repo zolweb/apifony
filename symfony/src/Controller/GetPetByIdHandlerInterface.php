@@ -8,6 +8,6 @@ interface GetPetByIdHandlerInterface
      * OperationId: getPetById
      */
     public function handle(
-        ?mixed $pPetId,
+        int $petId
     ): ;
 }

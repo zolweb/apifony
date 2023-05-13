@@ -28,13 +28,12 @@ class UpdateUserController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         UpdateUserHandlerInterface $handler,
-        ?mixed $pUsername,
+        string $username
     ): Response {
         $errors = [];
         $violations = $validator->validate(
             $pUsername,
             [
-                new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {

@@ -28,14 +28,12 @@ class DeleteOrderController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         DeleteOrderHandlerInterface $handler,
-        ?mixed $pOrderId,
+        int $orderId
     ): Response {
         $errors = [];
         $violations = $validator->validate(
             $pOrderId,
             [
-                new Assert\NotNull(),
-                new Lol(),
             ]
         );
         if (count($violations) > 0) {

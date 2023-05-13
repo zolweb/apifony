@@ -8,6 +8,6 @@ interface GetOrderByIdHandlerInterface
      * OperationId: getOrderById
      */
     public function handle(
-        ?mixed $pOrderId,
+        int $orderId
     ): ;
 }

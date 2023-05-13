@@ -28,10 +28,10 @@ class UpdatePetWithFormController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         UpdatePetWithFormHandlerInterface $handler,
-        ?mixed $pPetId,
+        int $petId
     ): Response {
-        $qName = ($request->query->get('name', null));
-        $qStatus = ($request->query->get('status', null));
+        
+        
         $errors = [];
         $violations = $validator->validate(
             $qName,
@@ -47,8 +47,6 @@ class UpdatePetWithFormController extends AbstractController
         $violations = $validator->validate(
             $pPetId,
             [
-                new Assert\NotNull(),
-                new Lol(),
             ]
         );
         if (count($violations) > 0) {

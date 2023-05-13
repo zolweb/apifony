@@ -19,7 +19,7 @@ class Parameter
 
         $this->in = $data['in'];
         $this->name = $data['name'];
-        $this->schema = new Schema($this, $this->name, $data['required'] ?? false, $data['schema']);
+        $this->schema = Schema::build($this, $this->name, $data['required'] ?? false, $data['schema']);
         $this->required = $data['required'] ?? false;
     }
 
@@ -53,21 +53,14 @@ class Parameter
         );
     }
 
-    public function toMethodParameter(): string
+    public function getMethodParameter(): string
     {
-        return sprintf(
-            '%s%s $%s%s,',
-            ($param['required'] ?? false) ? '' : '?',
-            isset($param['schema']['type']) ?
-                ['string' => 'string', 'number' => 'float', 'integer' => 'int', 'boolean' => 'bool', 'array' => 'array'][$param['schema']['type']] :
-                'mixed',
-            $this->toVariableName(),
-            ($default = $this->schema->getDefaultAsMethodParameterDefault()) !== null ? sprintf(' = %s', $default) : '',
-        );
+        return $this->schema->getMethodParameter();
     }
 
     public function toFromRequestVariableInitialization(): string
     {
+        return '';
         return sprintf(
             '$%s = %s($request->%s->get(\'%s\', %s));',
             $this->toVariableName(),

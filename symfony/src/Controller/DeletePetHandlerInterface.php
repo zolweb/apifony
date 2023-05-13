@@ -8,7 +8,7 @@ interface DeletePetHandlerInterface
      * OperationId: deletePet
      */
     public function handle(
-        ?mixed $hApi_key,
-        ?mixed $pPetId,
+        ?string $api_key
+        int $petId
     ): ;
 }

@@ -7,7 +7,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 class PetOwnerAddress
 {
     /**
-     * @param ?array<PetOwnerAddressPhoneNumbers> $phoneNumbers
+     * @param array<PetOwnerAddressPhoneNumbers> $phoneNumbers
      */
     public function __construct(
         public readonly ?string $street,

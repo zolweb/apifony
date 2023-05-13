@@ -28,13 +28,12 @@ class DeleteUserController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         DeleteUserHandlerInterface $handler,
-        ?mixed $pUsername,
+        string $username
     ): Response {
         $errors = [];
         $violations = $validator->validate(
             $pUsername,
             [
-                new Assert\NotNull(),
             ]
         );
         if (count($violations) > 0) {

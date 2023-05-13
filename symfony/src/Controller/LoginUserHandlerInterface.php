@@ -8,7 +8,7 @@ interface LoginUserHandlerInterface
      * OperationId: loginUser
      */
     public function handle(
-        ?mixed $qPassword,
-        ?mixed $qUsername,
+        ?string $password
+        ?string $username
     ): ;
 }

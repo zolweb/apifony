@@ -28,7 +28,7 @@ interface {{ operation.handlerInterfaceName }}
      */
     public function handle(
 {%~ for parameter in operation.allSortedParameters %}
-        {{ parameter.toMethodParameter }}
+        {{ parameter.methodParameter }}
 {%~ endfor %}
 {%~ if operation.requestBody is defined %}
     {%~ set requestBody = operation.requestBody %}
