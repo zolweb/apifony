@@ -8,7 +8,7 @@ interface UploadFileHandlerInterface
      * OperationId: uploadFile
      */
     public function handle(
-        ?string $additionalMetadata = ''
-        int $petId
+        int $pPetId
+        ?string $qAdditionalMetadata = ''
     ): ;
 }

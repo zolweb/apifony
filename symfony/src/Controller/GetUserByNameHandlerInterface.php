@@ -8,6 +8,6 @@ interface GetUserByNameHandlerInterface
      * OperationId: getUserByName
      */
     public function handle(
-        string $username = ''
+        string $pUsername = ''
     ): ;
 }

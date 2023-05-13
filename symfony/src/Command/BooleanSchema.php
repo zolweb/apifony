@@ -31,6 +31,11 @@ class BooleanSchema extends Schema
         return [true => 'true', false => 'false', null => null][$this->default];
     }
 
+    public function getRouteRequirement(): string
+    {
+        return "'{$this->name}' => 'true|false',";
+    }
+
     public function getConstraints(): array
     {
         $constraints = [];

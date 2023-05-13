@@ -28,7 +28,7 @@ class DeleteUserController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         DeleteUserHandlerInterface $handler,
-        string $username = ''
+        string $pUsername = '',
     ): Response {
         $errors = [];
         $violations = $validator->validate(

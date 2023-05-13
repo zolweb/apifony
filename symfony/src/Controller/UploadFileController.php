@@ -18,7 +18,7 @@ class UploadFileController extends AbstractController
     #[Route(
         path: '/pet/{petId}/uploadImage',
         requirements: [
-            'pPetId' => '[^:/?#[]@!$&\'()*+,;=]+',
+            'pPetId' => '-?(0|[1-9]\d*)',
         ],
         methods: ['post'],
         priority: 0,
@@ -28,21 +28,10 @@ class UploadFileController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         UploadFileHandlerInterface $handler,
-        int $petId
+        int $pPetId,
     ): Response {
         
         $errors = [];
-        $violations = $validator->validate(
-            $qAdditionalMetadata,
-            [
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['query']['qAdditionalMetadata'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
         $violations = $validator->validate(
             $pPetId,
             [
@@ -51,6 +40,17 @@ class UploadFileController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['pPetId'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $validator->validate(
+            $qAdditionalMetadata,
+            [
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['query']['qAdditionalMetadata'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -76,8 +76,8 @@ class UploadFileController extends AbstractController
             );
         }
         return $handler->handle(
-            $qAdditionalMetadata,
             $pPetId,
+            $qAdditionalMetadata,
             $payload,
         );
     }

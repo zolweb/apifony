@@ -14,7 +14,7 @@ abstract class Schema
         ?string $name,
         bool $required,
         array $data,
-    ) {
+    ): Schema {
         $schemaName = null;
 
         if (isset($data['$ref'])) {
@@ -67,6 +67,8 @@ abstract class Schema
     public abstract function getMethodParameterType(): string;
 
     public abstract function getMethodParameterDefault(): ?string;
+
+    public abstract function getRouteRequirement(): string;
 
     public abstract function getConstraints(): array;
 

@@ -59,6 +59,14 @@ class ObjectSchema extends Schema
         return null;
     }
 
+    /**
+     * @throws Exception
+     */
+    public function getRouteRequirement(): string
+    {
+        throw new Exception('Object parameters in path are not supported.');
+    }
+
     public function getConstraints(): array
     {
         $constraints = [

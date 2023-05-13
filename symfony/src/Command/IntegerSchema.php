@@ -25,6 +25,26 @@ class IntegerSchema extends Schema
         $this->enum = $data['enum'] ?? null;
     }
 
+    public function getPhpDocParameterAnnotationType(): string
+    {
+        return 'int';
+    }
+
+    public function getMethodParameterType(): string
+    {
+        return 'int';
+    }
+
+    public function getMethodParameterDefault(): ?string
+    {
+        return $this->default !== null ? (string)$this->default : null;
+    }
+
+    public function getRouteRequirement(): string
+    {
+        return "'{$this->name}' => '-?(0|[1-9]\d*)',";
+    }
+
     public function getConstraints(): array
     {
         $constraints = [];
@@ -54,21 +74,6 @@ class IntegerSchema extends Schema
         }
 
         return $constraints;
-    }
-
-    public function getPhpDocParameterAnnotationType(): string
-    {
-        return 'int';
-    }
-
-    public function getMethodParameterType(): string
-    {
-        return 'int';
-    }
-
-    public function getMethodParameterDefault(): ?string
-    {
-        return $this->default !== null ? (string)$this->default : null;
     }
 
     public function getFiles(): array

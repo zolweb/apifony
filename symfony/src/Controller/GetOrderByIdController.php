@@ -18,7 +18,7 @@ class GetOrderByIdController extends AbstractController
     #[Route(
         path: '/store/order/{orderId}',
         requirements: [
-            'pOrderId' => '[^:/?#[]@!$&\'()*+,;=]+',
+            'pOrderId' => '-?(0|[1-9]\d*)',
         ],
         methods: ['get'],
         priority: 0,
@@ -28,7 +28,7 @@ class GetOrderByIdController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         GetOrderByIdHandlerInterface $handler,
-        int $orderId
+        int $pOrderId,
     ): Response {
         $errors = [];
         $violations = $validator->validate(

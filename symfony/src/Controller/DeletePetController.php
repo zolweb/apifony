@@ -18,7 +18,7 @@ class DeletePetController extends AbstractController
     #[Route(
         path: '/pet/{petId}',
         requirements: [
-            'pPetId' => '[^:/?#[]@!$&\'()*+,;=]+',
+            'pPetId' => '-?(0|[1-9]\d*)',
         ],
         methods: ['delete'],
         priority: 0,
@@ -28,21 +28,10 @@ class DeletePetController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         DeletePetHandlerInterface $handler,
-        int $petId
+        int $pPetId,
     ): Response {
         
         $errors = [];
-        $violations = $validator->validate(
-            $hApi_key,
-            [
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['header']['hApi_key'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
         $violations = $validator->validate(
             $pPetId,
             [
@@ -51,6 +40,17 @@ class DeletePetController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['pPetId'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $validator->validate(
+            $hApi_key,
+            [
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['header']['hApi_key'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -66,8 +66,8 @@ class DeletePetController extends AbstractController
             );
         }
         return $handler->handle(
-            $hApi_key,
             $pPetId,
+            $hApi_key,
         );
     }
 }

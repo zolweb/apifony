@@ -8,6 +8,6 @@ interface DeleteOrderHandlerInterface
      * OperationId: deleteOrder
      */
     public function handle(
-        int $orderId
+        int $pOrderId
     ): ;
 }

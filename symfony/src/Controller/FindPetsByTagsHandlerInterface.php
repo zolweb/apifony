@@ -8,6 +8,6 @@ interface FindPetsByTagsHandlerInterface
      * OperationId: findPetsByTags
      */
     public function handle(
-        ?string $tags = ''
+        ?string $qTags = ''
     ): ;
 }

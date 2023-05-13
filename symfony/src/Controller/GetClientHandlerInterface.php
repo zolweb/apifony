@@ -8,15 +8,15 @@ interface GetClientHandlerInterface
      * OperationId: get-client
      */
     public function handle(
-        float $agrez
-        string $azef = ''
-        ?int $azgrzeg = 10
-        string $clientId = ''
-        ?bool $gegzer = true
-        string $param1 = 'item'
-        string $param2 = 'item'
-        float $param3
-        int $param4
-        bool $param5
+        float $qAgrez
+        float $pParam3
+        int $pParam4
+        bool $pParam5
+        string $hAzef = ''
+        ?int $cAzgrzeg = 10
+        string $pClientId = ''
+        ?bool $hGegzer = true
+        string $pParam1 = 'item'
+        string $pParam2 = 'item'
     ): ;
 }

@@ -41,6 +41,17 @@ class StringSchema extends Schema
         return sprintf('\'%s\'', str_replace('\'', '\\\'', $this->default));
     }
 
+    public function getRouteRequirement(): string
+    {
+        return sprintf(
+            '\'%s\' => \'%s\',',
+            $this->name,
+            $this->pattern !== null ?
+                str_replace('\'', '\\\'', $this->pattern)
+                : '[^:/?#[]@!$&\\\'()*+,;=]+',
+        );
+    }
+
     public function getConstraints(): array
     {
         $constraints = [];

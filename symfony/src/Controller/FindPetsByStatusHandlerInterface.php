@@ -8,6 +8,6 @@ interface FindPetsByStatusHandlerInterface
      * OperationId: findPetsByStatus
      */
     public function handle(
-        ?string $status = 'available'
+        ?string $qStatus = 'available'
     ): ;
 }

@@ -18,7 +18,7 @@ class GetPetByIdController extends AbstractController
     #[Route(
         path: '/pet/{petId}',
         requirements: [
-            'pPetId' => '[^:/?#[]@!$&\'()*+,;=]+',
+            'pPetId' => '-?(0|[1-9]\d*)',
         ],
         methods: ['get'],
         priority: 0,
@@ -28,7 +28,7 @@ class GetPetByIdController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         GetPetByIdHandlerInterface $handler,
-        int $petId
+        int $pPetId,
     ): Response {
         $errors = [];
         $violations = $validator->validate(

@@ -2,6 +2,8 @@
 
 namespace App\Command;
 
+use Exception;
+
 class ArraySchema extends Schema
 {
     private readonly Schema $items;
@@ -45,6 +47,14 @@ class ArraySchema extends Schema
     public function getMethodParameterDefault(): ?string
     {
         return null;
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getRouteRequirement(): string
+    {
+        throw new Exception('Array parameters in path are not supported.');
     }
 
     public function getConstraints(): array
