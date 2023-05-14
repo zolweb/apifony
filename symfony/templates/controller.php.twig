@@ -64,11 +64,6 @@ class {{ operation.controllerClassName }} extends AbstractController
         {%~ if mediaType.type is same as ('application/json') %}
                 {{ mediaType.contentInitializationFromRequest }}
                 {{ mediaType.contentValidationViolationsInitialization }}
-                if (count($violations) > 0) {
-                    foreach ($violations as $violation) {
-                        $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
-                    }
-                }
         {%~ endif %}
 
                 break;
@@ -81,6 +76,11 @@ class {{ operation.controllerClassName }} extends AbstractController
                     ],
                     Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 );
+        }
+        if (count($violations) > 0) {
+            foreach ($violations as $violation) {
+                $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+            }
         }
 {%~ endif %}
         if (count($errors) > 0) {
