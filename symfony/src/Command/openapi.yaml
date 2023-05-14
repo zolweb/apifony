@@ -712,6 +712,7 @@ paths:
         name: p1
         in: path
         required: true
+        description: desc
       - schema:
           type: integer
           format: f2
@@ -726,6 +727,7 @@ paths:
         name: p2
         in: path
         required: true
+        description: desc
       - schema:
           type: number
           format: f3
@@ -741,15 +743,17 @@ paths:
         name: p3
         in: path
         required: true
+        description: desc
       - schema:
           type: boolean
           format: f4
           enum:
-            - 'true'
-          default: 'true'
+            - true
+          default: true
         name: p4
         in: path
         required: true
+        description: desc
     post:
       summary: ''
       operationId: post-test
@@ -797,7 +801,7 @@ paths:
               schema:
                 type: boolean
                 format: f20
-                default: 'true'
+                default: true
           content:
             application/json:
               schema:
@@ -827,6 +831,7 @@ paths:
           in: header
           name: h1
           required: true
+          description: desc
         - schema:
             type: integer
             format: f6
@@ -841,6 +846,7 @@ paths:
           in: header
           name: h2
           required: true
+          description: desc
         - schema:
             type: number
             format: f7
@@ -855,14 +861,16 @@ paths:
           in: header
           name: h3
           required: true
+          description: desc
         - schema:
             type: boolean
-            default: 'true'
+            default: true
             enum:
-              - 'true'
+              - true
           in: header
           name: h4
           required: true
+          description: desc
         - schema:
             type: string
             format: f9
@@ -878,6 +886,7 @@ paths:
           in: query
           name: q1
           required: true
+          description: desc
         - schema:
             type: integer
             format: f10
@@ -892,6 +901,7 @@ paths:
           in: query
           name: q2
           required: true
+          description: desc
         - schema:
             type: number
             format: f13
@@ -906,13 +916,15 @@ paths:
           in: query
           name: q3
           required: true
+          description: desc
         - schema:
             type: boolean
             format: f12
-            default: 'true'
+            default: true
           in: query
           name: q4
           required: true
+          description: desc
         - schema:
             type: string
             format: f13
@@ -927,6 +939,7 @@ paths:
           in: cookie
           name: c1
           required: true
+          description: desc
         - schema:
             type: integer
             format: f14
@@ -941,6 +954,7 @@ paths:
           in: cookie
           name: c2
           required: true
+          description: desc
         - schema:
             type: number
             format: f15
@@ -955,13 +969,15 @@ paths:
           in: cookie
           name: c3
           required: true
+          description: desc
         - schema:
             type: boolean
             format: f16
-            default: 'true'
+            default: true
           in: cookie
           name: c4
           required: true
+          description: desc
       requestBody:
         content:
           application/json:
@@ -1205,7 +1221,7 @@ components:
             - 2
             - 3
           format: f22
-          default: f22
+          default: 1
           minimum: 1
           maximum: 3
           multipleOf: 1
@@ -1247,7 +1263,7 @@ components:
               - def
               - ghi
             format: f25
-            default: f25
+            default: abc
             pattern: '[a-z]{3}'
             minLength: 3
             maxLength: 3
