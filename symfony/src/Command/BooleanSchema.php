@@ -2,18 +2,13 @@
 
 namespace App\Command;
 
-class BooleanSchema extends Schema
+class BooleanSchema implements SchemaType
 {
     private readonly ?bool $default;
     private readonly ?array $enum;
 
-    public function __construct(
-        ?string $name,
-        bool $required,
-        array $data,
-    ) {
-        parent::__construct($name, $required, $data['format'] ?? null);
-
+    public function __construct(private readonly ?string $name, array $data)
+    {
         $this->default = $data['default'] ?? null;
         $this->enum = $data['enum'] ?? null;
     }
@@ -74,12 +69,17 @@ class BooleanSchema extends Schema
 
     public function getConstraints(): array
     {
-        $constraints = parent::getConstraints();
+        $constraints = [];
 
         if ($this->enum !== null) {
             $constraints[] = new Constraint('Assert\Choice', ['choices' => $this->enum]);
         }
 
         return $constraints;
+    }
+
+    public function getFiles(): array
+    {
+        return [];
     }
 }

@@ -21,7 +21,7 @@ class Parameter
 
         $this->in = $data['in'];
         $this->name = $data['name'];
-        $this->schema = Schema::build($this, $this->toVariableName(), $data['required'] ?? false, $data['schema']);
+        $this->schema = new Schema($this, $this->toVariableName(), $data['required'] ?? false, $data['schema']);
     }
 
     public function hasDefault(): bool

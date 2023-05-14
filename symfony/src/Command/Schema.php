@@ -4,39 +4,42 @@ namespace App\Command;
 
 use function Symfony\Component\String\u;
 
-abstract class Schema
+class Schema
 {
+    private readonly SchemaType $type;
+    private readonly ?string $format;
+
     /**
      * @throws Exception
      */
-    public static function build(
-        MediaType|Parameter|Schema|Header $context,
-        ?string $name,
-        bool $required,
+    public function __construct(
+        private readonly MediaType|Parameter|Schema|Header $context,
+        private readonly ?string $name,
+        private readonly bool $required,
         array $data,
-    ): Schema {
+    ) {
         $schemaName = null;
 
         if (isset($data['$ref'])) {
             ['name' => $schemaName, 'data' => $data] = $context->resolveReference($data['$ref']);
         }
 
-        return match ($data['type'] ?? null) {
-            'string' => new StringSchema($name, $required, $data),
-            'integer' => new IntegerSchema($name, $required, $data),
-            'number' => new NumberSchema($name, $required, $data),
-            'array' => new ArraySchema($context, $name, $required, $data),
-            'object' => new ObjectSchema($context, $schemaName, $name, $required, $data),
-            'boolean' => new BooleanSchema($name, $required, $data),
+        $this->type = match ($data['type'] ?? null) {
+            'string' => new StringSchema($name, $data),
+            'integer' => new IntegerSchema($name, $data),
+            'number' => new NumberSchema($name, $data),
+            'array' => new ArraySchema($context, $data),
+            'object' => new ObjectSchema($context, $schemaName, $name, $data),
+            'boolean' => new BooleanSchema($name, $data),
             default => throw new Exception('Schemas without type are not supported.'),
         };
+
+        $this->format = $data['format'] ?? null;
     }
 
-    public function __construct(
-        protected readonly ?string $name,
-        protected readonly bool $required,
-        protected readonly ?string $format,
-    ) {
+    public function resolveReference(string $reference): array
+    {
+        return $this->context->resolveReference($reference);
     }
 
     public function getFormatDefinitionInterfaceName(): string
@@ -83,9 +86,60 @@ abstract class Schema
         );
     }
 
+    public function getPhpDocParameterAnnotationType(): string
+    {
+        return $this->type->getPhpDocParameterAnnotationType();
+    }
+
+    public function getMethodParameterType(): string
+    {
+        return $this->type->getMethodParameterType();
+    }
+
+    public function getMethodParameterDefault(): ?string
+    {
+        return $this->type->getMethodParameterDefault();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getRouteRequirement(): string
+    {
+        return $this->type->getRouteRequirement();
+    }
+
+    /**
+     * @throws Exception
+     */
+    public function getStringToTypeCastFunction(): string
+    {
+        return $this->type->getStringToTypeCastFunction();
+    }
+
+    public function getContentInitializationFromRequest(): string
+    {
+        return $this->type->getContentInitializationFromRequest();
+    }
+
+    public function getContentValidationViolationsInitialization(): string
+    {
+        return $this->type->getContentValidationViolationsInitialization();
+    }
+
+    public function getNormalizedType(): string
+    {
+        return $this->type->getNormalizedType();
+    }
+
+    public function getContentTypeChecking(): string
+    {
+        return $this->type->getContentTypeChecking();
+    }
+
     public function getConstraints(): array
     {
-        $constraints = [];
+        $constraints = $this->type->getConstraints();
 
         if ($this->required) {
             $constraints[] = new Constraint('Assert\NotNull', []);
@@ -100,29 +154,14 @@ abstract class Schema
 
     public function getFiles(): array
     {
-        return $this->format !== null ?
-            [
-                $this->getFormatDefinitionInterfaceName() => ['template' => 'format-definition.php.twig', 'params' => ['schema' => $this]],
-                $this->getFormatConstraintClassName() => ['template' => 'format-constraint.php.twig', 'params' => ['schema' => $this]],
-                $this->getFormatValidatorClassName() => ['template' => 'format-validator.php.twig', 'params' => ['schema' => $this]],
-            ] : [];
+        return array_merge(
+            $this->type->getFiles(),
+            $this->format !== null ?
+                [
+                    $this->getFormatDefinitionInterfaceName() => ['template' => 'format-definition.php.twig', 'params' => ['schema' => $this]],
+                    $this->getFormatConstraintClassName() => ['template' => 'format-constraint.php.twig', 'params' => ['schema' => $this]],
+                    $this->getFormatValidatorClassName() => ['template' => 'format-validator.php.twig', 'params' => ['schema' => $this]],
+                ] : [],
+        );
     }
-
-    public abstract function getPhpDocParameterAnnotationType(): string;
-
-    public abstract function getMethodParameterType(): string;
-
-    public abstract function getMethodParameterDefault(): ?string;
-
-    public abstract function getRouteRequirement(): string;
-
-    public abstract function getStringToTypeCastFunction(): string;
-
-    public abstract function getContentInitializationFromRequest(): string;
-
-    public abstract function getContentValidationViolationsInitialization(): string;
-
-    public abstract function getNormalizedType(): string;
-
-    public abstract function getContentTypeChecking(): string;
 }

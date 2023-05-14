@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-class StringSchema extends Schema
+class StringSchema implements SchemaType
 {
     private readonly ?string $default;
     private readonly ?string $pattern;
@@ -10,13 +10,8 @@ class StringSchema extends Schema
     private readonly ?int $maxLength;
     private readonly ?array $enum;
 
-    public function __construct(
-        ?string $name,
-        bool $required,
-        array $data,
-    ) {
-        parent::__construct($name, $required, $data['format'] ?? null);
-
+    public function __construct(private readonly ?string $name, array $data)
+    {
         $this->default = $data['default'] ?? null;
         $this->pattern = $data['pattern'] ?? null;
         $this->minLength = $data['minLength'] ?? null;
@@ -86,7 +81,7 @@ class StringSchema extends Schema
 
     public function getConstraints(): array
     {
-        $constraints = parent::getConstraints();
+        $constraints = [];
 
         if ($this->pattern !== null) {
             $constraints[] = new Constraint('Assert\Regex', ['pattern' => $this->pattern]);
@@ -105,5 +100,10 @@ class StringSchema extends Schema
         }
 
         return $constraints;
+    }
+
+    public function getFiles(): array
+    {
+        return [];
     }
 }

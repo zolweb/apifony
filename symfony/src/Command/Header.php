@@ -18,7 +18,7 @@ class Header
             throw new Exception("Headers of {$data['schema']['type']} type are not supported yet.");
         }
 
-        $this->schema = Schema::build($this, null, false, $data['schema']);
+        $this->schema = new Schema($this, null, false, $data['schema']);
     }
 
     public function resolveReference(string $reference): array

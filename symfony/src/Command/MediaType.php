@@ -14,7 +14,7 @@ class MediaType
         public readonly string $type,
         array $data,
     ) {
-        $this->schema = Schema::build($this, null, false, $data['schema']);
+        $this->schema = new Schema($this, null, false, $data['schema']);
     }
 
     public function resolveReference(string $reference): array

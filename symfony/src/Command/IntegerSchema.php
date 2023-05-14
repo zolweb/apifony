@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-class IntegerSchema extends Schema
+class IntegerSchema implements SchemaType
 {
     private readonly ?int $default;
     private readonly ?int $multipleOf;
@@ -12,12 +12,8 @@ class IntegerSchema extends Schema
     private readonly ?int $exclusiveMaximum;
     private readonly ?array $enum;
 
-    public function __construct(
-        ?string $name,
-        bool $required,
-        array $data,
-    ) {
-        parent::__construct($name, $required, $data['format'] ?? null);
+    public function __construct(private readonly ?string $name, array $data)
+    {
         $this->default = $data['default'] ?? null;
         $this->multipleOf = $data['multipleOf'] ?? null;
         $this->minimum = $data['minimum'] ?? null;
@@ -83,7 +79,7 @@ class IntegerSchema extends Schema
 
     public function getConstraints(): array
     {
-        $constraints = parent::getConstraints();
+        $constraints = [];
 
         if ($this->multipleOf !== null) {
             $constraints[] = new Constraint('Assert\DivisibleBy', ['value' => $this->multipleOf]);
@@ -110,5 +106,10 @@ class IntegerSchema extends Schema
         }
 
         return $constraints;
+    }
+
+    public function getFiles(): array
+    {
+        return [];
     }
 }

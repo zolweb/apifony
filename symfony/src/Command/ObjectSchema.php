@@ -2,33 +2,28 @@
 
 namespace App\Command;
 
-class ObjectSchema extends Schema
+class ObjectSchema implements SchemaType
 {
     public readonly ?array $properties;
 
+    /**
+     * @throws Exception
+     */
     public function __construct(
         private readonly MediaType|Parameter|ObjectSchema|ArraySchema $context,
         private readonly ?string $schemaName,
-        ?string $name,
-        bool $required,
+        private readonly ?string $name,
         array $data,
     ) {
-        parent::__construct($name, $required, $data['format'] ?? null);
-
         $this->properties = array_map(
-            fn (string $name) => Schema::build(
-                $this,
+            fn (string $name) => new Schema(
+                $context,
                 $name,
                 in_array($name, $data['required'] ?? [], true),
                 $data['properties'][$name],
             ),
             array_keys($data['properties']),
         );
-    }
-
-    public function resolveReference(string $reference): array
-    {
-        return $this->context->resolveReference($reference);
     }
 
     public function getClassName(): string
@@ -97,16 +92,12 @@ class ObjectSchema extends Schema
 
     public function getConstraints(): array
     {
-        return array_merge(
-            parent::getConstraints(),
-            [new Constraint('Assert\Valid', [])],
-        );
+        return [new Constraint('Assert\Valid', [])];
     }
 
     public function getFiles(): array
     {
         return array_merge(
-            parent::getConstraints(),
             [$this->getClassName() => ['template' => 'schema.php.twig', 'params' => ['schema' => $this]]],
             ...array_map(
                 static fn (Schema $property) => $property->getFiles(),

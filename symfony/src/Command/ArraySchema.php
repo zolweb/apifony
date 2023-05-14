@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-class ArraySchema extends Schema
+class ArraySchema implements SchemaType
 {
     private readonly Schema $items;
     private readonly ?int $minItems;
@@ -12,31 +12,16 @@ class ArraySchema extends Schema
     /**
      * @throws Exception
      */
-    public function __construct(
-        private readonly MediaType|Parameter|ObjectSchema|ArraySchema $context,
-        ?string $name,
-        bool $required,
-        array $data,
-    ) {
+    public function __construct(MediaType|Parameter|Schema|Header $context, array $data)
+    {
         if (($data['items']['type'] ?? null) === 'array') {
             throw new Exception('Array schemas of arrays are not supported.');
         }
 
-        parent::__construct($name, $required, $data['format'] ?? null);
         $this->minItems = $data['minItems'] ?? null;
         $this->maxItems = $data['maxItems'] ?? null;
         $this->uniqueItems = $data['uniqueItems'] ?? false;
-        $this->items = Schema::build($this, null, false, $data['items']);
-    }
-
-    public function resolveReference(string $reference): array
-    {
-        return $this->context->resolveReference($reference);
-    }
-
-    public function getClassName(): string
-    {
-        return $this->schemaName ?? sprintf('%s%s', $this->context->getClassName(), ucfirst($this->name ?? ''));
+        $this->items = new Schema($context, null, false, $data['items']);
     }
 
     public function getMethodParameterType(): string
@@ -105,7 +90,7 @@ class ArraySchema extends Schema
 
     public function getConstraints(): array
     {
-        $constraints = parent::getConstraints();
+        $constraints = [];
 
         if ($this->minItems !== null) {
             $constraints[] = new Constraint('Assert\Count', ['min' => $this->minItems]);
@@ -128,6 +113,6 @@ class ArraySchema extends Schema
 
     public function getFiles(): array
     {
-        return array_merge(parent::getConstraints(), $this->items->getFiles());
+        return $this->items->getFiles();
     }
 }
