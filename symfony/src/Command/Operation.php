@@ -10,6 +10,7 @@ class Operation
     public readonly string $id;
     public readonly int $priority;
     public readonly ?RequestBody $requestBody;
+    public readonly array $responses;
 
     public function __construct(
         private readonly Path $path,
@@ -24,6 +25,10 @@ class Operation
         $this->id = $data['operationId'];
         $this->priority = $data['x-priority'] ?? 0;
         $this->requestBody = isset($data['requestBody']) ? new RequestBody($this, $data['requestBody']) : null;
+        $this->responses = array_map(
+            fn (int|string $code) => new Response($this, $code, $data),
+            array_keys($data['responses'] ?? []),
+        );
     }
 
     public function getRoute(): string
@@ -52,17 +57,30 @@ class Operation
 
         if ($this->requestBody === null || !$this->requestBody->required) {
             $requestBodyTypes['null'] = [
-                'case' => 'is_null($content)',
+                'contentTypeChecking' => 'is_null($content)',
             ];
         }
 
-        foreach ($this->requestBody?->mediaTypes as $mediaType) {
+        foreach ($this->requestBody->mediaTypes ?? [] as $mediaType) {
             $requestBodyTypes[$mediaType->getNormalizedType()] = [
                 'contentTypeChecking' => $mediaType->getContentTypeChecking(),
             ];
         }
 
         return $requestBodyTypes;
+    }
+
+    public function getResponseBodyContentTypes(): array
+    {
+        $responseBodyTypes = [];
+
+        foreach ($this->responses as $response) {
+            foreach ($response->mediaTypes as $mediaType) {
+                $responseBodyTypes[] = $mediaType->getNormalizedType();
+            }
+        }
+
+        return $responseBodyTypes;
     }
 
     public function getAllSortedParameters(array $in = ['path', 'query', 'cookie', 'header']): array

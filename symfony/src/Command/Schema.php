@@ -10,7 +10,7 @@ abstract class Schema
      * @throws Exception
      */
     public static function build(
-        MediaType|Parameter|Schema $context,
+        MediaType|Parameter|Schema|Header $context,
         ?string $name,
         bool $required,
         array $data,

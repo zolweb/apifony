@@ -10,7 +10,7 @@ class MediaType
      * @throws \Exception
      */
     public function __construct(
-        public readonly RequestBody $requestBody,
+        public readonly RequestBody|Response $requestBody,
         public readonly string $type,
         array $data,
     ) {
