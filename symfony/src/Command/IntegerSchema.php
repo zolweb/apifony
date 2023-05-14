@@ -17,7 +17,7 @@ class IntegerSchema extends Schema
         bool $required,
         array $data,
     ) {
-        parent::__construct($name, $required);
+        parent::__construct($name, $required, $data['format'] ?? null);
         $this->default = $data['default'] ?? null;
         $this->multipleOf = $data['multipleOf'] ?? null;
         $this->minimum = $data['minimum'] ?? null;
@@ -83,11 +83,7 @@ class IntegerSchema extends Schema
 
     public function getConstraints(): array
     {
-        $constraints = [];
-
-        if ($this->required) {
-            $constraints[] = new Constraint('Assert\NotNull', []);
-        }
+        $constraints = parent::getConstraints();
 
         if ($this->multipleOf !== null) {
             $constraints[] = new Constraint('Assert\DivisibleBy', ['value' => $this->multipleOf]);
@@ -114,10 +110,5 @@ class IntegerSchema extends Schema
         }
 
         return $constraints;
-    }
-
-    public function getFiles(): array
-    {
-        return [];
     }
 }

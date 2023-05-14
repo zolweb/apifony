@@ -2,8 +2,6 @@
 
 namespace App\Command;
 
-use Exception;
-
 class ObjectSchema extends Schema
 {
     public readonly ?array $properties;
@@ -15,7 +13,7 @@ class ObjectSchema extends Schema
         bool $required,
         array $data,
     ) {
-        parent::__construct($name, $required);
+        parent::__construct($name, $required, $data['format'] ?? null);
 
         $this->properties = array_map(
             fn (string $name) => Schema::build(
@@ -99,20 +97,16 @@ class ObjectSchema extends Schema
 
     public function getConstraints(): array
     {
-        $constraints = [
-            new Constraint('Assert\Valid', []),
-        ];
-
-        if ($this->required) {
-            $constraints[] = new Constraint('Assert\NotNull', []);
-        }
-
-        return $constraints;
+        return array_merge(
+            parent::getConstraints(),
+            [new Constraint('Assert\Valid', [])],
+        );
     }
 
     public function getFiles(): array
     {
         return array_merge(
+            parent::getConstraints(),
             [$this->getClassName() => ['template' => 'schema.php.twig', 'params' => ['schema' => $this]]],
             ...array_map(
                 static fn (Schema $property) => $property->getFiles(),

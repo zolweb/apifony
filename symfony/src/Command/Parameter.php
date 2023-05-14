@@ -2,8 +2,6 @@
 
 namespace App\Command;
 
-use Exception;
-
 class Parameter
 {
     public readonly string $in;

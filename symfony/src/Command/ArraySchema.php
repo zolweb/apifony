@@ -2,8 +2,6 @@
 
 namespace App\Command;
 
-use Exception;
-
 class ArraySchema extends Schema
 {
     private readonly Schema $items;
@@ -24,7 +22,7 @@ class ArraySchema extends Schema
             throw new Exception('Array schemas of arrays are not supported.');
         }
 
-        parent::__construct($name, $required);
+        parent::__construct($name, $required, $data['format'] ?? null);
         $this->minItems = $data['minItems'] ?? null;
         $this->maxItems = $data['maxItems'] ?? null;
         $this->uniqueItems = $data['uniqueItems'] ?? false;
@@ -107,11 +105,7 @@ class ArraySchema extends Schema
 
     public function getConstraints(): array
     {
-        $constraints = [];
-
-        if ($this->required) {
-            $constraints[] = new Constraint('Assert\NotNull', []);
-        }
+        $constraints = parent::getConstraints();
 
         if ($this->minItems !== null) {
             $constraints[] = new Constraint('Assert\Count', ['min' => $this->minItems]);
@@ -134,6 +128,6 @@ class ArraySchema extends Schema
 
     public function getFiles(): array
     {
-        return $this->items->getFiles();
+        return array_merge(parent::getConstraints(), $this->items->getFiles());
     }
 }

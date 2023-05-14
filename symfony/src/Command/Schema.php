@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-use Exception;
+use function Symfony\Component\String\u;
 
 abstract class Schema
 {
@@ -35,7 +35,28 @@ abstract class Schema
     public function __construct(
         protected readonly ?string $name,
         protected readonly bool $required,
+        protected readonly ?string $format,
     ) {
+    }
+
+    public function getFormatDefinitionInterfaceName(): string
+    {
+        return "{$this->getNormalizedFormat()}Definition";
+    }
+
+    public function getFormatConstraintClassName(): string
+    {
+        return $this->getNormalizedFormat();
+    }
+
+    public function getFormatValidatorClassName(): string
+    {
+        return "{$this->getNormalizedFormat()}Validator";
+    }
+
+    public function getNormalizedFormat(): string
+    {
+        return u($this->format)->camel()->title();
     }
 
     public function getPhpDocParameterAnnotation(): string
@@ -62,6 +83,31 @@ abstract class Schema
         );
     }
 
+    public function getConstraints(): array
+    {
+        $constraints = [];
+
+        if ($this->required) {
+            $constraints[] = new Constraint('Assert\NotNull', []);
+        }
+
+        if ($this->format !== null) {
+            $constraints[] = new Constraint($this->getNormalizedFormat(), []);
+        }
+
+        return $constraints;
+    }
+
+    public function getFiles(): array
+    {
+        return $this->format !== null ?
+            [
+                $this->getFormatDefinitionInterfaceName() => ['template' => 'format-definition.php.twig', 'params' => ['schema' => $this]],
+                $this->getFormatConstraintClassName() => ['template' => 'format-constraint.php.twig', 'params' => ['schema' => $this]],
+                $this->getFormatValidatorClassName() => ['template' => 'format-validator.php.twig', 'params' => ['schema' => $this]],
+            ] : [];
+    }
+
     public abstract function getPhpDocParameterAnnotationType(): string;
 
     public abstract function getMethodParameterType(): string;
@@ -79,8 +125,4 @@ abstract class Schema
     public abstract function getNormalizedType(): string;
 
     public abstract function getContentTypeChecking(): string;
-
-    public abstract function getConstraints(): array;
-
-    public abstract function getFiles(): array;
 }
