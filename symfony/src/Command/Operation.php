@@ -46,6 +46,11 @@ class Operation
         return u($this->id)->camel()->title();
     }
 
+    public function getRequestBodyTypes(): array
+    {
+
+    }
+
     public function getAllSortedParameters(array $in = ['path', 'query', 'cookie', 'header']): array
     {
         $pathParams = array_combine(

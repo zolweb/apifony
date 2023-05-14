@@ -68,6 +68,13 @@ class {{ operation.controllerClassName }} extends AbstractController
 
                 break;
     {%~ endfor %}
+    {% if not operation.requestBodyRequired %}
+            case 'unspecified':
+                $content = null;
+                $violations = [];
+
+                break;
+    {% endif %}
             default:
                 return new JsonResponse(
                     [
@@ -92,6 +99,11 @@ class {{ operation.controllerClassName }} extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
+        }
+        switch (true) {
+{%~ for requestBodyType in operation.requestBodyTypes %}
+            case {{ }}
+{%~ endfor %}
         }
         return $handler->handle(
 {%~ for param in operation.allSortedParameters %}
