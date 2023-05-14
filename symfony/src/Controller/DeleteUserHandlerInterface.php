@@ -6,5 +6,5 @@ interface DeleteUserHandlerInterface
 {
     public function handle(
         string $pUsername = ''
-    ): ;
+    ) ;
 }

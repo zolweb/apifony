@@ -98,7 +98,7 @@ class {{ operation.controllerClassName }} extends AbstractController
             ${{ param.toVariableName }},
 {%~ endfor %}
 {%~ if operation.requestBody %}
-            $payload,
+            $content,
 {%~ endif %}
         );
     }

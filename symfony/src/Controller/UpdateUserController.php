@@ -75,7 +75,7 @@ class UpdateUserController extends AbstractController
         }
         return $handler->handle(
             $pUsername,
-            $payload,
+            $content,
         );
     }
 }

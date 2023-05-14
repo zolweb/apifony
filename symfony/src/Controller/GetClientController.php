@@ -221,7 +221,7 @@ class GetClientController extends AbstractController
             $hGegzer,
             $pParam1,
             $pParam2,
-            $payload,
+            $content,
         );
     }
 }

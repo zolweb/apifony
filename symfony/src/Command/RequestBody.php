@@ -22,9 +22,19 @@ class RequestBody
         );
     }
 
+    public function resolveReference(string $reference): array
+    {
+        return $this->operation->resolveReference($reference);
+    }
+
     public function getClassName(): string
     {
         return "{$this->operation->getNormalizedName()}Request";
+    }
+
+    public function getMethodParameterType(): string
+    {
+        return 'Lol';
     }
 
     public function getFiles(): array
@@ -35,10 +45,5 @@ class RequestBody
                 $this->mediaTypes,
             ),
         );
-    }
-
-    public function resolveReference(string $reference): array
-    {
-        return $this->operation->resolveReference($reference);
     }
 }

@@ -6,5 +6,5 @@ interface FindPetsByTagsHandlerInterface
 {
     public function handle(
         ?string $qTags = ''
-    ): ;
+    ) ;
 }

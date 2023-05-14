@@ -58,7 +58,7 @@ class PlaceOrderController extends AbstractController
             );
         }
         return $handler->handle(
-            $payload,
+            $content,
         );
     }
 }

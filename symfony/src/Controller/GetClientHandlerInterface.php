@@ -15,5 +15,6 @@ interface GetClientHandlerInterface
         ?bool $hGegzer = true
         string $pParam1 = 'item'
         string $pParam2 = 'item'
-    ): ;
+        Lol $payload,
+    ) ;
 }

@@ -6,5 +6,5 @@ interface GetOrderByIdHandlerInterface
 {
     public function handle(
         int $pOrderId
-    ): ;
+    ) ;
 }

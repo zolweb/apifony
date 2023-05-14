@@ -9,15 +9,9 @@ interface {{ operation.handlerInterfaceName }}
 {%~ for parameter in operation.allSortedParameters %}
         {{ parameter.methodParameter }}
 {%~ endfor %}
-{%~ if operation.requestBody is defined %}
-    {%~ set requestBody = operation.requestBody %}
-    {%~ if requestBody.content['application/json'] is defined %}
-        {%~ set content = requestBody.content['application/json'] %}
-        {%~ if content.schema.type is same as ('object') %}
-        Lol $payload,
-        {%~ endif %}
-    {%~ endif %}
+{%~ if operation.requestBody %}
+        {{ operation.requestBody.methodParameterType }} $payload,
 {%~ endif %}
-    ): {# { genResponses(operation) }} #};
+    ) {# { genResponses(operation) }} #};
 }
 {% endautoescape %}

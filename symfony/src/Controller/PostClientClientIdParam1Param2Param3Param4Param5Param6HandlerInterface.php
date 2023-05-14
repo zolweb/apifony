@@ -11,5 +11,5 @@ interface PostClientClientIdParam1Param2Param3Param4Param5Param6HandlerInterface
         string $pClientId = ''
         string $pParam1 = 'item'
         string $pParam2 = 'item'
-    ): ;
+    ) ;
 }

@@ -6,5 +6,5 @@ interface GetUserByNameHandlerInterface
 {
     public function handle(
         string $pUsername = ''
-    ): ;
+    ) ;
 }

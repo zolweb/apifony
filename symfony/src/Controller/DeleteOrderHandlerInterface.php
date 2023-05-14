@@ -6,5 +6,5 @@ interface DeleteOrderHandlerInterface
 {
     public function handle(
         int $pOrderId
-    ): ;
+    ) ;
 }

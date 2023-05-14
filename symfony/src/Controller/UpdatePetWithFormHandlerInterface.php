@@ -8,5 +8,5 @@ interface UpdatePetWithFormHandlerInterface
         int $pPetId
         ?string $qName = ''
         ?string $qStatus = ''
-    ): ;
+    ) ;
 }

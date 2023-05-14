@@ -6,5 +6,5 @@ interface FindPetsByStatusHandlerInterface
 {
     public function handle(
         ?string $qStatus = 'available'
-    ): ;
+    ) ;
 }

@@ -6,5 +6,6 @@ interface UpdateUserHandlerInterface
 {
     public function handle(
         string $pUsername = ''
-    ): ;
+        Lol $payload,
+    ) ;
 }

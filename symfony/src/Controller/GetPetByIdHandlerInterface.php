@@ -6,5 +6,5 @@ interface GetPetByIdHandlerInterface
 {
     public function handle(
         int $pPetId
-    ): ;
+    ) ;
 }

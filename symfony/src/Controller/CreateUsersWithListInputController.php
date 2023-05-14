@@ -58,7 +58,7 @@ class CreateUsersWithListInputController extends AbstractController
             );
         }
         return $handler->handle(
-            $payload,
+            $content,
         );
     }
 }
