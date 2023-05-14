@@ -60,6 +60,16 @@ class BooleanSchema extends Schema
         );
     }
 
+    public function getNormalizedType(): string
+    {
+        return 'Boolean';
+    }
+
+    public function getContentTypeChecking(): string
+    {
+        return 'is_bool($content)';
+    }
+
     public function getConstraints(): array
     {
         $constraints = [];

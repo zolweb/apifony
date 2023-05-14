@@ -71,6 +71,16 @@ class NumberSchema extends Schema
         );
     }
 
+    public function getNormalizedType(): string
+    {
+        return 'Float';
+    }
+
+    public function getContentTypeChecking(): string
+    {
+        return 'is_float($content)';
+    }
+
     public function getConstraints(): array
     {
         $constraints = [];

@@ -71,6 +71,16 @@ class IntegerSchema extends Schema
         );
     }
 
+    public function getNormalizedType(): string
+    {
+        return 'Integer';
+    }
+
+    public function getContentTypeChecking(): string
+    {
+        return 'is_int($content)';
+    }
+
     public function getConstraints(): array
     {
         $constraints = [];

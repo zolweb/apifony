@@ -4,12 +4,15 @@ namespace App\Command;
 
 class RequestBody
 {
+    public readonly bool $required;
     public readonly array $mediaTypes;
 
     public function __construct(
         private readonly Operation $operation,
         array $data,
     ) {
+        $this->required = $data['required'] ?? false;
+
         $this->mediaTypes = array_map(
             fn (string $type) => new MediaType($this, $type, $data['content'][$type]),
             array_keys(

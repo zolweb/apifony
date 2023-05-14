@@ -87,6 +87,16 @@ class ObjectSchema extends Schema
         return '$violations = $validator->validate($content);';
     }
 
+    public function getNormalizedType(): string
+    {
+        return $this->getClassName();
+    }
+
+    public function getContentTypeChecking(): string
+    {
+        return "\$content instanceOf {$this->getClassName()}";
+    }
+
     public function getConstraints(): array
     {
         $constraints = [

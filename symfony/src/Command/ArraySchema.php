@@ -95,6 +95,16 @@ class ArraySchema extends Schema
             );
     }
 
+    public function getNormalizedType(): string
+    {
+        return "{$this->items->getNormalizedType()}Array";
+    }
+
+    public function getContentTypeChecking(): string
+    {
+        return "is_array(\$content) && {$this->items->getContentTypeChecking()}";
+    }
+
     public function getConstraints(): array
     {
         $constraints = [];

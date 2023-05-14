@@ -98,6 +98,16 @@ class StringSchema extends Schema
         );
     }
 
+    public function getNormalizedType(): string
+    {
+        return 'String';
+    }
+
+    public function getContentTypeChecking(): string
+    {
+        return 'is_string($content)';
+    }
+
     public function getConstraints(): array
     {
         $constraints = [];

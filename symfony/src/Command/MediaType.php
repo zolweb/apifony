@@ -37,6 +37,16 @@ class MediaType
         return $this->schema->getContentValidationViolationsInitialization();
     }
 
+    public function getNormalizedType(): string
+    {
+        return $this->schema->getNormalizedType();
+    }
+
+    public function getContentTypeChecking(): string
+    {
+        return $this->schema->getContentTypeChecking();
+    }
+
     public function getFiles(): array
     {
         return $this->schema->getFiles();

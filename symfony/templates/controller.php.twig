@@ -68,7 +68,7 @@ class {{ operation.controllerClassName }} extends AbstractController
 
                 break;
     {%~ endfor %}
-    {% if not operation.requestBodyRequired %}
+    {% if not operation.requestBody.required %}
             case 'unspecified':
                 $content = null;
                 $violations = [];
@@ -78,7 +78,7 @@ class {{ operation.controllerClassName }} extends AbstractController
             default:
                 return new JsonResponse(
                     [
-                        'code' => 'unsupported_format',
+                        'code' => 'unsupported_request_type',
                         'message' => "The value '$contentType' received in content-type header is not a supported format.",
                     ],
                     Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
@@ -101,18 +101,35 @@ class {{ operation.controllerClassName }} extends AbstractController
             );
         }
         switch (true) {
-{%~ for requestBodyType in operation.requestBodyTypes %}
-            case {{ }}
+{%~ for requestBodyType in operation.requestBodyContentTypes %}
+            case {{ requestBodyType.contentTypeChecking }}:
+                switch ($contentType = $request->headers->get('accept', 'unspecified')) {
+    {%~ for responseBodyContentType in operation.responseBodyContentTypes %}
+                    case {{ responseBodyContentType }}:
+                        return $handler->handle(
+                            {%~ for param in operation.allSortedParameters %}
+                                ${{ param.toVariableName }},
+                            {%~ endfor %}
+                            {%~ if operation.requestBody %}
+                                $content,
+                            {%~ endif %}
+                        );
+
+                        break;
+    {%~ endfor %}
+                    default:
+                        return new JsonResponse(
+                            [
+                                'code' => 'unsupported_response_type',
+                                'message' => "The value '$contentType' received in accept header is not a supported format.",
+                            ],
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        );
+                }
+
+                break;
 {%~ endfor %}
         }
-        return $handler->handle(
-{%~ for param in operation.allSortedParameters %}
-            ${{ param.toVariableName }},
-{%~ endfor %}
-{%~ if operation.requestBody %}
-            $content,
-{%~ endif %}
-        );
     }
 }
 {% endautoescape %}

@@ -76,6 +76,10 @@ abstract class Schema
 
     public abstract function getContentValidationViolationsInitialization(): string;
 
+    public abstract function getNormalizedType(): string;
+
+    public abstract function getContentTypeChecking(): string;
+
     public abstract function getConstraints(): array;
 
     public abstract function getFiles(): array;

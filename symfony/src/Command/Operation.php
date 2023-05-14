@@ -46,9 +46,23 @@ class Operation
         return u($this->id)->camel()->title();
     }
 
-    public function getRequestBodyTypes(): array
+    public function getRequestBodyContentTypes(): array
     {
+        $requestBodyTypes = [];
 
+        if ($this->requestBody === null || !$this->requestBody->required) {
+            $requestBodyTypes['null'] = [
+                'case' => 'is_null($content)',
+            ];
+        }
+
+        foreach ($this->requestBody?->mediaTypes as $mediaType) {
+            $requestBodyTypes[$mediaType->getNormalizedType()] = [
+                'contentTypeChecking' => $mediaType->getContentTypeChecking(),
+            ];
+        }
+
+        return $requestBodyTypes;
     }
 
     public function getAllSortedParameters(array $in = ['path', 'query', 'cookie', 'header']): array
