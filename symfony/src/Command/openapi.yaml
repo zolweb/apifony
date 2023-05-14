@@ -184,7 +184,8 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Pet'
+              type: object
+              properties: {}
         required: true
       responses:
         '200':
@@ -193,6 +194,10 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Pet'
+            application/xml:
+              schema:
+                type: object
+                properties: {}
         '400':
           description: Invalid ID supplied
         '404':
@@ -691,14 +696,284 @@ paths:
           description: Invalid username supplied
         '404':
           description: User not found
-  /test:
-    get:
-      description: desc
-      summary: test
+  '/test/{p1}/{p2}/{p3}/{p4}':
+    parameters:
+      - schema:
+          type: string
+          format: f1
+          enum:
+            - abc
+            - def
+            - ghi
+          default: def
+          pattern: '[a-z]{3}'
+          minLength: 3
+          maxLength: 3
+        name: p1
+        in: path
+        required: true
+      - schema:
+          type: integer
+          format: f2
+          default: 1
+          enum:
+            - 1
+            - 2
+            - 3
+          minimum: 1
+          exclusiveMaximum: 4
+          multipleOf: 1
+        name: p2
+        in: path
+        required: true
+      - schema:
+          type: number
+          format: f3
+          default: 0.1
+          exclusiveMinimum: -1
+          maximum: 1
+          enum:
+            - 0.2
+            - 0.3
+            - 0.1
+          minimum: 0
+          multipleOf: 0.1
+        name: p3
+        in: path
+        required: true
+      - schema:
+          type: boolean
+          format: f4
+          enum:
+            - 'true'
+          default: 'true'
+        name: p4
+        in: path
+        required: true
+    post:
+      summary: ''
+      operationId: post-test
       responses:
         '200':
           description: OK
-      operationId: get-test
+          headers:
+            h1:
+              schema:
+                type: string
+                format: f17
+                default: abc
+                enum:
+                  - abc
+                  - def
+                  - ghi
+                pattern: '[a-z]{3}'
+                minLength: 3
+                maxLength: 3
+            h2:
+              schema:
+                type: integer
+                format: f18
+                default: 1
+                enum:
+                  - 1
+                  - 2
+                  - 3
+                minimum: 1
+                maximum: 3
+                multipleOf: 1
+            h3:
+              schema:
+                type: number
+                format: f19
+                default: 0.1
+                enum:
+                  - 0.1
+                  - 0.2
+                  - 0.3
+                minimum: 0
+                maximum: 1
+                multipleOf: 0.1
+            h4:
+              schema:
+                type: boolean
+                format: f20
+                default: 'true'
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Test'
+            application/xml:
+              schema:
+                $ref: '#/components/schemas/Test'
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Test'
+      description: desc
+      parameters:
+        - schema:
+            type: string
+            format: f5
+            default: abc
+            enum:
+              - abc
+              - def
+              - ghi
+            pattern: '[a-z]{3}'
+            minLength: 3
+            maxLength: 3
+          in: header
+          name: h1
+          required: true
+        - schema:
+            type: integer
+            format: f6
+            default: 1
+            enum:
+              - 1
+              - 2
+              - 3
+            minimum: 1
+            maximum: 3
+            multipleOf: 1
+          in: header
+          name: h2
+          required: true
+        - schema:
+            type: number
+            format: f7
+            enum:
+              - 0.1
+              - 0.2
+              - 0.3
+            default: 0.1
+            minimum: 0
+            maximum: 1
+            multipleOf: 0.1
+          in: header
+          name: h3
+          required: true
+        - schema:
+            type: boolean
+            default: 'true'
+            enum:
+              - 'true'
+          in: header
+          name: h4
+          required: true
+        - schema:
+            type: string
+            format: f9
+            default: abc
+            enum:
+              - abc
+              - def
+              - ghi
+            example: abc
+            pattern: '[a-z]{3}'
+            minLength: 3
+            maxLength: 3
+          in: query
+          name: q1
+          required: true
+        - schema:
+            type: integer
+            format: f10
+            enum:
+              - 1
+              - 2
+              - 3
+            minimum: 1
+            maximum: 3
+            multipleOf: 1
+            default: 1
+          in: query
+          name: q2
+          required: true
+        - schema:
+            type: number
+            format: f13
+            default: 0.1
+            enum:
+              - 0.1
+              - 0.2
+              - 0.3
+            minimum: 0
+            maximum: 1
+            multipleOf: 0.1
+          in: query
+          name: q3
+          required: true
+        - schema:
+            type: boolean
+            format: f12
+            default: 'true'
+          in: query
+          name: q4
+          required: true
+        - schema:
+            type: string
+            format: f13
+            default: abc
+            enum:
+              - abc
+              - def
+              - ghi
+            pattern: '[a-z]{3}'
+            minLength: 3
+            maxLength: 3
+          in: cookie
+          name: c1
+          required: true
+        - schema:
+            type: integer
+            format: f14
+            default: 1
+            enum:
+              - 1
+              - 2
+              - 3
+            minimum: 1
+            maximum: 3
+            multipleOf: 1
+          in: cookie
+          name: c2
+          required: true
+        - schema:
+            type: number
+            format: f15
+            default: 0.1
+            enum:
+              - 0.1
+              - 0.2
+              - 0.3
+            minimum: 0
+            maximum: 1
+            multipleOf: 0.1
+          in: cookie
+          name: c3
+          required: true
+        - schema:
+            type: boolean
+            format: f16
+            default: 'true'
+          in: cookie
+          name: c4
+          required: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Test'
+          application/xml:
+            schema:
+              $ref: '#/components/schemas/Test'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Test'
+        description: desc
 components:
   schemas:
     Order:
@@ -902,6 +1177,97 @@ components:
           type: string
       xml:
         name: '##default'
+    Test:
+      title: Test
+      x-stoplight:
+        id: zkuvsysheexia
+      type: object
+      properties:
+        a1:
+          type: string
+          x-stoplight:
+            id: kyv0unexalsah
+          enum:
+            - abc
+            - def
+            - ghi
+          format: f21
+          default: abc
+          pattern: '[a-z]{3}'
+          minLength: 3
+          maxLength: 3
+        a2:
+          type: integer
+          x-stoplight:
+            id: kcbxbyg9vvjew
+          enum:
+            - 1
+            - 2
+            - 3
+          format: f22
+          default: f22
+          minimum: 1
+          maximum: 3
+          multipleOf: 1
+        a3:
+          type: number
+          x-stoplight:
+            id: ew6sx2b8p9d6z
+          enum:
+            - 0.1
+            - 0.2
+            - 0.3
+          format: f23
+          default: 0.1
+          minimum: 0
+          maximum: 1
+          multipleOf: 0.1
+        a4:
+          type: boolean
+          x-stoplight:
+            id: qy8f1nwi7zhhf
+          default: true
+        a5:
+          $ref: '#/components/schemas/Test'
+          x-stoplight:
+            id: 96rzgo1jyv47p
+        a6:
+          type: array
+          x-stoplight:
+            id: abi16ulrt4pob
+          minItems: 1
+          maxItems: 3
+          uniqueItems: true
+          items:
+            x-stoplight:
+              id: f9v3di7syf63h
+            type: string
+            enum:
+              - abc
+              - def
+              - ghi
+            format: f25
+            default: f25
+            pattern: '[a-z]{3}'
+            minLength: 3
+            maxLength: 3
+        a7:
+          type: array
+          x-stoplight:
+            id: fg9j3uaf6qspc
+          minItems: 0
+          maxItems: 3
+          uniqueItems: true
+          items:
+            $ref: '#/components/schemas/Test'
+            x-stoplight:
+              id: 2qc7cdkspu36l
+      required:
+        - a1
+        - a2
+        - a3
+        - a4
+        - a6
   securitySchemes:
     petstore_auth:
       type: oauth2
