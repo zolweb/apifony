@@ -6,7 +6,9 @@ class Response
 {
     public readonly Responses $responses;
     public readonly string $code;
+    /** @var array<Header> */
     public readonly array $headers;
+    /** @var array<MediaType> */
     public readonly array $mediaTypes;
 
     /**
@@ -25,7 +27,7 @@ class Response
         $response->responses = $responses;
         $response->code = $code;
         $response->headers = array_map(
-            fn (string $name) => Parameter::build($response, $componentsData, $data['headers'][$name]),
+            fn (string $name) => Header::build($response, $name, $componentsData, $data['headers'][$name]),
             array_keys($data['headers'] ?? []),
         );
         $response->mediaTypes = array_map(

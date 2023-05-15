@@ -4,7 +4,7 @@ namespace App\Command;
 
 class Parameter
 {
-    public readonly Operation|PathItem|Response $parent;
+    public readonly Operation|PathItem $parent;
     public readonly string $in;
     public readonly string $name;
     public readonly Schema $schema;
@@ -15,7 +15,7 @@ class Parameter
      *
      * @throws Exception
      */
-    public static function build(Operation|PathItem|Response $parent, array $componentsData, array $data): self
+    public static function build(Operation|PathItem $parent, array $componentsData, array $data): self
     {
         if (isset($data['$ref'])) {
             $data = $componentsData['parameters'][explode('/', $data['$ref'])[3]];

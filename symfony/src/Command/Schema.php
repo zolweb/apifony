@@ -6,7 +6,7 @@ use function Symfony\Component\String\u;
 
 class Schema
 {
-    public readonly MediaType|Parameter|Schema $parent;
+    public readonly MediaType|Parameter|Schema|Header $parent;
     public readonly Type $type;
     public readonly bool $nullable;
     public readonly ?string $format;
@@ -32,7 +32,7 @@ class Schema
      * @throws Exception
      */
     public static function build(
-        MediaType|Parameter|Schema $parent,
+        MediaType|Parameter|Schema|Header $parent,
         array $componentsData,
         array $data,
     ): self {
@@ -51,16 +51,22 @@ class Schema
         }
 
         $nullable = false;
-        if ($data['type'] === 'null') {
-            throw new Exception('Null schemas are not supported.');
-        } if (is_array($data['type'])) {
-            if (count($data['type']) > 2 || !in_array('null', $data['type'], true)) {
-                throw new Exception('Schemas with multiple types (but \'null\') are not supported.');
+        if (is_array($data['type'])) {
+            if (count($data['type']) === 1) {
+                $type = $data['type'][0];
+            } else {
+                if (count($data['type']) > 2 || !in_array('null', $data['type'], true)) {
+                    throw new Exception('Schemas with multiple types (but \'null\') are not supported.');
+                }
+                $nullable = true;
+                $type = $data['type'][(int)($data['type'][0] === 'null')];
             }
-            $nullable = true;
-            $type = $data['type'][(int)($data['type'][0] === 'null')];
         } else {
             $type = $data['type'];
+        }
+
+        if ($type === 'null') {
+            throw new Exception('Null schemas are not supported.');
         }
 
         $schema = new self();
