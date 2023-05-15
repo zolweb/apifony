@@ -4,24 +4,31 @@ namespace App\Command;
 
 class Parameter
 {
+    public readonly Operation|PathItem $parent;
     public readonly string $in;
     public readonly string $name;
-    private readonly Schema $schema;
+    public readonly Schema $schema;
 
     /**
+     * @param array<mixed> $componentsData
+     * @param array<mixed> $data
+     *
      * @throws Exception
      */
-    public function __construct(
-        private readonly Operation|Path $parent,
-        array $data,
-    ) {
+    public static function build(Operation|PathItem $parent, array $componentsData, array $data): self
+    {
+        $parameter = new self();
+        $parameter->parent = $parent;
+        $parameter->in = $data['in'];
+        $parameter->name = $data['name'];
+        $parameter->schema = Schema::build($parameter, $parameter->toVariableName(), $componentsData, $data['schema']);
+
         if (in_array($data['schema']['type'] ?? '', ['array', 'object'], true)) {
             throw new Exception("Parameters of {$data['schema']['type']} type are not supported yet.");
         }
 
-        $this->in = $data['in'];
-        $this->name = $data['name'];
-        $this->schema = new Schema($this, $this->toVariableName(), $data['required'] ?? false, $data['schema']);
+
+        return $parameter;
     }
 
     public function hasDefault(): bool
@@ -67,10 +74,5 @@ class Parameter
     public function getConstraints(): array
     {
         return $this->schema->getConstraints();
-    }
-
-    public function resolveReference(string $reference): array
-    {
-        return $this->parent->resolveReference($reference);
     }
 }

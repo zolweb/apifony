@@ -124,6 +124,12 @@ class Operation
 
     public function resolveReference(string $reference): array
     {
-        return $this->path->resolveReference($reference);
+        [, , $type, $name] = explode('/', $reference);
+
+        return [
+            'type' => $type,
+            'name' => $name,
+            'data' => $this->componentsData[$type][$name],
+        ];
     }
 }

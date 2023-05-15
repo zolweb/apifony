@@ -2,7 +2,7 @@
 
 namespace App\Command;
 
-interface SchemaType
+interface SchemaInterface
 {
     public function getPhpDocParameterAnnotationType(): string;
 

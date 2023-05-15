@@ -4,9 +4,9 @@ namespace App\Command;
 
 use function Symfony\Component\String\u;
 
-class Schema
+class SchemaTrait
 {
-    public readonly MediaType|Parameter|Schema|Header $parent;
+    public readonly MediaType|Parameter|SchemaTrait|Header $parent;
     public readonly SchemaType $typeHelper;
     public readonly string $type;
     public readonly bool $nullable;
@@ -16,10 +16,10 @@ class Schema
      * @throws Exception
      */
     public static function build(
-        MediaType|Parameter|Schema|Header $parent,
-        string $name,
-        array $componentsData,
-        array $data,
+        MediaType|Parameter|SchemaTrait|Header $parent,
+        string                                 $name,
+        array                                  $componentsData,
+        array                                  $data,
     ): self {
         $schema = new self();
 
