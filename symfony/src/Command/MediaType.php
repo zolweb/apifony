@@ -14,12 +14,22 @@ class MediaType
      *
      * @throws Exception
      */
-    public static function build(RequestBody|Response $parent, string $type, array $componentsData, array $data): self
-    {
+    public static function build(
+        RequestBody|Response $parent,
+        string $className,
+        string $type,
+        array $componentsData,
+        array $data,
+    ): self {
         $mediaType = new self();
         $mediaType->parent = $parent;
         $mediaType->type = $type;
-        $mediaType->schema = Schema::build($mediaType, $componentsData, $data['schema']);
+        $mediaType->schema = Schema::build(
+            $mediaType,
+            "{$className}Schema",
+            $componentsData,
+            $data['schema'],
+        );
 
         return $mediaType;
     }

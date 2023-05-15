@@ -22,6 +22,8 @@ class GenService extends AbstractExtension
      */
     public function generate(array $data): void
     {
+        $openApi = OpenApi::build($data);
+        dump($openApi);exit;
         foreach (OpenApi::build($data)->getFiles() as $fileName => $file) {
             file_put_contents(
                 __DIR__."/../Controller/{$fileName}.php",

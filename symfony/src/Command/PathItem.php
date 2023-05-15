@@ -27,7 +27,7 @@ class PathItem
         $pathItem->paths = $paths;
         $pathItem->route = $route;
         $pathItem->parameters = array_map(
-            fn (array $data) => Parameter::build($pathItem, $componentsData, $data),
+            fn (array $data) => Parameter::build($pathItem, '', $componentsData, $data),
             $data['parameters'] ?? []
         );
         $pathItem->operations = array_map(

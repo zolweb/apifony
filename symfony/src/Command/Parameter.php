@@ -15,8 +15,12 @@ class Parameter
      *
      * @throws Exception
      */
-    public static function build(Operation|PathItem $parent, array $componentsData, array $data): self
-    {
+    public static function build(
+        Operation|PathItem $parent,
+        string $className,
+        array $componentsData,
+        array $data,
+    ): self {
         if (isset($data['$ref'])) {
             $data = $componentsData['parameters'][explode('/', $data['$ref'])[3]];
         }
@@ -25,7 +29,12 @@ class Parameter
         $parameter->parent = $parent;
         $parameter->in = $data['in'];
         $parameter->name = $data['name'];
-        $parameter->schema = Schema::build($parameter, $componentsData, $data['schema']);
+        $parameter->schema = Schema::build(
+            $parameter,
+            "{$className}Schema",
+            $componentsData,
+            $data['schema'],
+        );
 
         return $parameter;
     }

@@ -2,6 +2,8 @@
 
 namespace App\Command;
 
+use function Symfony\Component\String\u;
+
 class Response
 {
     public readonly Responses $responses;
@@ -17,8 +19,13 @@ class Response
      *
      * @throws Exception
      */
-    public static function build(Responses $responses, string $code, array $componentsData, array $data): self
-    {
+    public static function build(
+        Responses $responses,
+        string $className,
+        string $code,
+        array $componentsData,
+        array $data,
+    ): self {
         if (isset($data['$ref'])) {
             $data = $componentsData['responses'][explode('/', $data['$ref'])[3]];
         }
@@ -27,11 +34,23 @@ class Response
         $response->responses = $responses;
         $response->code = $code;
         $response->headers = array_map(
-            fn (string $name) => Header::build($response, $name, $componentsData, $data['headers'][$name]),
+            fn (string $name) => Header::build(
+                $response,
+                sprintf('%s%sHeader', $className, u($name)->camel()->title()),
+                $name,
+                $componentsData,
+                $data['headers'][$name],
+            ),
             array_keys($data['headers'] ?? []),
         );
         $response->mediaTypes = array_map(
-            fn (string $type) => MediaType::build($response, $type, $componentsData, $data['content'][$type]),
+            fn (string $type) => MediaType::build(
+                $response,
+                sprintf('%s%sMediaType', $className, u($type)->camel()->title()),
+                $type,
+                $componentsData,
+                $data['content'][$type],
+            ),
             array_filter(
                 array_keys($data['content'] ?? []),
                 static fn (string $type) => in_array($type, ['application/json'], true),

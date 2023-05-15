@@ -6,6 +6,9 @@ use function Symfony\Component\String\u;
 
 class Schema
 {
+    /** @var array<string, Schema> */
+    private static array $schemas = [];
+
     public readonly MediaType|Parameter|Schema|Header $parent;
     public readonly Type $type;
     public readonly bool $nullable;
@@ -33,13 +36,21 @@ class Schema
      */
     public static function build(
         MediaType|Parameter|Schema|Header $parent,
+        string $className,
         array $componentsData,
         array $data,
     ): self {
-        $schemaName = null;
+        $schema = new self();
+
         if (isset($data['$ref'])) {
-            $schemaName = explode('/', $data['$ref'])[3];
-            $data = $componentsData['schemas'][$schemaName];
+            $className = explode('/', $data['$ref'])[3];
+            $data = $componentsData['schemas'][$className];
+
+            if (isset(self::$schemas[$className])) {
+                return self::$schemas[$className];
+            }
+
+            self::$schemas[$className] = $schema;
         }
 
         if (!isset($data['type'])) {
@@ -69,7 +80,6 @@ class Schema
             throw new Exception('Null schemas are not supported.');
         }
 
-        $schema = new self();
         $schema->parent = $parent;
         $schema->nullable = $nullable;
         $schema->format = $data['format'] ?? null;
@@ -86,10 +96,12 @@ class Schema
         $schema->minItems = $data['minItems'] ?? null;
         $schema->maxItems = $data['maxItems'] ?? null;
         $schema->uniqueItems = $data['uniqueItems'] ?? false;
-        $schema->items = isset($data['items']) ? Schema::build($parent, $componentsData, $data['items']) : null;
+        $schema->items = isset($data['items']) ?
+            Schema::build($parent, "{$className}List", $componentsData, $data['items']) : null;
         $schema->properties = isset($data['properties']) ? array_map(
             fn (string $name) => Schema::build(
                 $parent,
+                sprintf('%s%s', $className, u($name)->camel()->title()),
                 $componentsData,
                 $data['properties'][$name],
             ),

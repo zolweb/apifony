@@ -2,14 +2,24 @@
 
 namespace App\Command;
 
+use function Symfony\Component\String\u;
+
 class RequestBody
 {
     public readonly Operation $operation;
     public readonly bool $required;
+    /** @var array<MediaType> */
     public readonly array $mediaTypes;
 
-    public static function build(Operation $operation, array $componentsData, array $data): self
-    {
+    /**
+     * @throws Exception
+     */
+    public static function build(
+        Operation $operation,
+        string $className,
+        array $componentsData,
+        array $data,
+    ): self {
         if (isset($data['$ref'])) {
             $data = $componentsData['requestBodies'][explode('/', $data['$ref'])[3]];
         }
@@ -18,7 +28,13 @@ class RequestBody
         $requestBody->operation = $operation;
         $requestBody->required = $data['required'] ?? false;
         $requestBody->mediaTypes = array_map(
-            fn (string $type) => MediaType::build($requestBody, $type, $componentsData, $data['content'][$type]),
+            fn (string $type) => MediaType::build(
+                $requestBody,
+                sprintf('%s%sMediaType', $className, u($type)->camel()->title()),
+                $type,
+                $componentsData,
+                $data['content'][$type],
+            ),
             array_keys(
                 array_filter(
                     $data['content'],

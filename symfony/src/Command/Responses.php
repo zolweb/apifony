@@ -14,12 +14,22 @@ class Responses
      *
      * @throws Exception
      */
-    public static function build(Operation $operation, array $componentsData, array $data): self
-    {
+    public static function build(
+        Operation $operation,
+        string $className,
+        array $componentsData,
+        array $data,
+    ): self {
         $responses = new self();
         $responses->operation = $operation;
         $responses->responses = array_map(
-            fn (string $code) => Response::build($responses, $code, $componentsData, $data[$code]),
+            fn (string $code) => Response::build(
+                $responses,
+                $className,
+                $code,
+                $componentsData,
+                $data[$code],
+            ),
             array_filter(
                 array_keys($data),
                 static fn (string $code) => in_array($code, [

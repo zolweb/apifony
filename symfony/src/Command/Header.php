@@ -14,8 +14,13 @@ class Header
      *
      * @throws Exception
      */
-    public static function build(Response $response, string $name, array $componentsData, array $data): self
-    {
+    public static function build(
+        Response $response,
+        string $className,
+        string $name,
+        array $componentsData,
+        array $data,
+    ): self {
         if (isset($data['$ref'])) {
             $data = $componentsData['headers'][explode('/', $data['$ref'])[3]];
         }
@@ -23,7 +28,12 @@ class Header
         $header = new self();
         $header->response = $response;
         $header->name = $name;
-        $header->schema = Schema::build($header, $componentsData, $data['schema']);
+        $header->schema = Schema::build(
+            $header,
+            "{$className}Schema",
+            $componentsData,
+            $data['schema'],
+        );
 
         return $header;
     }

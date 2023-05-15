@@ -25,13 +25,28 @@ class Operation
         $operation->operationId = $data['operationId'];
         $operation->priority = $data['x-priority'] ?? 0;
         $operation->parameters = array_map(
-            fn (array $data) => Parameter::build($operation, $componentsData, $data),
+            fn (array $parameterData) => Parameter::build(
+                $operation,
+                u($data['operationId'])->camel()->title(),
+                $componentsData,
+                $parameterData,
+            ),
             $data['parameters'] ?? []
         );
         $operation->requestBody = isset($data['requestBody']) ?
-            RequestBody::build($operation, $componentsData, $data['requestBody']) : null;
+            RequestBody::build(
+                $operation,
+                u($data['operationId'])->camel()->title(),
+                $componentsData,
+                $data['requestBody'],
+            ) : null;
         $operation->responses = isset($data['responses']) ?
-            Responses::build($operation, $componentsData, $data['responses']) : null;
+            Responses::build(
+                $operation,
+                u($data['operationId'])->camel()->title(),
+                $componentsData,
+                $data['responses'],
+            ) : null;
 
         return $operation;
     }
@@ -57,7 +72,7 @@ class Operation
 
     public function getNormalizedName(): string
     {
-        return u($this->id)->camel()->title();
+        return u($this->operationId)->camel()->title();
     }
 
     public function getRequestBodyContentTypes(): array
