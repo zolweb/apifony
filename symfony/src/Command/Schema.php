@@ -6,7 +6,7 @@ use function Symfony\Component\String\u;
 
 class Schema
 {
-    public readonly MediaType|Parameter|Schema|Header $parent;
+    public readonly MediaType|Parameter|Schema $parent;
     public readonly Type $type;
     public readonly bool $nullable;
     public readonly ?string $format;
@@ -32,7 +32,7 @@ class Schema
      * @throws Exception
      */
     public static function build(
-        MediaType|Parameter|Schema|Header $parent,
+        MediaType|Parameter|Schema $parent,
         array $componentsData,
         array $data,
     ): self {
