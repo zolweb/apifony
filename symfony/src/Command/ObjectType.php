@@ -2,30 +2,8 @@
 
 namespace App\Command;
 
-class ObjectSchema implements SchemaType
+class ObjectType implements Type
 {
-    public readonly ?array $properties;
-
-    /**
-     * @throws Exception
-     */
-    public function __construct(
-        private readonly MediaType|Parameter|ObjectSchema|ArraySchema $context,
-        private readonly ?string $schemaName,
-        private readonly ?string $name,
-        array $data,
-    ) {
-        $this->properties = array_map(
-            fn (string $name) => new Schema(
-                $context,
-                $name,
-                in_array($name, $data['required'] ?? [], true),
-                $data['properties'][$name],
-            ),
-            array_keys($data['properties']),
-        );
-    }
-
     public function getClassName(): string
     {
         return $this->schemaName ?? sprintf('%s%s', $this->context->getClassName(), ucfirst($this->name ?? ''));
@@ -39,17 +17,17 @@ class ObjectSchema implements SchemaType
         );
     }
 
-    public function getPhpDocParameterAnnotationType(): string
+    public function getPhpDocParameterAnnotationType(Schema $schema): string
     {
         return $this->getClassName();
     }
 
-    public function getMethodParameterType(): string
+    public function getMethodParameterType(Schema $schema): string
     {
         return $this->getClassName();
     }
 
-    public function getMethodParameterDefault(): ?string
+    public function getMethodParameterDefault(Schema $schema): ?string
     {
         return null;
     }
@@ -57,45 +35,45 @@ class ObjectSchema implements SchemaType
     /**
      * @throws Exception
      */
-    public function getRouteRequirement(): string
+    public function getRouteRequirementPattern(Schema $schema): string
     {
-        throw new Exception('Object parameters in path are not supported.');
+        throw new Exception('Object path parameters are not supported.');
     }
 
     /**
      * @throws Exception
      */
-    public function getStringToTypeCastFunction(): string
+    public function getStringToTypeCastFunction(Schema $schema): string
     {
         throw new Exception('Object parameters are not supported.');
     }
 
-    public function getContentInitializationFromRequest(): string
+    public function getContentInitializationFromRequest(Schema $schema): string
     {
         return "\$content = \$serializer->deserialize(\$request->getContent(), '{$this->getClassName()}', JsonEncoder::FORMAT);";
     }
 
-    public function getContentValidationViolationsInitialization(): string
+    public function getContentValidationViolationsInitialization(Schema $schema): string
     {
         return '$violations = $validator->validate($content);';
     }
 
-    public function getNormalizedType(): string
+    public function getNormalizedType(Schema $schema): string
     {
         return $this->getClassName();
     }
 
-    public function getContentTypeChecking(): string
+    public function getContentTypeChecking(Schema $schema): string
     {
         return "\$content instanceOf {$this->getClassName()}";
     }
 
-    public function getConstraints(): array
+    public function getConstraints(Schema $schema): array
     {
         return [new Constraint('Assert\Valid', [])];
     }
 
-    public function getFiles(): array
+    public function getFiles(Schema $schema): array
     {
         return array_merge(
             [$this->getClassName() => ['template' => 'schema.php.twig', 'params' => ['schema' => $this]]],
@@ -104,5 +82,10 @@ class ObjectSchema implements SchemaType
                 $this->properties,
             ),
         );
+    }
+
+    public function __toString(): string
+    {
+        return 'object';
     }
 }

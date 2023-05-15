@@ -7,17 +7,32 @@ use function Symfony\Component\String\u;
 class Schema
 {
     public readonly MediaType|Parameter|Schema|Header $parent;
-    public readonly SchemaType $typeHelper;
-    public readonly string $type;
+    public readonly Type $type;
     public readonly bool $nullable;
     public readonly ?string $format;
+    /** @var null|array<string|int|float|bool> */
+    public readonly ?array $enum;
+    public readonly null|string|int|float|bool $default;
+    public readonly ?string $pattern;
+    public readonly ?int $minLength;
+    public readonly ?int $maxLength;
+    public readonly null|int|float $multipleOf;
+    public readonly null|int|float $minimum;
+    public readonly null|int|float $maximum;
+    public readonly null|int|float $exclusiveMinimum;
+    public readonly null|int|float $exclusiveMaximum;
+    public readonly Schema $items;
+    public readonly ?int $minItems;
+    public readonly ?int $maxItems;
+    public readonly bool $uniqueItems;
+    /** @var null|array<Schema> */
+    public readonly ?array $properties;
 
     /**
      * @throws Exception
      */
     public static function build(
         MediaType|Parameter|Schema|Header $parent,
-        string $name,
         array $componentsData,
         array $data,
     ): self {
@@ -33,6 +48,10 @@ class Schema
             throw new Exception('Schemas without type are not supported.');
         }
 
+        if (isset($data['items']['type']) && $data['items']['type'] === 'array') {
+            throw new Exception('Array schemas of arrays are not supported.');
+        }
+
         $nullable = false;
         if ($data['type'] === 'null') {
             throw new Exception('Null schemas are not supported.');
@@ -46,19 +65,147 @@ class Schema
             $type = $data['type'];
         }
 
-        $schema->type = $type;
+        $schema->parent = $parent;
         $schema->nullable = $nullable;
         $schema->format = $data['format'] ?? null;
-        $schema->typeHelper = match ($type) {
-            'string' => new StringSchema($name, $data),
-            'integer' => new IntegerSchema($name, $data),
-            'number' => new NumberSchema($name, $data),
-            'array' => new ArraySchema($parent, $data),
-            'object' => new ObjectSchema($parent, $schemaName, $name, $data),
-            'boolean' => new BooleanSchema($name, $data),
+        $schema->enum = $data['enum'] ?? null;
+        $schema->default = $data['default'] ?? null;
+        $schema->pattern = $data['pattern'] ?? null;
+        $schema->minLength = $data['minLength'] ?? null;
+        $schema->maxLength = $data['maxLength'] ?? null;
+        $schema->multipleOf = $data['multipleOf'] ?? null;
+        $schema->minimum = $data['minimum'] ?? null;
+        $schema->maximum = $data['maximum'] ?? null;
+        $schema->exclusiveMinimum = $data['exclusiveMinimum'] ?? null;
+        $schema->exclusiveMaximum = $data['exclusiveMaximum'] ?? null;
+        $schema->minItems = $data['minItems'] ?? null;
+        $schema->maxItems = $data['maxItems'] ?? null;
+        $schema->uniqueItems = $data['uniqueItems'] ?? false;
+        $schema->items = isset($data['items']) ? Schema::build($parent, $componentsData, $data['items']) : null;
+        $schema->properties = isset($data['properties']) ? array_map(
+            fn (string $name) => Schema::build(
+                $parent,
+                $componentsData,
+                $data['properties'][$name],
+            ),
+            array_keys($data['properties']),
+        ) : null;
+
+        $schema->type = match ($type) {
+            'string' => new StringType(),
+            'integer' => new IntegerType(),
+            'number' => new NumberType(),
+            'boolean' => new BooleanType(),
+            'array' => new ArrayType(),
+            'object' => new ObjectType(),
         };
 
         return $schema;
+    }
+
+    private function __construct()
+    {
+    }
+
+    public function getPhpDocParameterAnnotation(string $variableName): string
+    {
+        return sprintf(
+            '@param %s%s $%s',
+            $this->nullable ? '' : '?',
+            $this->getPhpDocParameterAnnotationType(),
+            $variableName,
+        );
+    }
+
+    public function getMethodParameter(string $variableName): string
+    {
+        return sprintf(
+            '%s%s $%s%s',
+            $this->nullable ? '' : '?',
+            $this->getMethodParameterType(),
+            $variableName,
+            $this->getMethodParameterDefault() !== null ? sprintf(
+                ' = %s',
+                $this->getMethodParameterDefault(),
+            ) : '',
+        );
+    }
+
+    public function getPhpDocParameterAnnotationType(): string
+    {
+        return $this->type->getPhpDocParameterAnnotationType($this);
+    }
+
+    public function getMethodParameterType(): string
+    {
+        return $this->type->getMethodParameterType($this);
+    }
+
+    public function getMethodParameterDefault(): ?string
+    {
+        return $this->type->getMethodParameterDefault($this);
+    }
+
+    public function getRouteRequirement(string $parameterName): string
+    {
+        return sprintf(
+            '\'%s\' => \'%s\',',
+            $parameterName,
+            str_replace('\'', '\\\'', $this->type->getRouteRequirementPattern($this)),
+        );
+    }
+
+    public function getStringToTypeCastFunction(): string
+    {
+        return $this->type->getStringToTypeCastFunction($this);
+    }
+
+    public function getContentInitializationFromRequest(): string
+    {
+        return $this->type->getContentInitializationFromRequest($this);
+    }
+
+    public function getContentValidationViolationsInitialization(): string
+    {
+        return $this->type->getContentValidationViolationsInitialization($this);
+    }
+
+    public function getNormalizedType(): string
+    {
+        return $this->type->getNormalizedType($this);
+    }
+
+    public function getContentTypeChecking(): string
+    {
+        return $this->type->getContentTypeChecking($this);
+    }
+
+    public function getConstraints(): array
+    {
+        $constraints = $this->type->getConstraints($this);
+
+        if ($this->nullable) {
+            $constraints[] = new Constraint('Assert\NotNull', []);
+        }
+
+        if ($this->format !== null) {
+            $constraints[] = new Constraint($this->getNormalizedFormat(), []);
+        }
+
+        return $constraints;
+    }
+
+    public function getFiles(): array
+    {
+        return array_merge(
+            $this->type->getFiles($this),
+            $this->format !== null ?
+                [
+                    $this->getFormatDefinitionInterfaceName() => ['template' => 'format-definition.php.twig', 'params' => ['schema' => $this]],
+                    $this->getFormatConstraintClassName() => ['template' => 'format-constraint.php.twig', 'params' => ['schema' => $this]],
+                    $this->getFormatValidatorClassName() => ['template' => 'format-validator.php.twig', 'params' => ['schema' => $this]],
+                ] : [],
+        );
     }
 
     public function getFormatDefinitionInterfaceName(): string
@@ -79,108 +226,5 @@ class Schema
     public function getNormalizedFormat(): string
     {
         return u($this->format)->camel()->title();
-    }
-
-    public function getPhpDocParameterAnnotation(): string
-    {
-        return sprintf(
-            '@param %s%s $%s',
-            $this->nullable ? '' : '?',
-            $this->getPhpDocParameterAnnotationType(),
-            $this->name,
-        );
-    }
-
-    public function getMethodParameter(): string
-    {
-        return sprintf(
-            '%s%s $%s%s',
-            $this->nullable ? '' : '?',
-            $this->getMethodParameterType(),
-            $this->name,
-            $this->getMethodParameterDefault() !== null ? sprintf(
-                ' = %s',
-                $this->getMethodParameterDefault(),
-            ) : '',
-        );
-    }
-
-    public function getPhpDocParameterAnnotationType(): string
-    {
-        return $this->typeHelper->getPhpDocParameterAnnotationType();
-    }
-
-    public function getMethodParameterType(): string
-    {
-        return $this->typeHelper->getMethodParameterType();
-    }
-
-    public function getMethodParameterDefault(): ?string
-    {
-        return $this->typeHelper->getMethodParameterDefault();
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function getRouteRequirement(): string
-    {
-        return $this->typeHelper->getRouteRequirement();
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function getStringToTypeCastFunction(): string
-    {
-        return $this->typeHelper->getStringToTypeCastFunction();
-    }
-
-    public function getContentInitializationFromRequest(): string
-    {
-        return $this->typeHelper->getContentInitializationFromRequest();
-    }
-
-    public function getContentValidationViolationsInitialization(): string
-    {
-        return $this->typeHelper->getContentValidationViolationsInitialization();
-    }
-
-    public function getNormalizedType(): string
-    {
-        return $this->typeHelper->getNormalizedType();
-    }
-
-    public function getContentTypeChecking(): string
-    {
-        return $this->typeHelper->getContentTypeChecking();
-    }
-
-    public function getConstraints(): array
-    {
-        $constraints = $this->typeHelper->getConstraints();
-
-        if ($this->nullable) {
-            $constraints[] = new Constraint('Assert\NotNull', []);
-        }
-
-        if ($this->format !== null) {
-            $constraints[] = new Constraint($this->getNormalizedFormat(), []);
-        }
-
-        return $constraints;
-    }
-
-    public function getFiles(): array
-    {
-        return array_merge(
-            $this->typeHelper->getFiles(),
-            $this->format !== null ?
-                [
-                    $this->getFormatDefinitionInterfaceName() => ['template' => 'format-definition.php.twig', 'params' => ['schema' => $this]],
-                    $this->getFormatConstraintClassName() => ['template' => 'format-constraint.php.twig', 'params' => ['schema' => $this]],
-                    $this->getFormatValidatorClassName() => ['template' => 'format-validator.php.twig', 'params' => ['schema' => $this]],
-                ] : [],
-        );
     }
 }

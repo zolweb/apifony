@@ -31,6 +31,10 @@ class Parameter
         return $parameter;
     }
 
+    private function __construct()
+    {
+    }
+
     public function hasDefault(): bool
     {
         return $this->schema->getMethodParameterDefault() !== null;
