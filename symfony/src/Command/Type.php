@@ -22,8 +22,14 @@ interface Type
 
     public function getContentTypeChecking(Schema $schema): string;
 
+    /**
+     * @return array<Constraint>
+     */
     public function getConstraints(Schema $schema): array;
 
+    /**
+     * @return array<string, array{template: string, params: array<string, mixed>}>
+     */
     public function getFiles(Schema $schema): array;
 
     public function __toString(): string;

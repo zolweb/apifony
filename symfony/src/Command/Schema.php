@@ -180,6 +180,9 @@ class Schema
         return $this->type->getContentTypeChecking($this);
     }
 
+    /**
+     * @return array<Constraint>
+     */
     public function getConstraints(): array
     {
         $constraints = $this->type->getConstraints($this);
@@ -195,6 +198,9 @@ class Schema
         return $constraints;
     }
 
+    /**
+     * @return array<string, array{template: string, params: array<string, mixed>}>
+     */
     public function getFiles(): array
     {
         return array_merge(

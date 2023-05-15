@@ -16,6 +16,8 @@ class StringType implements Type
 
     public function getMethodParameterDefault(Schema $schema): ?string
     {
+        assert(is_string($schema->default));
+
         return sprintf('\'%s\'', str_replace('\'', '\\\'', $schema->default));
     }
 
