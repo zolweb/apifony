@@ -6,34 +6,45 @@ use function Symfony\Component\String\u;
 
 class Operation
 {
-    private readonly array $parameters;
-    public readonly string $id;
+    public readonly PathItem $pathItem;
+    public readonly string $method;
+    public readonly string $operationId;
     public readonly int $priority;
+    public readonly array $parameters;
     public readonly ?RequestBody $requestBody;
     public readonly array $responses;
 
-    public function __construct(
-        private readonly Path $path,
-        public readonly string $method,
-        array $data,
-    ) {
-        $this->parameters = array_map(
-            fn (array $data) => new Parameter($this, $data),
+    /**
+     * @throws Exception
+     */
+    public static function build(PathItem $pathItem, string $method, array $componentsData, array $data): self
+    {
+        $operation = new self();
+        $operation->method = $method;
+        $operation->pathItem = $pathItem;
+        $operation->operationId = $data['operationId'];
+        $operation->priority = $data['x-priority'] ?? 0;
+        $operation->parameters = array_map(
+            fn (array $data) => Parameter::build($operation, $componentsData, $data),
             $data['parameters'] ?? []
         );
-
-        $this->id = $data['operationId'];
-        $this->priority = $data['x-priority'] ?? 0;
-        $this->requestBody = isset($data['requestBody']) ? new RequestBody($this, $data['requestBody']) : null;
-        $this->responses = array_map(
-            fn (int|string $code) => new Response($this, $code, $data),
+        $operation->requestBody = isset($data['requestBody']) ?
+            RequestBody::build($operation, $componentsData, $data['requestBody']) : null;
+        $operation->responses = array_map(
+            fn (int|string $code) => Response::build($operation, $code, $componentsData, $data),
             array_keys($data['responses'] ?? []),
         );
+
+        return $operation;
+    }
+
+    private function __construct()
+    {
     }
 
     public function getRoute(): string
     {
-        return $this->path->route;
+        return $this->pathItem->route;
     }
 
     public function getControllerClassName(): string
@@ -85,9 +96,9 @@ class Operation
 
     public function getAllSortedParameters(array $in = ['path', 'query', 'cookie', 'header']): array
     {
-        $pathParams = array_combine(
-            array_map(fn (Parameter $param) => "{$param->in}:{$param->name}", $this->path->parameters),
-            $this->path->parameters,
+        $pathItemParams = array_combine(
+            array_map(fn (Parameter $param) => "{$param->in}:{$param->name}", $this->pathItem->parameters),
+            $this->pathItem->parameters,
         );
 
         $operationParams = array_combine(
@@ -96,7 +107,7 @@ class Operation
         );
 
         $params = array_filter(
-            array_values(array_merge($pathParams, $operationParams)),
+            array_values(array_merge($pathItemParams, $operationParams)),
             static fn (Parameter $param) => in_array($param->in, $in, true),
         );
 

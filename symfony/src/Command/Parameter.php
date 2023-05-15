@@ -4,7 +4,7 @@ namespace App\Command;
 
 class Parameter
 {
-    public readonly Operation|PathItem $parent;
+    public readonly Operation|PathItem|Response $parent;
     public readonly string $in;
     public readonly string $name;
     public readonly Schema $schema;
@@ -15,18 +15,13 @@ class Parameter
      *
      * @throws Exception
      */
-    public static function build(Operation|PathItem $parent, array $componentsData, array $data): self
+    public static function build(Operation|PathItem|Response $parent, array $componentsData, array $data): self
     {
         $parameter = new self();
         $parameter->parent = $parent;
         $parameter->in = $data['in'];
         $parameter->name = $data['name'];
-        $parameter->schema = Schema::build($parameter, $parameter->toVariableName(), $componentsData, $data['schema']);
-
-        if (in_array($data['schema']['type'] ?? '', ['array', 'object'], true)) {
-            throw new Exception("Parameters of {$data['schema']['type']} type are not supported yet.");
-        }
-
+        $parameter->schema = Schema::build($parameter, $componentsData, $data['schema']);
 
         return $parameter;
     }

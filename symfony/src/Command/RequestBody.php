@@ -4,17 +4,17 @@ namespace App\Command;
 
 class RequestBody
 {
+    public readonly Operation $operation;
     public readonly bool $required;
     public readonly array $mediaTypes;
 
-    public function __construct(
-        private readonly Operation $operation,
-        array $data,
-    ) {
-        $this->required = $data['required'] ?? false;
-
-        $this->mediaTypes = array_map(
-            fn (string $type) => new MediaType($this, $type, $data['content'][$type]),
+    public static function build(Operation $operation, array $componentsData, array $data): self
+    {
+        $requestBody = new self();
+        $requestBody->operation = $operation;
+        $requestBody->required = $data['required'] ?? false;
+        $requestBody->mediaTypes = array_map(
+            fn (string $type) => MediaType::build($requestBody, $type, $componentsData, $data['content'][$type]),
             array_keys(
                 array_filter(
                     $data['content'],
@@ -23,16 +23,12 @@ class RequestBody
                 ),
             ),
         );
+
+        return $requestBody;
     }
 
-    public function resolveReference(string $reference): array
+    private function __construct()
     {
-        return $this->operation->resolveReference($reference);
-    }
-
-    public function getClassName(): string
-    {
-        return "{$this->operation->getNormalizedName()}Request";
     }
 
     public function getMethodParameterType(): string

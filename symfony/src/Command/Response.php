@@ -4,16 +4,28 @@ namespace App\Command;
 
 class Response
 {
-    private readonly array $headers;
+    public readonly Operation $operation;
+    public readonly string $code;
+    public readonly array $headers;
     public readonly array $mediaTypes;
 
-    public function __construct(
-        private readonly Operation $operation,
-        private readonly int|string $code,
-        array $data,
-    ) {
-        $this->mediaTypes = array_map(
-            fn (string $type) => new MediaType($this, $type, $data['content'][$type]),
+    /**
+     * @param array<mixed> $componentsData
+     * @param array<mixed> $data
+     *
+     * @throws Exception
+     */
+    public static function build(Operation $operation, string $code, array $componentsData, array $data): self
+    {
+        $response = new self();
+        $response->operation = $operation;
+        $response->code = $code;
+        $response->headers = array_map(
+            fn (string $name) => Parameter::build($response, $componentsData, $data['headers'][$name]),
+            array_keys($data['headers'] ?? []),
+        );
+        $response->mediaTypes = array_map(
+            fn (string $type) => MediaType::build($response, $type, $componentsData, $data['content'][$type]),
             array_keys(
                 array_filter(
                     $data['content'] ?? [],
@@ -23,20 +35,11 @@ class Response
             ),
         );
 
-        $this->headers = array_map(
-            fn (string $name) => new Header($this, $name, $data['headers'][$name]),
-            array_keys($data['headers'] ?? []),
-        );
+        return $response;
     }
 
-    public function resolveReference(string $reference): array
+    private function __construct()
     {
-        return $this->operation->resolveReference($reference);
-    }
-
-    public function getClassName(): string
-    {
-        return "{$this->operation->getNormalizedName()}Response";
     }
 
     public function getFiles(): array

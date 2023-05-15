@@ -4,27 +4,28 @@ namespace App\Command;
 
 class MediaType
 {
-    private readonly Schema $schema;
+    public readonly RequestBody|Response $parent;
+    public readonly string $type;
+    public readonly Schema $schema;
 
     /**
-     * @throws \Exception
+     * @param array<mixed> $componentsData,
+     * @param array<mixed> $data,
+     *
+     * @throws Exception
      */
-    public function __construct(
-        public readonly RequestBody|Response $requestBody,
-        public readonly string $type,
-        array $data,
-    ) {
-        $this->schema = new Schema($this, null, false, $data['schema']);
+    public static function build(RequestBody|Response $parent, string $type, array $componentsData, array $data): self
+    {
+        $mediaType = new self();
+        $mediaType->parent = $parent;
+        $mediaType->type = $type;
+        $mediaType->schema = Schema::build($mediaType, $componentsData, $data['schema']);
+
+        return $mediaType;
     }
 
-    public function resolveReference(string $reference): array
+    private function __construct()
     {
-        return $this->requestBody->resolveReference($reference);
-    }
-
-    public function getClassName(): string
-    {
-        return "{$this->requestBody->getClassName()}{$this->type}";
     }
 
     public function getContentInitializationFromRequest(): string

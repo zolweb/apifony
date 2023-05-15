@@ -21,7 +21,7 @@ class Schema
     public readonly null|int|float $maximum;
     public readonly null|int|float $exclusiveMinimum;
     public readonly null|int|float $exclusiveMaximum;
-    public readonly Schema $items;
+    public readonly ?Schema $items;
     public readonly ?int $minItems;
     public readonly ?int $maxItems;
     public readonly bool $uniqueItems;
