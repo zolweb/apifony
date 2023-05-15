@@ -7,6 +7,7 @@ use function Symfony\Component\String\u;
 class RequestBody
 {
     public readonly Operation $operation;
+    public readonly string $className;
     public readonly bool $required;
     /** @var array<MediaType> */
     public readonly array $mediaTypes;
@@ -26,6 +27,7 @@ class RequestBody
 
         $requestBody = new self();
         $requestBody->operation = $operation;
+        $requestBody->className = $className;
         $requestBody->required = $data['required'] ?? false;
         $requestBody->mediaTypes = array_map(
             fn (string $type) => MediaType::build(

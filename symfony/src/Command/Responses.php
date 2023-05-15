@@ -5,6 +5,7 @@ namespace App\Command;
 class Responses
 {
     public readonly Operation $operation;
+    public readonly string $className;
     /** @var array<Response  */
     public readonly array $responses;
 
@@ -22,6 +23,7 @@ class Responses
     ): self {
         $responses = new self();
         $responses->operation = $operation;
+        $responses->className = $className;
         $responses->responses = array_map(
             fn (string $code) => Response::build(
                 $responses,

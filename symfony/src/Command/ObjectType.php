@@ -4,11 +4,6 @@ namespace App\Command;
 
 class ObjectType implements Type
 {
-    public function getClassName(): string
-    {
-        return $this->schemaName ?? sprintf('%s%s', $this->context->getClassName(), ucfirst($this->name ?? ''));
-    }
-
     public function getArrayProperties(): array
     {
         return array_filter(
@@ -19,12 +14,12 @@ class ObjectType implements Type
 
     public function getPhpDocParameterAnnotationType(Schema $schema): string
     {
-        return $this->getClassName();
+        return $schema->className;
     }
 
     public function getMethodParameterType(Schema $schema): string
     {
-        return $this->getClassName();
+        return $schema->className;
     }
 
     public function getMethodParameterDefault(Schema $schema): ?string
@@ -50,7 +45,7 @@ class ObjectType implements Type
 
     public function getContentInitializationFromRequest(Schema $schema): string
     {
-        return "\$content = \$serializer->deserialize(\$request->getContent(), '{$this->getClassName()}', JsonEncoder::FORMAT);";
+        return "\$content = \$serializer->deserialize(\$request->getContent(), '{$schema->className}', JsonEncoder::FORMAT);";
     }
 
     public function getContentValidationViolationsInitialization(Schema $schema): string
@@ -60,12 +55,12 @@ class ObjectType implements Type
 
     public function getNormalizedType(Schema $schema): string
     {
-        return $this->getClassName();
+        return $schema->className;
     }
 
     public function getContentTypeChecking(Schema $schema): string
     {
-        return "\$content instanceOf {$this->getClassName()}";
+        return "\$content instanceOf {$schema->className}";
     }
 
     public function getConstraints(Schema $schema): array
@@ -76,10 +71,10 @@ class ObjectType implements Type
     public function getFiles(Schema $schema): array
     {
         return array_merge(
-            [$this->getClassName() => ['template' => 'schema.php.twig', 'params' => ['schema' => $this]]],
+            [$schema->className => ['template' => 'schema.php.twig', 'params' => ['schema' => $this]]],
             ...array_map(
                 static fn (Schema $property) => $property->getFiles(),
-                $this->properties,
+                $schema->properties,
             ),
         );
     }

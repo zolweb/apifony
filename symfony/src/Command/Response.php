@@ -7,6 +7,7 @@ use function Symfony\Component\String\u;
 class Response
 {
     public readonly Responses $responses;
+    public readonly string $className;
     public readonly string $code;
     /** @var array<Header> */
     public readonly array $headers;
@@ -32,6 +33,7 @@ class Response
 
         $response = new self();
         $response->responses = $responses;
+        $response->className = $className;
         $response->code = $code;
         $response->headers = array_map(
             fn (string $name) => Header::build(

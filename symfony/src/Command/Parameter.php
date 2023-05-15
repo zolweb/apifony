@@ -5,6 +5,7 @@ namespace App\Command;
 class Parameter
 {
     public readonly Operation|PathItem $parent;
+    public readonly string $className;
     public readonly string $in;
     public readonly string $name;
     public readonly Schema $schema;
@@ -27,6 +28,7 @@ class Parameter
 
         $parameter = new self();
         $parameter->parent = $parent;
+        $parameter->className = $className;
         $parameter->in = $data['in'];
         $parameter->name = $data['name'];
         $parameter->schema = Schema::build(

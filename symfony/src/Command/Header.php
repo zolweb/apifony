@@ -5,6 +5,7 @@ namespace App\Command;
 class Header
 {
     public readonly Response $response;
+    public readonly string $className;
     public readonly string $name;
     public readonly Schema $schema;
 
@@ -27,6 +28,7 @@ class Header
 
         $header = new self();
         $header->response = $response;
+        $header->className = $className;
         $header->name = $name;
         $header->schema = Schema::build(
             $header,

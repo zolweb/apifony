@@ -10,6 +10,7 @@ class Schema
     private static array $schemas = [];
 
     public readonly MediaType|Parameter|Schema|Header $parent;
+    public readonly string $className;
     public readonly Type $type;
     public readonly bool $nullable;
     public readonly ?string $format;
@@ -81,6 +82,7 @@ class Schema
         }
 
         $schema->parent = $parent;
+        $schema->className = $className;
         $schema->nullable = $nullable;
         $schema->format = $data['format'] ?? null;
         $schema->enum = $data['enum'] ?? null;
