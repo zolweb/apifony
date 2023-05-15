@@ -4,7 +4,7 @@ namespace App\Command;
 
 class Response
 {
-    public readonly Operation $operation;
+    public readonly Responses $responses;
     public readonly string $code;
     public readonly array $headers;
     public readonly array $mediaTypes;
@@ -15,10 +15,14 @@ class Response
      *
      * @throws Exception
      */
-    public static function build(Operation $operation, string $code, array $componentsData, array $data): self
+    public static function build(Responses $responses, string $code, array $componentsData, array $data): self
     {
+        if (isset($data['$ref'])) {
+            $data = $componentsData['responses'][explode('/', $data['$ref'])[3]];
+        }
+
         $response = new self();
-        $response->operation = $operation;
+        $response->responses = $responses;
         $response->code = $code;
         $response->headers = array_map(
             fn (string $name) => Parameter::build($response, $componentsData, $data['headers'][$name]),
@@ -26,12 +30,9 @@ class Response
         );
         $response->mediaTypes = array_map(
             fn (string $type) => MediaType::build($response, $type, $componentsData, $data['content'][$type]),
-            array_keys(
-                array_filter(
-                    $data['content'] ?? [],
-                    static fn (string $type) => in_array($type, ['application/json'], true),
-                    ARRAY_FILTER_USE_KEY,
-                ),
+            array_filter(
+                array_keys($data['content'] ?? []),
+                static fn (string $type) => in_array($type, ['application/json'], true),
             ),
         );
 

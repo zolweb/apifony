@@ -20,12 +20,9 @@ class Paths
         $paths->openApi = $openApi;
         $paths->pathItems = array_map(
             fn (string $route) => PathItem::build($paths, $route, $componentsData, $data[$route]),
-            array_keys(
-                array_filter(
-                    $data,
-                    static fn (string $route) => $route[0] === '/',
-                    ARRAY_FILTER_USE_KEY,
-                ),
+            array_filter(
+                array_keys($data),
+                static fn (string $route) => $route[0] === '/',
             ),
         );
 

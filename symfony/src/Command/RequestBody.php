@@ -10,6 +10,10 @@ class RequestBody
 
     public static function build(Operation $operation, array $componentsData, array $data): self
     {
+        if (isset($data['$ref'])) {
+            $data = $componentsData['requestBodies'][explode('/', $data['$ref'])[3]];
+        }
+
         $requestBody = new self();
         $requestBody->operation = $operation;
         $requestBody->required = $data['required'] ?? false;

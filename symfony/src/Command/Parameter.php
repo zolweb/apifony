@@ -17,6 +17,10 @@ class Parameter
      */
     public static function build(Operation|PathItem|Response $parent, array $componentsData, array $data): self
     {
+        if (isset($data['$ref'])) {
+            $data = $componentsData['parameters'][explode('/', $data['$ref'])[3]];
+        }
+
         $parameter = new self();
         $parameter->parent = $parent;
         $parameter->in = $data['in'];

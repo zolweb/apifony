@@ -12,7 +12,7 @@ class Operation
     public readonly int $priority;
     public readonly array $parameters;
     public readonly ?RequestBody $requestBody;
-    public readonly array $responses;
+    public readonly ?Responses $responses;
 
     /**
      * @throws Exception
@@ -30,10 +30,8 @@ class Operation
         );
         $operation->requestBody = isset($data['requestBody']) ?
             RequestBody::build($operation, $componentsData, $data['requestBody']) : null;
-        $operation->responses = array_map(
-            fn (int|string $code) => Response::build($operation, $code, $componentsData, $data),
-            array_keys($data['responses'] ?? []),
-        );
+        $operation->responses = isset($data['responses']) ?
+            Responses::build($operation, $componentsData, $data['responses']) : null;
 
         return $operation;
     }

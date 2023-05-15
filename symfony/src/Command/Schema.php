@@ -36,12 +36,10 @@ class Schema
         array $componentsData,
         array $data,
     ): self {
-        $schema = new self();
-
         $schemaName = null;
         if (isset($data['$ref'])) {
-            [, , $type, $schemaName] = explode('/', $data['$ref']);
-            $data = $componentsData[$type][$schemaName];
+            $schemaName = explode('/', $data['$ref'])[3];
+            $data = $componentsData['schemas'][$schemaName];
         }
 
         if (!isset($data['type'])) {
@@ -65,6 +63,7 @@ class Schema
             $type = $data['type'];
         }
 
+        $schema = new self();
         $schema->parent = $parent;
         $schema->nullable = $nullable;
         $schema->format = $data['format'] ?? null;
