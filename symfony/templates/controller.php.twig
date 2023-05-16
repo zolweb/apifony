@@ -3,6 +3,7 @@
 
 namespace App\Controller;
 
+use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -109,35 +110,33 @@ class {{ operation.controllerClassName }} extends AbstractController
             );
         }
         switch (true) {
-{%~ for requestBodyType in operation.requestBodyContentTypes %}
-            case {{ requestBodyType.contentTypeChecking }}:
-                switch ($contentType = $request->headers->get('accept', 'unspecified')) {
+{%~ for requestBodyContentType in operation.allPossibleRequestBodyContentTypes %}
+            case {{ requestBodyContentType.checking }}:
+                return match ($request->headers->get('accept', 'unspecified')) {
     {%~ for responseBodyContentType in operation.responseBodyContentTypes %}
-                    case {{ responseBodyContentType }}:
-                        return $handler->handle(
-                            {%~ for param in operation.allSortedParameters %}
-                                ${{ param.variableName }},
-                            {%~ endfor %}
-                            {%~ if operation.requestBody %}
-                                $content,
-                            {%~ endif %}
-                        );
-
-                        break;
+                    '{{ responseBodyContentType.name }}' =>
+                        $handler->handle{{ requestBodyContentType.name }}{{ responseBodyContentType.name }}(
+        {%~ for param in operation.allSortedParameters %}
+                            ${{ param.variableName }},
+        {%~ endfor %}
+        {%~ if operation.requestBody %}
+                            $content,
+        {%~ endif %}
+                        ),
     {%~ endfor %}
-                    default:
-                        return new JsonResponse(
+                    default =>
+                        new JsonResponse(
                             [
                                 'code' => 'unsupported_response_type',
                                 'message' => "The value '$contentType' received in accept header is not a supported format.",
                             ],
                             Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        );
-                }
-
-                break;
+                        ),
+                };
 {%~ endfor %}
+            default:
+                throw new RuntimeException();
         }
-    %}
+    }
 }
 {% endautoescape %}

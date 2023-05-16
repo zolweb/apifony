@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -420,119 +421,69 @@ class PostTestController extends AbstractController
         }
         switch (true) {
             case is_null($content):
-                switch ($contentType = $request->headers->get('accept', 'unspecified')) {
-                    case Test:
-                        return $handler->handle(
-                                $cC1,
-                                $cC2,
-                                $cC3,
-                                $cC4,
-                                $hH1,
-                                $hH2,
-                                $hH3,
-                                $hH4,
-                                $pP1,
-                                $pP2,
-                                $pP3,
-                                $pP4,
-                                $qQ1,
-                                $qQ2,
-                                $qQ3,
-                                $qQ4,
-                                $content,
-                        );
-
-                        break;
-                    case Test:
-                        return $handler->handle(
-                                $cC1,
-                                $cC2,
-                                $cC3,
-                                $cC4,
-                                $hH1,
-                                $hH2,
-                                $hH3,
-                                $hH4,
-                                $pP1,
-                                $pP2,
-                                $pP3,
-                                $pP4,
-                                $qQ1,
-                                $qQ2,
-                                $qQ3,
-                                $qQ4,
-                                $content,
-                        );
-
-                        break;
-                    default:
-                        return new JsonResponse(
+                return match ($request->headers->get('accept', 'unspecified')) {
+                    'ApplicationJson' =>
+                        $handler->handleNullApplicationJson(
+                            $cC1,
+                            $cC2,
+                            $cC3,
+                            $cC4,
+                            $hH1,
+                            $hH2,
+                            $hH3,
+                            $hH4,
+                            $pP1,
+                            $pP2,
+                            $pP3,
+                            $pP4,
+                            $qQ1,
+                            $qQ2,
+                            $qQ3,
+                            $qQ4,
+                            $content,
+                        ),
+                    default =>
+                        new JsonResponse(
                             [
                                 'code' => 'unsupported_response_type',
                                 'message' => "The value '$contentType' received in accept header is not a supported format.",
                             ],
                             Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        );
-                }
-
-                break;
+                        ),
+                };
             case $content instanceOf Test:
-                switch ($contentType = $request->headers->get('accept', 'unspecified')) {
-                    case Test:
-                        return $handler->handle(
-                                $cC1,
-                                $cC2,
-                                $cC3,
-                                $cC4,
-                                $hH1,
-                                $hH2,
-                                $hH3,
-                                $hH4,
-                                $pP1,
-                                $pP2,
-                                $pP3,
-                                $pP4,
-                                $qQ1,
-                                $qQ2,
-                                $qQ3,
-                                $qQ4,
-                                $content,
-                        );
-
-                        break;
-                    case Test:
-                        return $handler->handle(
-                                $cC1,
-                                $cC2,
-                                $cC3,
-                                $cC4,
-                                $hH1,
-                                $hH2,
-                                $hH3,
-                                $hH4,
-                                $pP1,
-                                $pP2,
-                                $pP3,
-                                $pP4,
-                                $qQ1,
-                                $qQ2,
-                                $qQ3,
-                                $qQ4,
-                                $content,
-                        );
-
-                        break;
-                    default:
-                        return new JsonResponse(
+                return match ($request->headers->get('accept', 'unspecified')) {
+                    'ApplicationJson' =>
+                        $handler->handleTestApplicationJson(
+                            $cC1,
+                            $cC2,
+                            $cC3,
+                            $cC4,
+                            $hH1,
+                            $hH2,
+                            $hH3,
+                            $hH4,
+                            $pP1,
+                            $pP2,
+                            $pP3,
+                            $pP4,
+                            $qQ1,
+                            $qQ2,
+                            $qQ3,
+                            $qQ4,
+                            $content,
+                        ),
+                    default =>
+                        new JsonResponse(
                             [
                                 'code' => 'unsupported_response_type',
                                 'message' => "The value '$contentType' received in accept header is not a supported format.",
                             ],
                             Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        );
-                }
-
-                break;
+                        ),
+                };
+            default:
+                throw new RuntimeException();
         }
-    %}
+    }
 }

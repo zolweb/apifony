@@ -2,6 +2,7 @@
 
 namespace App\Controller;
 
+use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -56,24 +57,22 @@ class FindPetsByStatusController extends AbstractController
         }
         switch (true) {
             case is_null($content):
-                switch ($contentType = $request->headers->get('accept', 'unspecified')) {
-                    case PetArray:
-                        return $handler->handle(
-                                $qStatus,
-                        );
-
-                        break;
-                    default:
-                        return new JsonResponse(
+                return match ($request->headers->get('accept', 'unspecified')) {
+                    'ApplicationJson' =>
+                        $handler->handleNullApplicationJson(
+                            $qStatus,
+                        ),
+                    default =>
+                        new JsonResponse(
                             [
                                 'code' => 'unsupported_response_type',
                                 'message' => "The value '$contentType' received in accept header is not a supported format.",
                             ],
                             Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        );
-                }
-
-                break;
+                        ),
+                };
+            default:
+                throw new RuntimeException();
         }
-    %}
+    }
 }

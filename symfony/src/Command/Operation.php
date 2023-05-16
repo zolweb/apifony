@@ -71,23 +71,25 @@ class Operation
         return u($this->operationId)->camel()->title();
     }
 
-    public function getRequestBodyContentTypes(): array
+    public function getAllPossibleRequestBodyContentTypes(): array
     {
-        $requestBodyTypes = [];
+        $requestBodyContentTypes = [];
 
         if ($this->requestBody === null || !$this->requestBody->required) {
-            $requestBodyTypes['null'] = [
-                'contentTypeChecking' => 'is_null($content)',
+            $requestBodyContentTypes['Null'] = [
+                'name' => 'Null',
+                'checking' => 'is_null($content)',
             ];
         }
 
         foreach ($this->requestBody?->mediaTypes ?? [] as $mediaType) {
-            $requestBodyTypes[$mediaType->schema->type->getNormalizedType()] = [
-                'contentTypeChecking' => $mediaType->schema->type->getContentTypeChecking(),
+            $requestBodyContentTypes[$mediaType->schema->type->getNormalizedType()] = [
+                'name' => $mediaType->schema->type->getNormalizedType(),
+                'checking' => $mediaType->schema->type->getContentTypeChecking(),
             ];
         }
 
-        return $requestBodyTypes;
+        return $requestBodyContentTypes;
     }
 
     public function getResponseBodyContentTypes(): array
@@ -96,7 +98,10 @@ class Operation
 
         foreach ($this->responses->responses as $response) {
             foreach ($response->mediaTypes as $mediaType) {
-                $responseBodyTypes[] = $mediaType->schema->type->getNormalizedType();
+                $responseBodyTypes[$mediaType->type] = [
+                    'type' => $mediaType->type,
+                    'name' => u($mediaType->type)->camel()->title(),
+                ];
             }
         }
 
