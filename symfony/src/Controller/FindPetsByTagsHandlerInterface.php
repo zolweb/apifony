@@ -4,7 +4,7 @@ namespace App\Controller;
 
 interface FindPetsByTagsHandlerInterface
 {
-    public function handle(
-        string $qTags,
-    ) ;
+    public function handleNullApplicationJson(
+            string $qTags,
+    );
 }

@@ -4,7 +4,7 @@ namespace App\Controller;
 
 interface GetPetByIdHandlerInterface
 {
-    public function handle(
-        int $pPetId,
-    ) ;
+    public function handleNullApplicationJson(
+            int $pPetId,
+    );
 }

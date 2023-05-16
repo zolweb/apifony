@@ -68,7 +68,6 @@ class CreateUsersWithListInputController extends AbstractController
                 return match ($request->headers->get('accept', 'unspecified')) {
                     'ApplicationJson' =>
                         $handler->handleNullApplicationJson(
-                            $content,
                         ),
                     default =>
                         new JsonResponse(

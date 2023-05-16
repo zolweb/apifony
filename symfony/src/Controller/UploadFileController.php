@@ -94,7 +94,6 @@ class UploadFileController extends AbstractController
                         $handler->handleNullApplicationJson(
                             $qAdditionalMetadata,
                             $pPetId,
-                            $content,
                         ),
                     default =>
                         new JsonResponse(

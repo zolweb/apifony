@@ -79,6 +79,7 @@ class Operation
             $requestBodyContentTypes['Null'] = [
                 'name' => 'Null',
                 'checking' => 'is_null($content)',
+                'hasContent' => false,
             ];
         }
 
@@ -86,6 +87,8 @@ class Operation
             $requestBodyContentTypes[$mediaType->schema->type->getNormalizedType()] = [
                 'name' => $mediaType->schema->type->getNormalizedType(),
                 'checking' => $mediaType->schema->type->getContentTypeChecking(),
+                'hasContent' => true,
+                'methodType' => $mediaType->schema->type->getMethodParameterType(),
             ];
         }
 

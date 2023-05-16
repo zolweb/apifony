@@ -4,7 +4,9 @@ namespace App\Controller;
 
 interface PlaceOrderHandlerInterface
 {
-    public function handle(
-        Lol $payload,
-    ) ;
+    public function handleNullApplicationJson(
+    );
+    public function handleOrderApplicationJson(
+            Order $content,
+    );
 }

@@ -4,7 +4,9 @@ namespace App\Controller;
 
 interface CreateUsersWithListInputHandlerInterface
 {
-    public function handle(
-        Lol $payload,
-    ) ;
+    public function handleNullApplicationJson(
+    );
+    public function handleUserArrayApplicationJson(
+            array $content,
+    );
 }

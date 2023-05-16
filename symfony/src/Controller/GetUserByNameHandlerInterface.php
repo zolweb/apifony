@@ -4,7 +4,7 @@ namespace App\Controller;
 
 interface GetUserByNameHandlerInterface
 {
-    public function handle(
-        string $pUsername,
-    ) ;
+    public function handleNullApplicationJson(
+            string $pUsername,
+    );
 }

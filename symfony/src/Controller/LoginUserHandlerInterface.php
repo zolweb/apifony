@@ -4,8 +4,8 @@ namespace App\Controller;
 
 interface LoginUserHandlerInterface
 {
-    public function handle(
-        string $qPassword,
-        string $qUsername,
-    ) ;
+    public function handleNullApplicationJson(
+            string $qPassword,
+            string $qUsername,
+    );
 }

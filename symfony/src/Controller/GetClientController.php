@@ -235,7 +235,6 @@ class GetClientController extends AbstractController
                             $hGegzer,
                             $pParam1,
                             $pParam2,
-                            $content,
                         ),
                     default =>
                         new JsonResponse(

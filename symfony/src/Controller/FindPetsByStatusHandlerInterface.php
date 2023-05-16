@@ -4,7 +4,7 @@ namespace App\Controller;
 
 interface FindPetsByStatusHandlerInterface
 {
-    public function handle(
-        string $qStatus,
-    ) ;
+    public function handleNullApplicationJson(
+            string $qStatus,
+    );
 }

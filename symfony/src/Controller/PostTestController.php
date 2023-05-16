@@ -440,7 +440,6 @@ class PostTestController extends AbstractController
                             $qQ2,
                             $qQ3,
                             $qQ4,
-                            $content,
                         ),
                     default =>
                         new JsonResponse(

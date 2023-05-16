@@ -4,7 +4,7 @@ namespace App\Controller;
 
 interface AddPetHandlerInterface
 {
-    public function handle(
-        Lol $payload,
-    ) ;
+    public function handlePetApplicationJson(
+            Pet $content,
+    );
 }

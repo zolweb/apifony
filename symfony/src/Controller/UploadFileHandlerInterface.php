@@ -4,9 +4,8 @@ namespace App\Controller;
 
 interface UploadFileHandlerInterface
 {
-    public function handle(
-        string $qAdditionalMetadata,
-        int $pPetId,
-        Lol $payload,
-    ) ;
+    public function handleNullApplicationJson(
+            string $qAdditionalMetadata,
+            int $pPetId,
+    );
 }

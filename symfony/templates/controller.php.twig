@@ -119,7 +119,7 @@ class {{ operation.controllerClassName }} extends AbstractController
         {%~ for param in operation.allSortedParameters %}
                             ${{ param.variableName }},
         {%~ endfor %}
-        {%~ if operation.requestBody %}
+        {%~ if requestBodyContentType.hasContent %}
                             $content,
         {%~ endif %}
                         ),
