@@ -18,7 +18,7 @@ class UploadFileController extends AbstractController
     #[Route(
         path: '/pet/{petId}/uploadImage',
         requirements: [
-            'pPetId' => '-?(0|[1-9]\\d*)',
+            'petId' => '-?(0|[1-9]\\d*)',
         ],
         methods: ['post'],
         priority: 0,
@@ -28,8 +28,9 @@ class UploadFileController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         UploadFileHandlerInterface $handler,
-        int $pPetId,
+        int $petId,
     ): Response {
+        $pPetId = $petId;
         $qAdditionalMetadata = strval($request->query->get('additionalMetadata'));
         $errors = [];
         $violations = $validator->validate(
@@ -38,7 +39,7 @@ class UploadFileController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['query']['qAdditionalMetadata'] = array_map(
+            $errors['query']['additionalMetadata'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -50,7 +51,7 @@ class UploadFileController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['pPetId'] = array_map(
+            $errors['path']['petId'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -108,5 +109,5 @@ class UploadFileController extends AbstractController
 
                 break;
         }
-    }
+    %}
 }

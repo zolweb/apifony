@@ -18,7 +18,7 @@ class GetOrderByIdController extends AbstractController
     #[Route(
         path: '/store/order/{orderId}',
         requirements: [
-            'pOrderId' => '-?(0|[1-9]\\d*)',
+            'orderId' => '-?(0|[1-9]\\d*)',
         ],
         methods: ['get'],
         priority: 0,
@@ -28,8 +28,9 @@ class GetOrderByIdController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         GetOrderByIdHandlerInterface $handler,
-        int $pOrderId,
+        int $orderId,
     ): Response {
+        $pOrderId = $orderId;
         $errors = [];
         $violations = $validator->validate(
             $pOrderId,
@@ -38,7 +39,7 @@ class GetOrderByIdController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['pOrderId'] = array_map(
+            $errors['path']['orderId'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -74,5 +75,5 @@ class GetOrderByIdController extends AbstractController
 
                 break;
         }
-    }
+    %}
 }

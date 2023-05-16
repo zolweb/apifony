@@ -21,7 +21,7 @@ class {{ operation.controllerClassName }} extends AbstractController
 {%~ if operation.allSortedParameters(['path']) %}
         requirements: [
     {%~ for param in operation.allSortedParameters(['path']) %}
-            '{{ param.variableName }}' => '{{ param.schema.type.routeRequirementPattern|e('phpSingleQuotedString') }}',
+            '{{ param.name }}' => '{{ param.schema.type.routeRequirementPattern|e('phpSingleQuotedString') }}',
     {%~ endfor %}
         ],
 {%~ endif %}
@@ -34,9 +34,12 @@ class {{ operation.controllerClassName }} extends AbstractController
         ValidatorInterface $validator,
         {{ operation.handlerInterfaceName }} $handler,
 {%~ for param in operation.allSortedParameters(['path']) %}
-        {{ param.schema.type.methodParameterType }} ${{ param.variableName }},
+        {{ param.schema.type.methodParameterType }} ${{ param.name }},
 {%~ endfor %}
     ): Response {
+    {%~ for param in operation.allSortedParameters(['path']) %}
+        ${{ param.variableName }} = ${{ param.name }};
+    {%~ endfor %}
 {%~ for param in operation.allSortedParameters(['query', 'header', 'cookie']) %}
         ${{ param.variableName }} = {{ param.schema.type.stringToTypeCastFunction }}($request->{{ param.requestCollection }}->get('{{ param.name|e('phpSingleQuotedString') }}'{% if param.schema.default %}, {{ param.schema.type.methodParameterDefault}}{% endif %}));
 {%~ endfor %}
@@ -51,11 +54,16 @@ class {{ operation.controllerClassName }} extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['{{ param.in }}']['{{ param.variableName }}'] = array_map(
+            $errors['{{ param.in }}']['{{ param.name }}'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
+    {%~ if param.required and param.in in ['query', 'header', 'cookie'] %}
+        if (!$request->{{ param.requestCollection }}->has('{{ param.name|e('phpSingleQuotedString') }}')) {
+            $errors['{{ param.in }}']['{{ param.name }}'][] = 'Parameter {{ param.name }} in {{ param.in }} is required.';
+        }
+    {%~ endif %}
 {%~ endfor %}
 {%~ if operation.requestBody %}
         switch ($contentType = $request->headers->get('content-type', 'unspecified')) {
@@ -130,6 +138,6 @@ class {{ operation.controllerClassName }} extends AbstractController
                 break;
 {%~ endfor %}
         }
-    }
+    %}
 }
 {% endautoescape %}

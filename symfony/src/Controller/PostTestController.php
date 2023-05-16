@@ -18,10 +18,10 @@ class PostTestController extends AbstractController
     #[Route(
         path: '/test/{p1}/{p2}/{p3}/{p4}',
         requirements: [
-            'pP1' => '[a-z]{3}',
-            'pP2' => '-?(0|[1-9]\\d*)',
-            'pP3' => '-?(0|[1-9]\\d*)(\\.\\d+)?([eE][+-]?\\d+)?',
-            'pP4' => 'true|false',
+            'p1' => '[a-z]{3}',
+            'p2' => '-?(0|[1-9]\\d*)',
+            'p3' => '-?(0|[1-9]\\d*)(\\.\\d+)?([eE][+-]?\\d+)?',
+            'p4' => 'true|false',
         ],
         methods: ['post'],
         priority: 0,
@@ -31,11 +31,15 @@ class PostTestController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         PostTestHandlerInterface $handler,
-        string $pP1,
-        int $pP2,
-        float $pP3,
-        bool $pP4,
+        string $p1,
+        int $p2,
+        float $p3,
+        bool $p4,
     ): Response {
+        $pP1 = $p1;
+        $pP2 = $p2;
+        $pP3 = $p3;
+        $pP4 = $p4;
         $cC1 = strval($request->cookies->get('c1', 'abc'));
         $cC2 = intval($request->cookies->get('c2', 1));
         $cC3 = floatval($request->cookies->get('c3', 0.1));
@@ -64,10 +68,13 @@ class PostTestController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['cookie']['cC1'] = array_map(
+            $errors['cookie']['c1'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
+        }
+        if (!$request->cookies->has('c1')) {
+            $errors['cookie']['c1'][] = 'Parameter c1 in cookie is required.';
         }
         $violations = $validator->validate(
             $cC2,
@@ -84,10 +91,13 @@ class PostTestController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['cookie']['cC2'] = array_map(
+            $errors['cookie']['c2'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
+        }
+        if (!$request->cookies->has('c2')) {
+            $errors['cookie']['c2'][] = 'Parameter c2 in cookie is required.';
         }
         $violations = $validator->validate(
             $cC3,
@@ -104,10 +114,13 @@ class PostTestController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['cookie']['cC3'] = array_map(
+            $errors['cookie']['c3'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
+        }
+        if (!$request->cookies->has('c3')) {
+            $errors['cookie']['c3'][] = 'Parameter c3 in cookie is required.';
         }
         $violations = $validator->validate(
             $cC4,
@@ -116,10 +129,13 @@ class PostTestController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['cookie']['cC4'] = array_map(
+            $errors['cookie']['c4'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
+        }
+        if (!$request->cookies->has('c4')) {
+            $errors['cookie']['c4'][] = 'Parameter c4 in cookie is required.';
         }
         $violations = $validator->validate(
             $hH1,
@@ -136,10 +152,13 @@ class PostTestController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['header']['hH1'] = array_map(
+            $errors['header']['h1'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
+        }
+        if (!$request->headers->has('h1')) {
+            $errors['header']['h1'][] = 'Parameter h1 in header is required.';
         }
         $violations = $validator->validate(
             $hH2,
@@ -156,10 +175,13 @@ class PostTestController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['header']['hH2'] = array_map(
+            $errors['header']['h2'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
+        }
+        if (!$request->headers->has('h2')) {
+            $errors['header']['h2'][] = 'Parameter h2 in header is required.';
         }
         $violations = $validator->validate(
             $hH3,
@@ -176,10 +198,13 @@ class PostTestController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['header']['hH3'] = array_map(
+            $errors['header']['h3'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
+        }
+        if (!$request->headers->has('h3')) {
+            $errors['header']['h3'][] = 'Parameter h3 in header is required.';
         }
         $violations = $validator->validate(
             $hH4,
@@ -190,10 +215,13 @@ class PostTestController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['header']['hH4'] = array_map(
+            $errors['header']['h4'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
+        }
+        if (!$request->headers->has('h4')) {
+            $errors['header']['h4'][] = 'Parameter h4 in header is required.';
         }
         $violations = $validator->validate(
             $pP1,
@@ -210,7 +238,7 @@ class PostTestController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['pP1'] = array_map(
+            $errors['path']['p1'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -230,7 +258,7 @@ class PostTestController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['pP2'] = array_map(
+            $errors['path']['p2'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -251,7 +279,7 @@ class PostTestController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['pP3'] = array_map(
+            $errors['path']['p3'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -266,7 +294,7 @@ class PostTestController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['pP4'] = array_map(
+            $errors['path']['p4'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -286,10 +314,13 @@ class PostTestController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['query']['qQ1'] = array_map(
+            $errors['query']['q1'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
+        }
+        if (!$request->query->has('q1')) {
+            $errors['query']['q1'][] = 'Parameter q1 in query is required.';
         }
         $violations = $validator->validate(
             $qQ2,
@@ -306,10 +337,13 @@ class PostTestController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['query']['qQ2'] = array_map(
+            $errors['query']['q2'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
+        }
+        if (!$request->query->has('q2')) {
+            $errors['query']['q2'][] = 'Parameter q2 in query is required.';
         }
         $violations = $validator->validate(
             $qQ3,
@@ -326,10 +360,13 @@ class PostTestController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['query']['qQ3'] = array_map(
+            $errors['query']['q3'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
+        }
+        if (!$request->query->has('q3')) {
+            $errors['query']['q3'][] = 'Parameter q3 in query is required.';
         }
         $violations = $validator->validate(
             $qQ4,
@@ -338,10 +375,13 @@ class PostTestController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['query']['qQ4'] = array_map(
+            $errors['query']['q4'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
+        }
+        if (!$request->query->has('q4')) {
+            $errors['query']['q4'][] = 'Parameter q4 in query is required.';
         }
         switch ($contentType = $request->headers->get('content-type', 'unspecified')) {
             case 'application/json':
@@ -494,5 +534,5 @@ class PostTestController extends AbstractController
 
                 break;
         }
-    }
+    %}
 }

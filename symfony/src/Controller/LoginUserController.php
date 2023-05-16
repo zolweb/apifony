@@ -35,7 +35,7 @@ class LoginUserController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['query']['qPassword'] = array_map(
+            $errors['query']['password'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -46,7 +46,7 @@ class LoginUserController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['query']['qUsername'] = array_map(
+            $errors['query']['username'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -83,5 +83,5 @@ class LoginUserController extends AbstractController
 
                 break;
         }
-    }
+    %}
 }

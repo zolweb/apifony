@@ -102,5 +102,5 @@ class CreateUserController extends AbstractController
 
                 break;
         }
-    }
+    %}
 }

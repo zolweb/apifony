@@ -39,7 +39,7 @@ class FindPetsByStatusController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['query']['qStatus'] = array_map(
+            $errors['query']['status'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -75,5 +75,5 @@ class FindPetsByStatusController extends AbstractController
 
                 break;
         }
-    }
+    %}
 }

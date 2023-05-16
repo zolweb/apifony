@@ -18,7 +18,7 @@ class DeleteUserController extends AbstractController
     #[Route(
         path: '/user/{username}',
         requirements: [
-            'pUsername' => '[^:/?#[]@!$&\\'()*+,;=]+',
+            'username' => '[^:/?#[]@!$&\\'()*+,;=]+',
         ],
         methods: ['delete'],
         priority: 0,
@@ -28,8 +28,9 @@ class DeleteUserController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         DeleteUserHandlerInterface $handler,
-        string $pUsername,
+        string $username,
     ): Response {
+        $pUsername = $username;
         $errors = [];
         $violations = $validator->validate(
             $pUsername,
@@ -37,7 +38,7 @@ class DeleteUserController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['pUsername'] = array_map(
+            $errors['path']['username'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -67,5 +68,5 @@ class DeleteUserController extends AbstractController
 
                 break;
         }
-    }
+    %}
 }

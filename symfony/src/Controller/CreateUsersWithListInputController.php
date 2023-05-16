@@ -102,5 +102,5 @@ class CreateUsersWithListInputController extends AbstractController
 
                 break;
         }
-    }
+    %}
 }

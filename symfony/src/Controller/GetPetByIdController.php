@@ -18,7 +18,7 @@ class GetPetByIdController extends AbstractController
     #[Route(
         path: '/pet/{petId}',
         requirements: [
-            'pPetId' => '-?(0|[1-9]\\d*)',
+            'petId' => '-?(0|[1-9]\\d*)',
         ],
         methods: ['get'],
         priority: 0,
@@ -28,8 +28,9 @@ class GetPetByIdController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         GetPetByIdHandlerInterface $handler,
-        int $pPetId,
+        int $petId,
     ): Response {
+        $pPetId = $petId;
         $errors = [];
         $violations = $validator->validate(
             $pPetId,
@@ -38,7 +39,7 @@ class GetPetByIdController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['pPetId'] = array_map(
+            $errors['path']['petId'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -74,5 +75,5 @@ class GetPetByIdController extends AbstractController
 
                 break;
         }
-    }
+    %}
 }

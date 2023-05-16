@@ -18,7 +18,7 @@ class GetUserByNameController extends AbstractController
     #[Route(
         path: '/user/{username}',
         requirements: [
-            'pUsername' => '[^:/?#[]@!$&\\'()*+,;=]+',
+            'username' => '[^:/?#[]@!$&\\'()*+,;=]+',
         ],
         methods: ['get'],
         priority: 0,
@@ -28,8 +28,9 @@ class GetUserByNameController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         GetUserByNameHandlerInterface $handler,
-        string $pUsername,
+        string $username,
     ): Response {
+        $pUsername = $username;
         $errors = [];
         $violations = $validator->validate(
             $pUsername,
@@ -37,7 +38,7 @@ class GetUserByNameController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['pUsername'] = array_map(
+            $errors['path']['username'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -73,5 +74,5 @@ class GetUserByNameController extends AbstractController
 
                 break;
         }
-    }
+    %}
 }

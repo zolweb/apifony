@@ -5,8 +5,9 @@ namespace App\Command;
 class Parameter
 {
     public readonly string $className;
-    public readonly string $in;
     public readonly string $name;
+    public readonly string $in;
+    public readonly bool $required;
     public readonly Schema $schema;
 
     /**
@@ -31,8 +32,9 @@ class Parameter
         }
 
         $parameter->className = $className;
-        $parameter->in = $data['in'];
         $parameter->name = $data['name'];
+        $parameter->in = $data['in'];
+        $parameter->required = $data['required'] ?? false;
         $parameter->schema = Schema::build("{$className}Schema", $components, $data['schema']);
 
         return $parameter;

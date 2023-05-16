@@ -78,5 +78,5 @@ class AddPetController extends AbstractController
 
                 break;
         }
-    }
+    %}
 }

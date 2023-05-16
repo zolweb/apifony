@@ -78,5 +78,5 @@ class UpdatePetController extends AbstractController
 
                 break;
         }
-    }
+    %}
 }

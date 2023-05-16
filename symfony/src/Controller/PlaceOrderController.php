@@ -102,5 +102,5 @@ class PlaceOrderController extends AbstractController
 
                 break;
         }
-    }
+    %}
 }

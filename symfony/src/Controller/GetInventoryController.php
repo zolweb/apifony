@@ -57,5 +57,5 @@ class GetInventoryController extends AbstractController
 
                 break;
         }
-    }
+    %}
 }

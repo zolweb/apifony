@@ -18,7 +18,7 @@ class UpdatePetWithFormController extends AbstractController
     #[Route(
         path: '/pet/{petId}',
         requirements: [
-            'pPetId' => '-?(0|[1-9]\\d*)',
+            'petId' => '-?(0|[1-9]\\d*)',
         ],
         methods: ['post'],
         priority: 0,
@@ -28,8 +28,9 @@ class UpdatePetWithFormController extends AbstractController
         SerializerInterface $serializer,
         ValidatorInterface $validator,
         UpdatePetWithFormHandlerInterface $handler,
-        int $pPetId,
+        int $petId,
     ): Response {
+        $pPetId = $petId;
         $qName = strval($request->query->get('name'));
         $qStatus = strval($request->query->get('status'));
         $errors = [];
@@ -39,7 +40,7 @@ class UpdatePetWithFormController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['query']['qName'] = array_map(
+            $errors['query']['name'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -51,7 +52,7 @@ class UpdatePetWithFormController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['path']['pPetId'] = array_map(
+            $errors['path']['petId'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -62,7 +63,7 @@ class UpdatePetWithFormController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['query']['qStatus'] = array_map(
+            $errors['query']['status'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -92,5 +93,5 @@ class UpdatePetWithFormController extends AbstractController
 
                 break;
         }
-    }
+    %}
 }

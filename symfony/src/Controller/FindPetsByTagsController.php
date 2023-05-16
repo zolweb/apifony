@@ -34,7 +34,7 @@ class FindPetsByTagsController extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['query']['qTags'] = array_map(
+            $errors['query']['tags'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
@@ -70,5 +70,5 @@ class FindPetsByTagsController extends AbstractController
 
                 break;
         }
-    }
+    %}
 }
