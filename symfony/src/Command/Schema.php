@@ -104,12 +104,12 @@ class Schema
         ) : null;
 
         $schema->type = match ($type) {
-            'string' => new StringType(),
-            'integer' => new IntegerType(),
-            'number' => new NumberType(),
-            'boolean' => new BooleanType(),
-            'array' => new ArrayType(),
-            'object' => new ObjectType(),
+            'string' => new StringType($schema),
+            'integer' => new IntegerType($schema),
+            'number' => new NumberType($schema),
+            'boolean' => new BooleanType($schema),
+            'array' => new ArrayType($schema),
+            'object' => new ObjectType($schema),
         };
 
         return $schema;

@@ -4,37 +4,42 @@ namespace App\Command;
 
 class IntegerType implements Type
 {
-    public function getPhpDocParameterAnnotationType(Schema $schema): string
+    public function __construct(
+        private readonly Schema $schema,
+    ) {
+    }
+
+    public function getPhpDocParameterAnnotationType(): string
     {
         return 'int';
     }
 
-    public function getMethodParameterType(Schema $schema): string
+    public function getMethodParameterType(): string
     {
         return 'int';
     }
 
-    public function getMethodParameterDefault(Schema $schema): ?string
+    public function getMethodParameterDefault(): ?string
     {
-        return $schema->default !== null ? (string)$schema->default : null;
+        return $this->schema->default !== null ? (string)$this->schema->default : null;
     }
 
-    public function getRouteRequirementPattern(Schema $schema): string
+    public function getRouteRequirementPattern(): string
     {
         return '-?(0|[1-9]\d*)';
     }
 
-    public function getStringToTypeCastFunction(Schema $schema): string
+    public function getStringToTypeCastFunction(): string
     {
         return 'intval';
     }
 
-    public function getContentInitializationFromRequest(Schema $schema): string
+    public function getContentInitializationFromRequest(): string
     {
         return '$content = json_decode($request->getContent(), true);';
     }
 
-    public function getContentValidationViolationsInitialization(Schema $schema): string
+    public function getContentValidationViolationsInitialization(): string
     {
         return sprintf(
             "\$violations = \$validator->validate(\$content, [\n%s\n]);",
@@ -42,54 +47,54 @@ class IntegerType implements Type
                 '',
                 array_map(
                     static fn (Constraint $constraint) => $constraint->getInstantiation(5),
-                    $this->getConstraints($schema),
+                    $this->getConstraints(),
                 ),
             ),
         );
     }
 
-    public function getNormalizedType(Schema $schema): string
+    public function getNormalizedType(): string
     {
         return 'Integer';
     }
 
-    public function getContentTypeChecking(Schema $schema): string
+    public function getContentTypeChecking(): string
     {
         return 'is_int($content)';
     }
 
-    public function getConstraints(Schema $schema): array
+    public function getConstraints(): array
     {
         $constraints = [];
 
-        if ($schema->multipleOf !== null) {
-            $constraints[] = new Constraint('Assert\DivisibleBy', ['value' => $schema->multipleOf]);
+        if ($this->schema->multipleOf !== null) {
+            $constraints[] = new Constraint('Assert\DivisibleBy', ['value' => $this->schema->multipleOf]);
         }
 
-        if ($schema->minimum !== null) {
-            $constraints[] = new Constraint('Assert\GreaterThanOrEqual', ['value' => $schema->minimum]);
+        if ($this->schema->minimum !== null) {
+            $constraints[] = new Constraint('Assert\GreaterThanOrEqual', ['value' => $this->schema->minimum]);
         }
 
-        if ($schema->maximum !== null) {
-            $constraints[] = new Constraint('Assert\LessThanOrEqual', ['value' => $schema->maximum]);
+        if ($this->schema->maximum !== null) {
+            $constraints[] = new Constraint('Assert\LessThanOrEqual', ['value' => $this->schema->maximum]);
         }
 
-        if ($schema->exclusiveMinimum !== null) {
-            $constraints[] = new Constraint('Assert\GreaterThan', ['value' => $schema->exclusiveMinimum]);
+        if ($this->schema->exclusiveMinimum !== null) {
+            $constraints[] = new Constraint('Assert\GreaterThan', ['value' => $this->schema->exclusiveMinimum]);
         }
 
-        if ($schema->exclusiveMaximum !== null) {
-            $constraints[] = new Constraint('Assert\LessThan', ['value' => $schema->exclusiveMaximum]);
+        if ($this->this->schema->exclusiveMaximum !== null) {
+            $constraints[] = new Constraint('Assert\LessThan', ['value' => $this->schema->exclusiveMaximum]);
         }
 
-        if ($schema->enum !== null) {
-            $constraints[] = new Constraint('Assert\Choice', ['choices' => $schema->enum]);
+        if ($this->schema->enum !== null) {
+            $constraints[] = new Constraint('Assert\Choice', ['choices' => $this->schema->enum]);
         }
 
         return $constraints;
     }
 
-    public function getFiles(Schema $schema): array
+    public function getFiles(): array
     {
         return [];
     }

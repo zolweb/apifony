@@ -4,37 +4,42 @@ namespace App\Command;
 
 class BooleanType implements Type
 {
-    public function getPhpDocParameterAnnotationType(Schema $schema): string
+    public function __construct(
+        private readonly Schema $schema,
+    ) {
+    }
+
+    public function getPhpDocParameterAnnotationType(): string
     {
         return 'bool';
     }
 
-    public function getMethodParameterType(Schema $schema): string
+    public function getMethodParameterType(): string
     {
         return 'bool';
     }
 
-    public function getMethodParameterDefault(Schema $schema): ?string
+    public function getMethodParameterDefault(): ?string
     {
-        return [true => 'true', false => 'false', null => null][$schema->default];
+        return [true => 'true', false => 'false', null => null][$this->schema->default];
     }
 
-    public function getRouteRequirementPattern(Schema $schema): string
+    public function getRouteRequirementPattern(): string
     {
         return 'true|false';
     }
 
-    public function getStringToTypeCastFunction(Schema $schema): string
+    public function getStringToTypeCastFunction(): string
     {
         return 'boolval';
     }
 
-    public function getContentInitializationFromRequest(Schema $schema): string
+    public function getContentInitializationFromRequest(): string
     {
         return '$content = json_decode($request->getContent(), true);';
     }
 
-    public function getContentValidationViolationsInitialization(Schema $schema): string
+    public function getContentValidationViolationsInitialization(): string
     {
         return sprintf(
             "\$violations = \$validator->validate(\$content, [\n%s\n]);",
@@ -42,34 +47,34 @@ class BooleanType implements Type
                 '',
                 array_map(
                     static fn (Constraint $constraint) => $constraint->getInstantiation(5),
-                    $this->getConstraints($schema),
+                    $this->getConstraints(),
                 ),
             ),
         );
     }
 
-    public function getNormalizedType(Schema $schema): string
+    public function getNormalizedType(): string
     {
         return 'Boolean';
     }
 
-    public function getContentTypeChecking(Schema $schema): string
+    public function getContentTypeChecking(): string
     {
         return 'is_bool($content)';
     }
 
-    public function getConstraints(Schema $schema): array
+    public function getConstraints(): array
     {
         $constraints = [];
 
-        if ($schema->enum !== null) {
-            $constraints[] = new Constraint('Assert\Choice', ['choices' => $schema->enum]);
+        if ($this->schema->enum !== null) {
+            $constraints[] = new Constraint('Assert\Choice', ['choices' => $this->schema->enum]);
         }
 
         return $constraints;
     }
 
-    public function getFiles(Schema $schema): array
+    public function getFiles(): array
     {
         return [];
     }

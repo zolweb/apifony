@@ -4,6 +4,11 @@ namespace App\Command;
 
 class ObjectType implements Type
 {
+    public function __construct(
+        private readonly Schema $schema,
+    ) {
+    }
+
     public function getArrayProperties(): array
     {
         return array_filter(
@@ -12,17 +17,17 @@ class ObjectType implements Type
         );
     }
 
-    public function getPhpDocParameterAnnotationType(Schema $schema): string
+    public function getPhpDocParameterAnnotationType(): string
     {
-        return $schema->className;
+        return $this->schema->className;
     }
 
-    public function getMethodParameterType(Schema $schema): string
+    public function getMethodParameterType(): string
     {
-        return $schema->className;
+        return $this->schema->className;
     }
 
-    public function getMethodParameterDefault(Schema $schema): ?string
+    public function getMethodParameterDefault(): ?string
     {
         return null;
     }
@@ -30,7 +35,7 @@ class ObjectType implements Type
     /**
      * @throws Exception
      */
-    public function getRouteRequirementPattern(Schema $schema): string
+    public function getRouteRequirementPattern(): string
     {
         throw new Exception('Object path parameters are not supported.');
     }
@@ -38,45 +43,45 @@ class ObjectType implements Type
     /**
      * @throws Exception
      */
-    public function getStringToTypeCastFunction(Schema $schema): string
+    public function getStringToTypeCastFunction(): string
     {
         throw new Exception('Object parameters are not supported.');
     }
 
-    public function getContentInitializationFromRequest(Schema $schema): string
+    public function getContentInitializationFromRequest(): string
     {
-        return "\$content = \$serializer->deserialize(\$request->getContent(), '{$schema->className}', JsonEncoder::FORMAT);";
+        return "\$content = \$serializer->deserialize(\$request->getContent(), '{$this->schema->className}', JsonEncoder::FORMAT);";
     }
 
-    public function getContentValidationViolationsInitialization(Schema $schema): string
+    public function getContentValidationViolationsInitialization(): string
     {
         return '$violations = $validator->validate($content);';
     }
 
-    public function getNormalizedType(Schema $schema): string
+    public function getNormalizedType(): string
     {
-        return $schema->className;
+        return $this->schema->className;
     }
 
-    public function getContentTypeChecking(Schema $schema): string
+    public function getContentTypeChecking(): string
     {
-        return "\$content instanceOf {$schema->className}";
+        return "\$content instanceOf {$this->schema->className}";
     }
 
-    public function getConstraints(Schema $schema): array
+    public function getConstraints(): array
     {
         return [new Constraint('Assert\Valid', [])];
     }
 
-    public function getFiles(Schema $schema): array
+    public function getFiles(): array
     {
         static $schemas = [];
 
         return array_merge(
-            [$schema->className => ['template' => 'schema.php.twig', 'params' => ['schema' => $this]]],
+            [$this->schema->className => ['template' => 'schema.php.twig', 'params' => ['schema' => $this]]],
             ...array_map(
                 static fn (Schema $property) => $property->getFiles(),
-                $schema->properties,
+                $this->schema->properties,
             ),
         );
     }

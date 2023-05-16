@@ -4,33 +4,33 @@ namespace App\Command;
 
 interface Type
 {
-    public function getPhpDocParameterAnnotationType(Schema $schema): string;
+    public function getPhpDocParameterAnnotationType(): string;
 
-    public function getMethodParameterType(Schema $schema): string;
+    public function getMethodParameterType(): string;
 
-    public function getMethodParameterDefault(Schema $schema): ?string;
+    public function getMethodParameterDefault(): ?string;
 
-    public function getRouteRequirementPattern(Schema $schema): string;
+    public function getRouteRequirementPattern(): string;
 
-    public function getStringToTypeCastFunction(Schema $schema): string;
+    public function getStringToTypeCastFunction(): string;
 
-    public function getContentInitializationFromRequest(Schema $schema): string;
+    public function getContentInitializationFromRequest(): string;
 
-    public function getContentValidationViolationsInitialization(Schema $schema): string;
+    public function getContentValidationViolationsInitialization(): string;
 
-    public function getNormalizedType(Schema $schema): string;
+    public function getNormalizedType(): string;
 
-    public function getContentTypeChecking(Schema $schema): string;
+    public function getContentTypeChecking(): string;
 
     /**
      * @return array<Constraint>
      */
-    public function getConstraints(Schema $schema): array;
+    public function getConstraints(): array;
 
     /**
      * @return array<string, array{template: string, params: array<string, mixed>}>
      */
-    public function getFiles(Schema $schema): array;
+    public function getFiles(): array;
 
     public function __toString(): string;
 }

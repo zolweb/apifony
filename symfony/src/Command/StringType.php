@@ -4,39 +4,44 @@ namespace App\Command;
 
 class StringType implements Type
 {
-    public function getPhpDocParameterAnnotationType(Schema $schema): string
+    public function __construct(
+        private readonly Schema $schema,
+    ) {
+    }
+
+    public function getPhpDocParameterAnnotationType(): string
     {
         return 'string';
     }
 
-    public function getMethodParameterType(Schema $schema): string
+    public function getMethodParameterType(): string
     {
         return 'string';
     }
 
-    public function getMethodParameterDefault(Schema $schema): ?string
+    public function getMethodParameterDefault(): ?string
     {
-        assert(is_string($schema->default));
+        assert(is_string($this->schema->default));
 
-        return sprintf('\'%s\'', str_replace('\'', '\\\'', $schema->default));
+        return sprintf('\'%s\'', str_replace('\'', '\\\'', $this->schema->default));
     }
 
-    public function getRouteRequirementPattern(Schema $schema): string
+    public function getRouteRequirementPattern(): string
     {
-        return $schema->pattern !== null ? $schema->pattern : '[^:/?#[]@!$&\'()*+,;=]+';
+        return $this->schema->pattern !== null ? $this->schema->pattern : '[^:/?#[]@!$&\'()*+,;=]+';
     }
 
-    public function getStringToTypeCastFunction(Schema $schema): string
+    public function getStringToTypeCastFunction(): string
     {
         return 'strval';
     }
 
-    public function getContentInitializationFromRequest(Schema $schema): string
+    public function getContentInitializationFromRequest(): string
     {
         return '$content = json_decode($request->getContent(), true);';
     }
 
-    public function getContentValidationViolationsInitialization(Schema $schema): string
+    public function getContentValidationViolationsInitialization(): string
     {
         return sprintf(
             "\$violations = \$validator->validate(\$content, [\n%s\n]);",
@@ -44,46 +49,46 @@ class StringType implements Type
                 '',
                 array_map(
                     static fn (Constraint $constraint) => $constraint->getInstantiation(5),
-                    $this->getConstraints($schema),
+                    $this->getConstraints(),
                 ),
             ),
         );
     }
 
-    public function getNormalizedType(Schema $schema): string
+    public function getNormalizedType(): string
     {
         return 'String';
     }
 
-    public function getContentTypeChecking(Schema $schema): string
+    public function getContentTypeChecking(): string
     {
         return 'is_string($content)';
     }
 
-    public function getConstraints(Schema $schema): array
+    public function getConstraints(): array
     {
         $constraints = [];
 
-        if ($schema->pattern !== null) {
-            $constraints[] = new Constraint('Assert\Regex', ['pattern' => $schema->pattern]);
+        if ($this->schema->pattern !== null) {
+            $constraints[] = new Constraint('Assert\Regex', ['pattern' => $this->schema->pattern]);
         }
 
-        if ($schema->minLength !== null) {
-            $constraints[] = new Constraint('Assert\Length', ['min' => $schema->minLength]);
+        if ($this->schema->minLength !== null) {
+            $constraints[] = new Constraint('Assert\Length', ['min' => $this->schema->minLength]);
         }
 
-        if ($schema->maxLength !== null) {
-            $constraints[] = new Constraint('Assert\Length', ['max' => $schema->maxLength]);
+        if ($this->schema->maxLength !== null) {
+            $constraints[] = new Constraint('Assert\Length', ['max' => $this->schema->maxLength]);
         }
 
-        if ($schema->enum !== null) {
-            $constraints[] = new Constraint('Assert\Choice', ['choices' => $schema->enum]);
+        if ($this->schema->enum !== null) {
+            $constraints[] = new Constraint('Assert\Choice', ['choices' => $this->schema->enum]);
         }
 
         return $constraints;
     }
 
-    public function getFiles(Schema $schema): array
+    public function getFiles(): array
     {
         return [];
     }
