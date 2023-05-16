@@ -145,15 +145,4 @@ class Operation
             $this->requestBody?->getFiles() ?? [],
         );
     }
-
-    public function resolveReference(string $reference): array
-    {
-        [, , $type, $name] = explode('/', $reference);
-
-        return [
-            'type' => $type,
-            'name' => $name,
-            'data' => $this->componentsData[$type][$name],
-        ];
-    }
 }
