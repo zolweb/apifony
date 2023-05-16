@@ -17,11 +17,11 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class {{ operation.controllerClassName }} extends AbstractController
 {
     #[Route(
-        path: '{{ operation.route }}',
+        path: '{{ operation.pathItem.route }}',
 {%~ if operation.allSortedParameters(['path']) %}
         requirements: [
     {%~ for param in operation.allSortedParameters(['path']) %}
-            {{ param.routeRequirement }}
+            '{{ param.variableName }}' => '{{ param.schema.type.routeRequirementPattern|e('phpSingleQuotedString') }}'
     {%~ endfor %}
         ],
 {%~ endif %}
@@ -34,7 +34,7 @@ class {{ operation.controllerClassName }} extends AbstractController
         ValidatorInterface $validator,
         {{ operation.handlerInterfaceName }} $handler,
 {%~ for param in operation.allSortedParameters(['path']) %}
-        {{ param.methodParameter }},
+        {{ param.schema.type.methodParameterType }} ${{ param.variableName }},
 {%~ endfor %}
     ): Response {
 {%~ for param in operation.allSortedParameters(['query', 'header', 'cookie']) %}
@@ -131,5 +131,5 @@ class {{ operation.controllerClassName }} extends AbstractController
 {%~ endfor %}
         }
     }
-}
+}}
 {% endautoescape %}

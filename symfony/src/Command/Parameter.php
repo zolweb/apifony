@@ -42,12 +42,7 @@ class Parameter
     {
     }
 
-    public function hasDefault(): bool
-    {
-        return $this->schema->getMethodParameterDefault() !== null;
-    }
-
-    public function toVariableName(): string
+    public function getVariableName(): string
     {
         return sprintf(
             '%s%s',
@@ -56,21 +51,11 @@ class Parameter
         );
     }
 
-    public function getRouteRequirement(): string
-    {
-        return $this->schema->getRouteRequirement();
-    }
-
-    public function getMethodParameter(): string
-    {
-        return $this->schema->getMethodParameter();
-    }
-
     public function getInitializationFromRequest(): string
     {
         return sprintf(
             '$%s = %s($request->%s->get(\'%s\'%s));',
-            $this->toVariableName(),
+            $this->getVariableName(),
             $this->schema->getStringToTypeCastFunction(),
             ['query' => 'query', 'header' => 'headers', 'cookie' => 'cookies'][$this->in],
             $this->name,
@@ -80,11 +65,6 @@ class Parameter
                     $this->schema->getMethodParameterDefault(),
                 ) : '',
         );
-    }
-
-    public function getConstraints(): array
-    {
-        return $this->schema->getConstraints();
     }
 
     public function addFiles(array& $files): void

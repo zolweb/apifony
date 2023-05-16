@@ -56,11 +56,6 @@ class Operation
     {
     }
 
-    public function getRoute(): string
-    {
-        return $this->pathItem->route;
-    }
-
     public function getControllerClassName(): string
     {
         return "{$this->getNormalizedName()}Controller";
@@ -131,7 +126,8 @@ class Operation
         usort(
             $params,
             static fn (Parameter $param1, Parameter $param2) =>
-                ((int)$param1->hasDefault() - (int)$param2->hasDefault()) ?: strcmp($param1->name, $param2->name),
+                ((int)($param1->schema->default !== null) - (int)($param2->schema->default !== null)) ?:
+                    strcmp($param1->name, $param2->name),
         );
 
         return $params;

@@ -52,6 +52,9 @@ class PathItem
 
     public function addFiles(array& $files): void
     {
+        foreach ($this->parameters as $parameter) {
+            $parameter->addFiles($files);
+        }
         foreach ($this->operations as $operation) {
             $operation->addFiles($files);
         }

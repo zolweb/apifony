@@ -144,7 +144,7 @@ class Schema
         return sprintf(
             '@param %s%s $%s',
             $this->nullable ? '' : '?',
-            $this->getPhpDocParameterAnnotationType(),
+            $this->type->getPhpDocParameterAnnotationType(),
             $variableName,
         );
     }
@@ -154,62 +154,13 @@ class Schema
         return sprintf(
             '%s%s $%s%s',
             $this->nullable ? '' : '?',
-            $this->getMethodParameterType(),
+            $this->type->getMethodParameterType(),
             $variableName,
-            $this->getMethodParameterDefault() !== null ? sprintf(
+            $this->type->getMethodParameterDefault() !== null ? sprintf(
                 ' = %s',
-                $this->getMethodParameterDefault(),
+                $this->type->getMethodParameterDefault(),
             ) : '',
         );
-    }
-
-    public function getPhpDocParameterAnnotationType(): string
-    {
-        return $this->type->getPhpDocParameterAnnotationType();
-    }
-
-    public function getMethodParameterType(): string
-    {
-        return $this->type->getMethodParameterType();
-    }
-
-    public function getMethodParameterDefault(): ?string
-    {
-        return $this->type->getMethodParameterDefault();
-    }
-
-    public function getRouteRequirement(string $parameterName): string
-    {
-        return sprintf(
-            '\'%s\' => \'%s\',',
-            $parameterName,
-            str_replace('\'', '\\\'', $this->type->getRouteRequirementPattern()),
-        );
-    }
-
-    public function getStringToTypeCastFunction(): string
-    {
-        return $this->type->getStringToTypeCastFunction();
-    }
-
-    public function getContentInitializationFromRequest(): string
-    {
-        return $this->type->getContentInitializationFromRequest();
-    }
-
-    public function getContentValidationViolationsInitialization(): string
-    {
-        return $this->type->getContentValidationViolationsInitialization();
-    }
-
-    public function getNormalizedType(): string
-    {
-        return $this->type->getNormalizedType();
-    }
-
-    public function getContentTypeChecking(): string
-    {
-        return $this->type->getContentTypeChecking();
     }
 
     /**
