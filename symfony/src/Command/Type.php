@@ -27,6 +27,9 @@ interface Type
      */
     public function getConstraints(): array;
 
+    /**
+     * @param array<string, array{template: string, params: array<string, mixed>}> $files
+     */
     public function addFiles(array& $files): void;
 
     public function __toString(): string;
