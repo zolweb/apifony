@@ -96,9 +96,9 @@ class ArrayType implements Type
         return $constraints;
     }
 
-    public function getFiles(): array
+    public function addFiles(array& $files): void
     {
-        return $this->schema->items->getFiles();
+        $this->schema->items->addFiles($files);
     }
 
     public function __toString(): string

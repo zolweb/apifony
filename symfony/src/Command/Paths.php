@@ -31,13 +31,10 @@ class Paths
     {
     }
 
-    public function getFiles(): array
+    public function addFiles(array& $files): void
     {
-        return array_merge(
-            ...array_map(
-                static fn (PathItem $pathItem) => $pathItem->getFiles(),
-                $this->pathItems,
-            ),
-        );
+        foreach ($this->pathItems as $pathItem) {
+            $pathItem->addFiles($files);
+        }
     }
 }

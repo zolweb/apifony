@@ -33,6 +33,10 @@ class OpenApi
 
     public function getFiles(): array
     {
-        return $this->paths?->getFiles() ?? [];
+        $files = [];
+
+        $this->paths->addFiles($files);
+
+        return $files;
     }
 }

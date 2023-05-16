@@ -46,8 +46,8 @@ class MediaType
         return $this->schema->getContentTypeChecking();
     }
 
-    public function getFiles(): array
+    public function addFiles(array& $files): void
     {
-        return $this->schema->getFiles();
+        $this->schema->addFiles($files);
     }
 }

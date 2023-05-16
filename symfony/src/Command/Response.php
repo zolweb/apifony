@@ -65,13 +65,13 @@ class Response
     {
     }
 
-    public function getFiles(): array
+    public function addFiles(array& $files): void
     {
-        return array_merge(
-            ...array_map(
-                static fn (MediaType $mediaType) => $mediaType->getFiles(),
-                $this->mediaTypes,
-            ),
-        );
+        foreach ($this->headers as $header) {
+            $header->addFiles($files);
+        }
+        foreach ($this->mediaTypes as $mediaType) {
+            $mediaType->addFiles($files);
+        }
     }
 }

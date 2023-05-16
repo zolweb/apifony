@@ -41,13 +41,10 @@ class Responses
     {
     }
 
-    public function getFiles(): array
+    public function addFiles(array& $files): void
     {
-        return array_merge(
-            ...array_map(
-                static fn (MediaType $mediaType) => $mediaType->getFiles(),
-                $this->responses,
-            ),
-        );
+        foreach ($this->responses as $response) {
+            $response->addFiles($files);
+        }
     }
 }

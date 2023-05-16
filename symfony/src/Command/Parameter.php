@@ -86,4 +86,9 @@ class Parameter
     {
         return $this->schema->getConstraints();
     }
+
+    public function addFiles(array& $files): void
+    {
+        $this->schema->addFiles($files);
+    }
 }

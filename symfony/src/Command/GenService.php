@@ -19,11 +19,10 @@ class GenService extends AbstractExtension
      * @throws RuntimeError
      * @throws SyntaxError
      * @throws LoaderError
+     * @throws Exception
      */
     public function generate(array $data): void
     {
-        $openApi = OpenApi::build($data)->getFiles();
-        dump($openApi);exit;
         foreach (OpenApi::build($data)->getFiles() as $fileName => $file) {
             file_put_contents(
                 __DIR__."/../Controller/{$fileName}.php",

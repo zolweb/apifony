@@ -50,13 +50,10 @@ class PathItem
     {
     }
 
-    public function getFiles(): array
+    public function addFiles(array& $files): void
     {
-        return array_merge(
-            ...array_map(
-                static fn (Operation $operation) => $operation->getFiles(),
-                $this->operations,
-            ),
-        );
+        foreach ($this->operations as $operation) {
+            $operation->addFiles($files);
+        }
     }
 }

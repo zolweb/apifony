@@ -94,9 +94,8 @@ class NumberType implements Type
         return $constraints;
     }
 
-    public function getFiles(): array
+    public function addFiles(array& $files): void
     {
-        return [];
     }
 
     public function __toString(): string

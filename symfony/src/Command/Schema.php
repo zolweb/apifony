@@ -119,6 +119,26 @@ class Schema
     {
     }
 
+    public function getFormatDefinitionInterfaceName(): string
+    {
+        return "{$this->getNormalizedFormat()}Definition";
+    }
+
+    public function getFormatConstraintClassName(): string
+    {
+        return $this->getNormalizedFormat();
+    }
+
+    public function getFormatValidatorClassName(): string
+    {
+        return "{$this->getNormalizedFormat()}Validator";
+    }
+
+    public function getNormalizedFormat(): string
+    {
+        return u($this->format)->camel()->title();
+    }
+
     public function getPhpDocParameterAnnotation(string $variableName): string
     {
         return sprintf(
@@ -145,17 +165,17 @@ class Schema
 
     public function getPhpDocParameterAnnotationType(): string
     {
-        return $this->type->getPhpDocParameterAnnotationType($this);
+        return $this->type->getPhpDocParameterAnnotationType();
     }
 
     public function getMethodParameterType(): string
     {
-        return $this->type->getMethodParameterType($this);
+        return $this->type->getMethodParameterType();
     }
 
     public function getMethodParameterDefault(): ?string
     {
-        return $this->type->getMethodParameterDefault($this);
+        return $this->type->getMethodParameterDefault();
     }
 
     public function getRouteRequirement(string $parameterName): string
@@ -163,33 +183,33 @@ class Schema
         return sprintf(
             '\'%s\' => \'%s\',',
             $parameterName,
-            str_replace('\'', '\\\'', $this->type->getRouteRequirementPattern($this)),
+            str_replace('\'', '\\\'', $this->type->getRouteRequirementPattern()),
         );
     }
 
     public function getStringToTypeCastFunction(): string
     {
-        return $this->type->getStringToTypeCastFunction($this);
+        return $this->type->getStringToTypeCastFunction();
     }
 
     public function getContentInitializationFromRequest(): string
     {
-        return $this->type->getContentInitializationFromRequest($this);
+        return $this->type->getContentInitializationFromRequest();
     }
 
     public function getContentValidationViolationsInitialization(): string
     {
-        return $this->type->getContentValidationViolationsInitialization($this);
+        return $this->type->getContentValidationViolationsInitialization();
     }
 
     public function getNormalizedType(): string
     {
-        return $this->type->getNormalizedType($this);
+        return $this->type->getNormalizedType();
     }
 
     public function getContentTypeChecking(): string
     {
-        return $this->type->getContentTypeChecking($this);
+        return $this->type->getContentTypeChecking();
     }
 
     /**
@@ -197,7 +217,7 @@ class Schema
      */
     public function getConstraints(): array
     {
-        $constraints = $this->type->getConstraints($this);
+        $constraints = $this->type->getConstraints();
 
         if ($this->nullable) {
             $constraints[] = new Constraint('Assert\NotNull', []);
@@ -210,39 +230,14 @@ class Schema
         return $constraints;
     }
 
-    /**
-     * @return array<string, array{template: string, params: array<string, mixed>}>
-     */
-    public function getFiles(): array
+    public function addFiles(array& $files): void
     {
-        return array_merge(
-            $this->type->getFiles($this),
-            $this->format !== null ?
-                [
-                    $this->getFormatDefinitionInterfaceName() => ['template' => 'format-definition.php.twig', 'params' => ['schema' => $this]],
-                    $this->getFormatConstraintClassName() => ['template' => 'format-constraint.php.twig', 'params' => ['schema' => $this]],
-                    $this->getFormatValidatorClassName() => ['template' => 'format-validator.php.twig', 'params' => ['schema' => $this]],
-                ] : [],
-        );
-    }
+        $this->type->addFiles($files);
 
-    public function getFormatDefinitionInterfaceName(): string
-    {
-        return "{$this->getNormalizedFormat()}Definition";
-    }
-
-    public function getFormatConstraintClassName(): string
-    {
-        return $this->getNormalizedFormat();
-    }
-
-    public function getFormatValidatorClassName(): string
-    {
-        return "{$this->getNormalizedFormat()}Validator";
-    }
-
-    public function getNormalizedFormat(): string
-    {
-        return u($this->format)->camel()->title();
+        if ($this->format !== null && !isset($files[$this->getFormatDefinitionInterfaceName()])) {
+            $files[$this->getFormatDefinitionInterfaceName()] = ['template' => 'format-definition.php.twig', 'params' => ['schema' => $this]];
+            $files[$this->getFormatConstraintClassName()] = ['template' => 'format-constraint.php.twig', 'params' => ['schema' => $this]];
+            $files[$this->getFormatValidatorClassName()] = ['template' => 'format-validator.php.twig', 'params' => ['schema' => $this]];
+        }
     }
 }

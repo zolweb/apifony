@@ -10,6 +10,7 @@ class Operation
     public readonly string $method;
     public readonly string $operationId;
     public readonly int $priority;
+    /** @var array<Parameter> */
     public readonly array $parameters;
     public readonly ?RequestBody $requestBody;
     public readonly ?Responses $responses;
@@ -107,6 +108,9 @@ class Operation
         return $responseBodyTypes;
     }
 
+    /**
+     * @return array<Parameter>
+     */
     public function getAllSortedParameters(array $in = ['path', 'query', 'cookie', 'header']): array
     {
         $pathItemParams = array_combine(
@@ -133,16 +137,18 @@ class Operation
         return $params;
     }
 
-    public function getFiles(): array
+    public function addFiles(array& $files): void
     {
-        return array_merge(
-            [
-                $this->getControllerClassName() =>
-                    ['template' => 'controller.php.twig', 'params' => ['operation' => $this]],
-                $this->getHandlerInterfaceName() =>
-                    ['template' => 'handler.php.twig', 'params' => ['operation' => $this]],
-            ],
-            $this->requestBody?->getFiles() ?? [],
-        );
+        if (!isset($files[$this->getControllerClassName()])) {
+            $files[$this->getControllerClassName()] = ['template' => 'controller.php.twig', 'params' => ['operation' => $this]];
+            $files[$this->getHandlerInterfaceName()] = ['template' => 'handler.php.twig', 'params' => ['operation' => $this]];
+
+            foreach ($this->parameters as $parameter) {
+                $parameter->addFiles($files);
+            }
+
+            $this->requestBody?->addFiles($files);
+            $this->responses?->addFiles($files);
+        }
     }
 }

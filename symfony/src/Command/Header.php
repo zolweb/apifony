@@ -39,4 +39,9 @@ class Header
     private function __construct()
     {
     }
+
+    public function addFiles(array& $files): void
+    {
+        $this->schema->addFiles($files);
+    }
 }
