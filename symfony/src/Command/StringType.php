@@ -21,9 +21,8 @@ class StringType implements Type
 
     public function getMethodParameterDefault(): ?string
     {
-        assert(is_string($this->schema->default));
-
-        return sprintf('\'%s\'', str_replace('\'', '\\\'', $this->schema->default));
+        return $this->schema->default !== null ?
+            sprintf('\'%s\'', str_replace('\'', '\\\'', $this->schema->default)) : null;
     }
 
     public function getRouteRequirementPattern(): string

@@ -7,6 +7,7 @@ use function Symfony\Component\String\u;
 class Schema
 {
     public readonly string $className;
+    public readonly ?string $name;
     public readonly Type $type;
     public readonly bool $nullable;
     public readonly ?string $format;
@@ -34,7 +35,7 @@ class Schema
      *
      * @throws Exception
      */
-    public static function build(string $className, array& $components, array $data): self
+    public static function build(string $className, array& $components, array $data, ?string $name = null): self
     {
         $schema = new self();
 
@@ -77,6 +78,7 @@ class Schema
         }
 
         $schema->className = $className;
+        $schema->name = $name;
         $schema->nullable = $nullable;
         $schema->format = $data['format'] ?? null;
         $schema->enum = $data['enum'] ?? null;
@@ -99,6 +101,7 @@ class Schema
                 sprintf('%s%s', $className, u($name)->camel()->title()),
                 $components,
                 $data['properties'][$name],
+                $name,
             ),
             array_keys($data['properties']),
         ) : null;
@@ -139,23 +142,23 @@ class Schema
         return u($this->format)->camel()->title();
     }
 
-    public function getPhpDocParameterAnnotation(string $variableName): string
+    public function getPhpDocParameterAnnotation(): string
     {
         return sprintf(
             '@param %s%s $%s',
             $this->nullable ? '' : '?',
             $this->type->getPhpDocParameterAnnotationType(),
-            $variableName,
+            $this->name,
         );
     }
 
-    public function getMethodParameter(string $variableName): string
+    public function getMethodParameter(): string
     {
         return sprintf(
             '%s%s $%s%s',
             $this->nullable ? '' : '?',
             $this->type->getMethodParameterType(),
-            $variableName,
+            $this->name,
             $this->type->getMethodParameterDefault() !== null ? sprintf(
                 ' = %s',
                 $this->type->getMethodParameterDefault(),

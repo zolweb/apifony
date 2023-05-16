@@ -12,8 +12,8 @@ class ObjectType implements Type
     public function getArrayProperties(): array
     {
         return array_filter(
-            $this->properties,
-            static fn (Schema $property) => $property instanceof ArraySchema,
+            $this->schema->properties,
+            static fn (Schema $property) => (string)$property->type === 'array',
         );
     }
 

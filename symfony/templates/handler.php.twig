@@ -6,8 +6,8 @@ namespace App\Controller;
 interface {{ operation.handlerInterfaceName }}
 {
     public function handle(
-{%~ for parameter in operation.allSortedParameters %}
-        {{ parameter.methodParameter }}
+{%~ for param in operation.allSortedParameters %}
+        {{ param.schema.type.methodParameterType }} ${{ param.variableName }},
 {%~ endfor %}
 {%~ if operation.requestBody %}
         {{ operation.requestBody.methodParameterType }} $payload,

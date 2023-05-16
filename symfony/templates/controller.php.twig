@@ -21,7 +21,7 @@ class {{ operation.controllerClassName }} extends AbstractController
 {%~ if operation.allSortedParameters(['path']) %}
         requirements: [
     {%~ for param in operation.allSortedParameters(['path']) %}
-            '{{ param.variableName }}' => '{{ param.schema.type.routeRequirementPattern|e('phpSingleQuotedString') }}'
+            '{{ param.variableName }}' => '{{ param.schema.type.routeRequirementPattern|e('phpSingleQuotedString') }}',
     {%~ endfor %}
         ],
 {%~ endif %}
@@ -38,7 +38,7 @@ class {{ operation.controllerClassName }} extends AbstractController
 {%~ endfor %}
     ): Response {
 {%~ for param in operation.allSortedParameters(['query', 'header', 'cookie']) %}
-        ${{ param.variableName }} = {{ param.schema.type.stringToTypeCastFunction }}($request->{{ param.requestCollection }}->{{ param.name }}{{ param.schema.default ? ', ' ~ param.schema.type.methodParameterDefault : '' }})
+        ${{ param.variableName }} = {{ param.schema.type.stringToTypeCastFunction }}($request->{{ param.requestCollection }}->get('{{ param.name|e('phpSingleQuotedString') }}'{% if param.schema.default %}, {{ param.schema.type.methodParameterDefault}}{% endif %}));
 {%~ endfor %}
         $errors = [];
 {%~ for param in operation.allSortedParameters %}
@@ -68,13 +68,13 @@ class {{ operation.controllerClassName }} extends AbstractController
 
                 break;
     {%~ endfor %}
-    {% if not operation.requestBody.required %}
+    {%~ if not operation.requestBody.required %}
             case 'unspecified':
                 $content = null;
                 $violations = [];
 
                 break;
-    {% endif %}
+    {%~ endif %}
             default:
                 return new JsonResponse(
                     [
@@ -108,7 +108,7 @@ class {{ operation.controllerClassName }} extends AbstractController
                     case {{ responseBodyContentType }}:
                         return $handler->handle(
                             {%~ for param in operation.allSortedParameters %}
-                                ${{ param.toVariableName }},
+                                ${{ param.variableName }},
                             {%~ endfor %}
                             {%~ if operation.requestBody %}
                                 $content,
@@ -130,6 +130,6 @@ class {{ operation.controllerClassName }} extends AbstractController
                 break;
 {%~ endfor %}
         }
-    }}
-}}
+    }
+}
 {% endautoescape %}

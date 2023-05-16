@@ -1,0 +1,77 @@
+<?php
+
+namespace App\Controller;
+
+use Symfony\Component\Validator\Constraints as Assert;
+
+class Test
+{
+    /**
+     * @param ?array<string> $a6
+     * @param ?array<Test> $a7
+     */
+    public function __construct(
+        #[Assert\Regex(pattern: '[a-z]{3}')]
+        #[Assert\Length(min: 3)]
+        #[Assert\Length(max: 3)]
+        #[Assert\Choice(choices: [
+            'abc',
+            'def',
+            'ghi',
+        ])]
+        #[F21]
+        public readonly ?string $a1 = 'abc',
+
+        #[Assert\DivisibleBy(value: 1)]
+        #[Assert\GreaterThanOrEqual(value: 1)]
+        #[Assert\LessThanOrEqual(value: 3)]
+        #[Assert\Choice(choices: [
+            1,
+            2,
+            3,
+        ])]
+        #[F22]
+        public readonly ?int $a2 = 1,
+
+        #[Assert\DivisibleBy(value: 0.1)]
+        #[Assert\GreaterThanOrEqual(value: 0)]
+        #[Assert\LessThanOrEqual(value: 1)]
+        #[Assert\Choice(choices: [
+            0.1,
+            0.2,
+            0.3,
+        ])]
+        #[F23]
+        public readonly ?float $a3 = 0.1,
+
+        public readonly ?bool $a4 = true,
+
+        #[Assert\Valid]
+        public readonly ?Test $,
+
+        #[Assert\Count(min: 1)]
+        #[Assert\Count(max: 3)]
+        #[Assert\Unique]
+        #[Assert\All(constraints: [
+            new Assert\Regex(pattern: '[a-z]{3}'),
+            new Assert\Length(min: 3),
+            new Assert\Length(max: 3),
+            new Assert\Choice(choices: [
+                'abc',
+                'def',
+                'ghi',
+            ]),
+            new F25,
+        ])]
+        public readonly ?array $a6,
+
+        #[Assert\Count(min: 0)]
+        #[Assert\Count(max: 3)]
+        #[Assert\Unique]
+        #[Assert\All(constraints: [
+            new Assert\Valid,
+        ])]
+        public readonly ?array $a7,
+    ) {
+    }
+}

@@ -7,9 +7,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 class {{ schema.className }}
 {
-{%~ if schema.arrayProperties %}
+{%~ if schema.type.arrayProperties %}
     /**
-    {%~ for property in schema.arrayProperties %}
+    {%~ for property in schema.type.arrayProperties %}
      * {{ property.phpDocParameterAnnotation }}
     {%~ endfor %}
      */

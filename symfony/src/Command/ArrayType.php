@@ -16,7 +16,7 @@ class ArrayType implements Type
 
     public function getPhpDocParameterAnnotationType(): string
     {
-        return "array<{$this->schema->items->getPhpDocParameterAnnotationType()}>";
+        return "array<{$this->schema->items->type->getPhpDocParameterAnnotationType()}>";
     }
 
     public function getMethodParameterDefault(): ?string
@@ -65,12 +65,12 @@ class ArrayType implements Type
 
     public function getNormalizedType(): string
     {
-        return "{$this->schema->items->getNormalizedType()}Array";
+        return "{$this->schema->items->type->getNormalizedType()}Array";
     }
 
     public function getContentTypeChecking(): string
     {
-        return "is_array(\$content) && {$this->schema->items->getContentTypeChecking()}";
+        return "is_array(\$content) && {$this->schema->items->type->getContentTypeChecking()}";
     }
 
     public function getConstraints(): array

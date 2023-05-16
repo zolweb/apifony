@@ -81,9 +81,9 @@ class Operation
             ];
         }
 
-        foreach ($this->requestBody->mediaTypes ?? [] as $mediaType) {
-            $requestBodyTypes[$mediaType->getNormalizedType()] = [
-                'contentTypeChecking' => $mediaType->getContentTypeChecking(),
+        foreach ($this->requestBody?->mediaTypes ?? [] as $mediaType) {
+            $requestBodyTypes[$mediaType->schema->type->getNormalizedType()] = [
+                'contentTypeChecking' => $mediaType->schema->type->getContentTypeChecking(),
             ];
         }
 
@@ -94,9 +94,9 @@ class Operation
     {
         $responseBodyTypes = [];
 
-        foreach ($this->responses as $response) {
+        foreach ($this->responses->responses as $response) {
             foreach ($response->mediaTypes as $mediaType) {
-                $responseBodyTypes[] = $mediaType->getNormalizedType();
+                $responseBodyTypes[] = $mediaType->schema->type->getNormalizedType();
             }
         }
 
