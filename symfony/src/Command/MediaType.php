@@ -26,26 +26,6 @@ class MediaType
     {
     }
 
-    public function getContentInitializationFromRequest(): string
-    {
-        return $this->schema->getContentInitializationFromRequest();
-    }
-
-    public function getContentValidationViolationsInitialization(): string
-    {
-        return $this->schema->getContentValidationViolationsInitialization();
-    }
-
-    public function getNormalizedType(): string
-    {
-        return $this->schema->getNormalizedType();
-    }
-
-    public function getContentTypeChecking(): string
-    {
-        return $this->schema->getContentTypeChecking();
-    }
-
     public function addFiles(array& $files): void
     {
         $this->schema->addFiles($files);

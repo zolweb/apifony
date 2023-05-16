@@ -83,7 +83,7 @@ class IntegerType implements Type
             $constraints[] = new Constraint('Assert\GreaterThan', ['value' => $this->schema->exclusiveMinimum]);
         }
 
-        if ($this->this->schema->exclusiveMaximum !== null) {
+        if ($this->schema->exclusiveMaximum !== null) {
             $constraints[] = new Constraint('Assert\LessThan', ['value' => $this->schema->exclusiveMaximum]);
         }
 

@@ -51,20 +51,9 @@ class Parameter
         );
     }
 
-    public function getInitializationFromRequest(): string
+    public function getRequestCollection(): string
     {
-        return sprintf(
-            '$%s = %s($request->%s->get(\'%s\'%s));',
-            $this->getVariableName(),
-            $this->schema->getStringToTypeCastFunction(),
-            ['query' => 'query', 'header' => 'headers', 'cookie' => 'cookies'][$this->in],
-            $this->name,
-            $this->schema->getMethodParameterDefault() !== null ?
-                sprintf(
-                    ', %s',
-                    $this->schema->getMethodParameterDefault(),
-                ) : '',
-        );
+        return ['query' => 'query', 'header' => 'headers', 'cookie' => 'cookies'][$this->in];
     }
 
     public function addFiles(array& $files): void
