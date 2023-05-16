@@ -13,9 +13,16 @@ class OpenApi
      */
     public static function build(array $data): self
     {
+        $components = [];
+        foreach ($data['components'] ?? [] as $type => $typeComponents) {
+            foreach ($typeComponents as $name => $component) {
+                $components[$type][$name] = ['data' => $component, 'instance' => null];
+            }
+        }
+
         $openApi = new self();
         $openApi->paths = isset($data['paths']) ?
-            Paths::build($data['components'] ?? [], $data['paths']) : null;
+            Paths::build($components, $data['paths']) : null;
 
         return $openApi;
     }

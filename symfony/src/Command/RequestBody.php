@@ -12,26 +12,33 @@ class RequestBody
     public readonly array $mediaTypes;
 
     /**
+     * @param array<mixed> $components
+     * @param array<mixed> $data
+     *
      * @throws Exception
      */
-    public static function build(
-        string $className,
-        array $componentsData,
-        array $data,
-    ): self {
+    public static function build(string $className, array& $components, array $data): self
+    {
+        $requestBody = new self();
+
         if (isset($data['$ref'])) {
-            $data = $componentsData['requestBodies'][explode('/', $data['$ref'])[3]];
+            $className = explode('/', $data['$ref'])[3];
+            $component = &$components['requestBodies'][$className];
+            if ($component['instance'] !== null) {
+                return $component['instance'];
+            } else {
+                $component['instance'] = $requestBody;
+                $data = $component['data'];
+            }
         }
 
-        $requestBody = new self();
         $requestBody->className = $className;
         $requestBody->required = $data['required'] ?? false;
         $requestBody->mediaTypes = array_map(
             fn (string $type) => MediaType::build(
-                $requestBody,
                 sprintf('%s%sMediaType', $className, u($type)->camel()->title()),
                 $type,
-                $componentsData,
+                $components,
                 $data['content'][$type],
             ),
             array_keys(

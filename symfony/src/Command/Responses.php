@@ -5,29 +5,21 @@ namespace App\Command;
 class Responses
 {
     public readonly string $className;
-    /** @var array<Response  */
+    /** @var array<Response> */
     public readonly array $responses;
 
     /**
-     * @param array<mixed> $componentsData
+     * @param array<mixed> $components
      * @param array<mixed> $data
      *
      * @throws Exception
      */
-    public static function build(
-        string $className,
-        array $componentsData,
-        array $data,
-    ): self {
+    public static function build(string $className, array& $components, array $data): self
+    {
         $responses = new self();
         $responses->className = $className;
         $responses->responses = array_map(
-            fn (string $code) => Response::build(
-                $className,
-                $code,
-                $componentsData,
-                $data[$code],
-            ),
+            fn (string $code) => Response::build($className, $code, $components, $data[$code]),
             array_filter(
                 array_keys($data),
                 static fn (string $code) => in_array($code, [

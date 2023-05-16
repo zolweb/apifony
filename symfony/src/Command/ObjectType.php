@@ -72,7 +72,6 @@ class ObjectType implements Type
     {
         static $schemas = [];
 
-        if (isset($schemas[$schema->className]))
         return array_merge(
             [$schema->className => ['template' => 'schema.php.twig', 'params' => ['schema' => $this]]],
             ...array_map(

@@ -10,29 +10,30 @@ class Parameter
     public readonly Schema $schema;
 
     /**
-     * @param array<mixed> $componentsData
+     * @param array<mixed> $components
      * @param array<mixed> $data
      *
      * @throws Exception
      */
-    public static function build(
-        string $className,
-        array $componentsData,
-        array $data,
-    ): self {
+    public static function build(string $className, array& $components, array $data): self
+    {
+        $parameter = new self();
+
         if (isset($data['$ref'])) {
-            $data = $componentsData['parameters'][explode('/', $data['$ref'])[3]];
+            $className = explode('/', $data['$ref'])[3];
+            $component = &$components['parameters'][$className];
+            if ($component['instance'] !== null) {
+                return $component['instance'];
+            } else {
+                $component['instance'] = $parameter;
+                $data = $component['data'];
+            }
         }
 
-        $parameter = new self();
         $parameter->className = $className;
         $parameter->in = $data['in'];
         $parameter->name = $data['name'];
-        $parameter->schema = Schema::build(
-            "{$className}Schema",
-            $componentsData,
-            $data['schema'],
-        );
+        $parameter->schema = Schema::build("{$className}Schema", $components, $data['schema']);
 
         return $parameter;
     }

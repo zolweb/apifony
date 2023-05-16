@@ -14,39 +14,42 @@ class Response
     public readonly array $mediaTypes;
 
     /**
-     * @param array<mixed> $componentsData
+     * @param array<mixed> $components
      * @param array<mixed> $data
      *
      * @throws Exception
      */
-    public static function build(
-        string $className,
-        string $code,
-        array $componentsData,
-        array $data,
-    ): self {
+    public static function build(string $className, string $code, array& $components, array $data): self
+    {
+        $response = new self();
+
         if (isset($data['$ref'])) {
-            $data = $componentsData['responses'][explode('/', $data['$ref'])[3]];
+            $className = explode('/', $data['$ref'])[3];
+            $component = &$components['responses'][$className];
+            if ($component['instance'] !== null) {
+                return $component['instance'];
+            } else {
+                $component['instance'] = $response;
+                $data = $component['data'];
+            }
         }
 
-        $response = new self();
         $response->className = $className;
         $response->code = $code;
         $response->headers = array_map(
             fn (string $name) => Header::build(
                 sprintf('%s%sHeader', $className, u($name)->camel()->title()),
                 $name,
-                $componentsData,
+                $components,
                 $data['headers'][$name],
             ),
             array_keys($data['headers'] ?? []),
         );
         $response->mediaTypes = array_map(
             fn (string $type) => MediaType::build(
-                $response,
                 sprintf('%s%sMediaType', $className, u($type)->camel()->title()),
                 $type,
-                $componentsData,
+                $components,
                 $data['content'][$type],
             ),
             array_filter(

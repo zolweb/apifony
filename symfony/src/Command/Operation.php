@@ -15,9 +15,12 @@ class Operation
     public readonly ?Responses $responses;
 
     /**
+     * @param array<mixed> $components
+     * @param array<mixed> $data
+     *
      * @throws Exception
      */
-    public static function build(PathItem $pathItem, string $method, array $componentsData, array $data): self
+    public static function build(PathItem $pathItem, string $method, array& $components, array $data): self
     {
         $operation = new self();
         $operation->method = $method;
@@ -27,7 +30,7 @@ class Operation
         $operation->parameters = array_map(
             fn (array $parameterData) => Parameter::build(
                 u($data['operationId'])->camel()->title(),
-                $componentsData,
+                $components,
                 $parameterData,
             ),
             $data['parameters'] ?? []
@@ -35,13 +38,13 @@ class Operation
         $operation->requestBody = isset($data['requestBody']) ?
             RequestBody::build(
                 u($data['operationId'])->camel()->title(),
-                $componentsData,
+                $components,
                 $data['requestBody'],
             ) : null;
         $operation->responses = isset($data['responses']) ?
             Responses::build(
                 u($data['operationId'])->camel()->title(),
-                $componentsData,
+                $components,
                 $data['responses'],
             ) : null;
 

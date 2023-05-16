@@ -11,25 +11,32 @@ class PathItem
     public readonly array $operations;
 
     /**
-     * @param array<mixed> $componentsData
+     * @param array<mixed> $components
      * @param array<mixed> $data
      *
      * @throws Exception
      */
-    public static function build(string $route, array $componentsData, array $data): self
+    public static function build(string $route, array& $components, array $data): self
     {
+        $pathItem = new self();
+
         if (isset($data['$ref'])) {
-            $data = $componentsData['pathItems'][explode('/', $data['$ref'])[3]];
+            $component = &$components['pathItems'][explode('/', $data['$ref'])[3]];
+            if ($component['instance'] !== null) {
+                return $component['instance'];
+            } else {
+                $component['instance'] = $pathItem;
+                $data = $component['data'];
+            }
         }
 
-        $pathItem = new self();
         $pathItem->route = $route;
         $pathItem->parameters = array_map(
-            fn (array $data) => Parameter::build('', $componentsData, $data),
+            fn (array $data) => Parameter::build('', $components, $data),
             $data['parameters'] ?? []
         );
         $pathItem->operations = array_map(
-            fn (string $method) => Operation::build($pathItem, $method, $componentsData, $data[$method]),
+            fn (string $method) => Operation::build($pathItem, $method, $components, $data[$method]),
             array_filter(
                 array_keys($data),
                 static fn (string $method) => in_array($method, ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'], true),

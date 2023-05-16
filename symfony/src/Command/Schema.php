@@ -29,28 +29,24 @@ class Schema
     public readonly ?array $properties;
 
     /**
+     * @param array<mixed> $components
+     * @param array<mixed> $data
+     *
      * @throws Exception
      */
-    public static function build(
-        string $className,
-        array $componentsData,
-        array $data,
-    ): self {
-        // todo avec cette solution la construction de la structure ne peut être faite qu'une seule fois ?
-        static $schemas = [];
-
+    public static function build(string $className, array& $components, array $data): self
+    {
         $schema = new self();
 
         if (isset($data['$ref'])) {
             $className = explode('/', $data['$ref'])[3];
-
-            if (isset($schemas[$className])) {
-                return $schemas[$className];
+            $component = &$components['schemas'][$className];
+            if ($component['instance'] !== null) {
+                return $component['instance'];
+            } else {
+                $component['instance'] = $schema;
+                $data = $component['data'];
             }
-
-            $schemas[$className] = $schema;
-
-            $data = $componentsData['schemas'][$className];
         }
 
         if (!isset($data['type'])) {
@@ -97,11 +93,11 @@ class Schema
         $schema->maxItems = $data['maxItems'] ?? null;
         $schema->uniqueItems = $data['uniqueItems'] ?? false;
         $schema->items = isset($data['items']) ?
-            Schema::build("{$className}List", $componentsData, $data['items']) : null;
+            Schema::build("{$className}List", $components, $data['items']) : null;
         $schema->properties = isset($data['properties']) ? array_map(
             fn (string $name) => Schema::build(
                 sprintf('%s%s', $className, u($name)->camel()->title()),
-                $componentsData,
+                $components,
                 $data['properties'][$name],
             ),
             array_keys($data['properties']),
