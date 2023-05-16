@@ -4,7 +4,6 @@ namespace App\Command;
 
 class Header
 {
-    public readonly Response $response;
     public readonly string $className;
     public readonly string $name;
     public readonly Schema $schema;
@@ -16,7 +15,6 @@ class Header
      * @throws Exception
      */
     public static function build(
-        Response $response,
         string $className,
         string $name,
         array $componentsData,
@@ -27,11 +25,9 @@ class Header
         }
 
         $header = new self();
-        $header->response = $response;
         $header->className = $className;
         $header->name = $name;
         $header->schema = Schema::build(
-            $header,
             "{$className}Schema",
             $componentsData,
             $data['schema'],

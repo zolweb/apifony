@@ -4,7 +4,6 @@ namespace App\Command;
 
 class PathItem
 {
-    public readonly Paths $paths;
     public readonly string $route;
     /** @var array<Parameter> */
     public readonly array $parameters;
@@ -17,17 +16,16 @@ class PathItem
      *
      * @throws Exception
      */
-    public static function build(Paths $paths, string $route, array $componentsData, array $data): self
+    public static function build(string $route, array $componentsData, array $data): self
     {
         if (isset($data['$ref'])) {
             $data = $componentsData['pathItems'][explode('/', $data['$ref'])[3]];
         }
 
         $pathItem = new self();
-        $pathItem->paths = $paths;
         $pathItem->route = $route;
         $pathItem->parameters = array_map(
-            fn (array $data) => Parameter::build($pathItem, '', $componentsData, $data),
+            fn (array $data) => Parameter::build('', $componentsData, $data),
             $data['parameters'] ?? []
         );
         $pathItem->operations = array_map(

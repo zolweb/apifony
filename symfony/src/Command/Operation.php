@@ -26,7 +26,6 @@ class Operation
         $operation->priority = $data['x-priority'] ?? 0;
         $operation->parameters = array_map(
             fn (array $parameterData) => Parameter::build(
-                $operation,
                 u($data['operationId'])->camel()->title(),
                 $componentsData,
                 $parameterData,
@@ -35,14 +34,12 @@ class Operation
         );
         $operation->requestBody = isset($data['requestBody']) ?
             RequestBody::build(
-                $operation,
                 u($data['operationId'])->camel()->title(),
                 $componentsData,
                 $data['requestBody'],
             ) : null;
         $operation->responses = isset($data['responses']) ?
             Responses::build(
-                $operation,
                 u($data['operationId'])->camel()->title(),
                 $componentsData,
                 $data['responses'],

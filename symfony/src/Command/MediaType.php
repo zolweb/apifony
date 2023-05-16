@@ -25,7 +25,6 @@ class MediaType
         $mediaType->parent = $parent;
         $mediaType->type = $type;
         $mediaType->schema = Schema::build(
-            $mediaType,
             "{$className}Schema",
             $componentsData,
             $data['schema'],

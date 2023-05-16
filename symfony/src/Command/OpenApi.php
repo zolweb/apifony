@@ -15,7 +15,7 @@ class OpenApi
     {
         $openApi = new self();
         $openApi->paths = isset($data['paths']) ?
-            Paths::build($openApi, $data['components'] ?? [], $data['paths'] ?? []) : null;
+            Paths::build($data['components'] ?? [], $data['paths']) : null;
 
         return $openApi;
     }

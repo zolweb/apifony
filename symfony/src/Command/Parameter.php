@@ -4,7 +4,6 @@ namespace App\Command;
 
 class Parameter
 {
-    public readonly Operation|PathItem $parent;
     public readonly string $className;
     public readonly string $in;
     public readonly string $name;
@@ -17,7 +16,6 @@ class Parameter
      * @throws Exception
      */
     public static function build(
-        Operation|PathItem $parent,
         string $className,
         array $componentsData,
         array $data,
@@ -27,12 +25,10 @@ class Parameter
         }
 
         $parameter = new self();
-        $parameter->parent = $parent;
         $parameter->className = $className;
         $parameter->in = $data['in'];
         $parameter->name = $data['name'];
         $parameter->schema = Schema::build(
-            $parameter,
             "{$className}Schema",
             $componentsData,
             $data['schema'],

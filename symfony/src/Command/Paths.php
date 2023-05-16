@@ -4,7 +4,6 @@ namespace App\Command;
 
 class Paths
 {
-    public readonly OpenApi $openApi;
     /** @var array<PathItem> */
     public readonly array $pathItems;
 
@@ -14,12 +13,11 @@ class Paths
      *
      * @throws Exception
      */
-    public static function build(OpenApi $openApi, array $componentsData, array $data): self
+    public static function build(array $componentsData, array $data): self
     {
         $paths = new self();
-        $paths->openApi = $openApi;
         $paths->pathItems = array_map(
-            fn (string $route) => PathItem::build($paths, $route, $componentsData, $data[$route]),
+            fn (string $route) => PathItem::build($route, $componentsData, $data[$route]),
             array_filter(
                 array_keys($data),
                 static fn (string $route) => $route[0] === '/',

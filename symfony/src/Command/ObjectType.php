@@ -70,6 +70,9 @@ class ObjectType implements Type
 
     public function getFiles(Schema $schema): array
     {
+        static $schemas = [];
+
+        if (isset($schemas[$schema->className]))
         return array_merge(
             [$schema->className => ['template' => 'schema.php.twig', 'params' => ['schema' => $this]]],
             ...array_map(
