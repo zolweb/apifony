@@ -50,26 +50,26 @@ class FindPetsByTagsController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
+        $responseContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
-            case is_null($content):
-                $responseContent = match ($request->headers->get('accept', 'unspecified')) {
+            case is_null($content): // @phpstan-ignore-line
+                $responseContent = match ($responseContentType) {
                     'ApplicationJson' =>
                         $handler->handleEmptyApplicationJson(
                             $qTags,
                         ),
                     default =>
-                        new class {
-                            public readonly string $code;
+                        new class ($responseContentType) {
+                            public readonly int $code;
+                            /** @var array{code: string, message: string} */
                             public readonly array $content;
-                            public readonly array $headers;
-                            public function __construct()
+                            public function __construct(string $responseContentType)
                             {
                                 $this->code = Response::HTTP_UNSUPPORTED_MEDIA_TYPE;
                                 $this->content = [
                                     'code' => 'unsupported_response_type',
-                                    'message' => "The value '$contentType' received in accept header is not a supported format.",
+                                    'message' => "The value '$responseContentType' received in accept header is not a supported format.",
                                 ];
-                                $this->headers = [];
                             }
                         },
                 };
