@@ -111,16 +111,16 @@ class {{ operation.controllerClassName }} extends AbstractController
         }
         $responseContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
-{%~ for requestBodyContentType in operation.allPossibleRequestBodyContentTypes %}
-            case {{ requestBodyContentType.checking }}:
+{%~ for requestBodyContentTypeNormalizedName, requestBodyContentType in operation.allPossibleRequestBodyContentTypes %}
+            case {% if requestBodyContentTypeNormalizedName is same as ('Empty') %}is_null($content){% else %}{{ requestBodyContentType.contentTypeChecking }}{% endif %}:
                 $responseContent = match ($responseContentType) {
     {%~ for responseBodyContentType in operation.responseBodyContentTypes %}
                     '{{ responseBodyContentType.name }}' =>
-                        $handler->handle{{ requestBodyContentType.name }}{{ responseBodyContentType.name }}(
+                        $handler->handle{{ requestBodyContentTypeNormalizedName }}{{ responseBodyContentType.name }}(
         {%~ for param in operation.allSortedParameters %}
                             ${{ param.variableName }},
         {%~ endfor %}
-        {%~ if requestBodyContentType.hasContent %}
+        {%~ if requestBodyContentTypeNormalizedName is not same as ('Empty') %}
                             $content,
         {%~ endif %}
                         ),

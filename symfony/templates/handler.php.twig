@@ -5,14 +5,14 @@ namespace App\Controller;
 
 interface {{ operation.handlerInterfaceName }}
 {
-{%~ for requestBodyContentType in operation.allPossibleRequestBodyContentTypes %}
+{%~ for requestBodyContentTypeNormalizedName, requestBodyContentType in operation.allPossibleRequestBodyContentTypes %}
     {%~ for responseBodyContentType in operation.responseBodyContentTypes %}
-    public function handle{{ requestBodyContentType.name }}{{ responseBodyContentType.name }}(
+    public function handle{{ requestBodyContentTypeNormalizedName }}{{ responseBodyContentType.name }}(
         {%~ for param in operation.allSortedParameters %}
         {{ param.schema.type.methodParameterType }} ${{ param.variableName }},
         {%~ endfor %}
-        {%~ if requestBodyContentType.hasContent %}
-        {{ requestBodyContentType.methodType }} $content,
+        {%~ if requestBodyContentTypeNormalizedName is not same as ('Empty') %}
+        {{ requestBodyContentType.methodParameterType }} $content,
         {%~ endif %}
     ):
         {%~ for response in responseBodyContentType.responses %}

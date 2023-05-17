@@ -76,20 +76,11 @@ class Operation
         $requestBodyContentTypes = [];
 
         if ($this->requestBody === null || !$this->requestBody->required) {
-            $requestBodyContentTypes['Empty'] = [
-                'name' => 'Empty',
-                'checking' => 'is_null($content)',
-                'hasContent' => false,
-            ];
+             $requestBodyContentTypes['Empty'] = null;
         }
 
         foreach ($this->requestBody?->mediaTypes ?? [] as $mediaType) {
-            $requestBodyContentTypes[$mediaType->schema->type->getNormalizedType()] = [
-                'name' => $mediaType->schema->type->getNormalizedType(),
-                'checking' => $mediaType->schema->type->getContentTypeChecking(),
-                'hasContent' => true,
-                'methodType' => $mediaType->schema->type->getMethodParameterType(),
-            ];
+            $requestBodyContentTypes[$mediaType->schema->type->getNormalizedType()] = $mediaType->schema->type;
         }
 
         return $requestBodyContentTypes;
