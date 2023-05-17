@@ -100,7 +100,7 @@ class Operation
         $responseBodyTypes = [];
 
         foreach ($this->responses->responses as $response) {
-            foreach ($response->mediaTypes as $mediaType) {
+            foreach ($response->content as $mediaType) {
                 $responseBodyTypes[$mediaType->type] = [
                     'type' => $mediaType->type,
                     'name' => u($mediaType->type)->camel()->title(),

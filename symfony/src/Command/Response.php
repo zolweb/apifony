@@ -11,7 +11,7 @@ class Response
     /** @var array<Header> */
     public readonly array $headers;
     /** @var array<MediaType> */
-    public readonly array $mediaTypes;
+    public readonly array $content;
 
     /**
      * @param array<mixed> $components
@@ -45,7 +45,7 @@ class Response
             ),
             array_keys($data['headers'] ?? []),
         );
-        $response->mediaTypes = array_map(
+        $response->content = array_map(
             fn (string $type) => MediaType::build(
                 sprintf('%s%sMediaType', $className, u($type)->camel()->title()),
                 $type,
@@ -65,13 +65,46 @@ class Response
     {
     }
 
+    /**
+     * @return array<string, Schema>
+     */
+    public function getAllPossibleResponseBodyContentTypes(): array
+    {
+        $responseBodyContentTypes = [];
+
+        foreach ($this->content as $mediaType) {
+            $responseBodyContentTypes[$mediaType->schema->type->getNormalizedType()] = $mediaType->schema;
+        }
+
+        return $responseBodyContentTypes;
+    }
+
     public function addFiles(array& $files): void
     {
         foreach ($this->headers as $header) {
             $header->addFiles($files);
         }
-        foreach ($this->mediaTypes as $mediaType) {
+        foreach ($this->content as $mediaType) {
             $mediaType->addFiles($files);
+        }
+        if (count($this->getAllPossibleResponseBodyContentTypes()) > 0) {
+            foreach ($this->getAllPossibleResponseBodyContentTypes() as $contentType) {
+                if (!isset($files["{$this->className}{$this->code}{$contentType->type->getNormalizedType()}"])) {
+                    $files["{$this->className}{$this->code}{$contentType->type->getNormalizedType()}"] =
+                        ['template' => 'response.php.twig', 'params' => [
+                            'className' => "{$this->className}{$this->code}{$contentType->type->getNormalizedType()}",
+                            'response' => $this,
+                            'contentType' => $contentType,
+                        ]];
+                }
+            }
+        } else {
+            $files["{$this->className}{$this->code}Empty"] =
+                ['template' => 'response.php.twig', 'params' => [
+                    'className' => "{$this->className}{$this->code}Empty",
+                    'response' => $this,
+                    'contentType' => null,
+                ]];
         }
     }
 }
