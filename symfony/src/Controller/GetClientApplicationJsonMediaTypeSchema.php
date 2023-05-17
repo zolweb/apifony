@@ -10,4 +10,4 @@ class GetClientApplicationJsonMediaTypeSchema
         public readonly ?string $id,
     ) {
     }
-}
+%}

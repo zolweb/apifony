@@ -143,16 +143,6 @@ class Schema
         return u($this->format)->camel()->title();
     }
 
-    public function getPhpDocParameterAnnotation(string $name): string
-    {
-        return sprintf(
-            '@param %s%s $%s',
-            $this->nullable ? '' : '?',
-            $this->type->getPhpDocParameterAnnotationType(),
-            $name,
-        );
-    }
-
     public function getMethodParameter(string $name): string
     {
         return sprintf(

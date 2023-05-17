@@ -48,7 +48,7 @@ class PlaceOrderController extends AbstractController
                     Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 );
         }
-        if (count($violations) > 0) { // @phpstan-ignore-line
+        if (count($violations) > 0) {
             foreach ($violations as $violation) {
                 $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
             }
@@ -65,7 +65,7 @@ class PlaceOrderController extends AbstractController
         }
         $responseContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
-            case is_null($content): // @phpstan-ignore-line
+            case is_null($content):
                 $responseContent = match ($responseContentType) {
                     'ApplicationJson' =>
                         $handler->handleEmptyApplicationJson(
@@ -85,7 +85,7 @@ class PlaceOrderController extends AbstractController
                             }
                         },
                 };
-            case $content instanceOf Order: // @phpstan-ignore-line
+            case $content instanceOf Order:
                 $responseContent = match ($responseContentType) {
                     'ApplicationJson' =>
                         $handler->handleOrderApplicationJson(

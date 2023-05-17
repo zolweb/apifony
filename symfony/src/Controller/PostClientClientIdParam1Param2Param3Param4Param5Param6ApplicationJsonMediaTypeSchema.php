@@ -10,4 +10,4 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6ApplicationJsonMedia
         public readonly ?string $id,
     ) {
     }
-}
+%}

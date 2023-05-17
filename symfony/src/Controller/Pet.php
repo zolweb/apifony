@@ -7,8 +7,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Pet
 {
     /**
-     * @param ?array<string> $photoUrls
-     * @param ?array<Tag> $tags
+     * @param array<string> $photoUrls
+     * @param array<Tag> $tags
      */
     public function __construct(
         #[Int64]
@@ -53,4 +53,4 @@ class Pet
         public readonly ?string $name = 'cool',
     ) {
     }
-}
+%}

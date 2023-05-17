@@ -64,7 +64,7 @@ class LoginUserController extends AbstractController
         }
         $responseContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
-            case is_null($content): // @phpstan-ignore-line
+            case is_null($content):
                 $responseContent = match ($responseContentType) {
                     'ApplicationJson' =>
                         $handler->handleEmptyApplicationJson(

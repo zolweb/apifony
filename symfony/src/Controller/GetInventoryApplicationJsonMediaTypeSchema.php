@@ -10,4 +10,4 @@ class GetInventoryApplicationJsonMediaTypeSchema
         public readonly ?string $name,
     ) {
     }
-}
+%}

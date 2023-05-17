@@ -15,4 +15,4 @@ class PetOwner
         public readonly ?PetOwnerAddress $address,
     ) {
     }
-}
+%}

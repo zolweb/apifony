@@ -404,7 +404,7 @@ class PostTestController extends AbstractController
                     Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 );
         }
-        if (count($violations) > 0) { // @phpstan-ignore-line
+        if (count($violations) > 0) {
             foreach ($violations as $violation) {
                 $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
             }
@@ -421,7 +421,7 @@ class PostTestController extends AbstractController
         }
         $responseContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
-            case is_null($content): // @phpstan-ignore-line
+            case is_null($content):
                 $responseContent = match ($responseContentType) {
                     'ApplicationJson' =>
                         $handler->handleEmptyApplicationJson(
@@ -457,7 +457,7 @@ class PostTestController extends AbstractController
                             }
                         },
                 };
-            case $content instanceOf Test: // @phpstan-ignore-line
+            case $content instanceOf Test:
                 $responseContent = match ($responseContentType) {
                     'ApplicationJson' =>
                         $handler->handleTestApplicationJson(

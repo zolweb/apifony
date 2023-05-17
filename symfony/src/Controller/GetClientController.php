@@ -205,7 +205,7 @@ class GetClientController extends AbstractController
                     Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 );
         }
-        if (count($violations) > 0) { // @phpstan-ignore-line
+        if (count($violations) > 0) {
             foreach ($violations as $violation) {
                 $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
             }
@@ -222,7 +222,7 @@ class GetClientController extends AbstractController
         }
         $responseContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
-            case is_null($content): // @phpstan-ignore-line
+            case is_null($content):
                 $responseContent = match ($responseContentType) {
                     'ApplicationJson' =>
                         $handler->handleEmptyApplicationJson(
@@ -252,7 +252,7 @@ class GetClientController extends AbstractController
                             }
                         },
                 };
-            case is_int($content): // @phpstan-ignore-line
+            case is_int($content):
                 $responseContent = match ($responseContentType) {
                     'ApplicationJson' =>
                         $handler->handleIntegerApplicationJson(

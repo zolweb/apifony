@@ -7,8 +7,8 @@ use Symfony\Component\Validator\Constraints as Assert;
 class Test
 {
     /**
-     * @param ?array<string> $a6
-     * @param ?array<Test> $a7
+     * @param array<string> $a6
+     * @param array<Test> $a7
      */
     public function __construct(
         #[Assert\Valid]
@@ -74,4 +74,4 @@ class Test
         public readonly ?bool $a4 = true,
     ) {
     }
-}
+%}

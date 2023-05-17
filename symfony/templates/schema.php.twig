@@ -10,7 +10,7 @@ class {{ schema.className }}
 {%~ if schema.type.arrayProperties %}
     /**
     {%~ for name, property in schema.type.arrayProperties %}
-     * {{ property.phpDocParameterAnnotation(name) }}
+     * @param {% if property.nullable %}?{% endif %}{{ property.type.phpDocParameterAnnotationType }} ${{ name }}
     {%~ endfor %}
      */
 {%~ endif %}
@@ -26,5 +26,5 @@ class {{ schema.className }}
 {%~ endfor %}
     ) {
     }
-}
+%}
 {% endautoescape %}
