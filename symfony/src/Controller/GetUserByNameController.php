@@ -19,7 +19,7 @@ class GetUserByNameController extends AbstractController
     #[Route(
         path: '/user/{username}',
         requirements: [
-            'username' => '[^:/?#[]@!$&\\'()*+,;=]+',
+            'username' => '[^:/?#[]@!$&\'()*+,;=]+',
         ],
         methods: ['get'],
         priority: 0,

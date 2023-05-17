@@ -19,11 +19,11 @@ class GetClientController extends AbstractController
     #[Route(
         path: '/client/{clientId}/{param1}/{param2}/{param3}/{param4}/{param5}',
         requirements: [
-            'clientId' => '[^:/?#[]@!$&\\'()*+,;=]+',
+            'clientId' => '[^:/?#[]@!$&\'()*+,;=]+',
             'param3' => '-?(0|[1-9]\\d*)(\\.\\d+)?([eE][+-]?\\d+)?',
             'param4' => '-?(0|[1-9]\\d*)',
             'param5' => 'true|false',
-            'param1' => '[^:/?#[]@!$&\\'()*+,;=]+',
+            'param1' => '[^:/?#[]@!$&\'()*+,;=]+',
             'param2' => 'item',
         ],
         methods: ['get'],

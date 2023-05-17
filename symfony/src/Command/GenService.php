@@ -27,7 +27,7 @@ class GenService extends AbstractExtension
         $this->twig->getExtension(EscaperExtension::class)->setEscaper(
             'phpSingleQuotedString',
             function (Environment $twig, string $string) {
-                return str_replace(['\'', '\\'], ['\\\'', '\\\\'], $string);
+                return addcslashes($string, '\'\\');
             }
         );
 

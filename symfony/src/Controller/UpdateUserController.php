@@ -19,7 +19,7 @@ class UpdateUserController extends AbstractController
     #[Route(
         path: '/user/{username}',
         requirements: [
-            'username' => '[^:/?#[]@!$&\\'()*+,;=]+',
+            'username' => '[^:/?#[]@!$&\'()*+,;=]+',
         ],
         methods: ['put'],
         priority: 0,

@@ -17,6 +17,21 @@ class ObjectType implements Type
         );
     }
 
+    public function getSortedProperties(): array
+    {
+        $propertiesWithoutDefault = array_filter(
+            $this->schema->properties,
+            static fn (Schema $property) => $property->default === null,
+        );
+
+        $propertiesWithDefault = array_filter(
+            $this->schema->properties,
+            static fn (Schema $property) => $property->default !== null,
+        );
+
+        return array_merge($propertiesWithoutDefault, $propertiesWithDefault);
+    }
+
     public function getPhpDocParameterAnnotationType(): string
     {
         return $this->schema->className;

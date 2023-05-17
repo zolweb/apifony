@@ -11,6 +11,33 @@ class Test
      * @param ?array<Test> $a7
      */
     public function __construct(
+        #[Assert\Valid]
+        public readonly ?Test $a5,
+
+        #[Assert\Count(min: 1)]
+        #[Assert\Count(max: 3)]
+        #[Assert\Unique]
+        #[Assert\All(constraints: [
+            new Assert\Regex(pattern: '[a-z]{3}'),
+            new Assert\Length(min: 3),
+            new Assert\Length(max: 3),
+            new Assert\Choice(choices: [
+                'abc',
+                'def',
+                'ghi',
+            ]),
+            new F25,
+        ])]
+        public readonly ?array $a6,
+
+        #[Assert\Count(min: 0)]
+        #[Assert\Count(max: 3)]
+        #[Assert\Unique]
+        #[Assert\All(constraints: [
+            new Assert\Valid,
+        ])]
+        public readonly ?array $a7,
+
         #[Assert\Regex(pattern: '[a-z]{3}')]
         #[Assert\Length(min: 3)]
         #[Assert\Length(max: 3)]
@@ -45,33 +72,6 @@ class Test
         public readonly ?float $a3 = 0.1,
 
         public readonly ?bool $a4 = true,
-
-        #[Assert\Valid]
-        public readonly ?Test $a5,
-
-        #[Assert\Count(min: 1)]
-        #[Assert\Count(max: 3)]
-        #[Assert\Unique]
-        #[Assert\All(constraints: [
-            new Assert\Regex(pattern: '[a-z]{3}'),
-            new Assert\Length(min: 3),
-            new Assert\Length(max: 3),
-            new Assert\Choice(choices: [
-                'abc',
-                'def',
-                'ghi',
-            ]),
-            new F25,
-        ])]
-        public readonly ?array $a6,
-
-        #[Assert\Count(min: 0)]
-        #[Assert\Count(max: 3)]
-        #[Assert\Unique]
-        #[Assert\All(constraints: [
-            new Assert\Valid,
-        ])]
-        public readonly ?array $a7,
     ) {
     }
 }

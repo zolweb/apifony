@@ -15,7 +15,7 @@ class {{ schema.className }}
      */
 {%~ endif %}
     public function __construct(
-{%~ for name, property in schema.properties %}
+{%~ for name, property in schema.type.sortedProperties %}
     {%~ for constraint in property.constraints %}
         {{~ constraint.annotation(2) }}
     {%~ endfor %}

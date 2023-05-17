@@ -14,15 +14,6 @@ class Pet
         #[Int64]
         public readonly ?int $id,
 
-        #[Assert\Length(min: 2)]
-        #[Assert\Length(max: 5)]
-        #[Assert\Choice(choices: [
-            'cool',
-            'flex',
-            'lol',
-        ])]
-        public readonly ?string $name = 'cool',
-
         #[Assert\Valid]
         public readonly ?Category $category,
 
@@ -51,6 +42,15 @@ class Pet
 
         #[Assert\Valid]
         public readonly ?PetOwner $owner,
+
+        #[Assert\Length(min: 2)]
+        #[Assert\Length(max: 5)]
+        #[Assert\Choice(choices: [
+            'cool',
+            'flex',
+            'lol',
+        ])]
+        public readonly ?string $name = 'cool',
     ) {
     }
 }

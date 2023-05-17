@@ -19,7 +19,7 @@ class DeleteUserController extends AbstractController
     #[Route(
         path: '/user/{username}',
         requirements: [
-            'username' => '[^:/?#[]@!$&\\'()*+,;=]+',
+            'username' => '[^:/?#[]@!$&\'()*+,;=]+',
         ],
         methods: ['delete'],
         priority: 0,
