@@ -57,19 +57,26 @@ class GetOrderByIdController extends AbstractController
         }
         switch (true) {
             case is_null($content):
-                return match ($request->headers->get('accept', 'unspecified')) {
+                $responseContent = match ($request->headers->get('accept', 'unspecified')) {
                     'ApplicationJson' =>
                         $handler->handleEmptyApplicationJson(
                             $pOrderId,
                         ),
                     default =>
-                        new JsonResponse(
-                            [
-                                'code' => 'unsupported_response_type',
-                                'message' => "The value '$contentType' received in accept header is not a supported format.",
-                            ],
-                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        ),
+                        new class {
+                            public readonly string $code;
+                            public readonly array $content;
+                            public readonly array $headers;
+                            public function __construct()
+                            {
+                                $this->code = Response::HTTP_UNSUPPORTED_MEDIA_TYPE;
+                                $this->content = [
+                                    'code' => 'unsupported_response_type',
+                                    'message' => "The value '$contentType' received in accept header is not a supported format.",
+                                ];
+                                $this->headers = [];
+                            }
+                        },
                 };
             default:
                 throw new RuntimeException();

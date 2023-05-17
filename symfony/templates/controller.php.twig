@@ -112,7 +112,7 @@ class {{ operation.controllerClassName }} extends AbstractController
         switch (true) {
 {%~ for requestBodyContentType in operation.allPossibleRequestBodyContentTypes %}
             case {{ requestBodyContentType.checking }}:
-                return match ($request->headers->get('accept', 'unspecified')) {
+                $responseContent = match ($request->headers->get('accept', 'unspecified')) {
     {%~ for responseBodyContentType in operation.responseBodyContentTypes %}
                     '{{ responseBodyContentType.name }}' =>
                         $handler->handle{{ requestBodyContentType.name }}{{ responseBodyContentType.name }}(
@@ -125,13 +125,20 @@ class {{ operation.controllerClassName }} extends AbstractController
                         ),
     {%~ endfor %}
                     default =>
-                        new JsonResponse(
-                            [
-                                'code' => 'unsupported_response_type',
-                                'message' => "The value '$contentType' received in accept header is not a supported format.",
-                            ],
-                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        ),
+                        new class {
+                            public readonly string $code;
+                            public readonly array $content;
+                            public readonly array $headers;
+                            public function __construct()
+                            {
+                                $this->code = Response::HTTP_UNSUPPORTED_MEDIA_TYPE;
+                                $this->content = [
+                                    'code' => 'unsupported_response_type',
+                                    'message' => "The value '$contentType' received in accept header is not a supported format.",
+                                ];
+                                $this->headers = [];
+                            }
+                        },
                 };
 {%~ endfor %}
             default:
