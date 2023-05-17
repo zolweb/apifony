@@ -85,7 +85,7 @@ class CreateUserController extends AbstractController
                             }
                         },
                 };
-            case $content instanceOf User: // @phpstan-ignore-line
+            case $content instanceOf User:
                 $responseContent = match ($responseContentType) {
                     'ApplicationJson' =>
                         $handler->handleUserApplicationJson(

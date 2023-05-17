@@ -93,7 +93,7 @@ class {{ operation.controllerClassName }} extends AbstractController
                     Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 );
         }
-        if (count($violations) > 0) { // @phpstan-ignore-line
+        if (count($violations) > 0) {
             foreach ($violations as $violation) {
                 $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
             }
@@ -112,7 +112,7 @@ class {{ operation.controllerClassName }} extends AbstractController
         $responseContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
 {%~ for requestBodyContentType in operation.allPossibleRequestBodyContentTypes %}
-            case {{ requestBodyContentType.checking }}: // @phpstan-ignore-line
+            case {{ requestBodyContentType.checking }}:
                 $responseContent = match ($responseContentType) {
     {%~ for responseBodyContentType in operation.responseBodyContentTypes %}
                     '{{ responseBodyContentType.name }}' =>
