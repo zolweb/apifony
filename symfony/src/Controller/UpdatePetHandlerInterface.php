@@ -5,6 +5,7 @@ namespace App\Controller;
 interface UpdatePetHandlerInterface
 {
     public function handleUpdatePetApplicationJsonMediaTypeSchemaApplicationJson(
-            UpdatePetApplicationJsonMediaTypeSchema $content,
-    );
+        UpdatePetApplicationJsonMediaTypeSchema $content,
+    ):
+        UpdatePet200Pet;
 }

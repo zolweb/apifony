@@ -143,7 +143,7 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
             case is_null($content):
                 return match ($request->headers->get('accept', 'unspecified')) {
                     'ApplicationJson' =>
-                        $handler->handleNullApplicationJson(
+                        $handler->handleEmptyApplicationJson(
                             $pClientId,
                             $pParam3,
                             $pParam4,

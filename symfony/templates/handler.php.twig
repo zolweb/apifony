@@ -9,13 +9,21 @@ interface {{ operation.handlerInterfaceName }}
     {%~ for responseBodyContentType in operation.responseBodyContentTypes %}
     public function handle{{ requestBodyContentType.name }}{{ responseBodyContentType.name }}(
         {%~ for param in operation.allSortedParameters %}
-            {{ param.schema.type.methodParameterType }} ${{ param.variableName }},
+        {{ param.schema.type.methodParameterType }} ${{ param.variableName }},
         {%~ endfor %}
         {%~ if requestBodyContentType.hasContent %}
-            {{ requestBodyContentType.methodType }} $content,
+        {{ requestBodyContentType.methodType }} $content,
         {%~ endif %}
-    );
+    ):
+        {%~ for response in responseBodyContentType.responses %}
+        {{ response }}{%~ if not loop.last %} |
+        {%~ else %};
+        {%~ endif %}
+        {%~ endfor %}
     {%~ endfor %}
+    {%~ if not loop.last %}
+
+    {%~ endif %}
 {%~ endfor %}
 }
 {% endautoescape %}

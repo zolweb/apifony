@@ -4,6 +4,7 @@ namespace App\Controller;
 
 interface GetInventoryHandlerInterface
 {
-    public function handleNullApplicationJson(
-    );
+    public function handleEmptyApplicationJson(
+    ):
+        GetInventory200GetInventoryApplicationJsonMediaTypeSchema;
 }

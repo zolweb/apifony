@@ -4,7 +4,8 @@ namespace App\Controller;
 
 interface GetUserByNameHandlerInterface
 {
-    public function handleNullApplicationJson(
-            string $pUsername,
-    );
+    public function handleEmptyApplicationJson(
+        string $pUsername,
+    ):
+        GetUserByName200User;
 }

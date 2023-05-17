@@ -59,7 +59,7 @@ class GetPetByIdController extends AbstractController
             case is_null($content):
                 return match ($request->headers->get('accept', 'unspecified')) {
                     'ApplicationJson' =>
-                        $handler->handleNullApplicationJson(
+                        $handler->handleEmptyApplicationJson(
                             $pPetId,
                         ),
                     default =>

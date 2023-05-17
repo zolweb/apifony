@@ -4,9 +4,12 @@ namespace App\Controller;
 
 interface CreateUsersWithListInputHandlerInterface
 {
-    public function handleNullApplicationJson(
-    );
+    public function handleEmptyApplicationJson(
+    ):
+        CreateUsersWithListInput200User;
+
     public function handleUserArrayApplicationJson(
-            array $content,
-    );
+        array $content,
+    ):
+        CreateUsersWithListInput200User;
 }

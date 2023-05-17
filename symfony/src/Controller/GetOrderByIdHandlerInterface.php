@@ -4,7 +4,8 @@ namespace App\Controller;
 
 interface GetOrderByIdHandlerInterface
 {
-    public function handleNullApplicationJson(
-            int $pOrderId,
-    );
+    public function handleEmptyApplicationJson(
+        int $pOrderId,
+    ):
+        GetOrderById200Order;
 }

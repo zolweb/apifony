@@ -4,7 +4,8 @@ namespace App\Controller;
 
 interface FindPetsByTagsHandlerInterface
 {
-    public function handleNullApplicationJson(
-            string $qTags,
-    );
+    public function handleEmptyApplicationJson(
+        string $qTags,
+    ):
+        FindPetsByTags200PetArray;
 }

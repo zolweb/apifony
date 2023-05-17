@@ -4,9 +4,12 @@ namespace App\Controller;
 
 interface CreateUserHandlerInterface
 {
-    public function handleNullApplicationJson(
-    );
+    public function handleEmptyApplicationJson(
+    ):
+        CreateUser201User;
+
     public function handleUserApplicationJson(
-            User $content,
-    );
+        User $content,
+    ):
+        CreateUser201User;
 }

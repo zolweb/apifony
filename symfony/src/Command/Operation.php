@@ -76,8 +76,8 @@ class Operation
         $requestBodyContentTypes = [];
 
         if ($this->requestBody === null || !$this->requestBody->required) {
-            $requestBodyContentTypes['Null'] = [
-                'name' => 'Null',
+            $requestBodyContentTypes['Empty'] = [
+                'name' => 'Empty',
                 'checking' => 'is_null($content)',
                 'hasContent' => false,
             ];
@@ -101,10 +101,14 @@ class Operation
 
         foreach ($this->responses->responses as $response) {
             foreach ($response->content as $mediaType) {
-                $responseBodyTypes[$mediaType->type] = [
-                    'type' => $mediaType->type,
-                    'name' => u($mediaType->type)->camel()->title(),
-                ];
+                if (!isset($responseBodyTypes[$mediaType->type])) {
+                    $responseBodyTypes[$mediaType->type] = [
+                        'type' => $mediaType->type,
+                        'name' => u($mediaType->type)->camel()->title(),
+                        'responses' => [],
+                    ];
+                }
+                $responseBodyTypes[$mediaType->type]['responses'][] = "{$response->className}{$response->code}{$mediaType->schema->type->getNormalizedType()}";
             }
         }
 

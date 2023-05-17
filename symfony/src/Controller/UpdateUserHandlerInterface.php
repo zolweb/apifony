@@ -4,4 +4,5 @@ namespace App\Controller;
 
 interface UpdateUserHandlerInterface
 {
+
 }

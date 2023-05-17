@@ -4,9 +4,12 @@ namespace App\Controller;
 
 interface PlaceOrderHandlerInterface
 {
-    public function handleNullApplicationJson(
-    );
+    public function handleEmptyApplicationJson(
+    ):
+        PlaceOrder200Order;
+
     public function handleOrderApplicationJson(
-            Order $content,
-    );
+        Order $content,
+    ):
+        PlaceOrder200Order;
 }

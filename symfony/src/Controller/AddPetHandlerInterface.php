@@ -5,6 +5,7 @@ namespace App\Controller;
 interface AddPetHandlerInterface
 {
     public function handlePetApplicationJson(
-            Pet $content,
-    );
+        Pet $content,
+    ):
+        AddPet200Pet;
 }
