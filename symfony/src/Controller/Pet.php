@@ -11,16 +11,20 @@ class Pet
      * @param array<Tag> $tags
      */
     public function __construct(
+        #[Assert\NotNull]
         #[Int64]
         public readonly int $id,
 
         #[Assert\Valid]
+        #[Assert\NotNull]
         public readonly Category $category,
 
         #[Assert\All(constraints: [
             new Assert\Length(min: 3),
             new Assert\Length(max: 10),
+            new Assert\NotNull,
         ])]
+        #[Assert\NotNull]
         public readonly array $photoUrls,
 
         #[Assert\Count(min: 2)]
@@ -28,7 +32,9 @@ class Pet
         #[Assert\Unique]
         #[Assert\All(constraints: [
             new Assert\Valid,
+            new Assert\NotNull,
         ])]
+        #[Assert\NotNull]
         public readonly array $tags,
 
         #[Assert\Regex(pattern: 'A-z')]
@@ -37,10 +43,12 @@ class Pet
             'pending',
             'sold',
         ])]
+        #[Assert\NotNull]
         #[DateTime]
         public readonly string $status,
 
         #[Assert\Valid]
+        #[Assert\NotNull]
         public readonly PetOwner $owner,
 
         #[Assert\Length(min: 2)]
@@ -50,6 +58,7 @@ class Pet
             'flex',
             'lol',
         ])]
+        #[Assert\NotNull]
         public readonly string $name = 'cool',
     ) {
     }

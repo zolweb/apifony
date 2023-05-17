@@ -33,6 +33,7 @@ class LoginUserController extends AbstractController
         $violations = $validator->validate(
             $qPassword,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {
@@ -44,6 +45,7 @@ class LoginUserController extends AbstractController
         $violations = $validator->validate(
             $qUsername,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {

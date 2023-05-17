@@ -37,6 +37,7 @@ class DeletePetController extends AbstractController
         $violations = $validator->validate(
             $hApi_key,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {
@@ -48,6 +49,7 @@ class DeletePetController extends AbstractController
         $violations = $validator->validate(
             $pPetId,
             [
+                new Assert\NotNull,
                 new Int64,
             ]
         );

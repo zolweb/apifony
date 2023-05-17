@@ -38,6 +38,7 @@ class UpdatePetWithFormController extends AbstractController
         $violations = $validator->validate(
             $qName,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {
@@ -49,6 +50,7 @@ class UpdatePetWithFormController extends AbstractController
         $violations = $validator->validate(
             $pPetId,
             [
+                new Assert\NotNull,
                 new Int64,
             ]
         );
@@ -61,6 +63,7 @@ class UpdatePetWithFormController extends AbstractController
         $violations = $validator->validate(
             $qStatus,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {

@@ -51,6 +51,7 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
         $violations = $validator->validate(
             $pClientId,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {
@@ -64,6 +65,7 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
             [
                 new Assert\DivisibleBy(value: 1),
                 new Assert\LessThanOrEqual(value: 2),
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {
@@ -75,6 +77,7 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
         $violations = $validator->validate(
             $pParam4,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {
@@ -86,6 +89,7 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
         $violations = $validator->validate(
             $pParam5,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {
@@ -101,6 +105,7 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
                     'item',
                     'item2',
                 ]),
+                new Assert\NotNull,
                 new Format,
             ]
         );
@@ -120,6 +125,7 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
                     'item',
                     'item1',
                 ]),
+                new Assert\NotNull,
                 new Format,
             ]
         );

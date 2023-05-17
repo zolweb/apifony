@@ -37,6 +37,7 @@ class FindPetsByStatusController extends AbstractController
                     'pending',
                     'sold',
                 ]),
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {

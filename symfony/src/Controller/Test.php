@@ -12,6 +12,7 @@ class Test
      */
     public function __construct(
         #[Assert\Valid]
+        #[Assert\NotNull]
         public readonly Test $a5,
 
         #[Assert\Count(min: 1)]
@@ -26,8 +27,10 @@ class Test
                 'def',
                 'ghi',
             ]),
+            new Assert\NotNull,
             new F25,
         ])]
+        #[Assert\NotNull]
         public readonly array $a6,
 
         #[Assert\Count(min: 0)]
@@ -35,7 +38,9 @@ class Test
         #[Assert\Unique]
         #[Assert\All(constraints: [
             new Assert\Valid,
+            new Assert\NotNull,
         ])]
+        #[Assert\NotNull]
         public readonly array $a7,
 
         #[Assert\Regex(pattern: '[a-z]{3}')]
@@ -46,6 +51,7 @@ class Test
             'def',
             'ghi',
         ])]
+        #[Assert\NotNull]
         #[F21]
         public readonly string $a1 = 'abc',
 
@@ -57,6 +63,7 @@ class Test
             2,
             3,
         ])]
+        #[Assert\NotNull]
         #[F22]
         public readonly int $a2 = 1,
 
@@ -68,9 +75,11 @@ class Test
             0.2,
             0.3,
         ])]
+        #[Assert\NotNull]
         #[F23]
         public readonly float $a3 = 0.1,
 
+        #[Assert\NotNull]
         public readonly bool $a4 = true,
     ) {
     }

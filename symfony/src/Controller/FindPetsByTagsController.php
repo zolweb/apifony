@@ -32,6 +32,7 @@ class FindPetsByTagsController extends AbstractController
         $violations = $validator->validate(
             $qTags,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {

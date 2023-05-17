@@ -65,6 +65,7 @@ class PostTestController extends AbstractController
                     'def',
                     'ghi',
                 ]),
+                new Assert\NotNull,
                 new F13,
             ]
         );
@@ -88,6 +89,7 @@ class PostTestController extends AbstractController
                     2,
                     3,
                 ]),
+                new Assert\NotNull,
                 new F14,
             ]
         );
@@ -111,6 +113,7 @@ class PostTestController extends AbstractController
                     0.2,
                     0.3,
                 ]),
+                new Assert\NotNull,
                 new F15,
             ]
         );
@@ -126,6 +129,7 @@ class PostTestController extends AbstractController
         $violations = $validator->validate(
             $cC4,
             [
+                new Assert\NotNull,
                 new F16,
             ]
         );
@@ -149,6 +153,7 @@ class PostTestController extends AbstractController
                     'def',
                     'ghi',
                 ]),
+                new Assert\NotNull,
                 new F5,
             ]
         );
@@ -172,6 +177,7 @@ class PostTestController extends AbstractController
                     2,
                     3,
                 ]),
+                new Assert\NotNull,
                 new F6,
             ]
         );
@@ -195,6 +201,7 @@ class PostTestController extends AbstractController
                     0.2,
                     0.3,
                 ]),
+                new Assert\NotNull,
                 new F7,
             ]
         );
@@ -213,6 +220,7 @@ class PostTestController extends AbstractController
                 new Assert\Choice(choices: [
                     true,
                 ]),
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {
@@ -235,6 +243,7 @@ class PostTestController extends AbstractController
                     'def',
                     'ghi',
                 ]),
+                new Assert\NotNull,
                 new F1,
             ]
         );
@@ -255,6 +264,7 @@ class PostTestController extends AbstractController
                     2,
                     3,
                 ]),
+                new Assert\NotNull,
                 new F2,
             ]
         );
@@ -276,6 +286,7 @@ class PostTestController extends AbstractController
                     0.3,
                     0.1,
                 ]),
+                new Assert\NotNull,
                 new F3,
             ]
         );
@@ -291,6 +302,7 @@ class PostTestController extends AbstractController
                 new Assert\Choice(choices: [
                     true,
                 ]),
+                new Assert\NotNull,
                 new F4,
             ]
         );
@@ -311,6 +323,7 @@ class PostTestController extends AbstractController
                     'def',
                     'ghi',
                 ]),
+                new Assert\NotNull,
                 new F9,
             ]
         );
@@ -334,6 +347,7 @@ class PostTestController extends AbstractController
                     2,
                     3,
                 ]),
+                new Assert\NotNull,
                 new F10,
             ]
         );
@@ -357,6 +371,7 @@ class PostTestController extends AbstractController
                     0.2,
                     0.3,
                 ]),
+                new Assert\NotNull,
                 new F13,
             ]
         );
@@ -372,6 +387,7 @@ class PostTestController extends AbstractController
         $violations = $validator->validate(
             $qQ4,
             [
+                new Assert\NotNull,
                 new F12,
             ]
         );

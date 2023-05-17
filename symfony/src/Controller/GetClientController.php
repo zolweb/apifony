@@ -55,6 +55,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $qAgrez,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {
@@ -69,6 +70,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $hAzef,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {
@@ -83,6 +85,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pClientId,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {
@@ -96,6 +99,7 @@ class GetClientController extends AbstractController
             [
                 new Assert\DivisibleBy(value: 1),
                 new Assert\LessThanOrEqual(value: 2),
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {
@@ -107,6 +111,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam4,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {
@@ -118,6 +123,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $pParam5,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {
@@ -129,6 +135,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $cAzgrzeg,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {
@@ -140,6 +147,7 @@ class GetClientController extends AbstractController
         $violations = $validator->validate(
             $hGegzer,
             [
+                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {
@@ -155,6 +163,7 @@ class GetClientController extends AbstractController
                     'item',
                     'item2',
                 ]),
+                new Assert\NotNull,
                 new Format,
             ]
         );
@@ -174,6 +183,7 @@ class GetClientController extends AbstractController
                     'item',
                     'item1',
                 ]),
+                new Assert\NotNull,
                 new Format,
             ]
         );

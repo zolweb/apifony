@@ -150,7 +150,7 @@ class Schema
     {
         $constraints = $this->type->getConstraints();
 
-        if ($this->nullable) {
+        if (!$this->nullable) {
             $constraints[] = new Constraint('Assert\NotNull', []);
         }
 
