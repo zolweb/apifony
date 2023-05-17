@@ -5,17 +5,17 @@ namespace App\Controller;
 
 interface {{ operation.handlerInterfaceName }}
 {
-{%~ for requestBodyContentTypeNormalizedName, requestBodyContentType in operation.allPossibleRequestBodyContentTypes %}
-    {%~ for responseBodyContentType in operation.responseBodyContentTypes %}
-    public function handle{{ requestBodyContentTypeNormalizedName }}{{ responseBodyContentType.name }}(
+{%~ for requestBodyPayloadTypeNormalizedName, requestBodyPayloadType in operation.allPossibleRequestBodyPayloadTypes %}
+    {%~ for responseContentTypeNormalizedName, responseContentType in operation.allPossibleResponseContentTypes %}
+    public function handle{{ requestBodyPayloadTypeNormalizedName }}PayloadTo{{ responseContentTypeNormalizedName }}Content(
         {%~ for param in operation.allSortedParameters %}
         {{ param.schema.type.methodParameterType }} ${{ param.variableName }},
         {%~ endfor %}
-        {%~ if requestBodyContentTypeNormalizedName is not same as ('Empty') %}
-        {{ requestBodyContentType.methodParameterType }} $content,
+        {%~ if requestBodyPayloadTypeNormalizedName is not same as ('Empty') %}
+        {{ requestBodyPayloadType.methodParameterType }} $requestBodyPayload,
         {%~ endif %}
     ):
-        {%~ for response in responseBodyContentType.responses %}
+        {%~ for response in operation.allPossibleResponsesForContentType(responseContentType) %}
         {{ response }}{%~ if not loop.last %} |
         {%~ else %};
         {%~ endif %}

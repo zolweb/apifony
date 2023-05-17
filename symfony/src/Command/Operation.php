@@ -103,6 +103,25 @@ class Operation
         return $responseContentTypes;
     }
 
+    public function getAllPossibleResponsesForContentType(?string $contentType): array
+    {
+        $responses = [];
+
+        foreach ($this->responses->responses as $response) {
+            if ($contentType === null && count($response->content) === 0) {
+                $responses[] = "{$response->className}Empty";
+            }
+
+            foreach ($response->content as $mediaType) {
+                if ($contentType === $mediaType->type) {
+                    $responses[] = $mediaType->className;
+                }
+            }
+        }
+
+        return $responses;
+    }
+
     /**
      * @return array<Parameter>
      */

@@ -19,7 +19,7 @@ class Responses
         $responses = new self();
         $responses->className = $className;
         $responses->responses = array_map(
-            fn (string $code) => Response::build($className, $code, $components, $data[$code]),
+            fn (string $code) => Response::build("{$className}{$code}", $code, $components, $data[$code]),
             array_filter(
                 array_keys($data),
                 static fn (string $code) => in_array($code, [

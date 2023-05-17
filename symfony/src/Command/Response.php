@@ -47,7 +47,7 @@ class Response
         );
         $response->content = array_map(
             fn (string $type) => MediaType::build(
-                sprintf('%s%sMediaType', $className, u($type)->camel()->title()),
+                sprintf('%s%s', $className, u($type)->camel()->title()),
                 $type,
                 $components,
                 $data['content'][$type],
@@ -65,46 +65,21 @@ class Response
     {
     }
 
-    /**
-     * @return array<string, Schema>
-     */
-    public function getAllPossibleResponseBodyPayloadTypes(): array
-    {
-        $responseBodyContentTypes = [];
-
-        foreach ($this->content as $mediaType) {
-            $responseBodyContentTypes[$mediaType->schema->type->getNormalizedType()] = $mediaType->schema;
-        }
-
-        return $responseBodyContentTypes;
-    }
-
     public function addFiles(array& $files): void
     {
         foreach ($this->headers as $header) {
             $header->addFiles($files);
         }
         foreach ($this->content as $mediaType) {
-            $mediaType->addFiles($files);
-        }
-        if (count($this->getAllPossibleResponseBodyPayloadTypes()) > 0) {
-            foreach ($this->getAllPossibleResponseBodyPayloadTypes() as $payloadType) {
-                if (!isset($files["{$this->className}{$this->code}{$payloadType->type->getNormalizedType()}"])) {
-                    $files["{$this->className}{$this->code}{$payloadType->type->getNormalizedType()}"] =
-                        ['template' => 'response.php.twig', 'params' => [
-                            'className' => "{$this->className}{$this->code}{$payloadType->type->getNormalizedType()}",
-                            'response' => $this,
-                            'payloadType' => $payloadType,
-                        ]];
-                }
+            if (!isset($files[$mediaType->className])) {
+                $files[$mediaType->className] =
+                    ['template' => 'response.php.twig', 'params' => ['response' => $this, 'mediaType' => $mediaType]];
+                $mediaType->addFiles($files);
             }
-        } else {
-            $files["{$this->className}{$this->code}Empty"] =
-                ['template' => 'response.php.twig', 'params' => [
-                    'className' => "{$this->className}{$this->code}Empty",
-                    'response' => $this,
-                    'payloadType' => null,
-                ]];
+        }
+        if (count($this->content) === 0 && !isset($files["{$this->className}Empty"])) {
+            $files["{$this->className}Empty"] =
+                ['template' => 'response.php.twig', 'params' => ['response' => $this, 'mediaType' => null]];
         }
     }
 }

@@ -2,13 +2,13 @@
 
 namespace App\Controller;
 
-class {{ className }}
+class {% if mediaType is not null %}{{ mediaType.className }}{% else %}{{ response.className ~ 'Empty' }}{% endif %}
 {
     public const code = '{{ response.code }}';
 
     public function __construct(
-{%~ if contentType is not null %}
-        public readonly {{ contentType.type.methodParameterType }} $content,
+{%~ if mediaType is not null %}
+        public readonly {{ mediaType.schema.type.methodParameterType }} $content,
 {%~ endif %}
 {%~ for header in response.headers %}
         public readonly {{ header.schema.type.methodParameterType }} ${{ header.name }},
