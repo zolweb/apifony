@@ -40,19 +40,19 @@ class ArrayType implements Type
         throw new Exception('Array parameters are not supported.');
     }
 
-    public function getContentInitializationFromRequest(): string
+    public function getRequestBodyPayloadInitializationFromRequest(): string
     {
         return (string)$this->schema->items->type === 'object' ?
-            "\$content = \$serializer->deserialize(\$request->getContent(), '{$this->schema->items->className}[]', JsonEncoder::FORMAT);" :
-            '$content = json_decode($request->getContent(), true)';
+            "\$requestBodyPayload = \$serializer->deserialize(\$request->getContent(), '{$this->schema->items->className}[]', JsonEncoder::FORMAT);" :
+            '$requestBodyPayload = json_decode($request->getContent(), true)';
     }
 
-    public function getContentValidationViolationsInitialization(): string
+    public function getRequestBodyPayloadValidationViolationsInitialization(): string
     {
         return (string)$this->schema->items->type === 'object' ?
-            '$violations = $validator->validate($content, [new Assert\Valid()]);' :
+            '$violations = $validator->validate($requestBodyPayload, [new Assert\Valid()]);' :
             sprintf(
-                "\$violations = \$validator->validate(\$content, [\n%s\n]);",
+                "\$violations = \$validator->validate(\$requestBodyPayload, [\n%s\n]);",
                 implode(
                     '',
                     array_map(
@@ -68,9 +68,9 @@ class ArrayType implements Type
         return "{$this->schema->items->type->getNormalizedType()}Array";
     }
 
-    public function getContentTypeChecking(): string
+    public function getRequestBodyPayloadTypeChecking(): string
     {
-        return "is_array(\$content) && {$this->schema->items->type->getContentTypeChecking()}";
+        return "is_array(\$requestBodyPayload) && {$this->schema->items->type->getRequestBodyPayloadTypeChecking()}";
     }
 
     public function getConstraints(): array

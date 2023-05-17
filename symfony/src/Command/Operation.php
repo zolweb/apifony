@@ -71,39 +71,36 @@ class Operation
         return u($this->operationId)->camel()->title();
     }
 
-    public function getAllPossibleRequestBodyContentTypes(): array
+    public function getAllPossibleRequestBodyPayloadTypes(): array
     {
-        $requestBodyContentTypes = [];
+        $requestBodyPayloadTypes = [];
 
         if ($this->requestBody === null || !$this->requestBody->required) {
-             $requestBodyContentTypes['Empty'] = null;
+             $requestBodyPayloadTypes['Empty'] = null;
         }
 
         foreach ($this->requestBody?->mediaTypes ?? [] as $mediaType) {
-            $requestBodyContentTypes[$mediaType->schema->type->getNormalizedType()] = $mediaType->schema->type;
+            $requestBodyPayloadTypes[$mediaType->schema->type->getNormalizedType()] = $mediaType->schema->type;
         }
 
-        return $requestBodyContentTypes;
+        return $requestBodyPayloadTypes;
     }
 
-    public function getResponseBodyContentTypes(): array
+    public function getAllPossibleResponseContentTypes(): array
     {
-        $responseBodyTypes = [];
+        $responseContentTypes = [];
 
         foreach ($this->responses->responses as $response) {
+            if (count($response->content) === 0) {
+                $responseContentTypes['Empty'] = null;
+            }
+
             foreach ($response->content as $mediaType) {
-                if (!isset($responseBodyTypes[$mediaType->type])) {
-                    $responseBodyTypes[$mediaType->type] = [
-                        'type' => $mediaType->type,
-                        'name' => u($mediaType->type)->camel()->title(),
-                        'responses' => [],
-                    ];
-                }
-                $responseBodyTypes[$mediaType->type]['responses'][] = "{$response->className}{$response->code}{$mediaType->schema->type->getNormalizedType()}";
+                $responseContentTypes[$mediaType->getNormalizedType()] = $mediaType->type;
             }
         }
 
-        return $responseBodyTypes;
+        return $responseContentTypes;
     }
 
     /**

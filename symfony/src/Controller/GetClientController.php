@@ -193,16 +193,16 @@ class GetClientController extends AbstractController
                 iterator_to_array($violations),
             );
         }
-        switch ($contentType = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'application/json':
-                $content = json_decode($request->getContent(), true);
-                $violations = $validator->validate($content, [
+                $requestBodyPayload = json_decode($request->getContent(), true);
+                $violations = $validator->validate($requestBodyPayload, [
 
 ]);
 
                 break;
             case 'unspecified':
-                $content = null;
+                $requestBodyPayload = null;
                 $violations = [];
 
                 break;
@@ -210,7 +210,7 @@ class GetClientController extends AbstractController
                 return new JsonResponse(
                     [
                         'code' => 'unsupported_request_type',
-                        'message' => "The value '$contentType' received in content-type header is not a supported format.",
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
                     ],
                     Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 );
@@ -230,12 +230,12 @@ class GetClientController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $responseContentType = $request->headers->get('accept', 'unspecified');
+        $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
-            case is_null($content):
-                $responseContent = match ($responseContentType) {
-                    'ApplicationJson' =>
-                        $handler->handleEmptyApplicationJson(
+            case is_null($requestBodyPayload):
+                $responsePayload = match ($responsePayloadContentType) {
+                    'application/json' =>
+                        $handler->handleEmptyPayloadToApplicationJsonContent(
                             $qAgrez,
                             $hAzef,
                             $pClientId,
@@ -247,25 +247,20 @@ class GetClientController extends AbstractController
                             $pParam1,
                             $pParam2,
                         ),
-                    default =>
-                        new class ($responseContentType) {
-                            public readonly int $code;
-                            /** @var array{code: string, message: string} */
-                            public readonly array $content;
-                            public function __construct(string $responseContentType)
-                            {
-                                $this->code = Response::HTTP_UNSUPPORTED_MEDIA_TYPE;
-                                $this->content = [
-                                    'code' => 'unsupported_response_type',
-                                    'message' => "The value '$responseContentType' received in accept header is not a supported format.",
-                                ];
-                            }
-                        },
+                    default => (object) [
+                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        'content' => [
+                            'code' => 'unsupported_response_type',
+                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                        ],
+                    ],
                 };
-            case is_int($content):
-                $responseContent = match ($responseContentType) {
-                    'ApplicationJson' =>
-                        $handler->handleIntegerApplicationJson(
+
+                break;
+            case is_int($requestBodyPayload):
+                $responsePayload = match ($responsePayloadContentType) {
+                    'application/json' =>
+                        $handler->handleIntegerPayloadToApplicationJsonContent(
                             $qAgrez,
                             $hAzef,
                             $pClientId,
@@ -276,23 +271,18 @@ class GetClientController extends AbstractController
                             $hGegzer,
                             $pParam1,
                             $pParam2,
-                            $content,
+                            $requestBodyPayload,
                         ),
-                    default =>
-                        new class ($responseContentType) {
-                            public readonly int $code;
-                            /** @var array{code: string, message: string} */
-                            public readonly array $content;
-                            public function __construct(string $responseContentType)
-                            {
-                                $this->code = Response::HTTP_UNSUPPORTED_MEDIA_TYPE;
-                                $this->content = [
-                                    'code' => 'unsupported_response_type',
-                                    'message' => "The value '$responseContentType' received in accept header is not a supported format.",
-                                ];
-                            }
-                        },
+                    default => (object) [
+                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        'content' => [
+                            'code' => 'unsupported_response_type',
+                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                        ],
+                    ],
                 };
+
+                break;
             default:
                 throw new RuntimeException();
         }

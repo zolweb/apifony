@@ -63,14 +63,14 @@ class ObjectType implements Type
         throw new Exception('Object parameters are not supported.');
     }
 
-    public function getContentInitializationFromRequest(): string
+    public function getRequestBodyPayloadInitializationFromRequest(): string
     {
-        return "\$content = \$serializer->deserialize(\$request->getContent(), '{$this->schema->className}', JsonEncoder::FORMAT);";
+        return "\$requestBodyPayload = \$serializer->deserialize(\$request->getContent(), '{$this->schema->className}', JsonEncoder::FORMAT);";
     }
 
-    public function getContentValidationViolationsInitialization(): string
+    public function getRequestBodyPayloadValidationViolationsInitialization(): string
     {
-        return '$violations = $validator->validate($content);';
+        return '$violations = $validator->validate($requestBodyPayload);';
     }
 
     public function getNormalizedType(): string
@@ -78,9 +78,9 @@ class ObjectType implements Type
         return $this->schema->className;
     }
 
-    public function getContentTypeChecking(): string
+    public function getRequestBodyPayloadTypeChecking(): string
     {
-        return "\$content instanceOf {$this->schema->className}";
+        return "\$requestBodyPayload instanceOf {$this->schema->className}";
     }
 
     public function getConstraints(): array

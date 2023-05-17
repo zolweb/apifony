@@ -35,15 +35,15 @@ class StringType implements Type
         return 'strval';
     }
 
-    public function getContentInitializationFromRequest(): string
+    public function getRequestBodyPayloadInitializationFromRequest(): string
     {
-        return '$content = json_decode($request->getContent(), true);';
+        return '$requestBodyPayload = json_decode($request->getContent(), true);';
     }
 
-    public function getContentValidationViolationsInitialization(): string
+    public function getRequestBodyPayloadValidationViolationsInitialization(): string
     {
         return sprintf(
-            "\$violations = \$validator->validate(\$content, [\n%s\n]);",
+            "\$violations = \$validator->validate(\$requestBodyPayload, [\n%s\n]);",
             implode(
                 '',
                 array_map(
@@ -59,9 +59,9 @@ class StringType implements Type
         return 'String';
     }
 
-    public function getContentTypeChecking(): string
+    public function getRequestBodyPayloadTypeChecking(): string
     {
-        return 'is_string($content)';
+        return 'is_string($requestBodyPayload)';
     }
 
     public function getConstraints(): array

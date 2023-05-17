@@ -68,7 +68,7 @@ class Response
     /**
      * @return array<string, Schema>
      */
-    public function getAllPossibleResponseBodyContentTypes(): array
+    public function getAllPossibleResponseBodyPayloadTypes(): array
     {
         $responseBodyContentTypes = [];
 
@@ -87,14 +87,14 @@ class Response
         foreach ($this->content as $mediaType) {
             $mediaType->addFiles($files);
         }
-        if (count($this->getAllPossibleResponseBodyContentTypes()) > 0) {
-            foreach ($this->getAllPossibleResponseBodyContentTypes() as $contentType) {
-                if (!isset($files["{$this->className}{$this->code}{$contentType->type->getNormalizedType()}"])) {
-                    $files["{$this->className}{$this->code}{$contentType->type->getNormalizedType()}"] =
+        if (count($this->getAllPossibleResponseBodyPayloadTypes()) > 0) {
+            foreach ($this->getAllPossibleResponseBodyPayloadTypes() as $payloadType) {
+                if (!isset($files["{$this->className}{$this->code}{$payloadType->type->getNormalizedType()}"])) {
+                    $files["{$this->className}{$this->code}{$payloadType->type->getNormalizedType()}"] =
                         ['template' => 'response.php.twig', 'params' => [
-                            'className' => "{$this->className}{$this->code}{$contentType->type->getNormalizedType()}",
+                            'className' => "{$this->className}{$this->code}{$payloadType->type->getNormalizedType()}",
                             'response' => $this,
-                            'contentType' => $contentType,
+                            'payloadType' => $payloadType,
                         ]];
                 }
             }
@@ -103,7 +103,7 @@ class Response
                 ['template' => 'response.php.twig', 'params' => [
                     'className' => "{$this->className}{$this->code}Empty",
                     'response' => $this,
-                    'contentType' => null,
+                    'payloadType' => null,
                 ]];
         }
     }

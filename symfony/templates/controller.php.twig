@@ -67,19 +67,19 @@ class {{ operation.controllerClassName }} extends AbstractController
     {%~ endif %}
 {%~ endfor %}
 {%~ if operation.requestBody %}
-        switch ($contentType = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
     {%~ for mediaType in operation.requestBody.mediaTypes %}
             case '{{ mediaType.type }}':
         {%~ if mediaType.type is same as ('application/json') %}
-                {{ mediaType.schema.type.contentInitializationFromRequest }}
-                {{ mediaType.schema.type.contentValidationViolationsInitialization }}
+                {{ mediaType.schema.type.requestBodyPayloadInitializationFromRequest }}
+                {{ mediaType.schema.type.requestBodyPayloadValidationViolationsInitialization }}
         {%~ endif %}
 
                 break;
     {%~ endfor %}
     {%~ if not operation.requestBody.required %}
             case 'unspecified':
-                $content = null;
+                $requestBodyPayload = null;
                 $violations = [];
 
                 break;
@@ -88,7 +88,7 @@ class {{ operation.controllerClassName }} extends AbstractController
                 return new JsonResponse(
                     [
                         'code' => 'unsupported_request_type',
-                        'message' => "The value '$contentType' received in content-type header is not a supported format.",
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
                     ],
                     Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 );
@@ -109,37 +109,32 @@ class {{ operation.controllerClassName }} extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $responseContentType = $request->headers->get('accept', 'unspecified');
+        $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
-{%~ for requestBodyContentTypeNormalizedName, requestBodyContentType in operation.allPossibleRequestBodyContentTypes %}
-            case {% if requestBodyContentTypeNormalizedName is same as ('Empty') %}is_null($content){% else %}{{ requestBodyContentType.contentTypeChecking }}{% endif %}:
-                $responseContent = match ($responseContentType) {
-    {%~ for responseBodyContentType in operation.responseBodyContentTypes %}
-                    '{{ responseBodyContentType.name }}' =>
-                        $handler->handle{{ requestBodyContentTypeNormalizedName }}{{ responseBodyContentType.name }}(
+{%~ for requestBodyPayloadTypeNormalizedName, requestBodyPayloadType in operation.allPossibleRequestBodyPayloadTypes %}
+            case {% if requestBodyPayloadTypeNormalizedName is same as ('Empty') %}is_null($requestBodyPayload){% else %}{{ requestBodyPayloadType.requestBodyPayloadTypeChecking }}{% endif %}:
+                $responsePayload = match ($responsePayloadContentType) {
+    {%~ for responseContentTypeNormalizedName, responseContentType in operation.allPossibleResponseContentTypes %}
+                    '{{ responseContentType }}' =>
+                        $handler->handle{{ requestBodyPayloadTypeNormalizedName }}PayloadTo{{ responseContentTypeNormalizedName }}Content(
         {%~ for param in operation.allSortedParameters %}
                             ${{ param.variableName }},
         {%~ endfor %}
-        {%~ if requestBodyContentTypeNormalizedName is not same as ('Empty') %}
-                            $content,
+        {%~ if requestBodyPayloadTypeNormalizedName is not same as ('Empty') %}
+                            $requestBodyPayload,
         {%~ endif %}
                         ),
     {%~ endfor %}
-                    default =>
-                        new class ($responseContentType) {
-                            public readonly int $code;
-                            /** @var array{code: string, message: string} */
-                            public readonly array $content;
-                            public function __construct(string $responseContentType)
-                            {
-                                $this->code = Response::HTTP_UNSUPPORTED_MEDIA_TYPE;
-                                $this->content = [
-                                    'code' => 'unsupported_response_type',
-                                    'message' => "The value '$responseContentType' received in accept header is not a supported format.",
-                                ];
-                            }
-                        },
+                    default => (object) [
+                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        'content' => [
+                            'code' => 'unsupported_response_type',
+                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                        ],
+                    ],
                 };
+
+                break;
 {%~ endfor %}
             default:
                 throw new RuntimeException();

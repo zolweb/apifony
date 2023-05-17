@@ -34,15 +34,15 @@ class IntegerType implements Type
         return 'intval';
     }
 
-    public function getContentInitializationFromRequest(): string
+    public function getRequestBodyPayloadInitializationFromRequest(): string
     {
-        return '$content = json_decode($request->getContent(), true);';
+        return '$requestBodyPayload = json_decode($request->getContent(), true);';
     }
 
-    public function getContentValidationViolationsInitialization(): string
+    public function getRequestBodyPayloadValidationViolationsInitialization(): string
     {
         return sprintf(
-            "\$violations = \$validator->validate(\$content, [\n%s\n]);",
+            "\$violations = \$validator->validate(\$requestBodyPayload, [\n%s\n]);",
             implode(
                 '',
                 array_map(
@@ -58,9 +58,9 @@ class IntegerType implements Type
         return 'Integer';
     }
 
-    public function getContentTypeChecking(): string
+    public function getRequestBodyPayloadTypeChecking(): string
     {
-        return 'is_int($content)';
+        return 'is_int($requestBodyPayload)';
     }
 
     public function getConstraints(): array

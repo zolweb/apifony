@@ -14,13 +14,13 @@ interface Type
 
     public function getStringToTypeCastFunction(): string;
 
-    public function getContentInitializationFromRequest(): string;
+    public function getRequestBodyPayloadInitializationFromRequest(): string;
 
-    public function getContentValidationViolationsInitialization(): string;
+    public function getRequestBodyPayloadValidationViolationsInitialization(): string;
 
     public function getNormalizedType(): string;
 
-    public function getContentTypeChecking(): string;
+    public function getRequestBodyPayloadTypeChecking(): string;
 
     /**
      * @return array<Constraint>
