@@ -10,4 +10,4 @@ class TestRespApplicationJsonMediaTypeSchema
         public readonly string $test,
     ) {
     }
-%}
+}

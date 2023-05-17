@@ -9,4 +9,4 @@ class UpdatePetApplicationJsonMediaTypeSchema
     public function __construct(
     ) {
     }
-%}
+}

@@ -20,4 +20,4 @@ class PetOwnerAddress
         public readonly array $phoneNumbers,
     ) {
     }
-%}
+}

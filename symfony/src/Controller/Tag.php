@@ -13,4 +13,4 @@ class Tag
         public readonly string $name,
     ) {
     }
-%}
+}

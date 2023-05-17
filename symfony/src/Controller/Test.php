@@ -74,4 +74,4 @@ class Test
         public readonly bool $a4 = true,
     ) {
     }
-%}
+}

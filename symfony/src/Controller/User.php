@@ -26,4 +26,4 @@ class User
         public readonly int $userStatus,
     ) {
     }
-%}
+}

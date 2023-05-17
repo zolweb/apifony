@@ -53,4 +53,4 @@ class Pet
         public readonly string $name = 'cool',
     ) {
     }
-%}
+}

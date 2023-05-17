@@ -13,4 +13,4 @@ class Category
         public readonly string $name,
     ) {
     }
-%}
+}

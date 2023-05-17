@@ -15,4 +15,4 @@ class ApiResponse
         public readonly string $message,
     ) {
     }
-%}
+}
