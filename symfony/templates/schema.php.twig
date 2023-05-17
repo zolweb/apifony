@@ -9,17 +9,17 @@ class {{ schema.className }}
 {
 {%~ if schema.type.arrayProperties %}
     /**
-    {%~ for property in schema.type.arrayProperties %}
-     * {{ property.phpDocParameterAnnotation }}
+    {%~ for name, property in schema.type.arrayProperties %}
+     * {{ property.phpDocParameterAnnotation(name) }}
     {%~ endfor %}
      */
 {%~ endif %}
     public function __construct(
-{%~ for property in schema.properties %}
+{%~ for name, property in schema.properties %}
     {%~ for constraint in property.constraints %}
         {{~ constraint.annotation(2) }}
     {%~ endfor %}
-        public readonly {{ property.methodParameter }},
+        public readonly {{ property.methodParameter(name) }},
     {%~ if not loop.last %}
 
     {%~ endif %}

@@ -47,7 +47,7 @@ class Test
         public readonly ?bool $a4 = true,
 
         #[Assert\Valid]
-        public readonly ?Test $,
+        public readonly ?Test $a5,
 
         #[Assert\Count(min: 1)]
         #[Assert\Count(max: 3)]

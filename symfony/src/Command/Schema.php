@@ -7,7 +7,6 @@ use function Symfony\Component\String\u;
 class Schema
 {
     public readonly string $className;
-    public readonly ?string $name;
     public readonly Type $type;
     public readonly bool $nullable;
     public readonly ?string $format;
@@ -26,7 +25,7 @@ class Schema
     public readonly ?int $minItems;
     public readonly ?int $maxItems;
     public readonly bool $uniqueItems;
-    /** @var null|array<Schema> */
+    /** @var null|array<string, Schema> */
     public readonly ?array $properties;
 
     /**
@@ -35,7 +34,7 @@ class Schema
      *
      * @throws Exception
      */
-    public static function build(string $className, array& $components, array $data, ?string $name = null): self
+    public static function build(string $className, array& $components, array $data): self
     {
         $schema = new self();
 
@@ -78,7 +77,6 @@ class Schema
         }
 
         $schema->className = $className;
-        $schema->name = $name;
         $schema->nullable = $nullable;
         $schema->format = $data['format'] ?? null;
         $schema->enum = $data['enum'] ?? null;
@@ -96,15 +94,18 @@ class Schema
         $schema->uniqueItems = $data['uniqueItems'] ?? false;
         $schema->items = isset($data['items']) ?
             Schema::build("{$className}List", $components, $data['items']) : null;
-        $schema->properties = isset($data['properties']) ? array_map(
-            fn (string $name) => Schema::build(
-                sprintf('%s%s', $className, u($name)->camel()->title()),
-                $components,
-                $data['properties'][$name],
-                $name,
-            ),
-            array_keys($data['properties']),
-        ) : null;
+        $schema->properties = isset($data['properties']) ?
+            array_combine(
+                $keys = array_keys($data['properties']),
+                array_map(
+                    fn (string $name) => Schema::build(
+                        sprintf('%s%s', $className, u($name)->camel()->title()),
+                        $components,
+                        $data['properties'][$name],
+                    ),
+                    $keys,
+                ),
+            ) : null;
 
         $schema->type = match ($type) {
             'string' => new StringType($schema),
@@ -142,23 +143,23 @@ class Schema
         return u($this->format)->camel()->title();
     }
 
-    public function getPhpDocParameterAnnotation(): string
+    public function getPhpDocParameterAnnotation(string $name): string
     {
         return sprintf(
             '@param %s%s $%s',
             $this->nullable ? '' : '?',
             $this->type->getPhpDocParameterAnnotationType(),
-            $this->name,
+            $name,
         );
     }
 
-    public function getMethodParameter(): string
+    public function getMethodParameter(string $name): string
     {
         return sprintf(
             '%s%s $%s%s',
             $this->nullable ? '' : '?',
             $this->type->getMethodParameterType(),
-            $this->name,
+            $name,
             $this->type->getMethodParameterDefault() !== null ? sprintf(
                 ' = %s',
                 $this->type->getMethodParameterDefault(),
