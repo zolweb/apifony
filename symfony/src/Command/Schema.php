@@ -143,20 +143,6 @@ class Schema
         return u($this->format)->camel()->title();
     }
 
-    public function getMethodParameter(string $name): string
-    {
-        return sprintf(
-            '%s%s $%s%s',
-            $this->nullable ? '' : '?',
-            $this->type->getMethodParameterType(),
-            $name,
-            $this->type->getMethodParameterDefault() !== null ? sprintf(
-                ' = %s',
-                $this->type->getMethodParameterDefault(),
-            ) : '',
-        );
-    }
-
     /**
      * @return array<Constraint>
      */

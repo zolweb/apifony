@@ -12,16 +12,16 @@ class Pet
      */
     public function __construct(
         #[Int64]
-        public readonly ?int $id,
+        public readonly int $id,
 
         #[Assert\Valid]
-        public readonly ?Category $category,
+        public readonly Category $category,
 
         #[Assert\All(constraints: [
             new Assert\Length(min: 3),
             new Assert\Length(max: 10),
         ])]
-        public readonly ?array $photoUrls,
+        public readonly array $photoUrls,
 
         #[Assert\Count(min: 2)]
         #[Assert\Count(max: 5)]
@@ -29,7 +29,7 @@ class Pet
         #[Assert\All(constraints: [
             new Assert\Valid,
         ])]
-        public readonly ?array $tags,
+        public readonly array $tags,
 
         #[Assert\Regex(pattern: 'A-z')]
         #[Assert\Choice(choices: [
@@ -38,10 +38,10 @@ class Pet
             'sold',
         ])]
         #[DateTime]
-        public readonly ?string $status,
+        public readonly string $status,
 
         #[Assert\Valid]
-        public readonly ?PetOwner $owner,
+        public readonly PetOwner $owner,
 
         #[Assert\Length(min: 2)]
         #[Assert\Length(max: 5)]
@@ -50,7 +50,7 @@ class Pet
             'flex',
             'lol',
         ])]
-        public readonly ?string $name = 'cool',
+        public readonly string $name = 'cool',
     ) {
     }
 %}

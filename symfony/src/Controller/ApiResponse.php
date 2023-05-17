@@ -8,11 +8,11 @@ class ApiResponse
 {
     public function __construct(
         #[Int32]
-        public readonly ?int $code,
+        public readonly int $code,
 
-        public readonly ?string $type,
+        public readonly string $type,
 
-        public readonly ?string $message,
+        public readonly string $message,
     ) {
     }
 %}

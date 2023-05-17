@@ -10,14 +10,14 @@ class PetOwnerAddress
      * @param array<PetOwnerAddressPhoneNumbersList> $phoneNumbers
      */
     public function __construct(
-        public readonly ?string $street,
+        public readonly string $street,
 
-        public readonly ?string $country,
+        public readonly string $country,
 
         #[Assert\All(constraints: [
             new Assert\Valid,
         ])]
-        public readonly ?array $phoneNumbers,
+        public readonly array $phoneNumbers,
     ) {
     }
 %}

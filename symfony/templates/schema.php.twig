@@ -19,7 +19,7 @@ class {{ schema.className }}
     {%~ for constraint in property.constraints %}
         {{~ constraint.annotation(2) }}
     {%~ endfor %}
-        public readonly {{ property.methodParameter(name) }},
+        public readonly {% if property.nullable %}?{% endif %}{{ property.type.methodParameterType }} ${{ name }}{% if property.default is not null %} = {{ property.type.methodParameterDefault }}{% endif %},
     {%~ if not loop.last %}
 
     {%~ endif %}
