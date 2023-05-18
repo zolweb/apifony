@@ -8,8 +8,8 @@ class LoginUser200ApplicationJson{
 
     public function __construct(
         public readonly string $payload,
-        public readonly int $X-Rate-Limit,
-        public readonly string $X-Expires-After,
+        public readonly int $xRateLimit,
+        public readonly string $xExpiresAfter,
     ) {
     }
 
@@ -19,8 +19,8 @@ class LoginUser200ApplicationJson{
     public function getHeaders(): array
     {
         return [
-            'X-Rate-Limit' => $this->X-Rate-Limit,
-            'X-Expires-After' => $this->X-Expires-After,
+            'X-Rate-Limit' => $this->xRateLimit,
+            'X-Expires-After' => $this->xExpiresAfter,
             'content-type' => self::CONTENT_TYPE,
         ];
     }

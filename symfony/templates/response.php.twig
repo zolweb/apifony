@@ -12,7 +12,7 @@ class {% if mediaType is not null %}{{ mediaType.className }}{% else %}{{ respon
         public readonly {{ mediaType.schema.type.methodParameterType }} $payload,
 {%~ endif %}
 {%~ for header in response.headers %}
-        public readonly {{ header.schema.type.methodParameterType }} ${{ header.name }},
+        public readonly {{ header.schema.type.methodParameterType }} ${{ header.name|u.camel }},
 {%~ endfor %}
     ) {
     }
@@ -24,7 +24,7 @@ class {% if mediaType is not null %}{{ mediaType.className }}{% else %}{{ respon
     {
         return [
 {%~ for header in response.headers %}
-            '{{ header.name }}' => $this->{{ header.name }},
+            '{{ header.name }}' => $this->{{ header.name|u.camel }},
 {%~ endfor %}
             'content-type' => self::CONTENT_TYPE,
         ];
