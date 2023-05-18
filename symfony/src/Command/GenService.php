@@ -65,7 +65,7 @@ class GenService extends AbstractExtension
             'template' => 'routing.yaml.twig',
             'params' => [
                 'namespace' => $namespace,
-                'pathItems' => $openApi->paths->pathItems,
+                'paths' => $openApi->paths,
             ],
         ];
 

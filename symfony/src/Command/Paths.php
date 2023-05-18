@@ -31,6 +31,28 @@ class Paths
     {
     }
 
+    /**
+     * @return array<Operation>
+     */
+    public function getAllSortedOperations(): array
+    {
+        $operations = array_merge(
+            ...array_map(
+                static fn (PathItem $pathItem) => $pathItem->operations,
+                $this->pathItems,
+            ),
+        );
+
+        usort(
+            $operations,
+            static fn (Operation $operation1, Operation $operation2) =>
+                $operation2->priority - $operation1->priority ?:
+                strcmp($operation1->operationId, $operation2->operationId),
+        );
+
+        return $operations;
+    }
+
     public function addFiles(array& $files): void
     {
         foreach ($this->pathItems as $pathItem) {
