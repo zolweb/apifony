@@ -33,7 +33,7 @@ class GenService extends AbstractExtension
 
         foreach (OpenApi::build($data)->getFiles() as $fileName => $file) {
             file_put_contents(
-                __DIR__."/../Controller/{$fileName}.php",
+                __DIR__."/../../openapi/invoicing/bundle/{$fileName}.php",
                 $this->twig->render($file['template'], $file['params']));
         }
     }

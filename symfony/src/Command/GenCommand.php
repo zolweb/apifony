@@ -19,7 +19,7 @@ class GenCommand extends Command
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $spec = Yaml::parse(file_get_contents(__DIR__.'/openapi.yaml'));
+        $spec = Yaml::parse(file_get_contents(__DIR__.'/../../openapi/invoicing/openapi.yaml'));
 
         $this->genService->generate($spec);
 
