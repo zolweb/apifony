@@ -112,15 +112,15 @@ class {{ operation.controllerClassName }} extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
 {%~ for requestBodyPayloadTypeNormalizedName, requestBodyPayloadType in operation.allPossibleRequestBodyPayloadTypes %}
-            case {% if requestBodyPayloadTypeNormalizedName is same as ('Empty') %}is_null($requestBodyPayload){% else %}{{ requestBodyPayloadType.requestBodyPayloadTypeChecking }}{% endif %}:
+            case {% if requestBodyPayloadType is null %}is_null($requestBodyPayload){% else %}{{ requestBodyPayloadType.requestBodyPayloadTypeChecking }}{% endif %}:
                 $responsePayload = match ($responsePayloadContentType) {
     {%~ for responseContentTypeNormalizedName, responseContentType in operation.allPossibleResponseContentTypes %}
-                    '{{ responseContentType }}' =>
+                    {% if responseContentType is null %}null{% else %}'{{ responseContentType }}'{% endif %} =>
                         $handler->handle{{ requestBodyPayloadTypeNormalizedName }}PayloadTo{{ responseContentTypeNormalizedName }}Content(
         {%~ for param in operation.allSortedParameters %}
                             ${{ param.variableName }},
         {%~ endfor %}
-        {%~ if requestBodyPayloadTypeNormalizedName is not same as ('Empty') %}
+        {%~ if requestBodyPayloadType is not null %}
                             $requestBodyPayload,
         {%~ endif %}
                         ),
@@ -135,6 +135,18 @@ class {{ operation.controllerClassName }} extends AbstractController
                 };
 
                 break;
+{%~ endfor %}
+            default:
+                throw new RuntimeException();
+        }
+        switch ($responsePayload::CONTENT_TYPE) {
+{%~ for responseContentType in operation.allPossibleResponseContentTypes %}
+            case {% if responseContentType is null %}null{% else %}'{{ responseContentType }}'{% endif %}:
+    {%~ if responseContentType is null %}
+                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+    {%~ elseif responseContentType is same as ('application/json') %}
+                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+    {%~ endif %}
 {%~ endfor %}
             default:
                 throw new RuntimeException();

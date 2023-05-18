@@ -3,9 +3,20 @@
 namespace App\Controller;
 
 class UpdatePetWithForm405Empty{
-    public const code = '405';
+    public const CODE = '405';
+    public const CONTENT_TYPE = null;
 
     public function __construct(
     ) {
+    }
+
+    /**
+     * @array<string, string>
+     */
+    public function getHeaders(): array
+    {
+        return [
+            'content-type' => self::CONTENT_TYPE,
+        ];
     }
 }

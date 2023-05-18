@@ -3,9 +3,20 @@
 namespace App\Controller;
 
 class UpdateUser201Empty{
-    public const code = '201';
+    public const CODE = '201';
+    public const CONTENT_TYPE = null;
 
     public function __construct(
     ) {
+    }
+
+    /**
+     * @array<string, string>
+     */
+    public function getHeaders(): array
+    {
+        return [
+            'content-type' => self::CONTENT_TYPE,
+        ];
     }
 }

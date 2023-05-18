@@ -3,10 +3,21 @@
 namespace App\Controller;
 
 class GetClient201ApplicationJson{
-    public const code = '201';
+    public const CODE = '201';
+    public const CONTENT_TYPE = 'application/json';
 
     public function __construct(
-        public readonly GetClient201ApplicationJsonSchema $content,
+        public readonly GetClient201ApplicationJsonSchema $payload,
     ) {
+    }
+
+    /**
+     * @array<string, string>
+     */
+    public function getHeaders(): array
+    {
+        return [
+            'content-type' => self::CONTENT_TYPE,
+        ];
     }
 }

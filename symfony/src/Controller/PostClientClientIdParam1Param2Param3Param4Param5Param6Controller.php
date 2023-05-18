@@ -171,5 +171,11 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6Controller extends A
             default:
                 throw new RuntimeException();
         }
+        switch ($responsePayload::CONTENT_TYPE) {
+            case 'application/json':
+                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+            default:
+                throw new RuntimeException();
+        }
     }
 }

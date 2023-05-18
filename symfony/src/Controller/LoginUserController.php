@@ -73,7 +73,7 @@ class LoginUserController extends AbstractController
                             $qPassword,
                             $qUsername,
                         ),
-                    '' =>
+                    null =>
                         $handler->handleEmptyPayloadToEmptyContent(
                             $qPassword,
                             $qUsername,
@@ -88,6 +88,14 @@ class LoginUserController extends AbstractController
                 };
 
                 break;
+            default:
+                throw new RuntimeException();
+        }
+        switch ($responsePayload::CONTENT_TYPE) {
+            case 'application/json':
+                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+            case null:
+                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
             default:
                 throw new RuntimeException();
         }

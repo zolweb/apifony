@@ -66,7 +66,7 @@ class UpdatePetController extends AbstractController
                         $handler->handleUpdatePetApplicationJsonMediaTypeSchemaPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         ),
-                    '' =>
+                    null =>
                         $handler->handleUpdatePetApplicationJsonMediaTypeSchemaPayloadToEmptyContent(
                             $requestBodyPayload,
                         ),
@@ -80,6 +80,14 @@ class UpdatePetController extends AbstractController
                 };
 
                 break;
+            default:
+                throw new RuntimeException();
+        }
+        switch ($responsePayload::CONTENT_TYPE) {
+            case 'application/json':
+                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+            case null:
+                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
             default:
                 throw new RuntimeException();
         }

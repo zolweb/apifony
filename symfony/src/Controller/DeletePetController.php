@@ -73,7 +73,7 @@ class DeletePetController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
-                    '' =>
+                    null =>
                         $handler->handleEmptyPayloadToEmptyContent(
                             $hApi_key,
                             $pPetId,
@@ -88,6 +88,12 @@ class DeletePetController extends AbstractController
                 };
 
                 break;
+            default:
+                throw new RuntimeException();
+        }
+        switch ($responsePayload::CONTENT_TYPE) {
+            case null:
+                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
             default:
                 throw new RuntimeException();
         }

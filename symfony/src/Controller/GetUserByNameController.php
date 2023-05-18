@@ -63,7 +63,7 @@ class GetUserByNameController extends AbstractController
                         $handler->handleEmptyPayloadToApplicationJsonContent(
                             $pUsername,
                         ),
-                    '' =>
+                    null =>
                         $handler->handleEmptyPayloadToEmptyContent(
                             $pUsername,
                         ),
@@ -77,6 +77,14 @@ class GetUserByNameController extends AbstractController
                 };
 
                 break;
+            default:
+                throw new RuntimeException();
+        }
+        switch ($responsePayload::CONTENT_TYPE) {
+            case 'application/json':
+                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+            case null:
+                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
             default:
                 throw new RuntimeException();
         }

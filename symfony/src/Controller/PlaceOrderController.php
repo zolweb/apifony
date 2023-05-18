@@ -70,7 +70,7 @@ class PlaceOrderController extends AbstractController
                     'application/json' =>
                         $handler->handleEmptyPayloadToApplicationJsonContent(
                         ),
-                    '' =>
+                    null =>
                         $handler->handleEmptyPayloadToEmptyContent(
                         ),
                     default => (object) [
@@ -89,7 +89,7 @@ class PlaceOrderController extends AbstractController
                         $handler->handleOrderPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         ),
-                    '' =>
+                    null =>
                         $handler->handleOrderPayloadToEmptyContent(
                             $requestBodyPayload,
                         ),
@@ -103,6 +103,14 @@ class PlaceOrderController extends AbstractController
                 };
 
                 break;
+            default:
+                throw new RuntimeException();
+        }
+        switch ($responsePayload::CONTENT_TYPE) {
+            case 'application/json':
+                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+            case null:
+                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
             default:
                 throw new RuntimeException();
         }

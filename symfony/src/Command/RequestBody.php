@@ -57,11 +57,6 @@ class RequestBody
     {
     }
 
-    public function getMethodParameterType(): string
-    {
-        return 'Lol';
-    }
-
     public function addFiles(array& $files): void
     {
         foreach ($this->mediaTypes as $mediaType) {

@@ -3,10 +3,21 @@
 namespace App\Controller;
 
 class PostTest201ApplicationJson{
-    public const code = '201';
+    public const CODE = '201';
+    public const CONTENT_TYPE = 'application/json';
 
     public function __construct(
-        public readonly Test $content,
+        public readonly Test $payload,
     ) {
+    }
+
+    /**
+     * @array<string, string>
+     */
+    public function getHeaders(): array
+    {
+        return [
+            'content-type' => self::CONTENT_TYPE,
+        ];
     }
 }

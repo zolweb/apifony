@@ -4,15 +4,29 @@ namespace App\Controller;
 
 class {% if mediaType is not null %}{{ mediaType.className }}{% else %}{{ response.className ~ 'Empty' }}{% endif %}
 {
-    public const code = '{{ response.code }}';
+    public const CODE = '{{ response.code }}';
+    public const CONTENT_TYPE = {% if mediaType is not null %}'{{ mediaType.type }}'{% else %}null{% endif %};
 
     public function __construct(
 {%~ if mediaType is not null %}
-        public readonly {{ mediaType.schema.type.methodParameterType }} $content,
+        public readonly {{ mediaType.schema.type.methodParameterType }} $payload,
 {%~ endif %}
 {%~ for header in response.headers %}
         public readonly {{ header.schema.type.methodParameterType }} ${{ header.name }},
 {%~ endfor %}
     ) {
+    }
+
+    /**
+     * @array<string, string>
+     */
+    public function getHeaders(): array
+    {
+        return [
+{%~ for header in response.headers %}
+            '{{ header.name }}' => $this->{{ header.name }},
+{%~ endfor %}
+            'content-type' => self::CONTENT_TYPE,
+        ];
     }
 }

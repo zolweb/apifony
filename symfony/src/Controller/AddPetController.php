@@ -66,7 +66,7 @@ class AddPetController extends AbstractController
                         $handler->handlePetPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         ),
-                    '' =>
+                    null =>
                         $handler->handlePetPayloadToEmptyContent(
                             $requestBodyPayload,
                         ),
@@ -80,6 +80,14 @@ class AddPetController extends AbstractController
                 };
 
                 break;
+            default:
+                throw new RuntimeException();
+        }
+        switch ($responsePayload::CONTENT_TYPE) {
+            case 'application/json':
+                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+            case null:
+                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
             default:
                 throw new RuntimeException();
         }

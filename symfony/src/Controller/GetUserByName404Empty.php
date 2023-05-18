@@ -3,9 +3,20 @@
 namespace App\Controller;
 
 class GetUserByName404Empty{
-    public const code = '404';
+    public const CODE = '404';
+    public const CONTENT_TYPE = null;
 
     public function __construct(
     ) {
+    }
+
+    /**
+     * @array<string, string>
+     */
+    public function getHeaders(): array
+    {
+        return [
+            'content-type' => self::CONTENT_TYPE,
+        ];
     }
 }

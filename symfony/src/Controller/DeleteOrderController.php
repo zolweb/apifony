@@ -60,7 +60,7 @@ class DeleteOrderController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
-                    '' =>
+                    null =>
                         $handler->handleEmptyPayloadToEmptyContent(
                             $pOrderId,
                         ),
@@ -74,6 +74,12 @@ class DeleteOrderController extends AbstractController
                 };
 
                 break;
+            default:
+                throw new RuntimeException();
+        }
+        switch ($responsePayload::CONTENT_TYPE) {
+            case null:
+                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
             default:
                 throw new RuntimeException();
         }
