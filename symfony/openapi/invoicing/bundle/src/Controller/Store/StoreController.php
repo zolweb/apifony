@@ -16,11 +16,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class StoreController extends AbstractController
 {
-    #[Route(
-        path: '/store/inventory',
-        methods: ['get'],
-        priority: 0,
-    )]
     public function getInventory(
         Request $request,
         SerializerInterface $serializer,
@@ -66,11 +61,6 @@ class StoreController extends AbstractController
         }
     }
 
-    #[Route(
-        path: '/store/order',
-        methods: ['post'],
-        priority: 0,
-    )]
     public function placeOrder(
         Request $request,
         SerializerInterface $serializer,
@@ -166,14 +156,6 @@ class StoreController extends AbstractController
         }
     }
 
-    #[Route(
-        path: '/store/order/{orderId}',
-        requirements: [
-            'orderId' => '-?(0|[1-9]\\d*)',
-        ],
-        methods: ['get'],
-        priority: 0,
-    )]
     public function getOrderById(
         Request $request,
         SerializerInterface $serializer,
@@ -241,14 +223,6 @@ class StoreController extends AbstractController
         }
     }
 
-    #[Route(
-        path: '/store/order/{orderId}',
-        requirements: [
-            'orderId' => '-?(0|[1-9]\\d*)',
-        ],
-        methods: ['delete'],
-        priority: 0,
-    )]
     public function deleteOrder(
         Request $request,
         SerializerInterface $serializer,

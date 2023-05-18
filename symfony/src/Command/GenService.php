@@ -37,7 +37,9 @@ class GenService extends AbstractExtension
             }
         );
 
-        $files = OpenApi::build($data)->getFiles();
+        $openApi = OpenApi::build($data);
+
+        $files = $openApi->getFiles();
         $files[] = [
             'folder' => '',
             'name' => 'composer.json',
@@ -55,6 +57,15 @@ class GenService extends AbstractExtension
             'params' => [
                 'namespace' => $namespace,
                 'bundleName' => $bundleName,
+            ],
+        ];
+        $files[] = [
+            'folder' => 'config',
+            'name' => 'routing.yaml',
+            'template' => 'routing.yaml.twig',
+            'params' => [
+                'namespace' => $namespace,
+                'pathItems' => $openApi->paths->pathItems,
             ],
         ];
 

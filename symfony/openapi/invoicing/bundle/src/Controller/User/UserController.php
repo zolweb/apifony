@@ -16,11 +16,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class UserController extends AbstractController
 {
-    #[Route(
-        path: '/user',
-        methods: ['post'],
-        priority: 0,
-    )]
     public function createUser(
         Request $request,
         SerializerInterface $serializer,
@@ -107,11 +102,6 @@ class UserController extends AbstractController
         }
     }
 
-    #[Route(
-        path: '/user/createWithList',
-        methods: ['post'],
-        priority: 0,
-    )]
     public function createUsersWithListInput(
         Request $request,
         SerializerInterface $serializer,
@@ -207,11 +197,6 @@ class UserController extends AbstractController
         }
     }
 
-    #[Route(
-        path: '/user/login',
-        methods: ['get'],
-        priority: 0,
-    )]
     public function loginUser(
         Request $request,
         SerializerInterface $serializer,
@@ -292,11 +277,6 @@ class UserController extends AbstractController
         }
     }
 
-    #[Route(
-        path: '/user/logout',
-        methods: ['get'],
-        priority: 0,
-    )]
     public function logoutUser(
         Request $request,
         SerializerInterface $serializer,
@@ -342,14 +322,6 @@ class UserController extends AbstractController
         }
     }
 
-    #[Route(
-        path: '/user/{username}',
-        requirements: [
-            'username' => '[^:/?#[]@!$&\'()*+,;=]+',
-        ],
-        methods: ['get'],
-        priority: 0,
-    )]
     public function getUserByName(
         Request $request,
         SerializerInterface $serializer,
@@ -416,14 +388,6 @@ class UserController extends AbstractController
         }
     }
 
-    #[Route(
-        path: '/user/{username}',
-        requirements: [
-            'username' => '[^:/?#[]@!$&\'()*+,;=]+',
-        ],
-        methods: ['put'],
-        priority: 0,
-    )]
     public function updateUser(
         Request $request,
         SerializerInterface $serializer,
@@ -526,14 +490,6 @@ class UserController extends AbstractController
         }
     }
 
-    #[Route(
-        path: '/user/{username}',
-        requirements: [
-            'username' => '[^:/?#[]@!$&\'()*+,;=]+',
-        ],
-        methods: ['delete'],
-        priority: 0,
-    )]
     public function deleteUser(
         Request $request,
         SerializerInterface $serializer,

@@ -16,11 +16,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class PetController extends AbstractController
 {
-    #[Route(
-        path: '/pet',
-        methods: ['put'],
-        priority: 0,
-    )]
     public function updatePet(
         Request $request,
         SerializerInterface $serializer,
@@ -93,11 +88,6 @@ class PetController extends AbstractController
         }
     }
 
-    #[Route(
-        path: '/pet',
-        methods: ['post'],
-        priority: 0,
-    )]
     public function addPet(
         Request $request,
         SerializerInterface $serializer,
@@ -170,11 +160,6 @@ class PetController extends AbstractController
         }
     }
 
-    #[Route(
-        path: '/pet/findByStatus',
-        methods: ['get'],
-        priority: 0,
-    )]
     public function findPetsByStatus(
         Request $request,
         SerializerInterface $serializer,
@@ -245,11 +230,6 @@ class PetController extends AbstractController
         }
     }
 
-    #[Route(
-        path: '/pet/findByTags',
-        methods: ['get'],
-        priority: 0,
-    )]
     public function findPetsByTags(
         Request $request,
         SerializerInterface $serializer,
@@ -315,14 +295,6 @@ class PetController extends AbstractController
         }
     }
 
-    #[Route(
-        path: '/pet/{petId}',
-        requirements: [
-            'petId' => '-?(0|[1-9]\\d*)',
-        ],
-        methods: ['get'],
-        priority: 0,
-    )]
     public function getPetById(
         Request $request,
         SerializerInterface $serializer,
@@ -390,14 +362,6 @@ class PetController extends AbstractController
         }
     }
 
-    #[Route(
-        path: '/pet/{petId}',
-        requirements: [
-            'petId' => '-?(0|[1-9]\\d*)',
-        ],
-        methods: ['post'],
-        priority: 0,
-    )]
     public function updatePetWithForm(
         Request $request,
         SerializerInterface $serializer,
@@ -487,14 +451,6 @@ class PetController extends AbstractController
         }
     }
 
-    #[Route(
-        path: '/pet/{petId}',
-        requirements: [
-            'petId' => '-?(0|[1-9]\\d*)',
-        ],
-        methods: ['delete'],
-        priority: 0,
-    )]
     public function deletePet(
         Request $request,
         SerializerInterface $serializer,
@@ -570,14 +526,6 @@ class PetController extends AbstractController
         }
     }
 
-    #[Route(
-        path: '/pet/{petId}/uploadImage',
-        requirements: [
-            'petId' => '-?(0|[1-9]\\d*)',
-        ],
-        methods: ['post'],
-        priority: 0,
-    )]
     public function uploadFile(
         Request $request,
         SerializerInterface $serializer,

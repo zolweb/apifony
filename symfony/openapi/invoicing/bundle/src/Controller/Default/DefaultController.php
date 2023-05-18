@@ -16,19 +16,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 class DefaultController extends AbstractController
 {
-    #[Route(
-        path: '/client/{clientId}/{param1}/{param2}/{param3}/{param4}/{param5}',
-        requirements: [
-            'clientId' => '[^:/?#[]@!$&\'()*+,;=]+',
-            'param3' => '-?(0|[1-9]\\d*)(\\.\\d+)?([eE][+-]?\\d+)?',
-            'param4' => '-?(0|[1-9]\\d*)',
-            'param5' => 'true|false',
-            'param1' => '[^:/?#[]@!$&\'()*+,;=]+',
-            'param2' => 'item',
-        ],
-        methods: ['get'],
-        priority: 1,
-    )]
     public function getClient(
         Request $request,
         SerializerInterface $serializer,
@@ -294,19 +281,6 @@ class DefaultController extends AbstractController
         }
     }
 
-    #[Route(
-        path: '/client/{clientId}/{param1}/{param2}/{param3}/{param4}/{param5}',
-        requirements: [
-            'clientId' => '[^:/?#[]@!$&\'()*+,;=]+',
-            'param3' => '-?(0|[1-9]\\d*)(\\.\\d+)?([eE][+-]?\\d+)?',
-            'param4' => '-?(0|[1-9]\\d*)',
-            'param5' => 'true|false',
-            'param1' => '[^:/?#[]@!$&\'()*+,;=]+',
-            'param2' => 'item',
-        ],
-        methods: ['post'],
-        priority: 0,
-    )]
     public function postClientClientIdParam1Param2Param3Param4Param5Param6(
         Request $request,
         SerializerInterface $serializer,
@@ -457,17 +431,6 @@ class DefaultController extends AbstractController
         }
     }
 
-    #[Route(
-        path: '/test/{p1}/{p2}/{p3}/{p4}',
-        requirements: [
-            'p1' => '[a-z]{3}',
-            'p2' => '-?(0|[1-9]\\d*)',
-            'p3' => '-?(0|[1-9]\\d*)(\\.\\d+)?([eE][+-]?\\d+)?',
-            'p4' => 'true|false',
-        ],
-        methods: ['post'],
-        priority: 0,
-    )]
     public function postTest(
         Request $request,
         SerializerInterface $serializer,

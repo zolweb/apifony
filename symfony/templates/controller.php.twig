@@ -18,18 +18,6 @@ use Symfony\Component\Validator\Validator\ValidatorInterface;
 class {{ className }} extends AbstractController
 {
 {%~ for operation in operations %}
-    #[Route(
-        path: '{{ operation.pathItem.route }}',
-{%~ if operation.allSortedParameters(['path']) %}
-        requirements: [
-    {%~ for param in operation.allSortedParameters(['path']) %}
-            '{{ param.name }}' => '{{ param.schema.type.routeRequirementPattern|e('phpSingleQuotedString') }}',
-    {%~ endfor %}
-        ],
-{%~ endif %}
-        methods: ['{{ operation.method }}'],
-        priority: {{ operation.priority }},
-    )]
     public function {{ operation.operationId|u.camel }}(
         Request $request,
         SerializerInterface $serializer,
