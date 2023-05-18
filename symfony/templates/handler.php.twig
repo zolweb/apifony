@@ -3,8 +3,9 @@
 
 namespace App\Controller;
 
-interface {{ operation.handlerInterfaceName }}
+interface {{ interfaceName }}
 {
+{%~ for operation in operations %}
 {%~ for requestBodyPayloadTypeNormalizedName, requestBodyPayloadType in operation.allPossibleRequestBodyPayloadTypes %}
     {%~ for responseContentTypeNormalizedName, responseContentType in operation.allPossibleResponseContentTypes %}
     public function handle{{ requestBodyPayloadTypeNormalizedName }}PayloadTo{{ responseContentTypeNormalizedName }}Content(
@@ -21,6 +22,10 @@ interface {{ operation.handlerInterfaceName }}
         {%~ endif %}
         {%~ endfor %}
     {%~ endfor %}
+    {%~ if not loop.last %}
+
+    {%~ endif %}
+{%~ endfor %}
     {%~ if not loop.last %}
 
     {%~ endif %}

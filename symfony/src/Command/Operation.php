@@ -14,6 +14,8 @@ class Operation
     public readonly array $parameters;
     public readonly ?RequestBody $requestBody;
     public readonly ?Responses $responses;
+    /** @var array<string> */
+    public readonly array $tags;
 
     /**
      * @param array<mixed> $components
@@ -48,27 +50,13 @@ class Operation
                 $components,
                 $data['responses'],
             ) : null;
+        $operation->tags = $data['tags'] ?? [];
 
         return $operation;
     }
 
     private function __construct()
     {
-    }
-
-    public function getControllerClassName(): string
-    {
-        return "{$this->getNormalizedName()}Controller";
-    }
-
-    public function getHandlerInterfaceName(): string
-    {
-        return "{$this->getNormalizedName()}HandlerInterface";
-    }
-
-    public function getNormalizedName(): string
-    {
-        return u($this->operationId)->camel()->title();
     }
 
     public function getAllPossibleRequestBodyPayloadTypes(): array
@@ -154,9 +142,26 @@ class Operation
 
     public function addFiles(array& $files): void
     {
-        if (!isset($files[$this->getControllerClassName()])) {
-            $files[$this->getControllerClassName()] = ['template' => 'controller.php.twig', 'params' => ['operation' => $this]];
-            $files[$this->getHandlerInterfaceName()] = ['template' => 'handler.php.twig', 'params' => ['operation' => $this]];
+        $baseName = isset($this->tags[0]) ? u($this->tags[0])->camel()->title() : 'Default';
+        $controllerClassName = "{$baseName}Controller";
+        $handlerInterfaceName = "{$baseName}HandlerInterface";
+
+        if (!isset($files[$controllerClassName])) {
+            $files[$controllerClassName] = [
+                'template' => 'controller.php.twig',
+                'params' => [
+                    'className' => $controllerClassName,
+                    'interfaceName' => $handlerInterfaceName,
+                    'operations' => [$this],
+                ],
+            ];
+            $files[$handlerInterfaceName] = [
+                'template' => 'handler.php.twig',
+                'params' => [
+                    'interfaceName' => $handlerInterfaceName,
+                    'operations' => [$this],
+                ],
+            ];
 
             foreach ($this->parameters as $parameter) {
                 $parameter->addFiles($files);
@@ -164,6 +169,9 @@ class Operation
 
             $this->requestBody?->addFiles($files);
             $this->responses?->addFiles($files);
+        } else {
+            $files[$controllerClassName]['params']['operations'][] = $this;
+            $files[$handlerInterfaceName]['params']['operations'][] = $this;
         }
     }
 }

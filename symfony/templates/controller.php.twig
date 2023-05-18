@@ -15,8 +15,9 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class {{ operation.controllerClassName }} extends AbstractController
+class {{ className }} extends AbstractController
 {
+{%~ for operation in operations %}
     #[Route(
         path: '{{ operation.pathItem.route }}',
 {%~ if operation.allSortedParameters(['path']) %}
@@ -29,11 +30,11 @@ class {{ operation.controllerClassName }} extends AbstractController
         methods: ['{{ operation.method }}'],
         priority: {{ operation.priority }},
     )]
-    public function handle(
+    public function {{ operation.operationId|u.camel }}(
         Request $request,
         SerializerInterface $serializer,
         ValidatorInterface $validator,
-        {{ operation.handlerInterfaceName }} $handler,
+        {{ interfaceName }} $handler,
 {%~ for param in operation.allSortedParameters(['path']) %}
         {{ param.schema.type.methodParameterType }} ${{ param.name }},
 {%~ endfor %}
@@ -152,5 +153,9 @@ class {{ operation.controllerClassName }} extends AbstractController
                 throw new RuntimeException();
         }
     }
+    {%~ if not loop.last %}
+
+    {%~ endif %}
+{%~ endfor %}
 }
 {% endautoescape %}
