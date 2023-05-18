@@ -90,12 +90,12 @@ class ObjectType implements Type
 
     public function addFiles(array& $files, string $folder): void
     {
-        $folder = $this->schema->isComponent ? 'Schema' : $folder;
+        $folder = $this->schema->isComponent ? 'src/Schema' : $folder;
 
-        if (!isset($files["{$folder}/{$this->schema->className}"])) {
-            $files["{$folder}/{$this->schema->className}"] = [
+        if (!isset($files["{$folder}/{$this->schema->className}.php"])) {
+            $files["{$folder}/{$this->schema->className}.php"] = [
                 'folder' => $folder,
-                'name' => $this->schema->className,
+                'name' => "{$this->schema->className}.php",
                 'template' => 'schema.php.twig',
                 'params' => [
                     'schema' => $this->schema,

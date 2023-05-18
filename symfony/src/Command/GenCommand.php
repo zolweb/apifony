@@ -21,7 +21,12 @@ class GenCommand extends Command
     {
         $spec = Yaml::parse(file_get_contents(__DIR__.'/../../openapi/invoicing/openapi.yaml'));
 
-        $this->genService->generate($spec);
+        $this->genService->generate(
+            $spec,
+            'InvoicingOpenApiServer',
+            'App\\Zol\\Invoicing\\Presentation\\Api\\Bundle',
+            'zol/invoicing-api',
+        );
 
         return 0;
     }

@@ -28,7 +28,8 @@
         "symfony/yaml": "6.2.*",
         "twig/extra-bundle": "^2.12|^3.0",
         "twig/string-extra": "^3.6",
-        "twig/twig": "^2.12|^3.0"
+        "twig/twig": "^2.12|^3.0",
+        "zol/invoicing-api": "dev-master"
     },
     "config": {
         "allow-plugins": {
@@ -77,5 +78,11 @@
             "allow-contrib": false,
             "require": "6.2.*"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "openapi/invoicing/bundle"
+        }
+    ]
 }

@@ -154,28 +154,28 @@ class Schema
         $constraintClassName = "{$baseName}";
         $validatorClassName = "{$baseName}Validator";
 
-        if ($this->format !== null && !isset($files["Format/{$definitionInterfaceName}"])) {
-            $files["Format/{$definitionInterfaceName}"] = [
-                'folder' => 'Format',
-                'name' => $definitionInterfaceName,
+        if ($this->format !== null && !isset($files["src/Format/{$definitionInterfaceName}.php"])) {
+            $files["src/Format/{$definitionInterfaceName}.php"] = [
+                'folder' => 'src/Format',
+                'name' => "{$definitionInterfaceName}.php",
                 'template' => 'format-definition.php.twig',
                 'params' => [
                     'schema' => $this,
                     'definitionInterfaceName' => $definitionInterfaceName,
                 ],
             ];
-            $files["Format/{$constraintClassName}"] = [
-                'folder' => 'Format',
-                'name' => $constraintClassName,
+            $files["src/Format/{$constraintClassName}.php"] = [
+                'folder' => 'src/Format',
+                'name' => "{$constraintClassName}.php",
                 'template' => 'format-constraint.php.twig',
                 'params' => [
                     'schema' => $this,
                     'constraintClassName' => $constraintClassName,
                 ],
             ];
-            $files["Format/{$validatorClassName}"] = [
-                'folder' => 'Format',
-                'name' => $validatorClassName,
+            $files["src/Format/{$validatorClassName}.php"] = [
+                'folder' => 'src/Format',
+                'name' => "{$validatorClassName}.php",
                 'template' => 'format-validator.php.twig',
                 'params' => [
                     'schema' => $this,

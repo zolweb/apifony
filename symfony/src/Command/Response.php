@@ -71,10 +71,10 @@ class Response
             $header->addFiles($files, $folder);
         }
         foreach ($this->content as $mediaType) {
-            if (!isset($files[$mediaType->className])) {
-                $files["{$folder}/{$mediaType->className}"] = [
+            if (!isset($files["{$folder}/{$mediaType->className}.php"])) {
+                $files["{$folder}/{$mediaType->className}.php"] = [
                     'folder' => $folder,
-                    'name' => $mediaType->className,
+                    'name' => "{$mediaType->className}.php",
                     'template' => 'response.php.twig',
                     'params' => [
                         'response' => $this,
@@ -84,10 +84,10 @@ class Response
                 $mediaType->addFiles($files, $folder);
             }
         }
-        if (count($this->content) === 0 && !isset($files["{$this->className}Empty"])) {
-            $files["{$folder}/{$this->className}Empty"] = [
+        if (count($this->content) === 0 && !isset($files["{$folder}/{$this->className}Empty.php"])) {
+            $files["{$folder}/{$this->className}Empty.php"] = [
                 'folder' => $folder,
-                'name' => "{$this->className}Empty",
+                'name' => "{$this->className}Empty.php",
                 'template' => 'response.php.twig',
                 'params' => [
                     'response' => $this,

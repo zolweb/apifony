@@ -143,14 +143,14 @@ class Operation
     public function addFiles(array& $files): void
     {
         $baseName = isset($this->tags[0]) ? u($this->tags[0])->camel()->title() : 'Default';
-        $folder = "Controller/{$baseName}";
+        $folder = "src/Controller/{$baseName}";
         $controllerClassName = "{$baseName}Controller";
         $handlerInterfaceName = "{$baseName}HandlerInterface";
 
-        if (!isset($files["{$folder}/{$controllerClassName}"])) {
-            $files["{$folder}/{$controllerClassName}"] = [
+        if (!isset($files["{$folder}/{$controllerClassName}.php"])) {
+            $files["{$folder}/{$controllerClassName}.php"] = [
                 'folder' => $folder,
-                'name' => $controllerClassName,
+                'name' => "{$controllerClassName}.php",
                 'template' => 'controller.php.twig',
                 'params' => [
                     'className' => $controllerClassName,
@@ -158,9 +158,9 @@ class Operation
                     'operations' => [$this],
                 ],
             ];
-            $files["{$folder}/{$handlerInterfaceName}"] = [
+            $files["{$folder}/{$handlerInterfaceName}.php"] = [
                 'folder' => $folder,
-                'name' => $handlerInterfaceName,
+                'name' => "{$handlerInterfaceName}.php",
                 'template' => 'handler.php.twig',
                 'params' => [
                     'interfaceName' => $handlerInterfaceName,
@@ -171,8 +171,8 @@ class Operation
             $this->requestBody?->addFiles($files, $folder);
             $this->responses?->addFiles($files, $folder);
         } else {
-            $files["{$folder}/{$controllerClassName}"]['params']['operations'][] = $this;
-            $files["{$folder}/{$handlerInterfaceName}"]['params']['operations'][] = $this;
+            $files["{$folder}/{$controllerClassName}.php"]['params']['operations'][] = $this;
+            $files["{$folder}/{$handlerInterfaceName}.php"]['params']['operations'][] = $this;
         }
     }
 }
