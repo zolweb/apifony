@@ -68,7 +68,7 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->handleEmptyPayloadToApplicationJsonContent(
+                        $handler->createUserFromEmptyPayloadToApplicationJsonContent(
                         ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
@@ -83,7 +83,7 @@ class UserController extends AbstractController
             case $requestBodyPayload instanceOf User:
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->handleUserPayloadToApplicationJsonContent(
+                        $handler->createUserFromUserPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         ),
                     default => (object) [
@@ -159,10 +159,10 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     null =>
-                        $handler->handleEmptyPayloadToEmptyContent(
+                        $handler->createUsersWithListInputFromEmptyPayloadToEmptyContent(
                         ),
                     'application/json' =>
-                        $handler->handleEmptyPayloadToApplicationJsonContent(
+                        $handler->createUsersWithListInputFromEmptyPayloadToApplicationJsonContent(
                         ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
@@ -177,11 +177,11 @@ class UserController extends AbstractController
             case is_array($requestBodyPayload) && $requestBodyPayload instanceOf User:
                 $responsePayload = match ($responsePayloadContentType) {
                     null =>
-                        $handler->handleUserArrayPayloadToEmptyContent(
+                        $handler->createUsersWithListInputFromUserArrayPayloadToEmptyContent(
                             $requestBodyPayload,
                         ),
                     'application/json' =>
-                        $handler->handleUserArrayPayloadToApplicationJsonContent(
+                        $handler->createUsersWithListInputFromUserArrayPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         ),
                     default => (object) [
@@ -260,12 +260,12 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->handleEmptyPayloadToApplicationJsonContent(
+                        $handler->loginUserFromEmptyPayloadToApplicationJsonContent(
                             $qPassword,
                             $qUsername,
                         ),
                     null =>
-                        $handler->handleEmptyPayloadToEmptyContent(
+                        $handler->loginUserFromEmptyPayloadToEmptyContent(
                             $qPassword,
                             $qUsername,
                         ),
@@ -319,7 +319,7 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     null =>
-                        $handler->handleEmptyPayloadToEmptyContent(
+                        $handler->logoutUserFromEmptyPayloadToEmptyContent(
                         ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
@@ -386,11 +386,11 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->handleEmptyPayloadToApplicationJsonContent(
+                        $handler->getUserByNameFromEmptyPayloadToApplicationJsonContent(
                             $pUsername,
                         ),
                     null =>
-                        $handler->handleEmptyPayloadToEmptyContent(
+                        $handler->getUserByNameFromEmptyPayloadToEmptyContent(
                             $pUsername,
                         ),
                     default => (object) [
@@ -485,7 +485,7 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     null =>
-                        $handler->handleEmptyPayloadToEmptyContent(
+                        $handler->updateUserFromEmptyPayloadToEmptyContent(
                             $pUsername,
                         ),
                     default => (object) [
@@ -501,7 +501,7 @@ class UserController extends AbstractController
             case $requestBodyPayload instanceOf User:
                 $responsePayload = match ($responsePayloadContentType) {
                     null =>
-                        $handler->handleUserPayloadToEmptyContent(
+                        $handler->updateUserFromUserPayloadToEmptyContent(
                             $pUsername,
                             $requestBodyPayload,
                         ),
@@ -570,7 +570,7 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     null =>
-                        $handler->handleEmptyPayloadToEmptyContent(
+                        $handler->deleteUserFromEmptyPayloadToEmptyContent(
                             $pUsername,
                         ),
                     default => (object) [

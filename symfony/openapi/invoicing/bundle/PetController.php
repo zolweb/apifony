@@ -63,11 +63,11 @@ class PetController extends AbstractController
             case $requestBodyPayload instanceOf UpdatePetApplicationJsonMediaTypeSchema:
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->handleUpdatePetApplicationJsonMediaTypeSchemaPayloadToApplicationJsonContent(
+                        $handler->updatePetFromUpdatePetApplicationJsonMediaTypeSchemaPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         ),
                     null =>
-                        $handler->handleUpdatePetApplicationJsonMediaTypeSchemaPayloadToEmptyContent(
+                        $handler->updatePetFromUpdatePetApplicationJsonMediaTypeSchemaPayloadToEmptyContent(
                             $requestBodyPayload,
                         ),
                     default => (object) [
@@ -140,11 +140,11 @@ class PetController extends AbstractController
             case $requestBodyPayload instanceOf Pet:
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->handlePetPayloadToApplicationJsonContent(
+                        $handler->addPetFromPetPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         ),
                     null =>
-                        $handler->handlePetPayloadToEmptyContent(
+                        $handler->addPetFromPetPayloadToEmptyContent(
                             $requestBodyPayload,
                         ),
                     default => (object) [
@@ -215,11 +215,11 @@ class PetController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->handleEmptyPayloadToApplicationJsonContent(
+                        $handler->findPetsByStatusFromEmptyPayloadToApplicationJsonContent(
                             $qStatus,
                         ),
                     null =>
-                        $handler->handleEmptyPayloadToEmptyContent(
+                        $handler->findPetsByStatusFromEmptyPayloadToEmptyContent(
                             $qStatus,
                         ),
                     default => (object) [
@@ -285,11 +285,11 @@ class PetController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->handleEmptyPayloadToApplicationJsonContent(
+                        $handler->findPetsByTagsFromEmptyPayloadToApplicationJsonContent(
                             $qTags,
                         ),
                     null =>
-                        $handler->handleEmptyPayloadToEmptyContent(
+                        $handler->findPetsByTagsFromEmptyPayloadToEmptyContent(
                             $qTags,
                         ),
                     default => (object) [
@@ -360,11 +360,11 @@ class PetController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->handleEmptyPayloadToApplicationJsonContent(
+                        $handler->getPetByIdFromEmptyPayloadToApplicationJsonContent(
                             $pPetId,
                         ),
                     null =>
-                        $handler->handleEmptyPayloadToEmptyContent(
+                        $handler->getPetByIdFromEmptyPayloadToEmptyContent(
                             $pPetId,
                         ),
                     default => (object) [
@@ -461,7 +461,7 @@ class PetController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     null =>
-                        $handler->handleEmptyPayloadToEmptyContent(
+                        $handler->updatePetWithFormFromEmptyPayloadToEmptyContent(
                             $qName,
                             $pPetId,
                             $qStatus,
@@ -545,7 +545,7 @@ class PetController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     null =>
-                        $handler->handleEmptyPayloadToEmptyContent(
+                        $handler->deletePetFromEmptyPayloadToEmptyContent(
                             $hApi_key,
                             $pPetId,
                         ),
@@ -648,7 +648,7 @@ class PetController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->handleEmptyPayloadToApplicationJsonContent(
+                        $handler->uploadFileFromEmptyPayloadToApplicationJsonContent(
                             $qAdditionalMetadata,
                             $pPetId,
                         ),

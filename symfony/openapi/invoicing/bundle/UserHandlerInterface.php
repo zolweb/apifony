@@ -4,69 +4,69 @@ namespace App\Controller;
 
 interface UserHandlerInterface
 {
-    public function handleEmptyPayloadToApplicationJsonContent(
+    public function createUserFromEmptyPayloadToApplicationJsonContent(
     ):
         CreateUser201ApplicationJson;
 
-    public function handleUserPayloadToApplicationJsonContent(
+    public function createUserFromUserPayloadToApplicationJsonContent(
         User $requestBodyPayload,
     ):
         CreateUser201ApplicationJson;
 
-    public function handleEmptyPayloadToEmptyContent(
+    public function createUsersWithListInputFromEmptyPayloadToEmptyContent(
     ):
         CreateUsersWithListInput100Empty;
-    public function handleEmptyPayloadToApplicationJsonContent(
+    public function createUsersWithListInputFromEmptyPayloadToApplicationJsonContent(
     ):
         CreateUsersWithListInput200ApplicationJson;
 
-    public function handleUserArrayPayloadToEmptyContent(
+    public function createUsersWithListInputFromUserArrayPayloadToEmptyContent(
         array $requestBodyPayload,
     ):
         CreateUsersWithListInput100Empty;
-    public function handleUserArrayPayloadToApplicationJsonContent(
+    public function createUsersWithListInputFromUserArrayPayloadToApplicationJsonContent(
         array $requestBodyPayload,
     ):
         CreateUsersWithListInput200ApplicationJson;
 
-    public function handleEmptyPayloadToApplicationJsonContent(
+    public function loginUserFromEmptyPayloadToApplicationJsonContent(
         string $qPassword,
         string $qUsername,
     ):
         LoginUser200ApplicationJson;
-    public function handleEmptyPayloadToEmptyContent(
+    public function loginUserFromEmptyPayloadToEmptyContent(
         string $qPassword,
         string $qUsername,
     ):
         LoginUser400Empty;
 
-    public function handleEmptyPayloadToEmptyContent(
+    public function logoutUserFromEmptyPayloadToEmptyContent(
     ):
         LogoutUser100Empty |
         LogoutUser200Empty;
 
-    public function handleEmptyPayloadToApplicationJsonContent(
+    public function getUserByNameFromEmptyPayloadToApplicationJsonContent(
         string $pUsername,
     ):
         GetUserByName200ApplicationJson;
-    public function handleEmptyPayloadToEmptyContent(
+    public function getUserByNameFromEmptyPayloadToEmptyContent(
         string $pUsername,
     ):
         GetUserByName400Empty |
         GetUserByName404Empty;
 
-    public function handleEmptyPayloadToEmptyContent(
+    public function updateUserFromEmptyPayloadToEmptyContent(
         string $pUsername,
     ):
         UpdateUser201Empty;
 
-    public function handleUserPayloadToEmptyContent(
+    public function updateUserFromUserPayloadToEmptyContent(
         string $pUsername,
         User $requestBodyPayload,
     ):
         UpdateUser201Empty;
 
-    public function handleEmptyPayloadToEmptyContent(
+    public function deleteUserFromEmptyPayloadToEmptyContent(
         string $pUsername,
     ):
         DeleteUser200Empty |

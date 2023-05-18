@@ -4,37 +4,37 @@ namespace App\Controller;
 
 interface StoreHandlerInterface
 {
-    public function handleEmptyPayloadToApplicationJsonContent(
+    public function getInventoryFromEmptyPayloadToApplicationJsonContent(
     ):
         GetInventory200ApplicationJson;
 
-    public function handleEmptyPayloadToApplicationJsonContent(
+    public function placeOrderFromEmptyPayloadToApplicationJsonContent(
     ):
         PlaceOrder200ApplicationJson;
-    public function handleEmptyPayloadToEmptyContent(
+    public function placeOrderFromEmptyPayloadToEmptyContent(
     ):
         PlaceOrder405Empty;
 
-    public function handleOrderPayloadToApplicationJsonContent(
+    public function placeOrderFromOrderPayloadToApplicationJsonContent(
         Order $requestBodyPayload,
     ):
         PlaceOrder200ApplicationJson;
-    public function handleOrderPayloadToEmptyContent(
+    public function placeOrderFromOrderPayloadToEmptyContent(
         Order $requestBodyPayload,
     ):
         PlaceOrder405Empty;
 
-    public function handleEmptyPayloadToApplicationJsonContent(
+    public function getOrderByIdFromEmptyPayloadToApplicationJsonContent(
         int $pOrderId,
     ):
         GetOrderById200ApplicationJson;
-    public function handleEmptyPayloadToEmptyContent(
+    public function getOrderByIdFromEmptyPayloadToEmptyContent(
         int $pOrderId,
     ):
         GetOrderById400Empty |
         GetOrderById404Empty;
 
-    public function handleEmptyPayloadToEmptyContent(
+    public function deleteOrderFromEmptyPayloadToEmptyContent(
         int $pOrderId,
     ):
         DeleteOrder200Empty |

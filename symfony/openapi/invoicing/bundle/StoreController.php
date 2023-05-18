@@ -43,7 +43,7 @@ class StoreController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->handleEmptyPayloadToApplicationJsonContent(
+                        $handler->getInventoryFromEmptyPayloadToApplicationJsonContent(
                         ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
@@ -118,10 +118,10 @@ class StoreController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->handleEmptyPayloadToApplicationJsonContent(
+                        $handler->placeOrderFromEmptyPayloadToApplicationJsonContent(
                         ),
                     null =>
-                        $handler->handleEmptyPayloadToEmptyContent(
+                        $handler->placeOrderFromEmptyPayloadToEmptyContent(
                         ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
@@ -136,11 +136,11 @@ class StoreController extends AbstractController
             case $requestBodyPayload instanceOf Order:
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->handleOrderPayloadToApplicationJsonContent(
+                        $handler->placeOrderFromOrderPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         ),
                     null =>
-                        $handler->handleOrderPayloadToEmptyContent(
+                        $handler->placeOrderFromOrderPayloadToEmptyContent(
                             $requestBodyPayload,
                         ),
                     default => (object) [
@@ -211,11 +211,11 @@ class StoreController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->handleEmptyPayloadToApplicationJsonContent(
+                        $handler->getOrderByIdFromEmptyPayloadToApplicationJsonContent(
                             $pOrderId,
                         ),
                     null =>
-                        $handler->handleEmptyPayloadToEmptyContent(
+                        $handler->getOrderByIdFromEmptyPayloadToEmptyContent(
                             $pOrderId,
                         ),
                     default => (object) [
@@ -286,7 +286,7 @@ class StoreController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     null =>
-                        $handler->handleEmptyPayloadToEmptyContent(
+                        $handler->deleteOrderFromEmptyPayloadToEmptyContent(
                             $pOrderId,
                         ),
                     default => (object) [

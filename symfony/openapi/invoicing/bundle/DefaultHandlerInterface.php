@@ -4,7 +4,7 @@ namespace App\Controller;
 
 interface DefaultHandlerInterface
 {
-    public function handleEmptyPayloadToApplicationJsonContent(
+    public function getClientFromEmptyPayloadToApplicationJsonContent(
         float $qAgrez,
         string $hAzef,
         string $pClientId,
@@ -19,7 +19,7 @@ interface DefaultHandlerInterface
         TestRespApplicationJson |
         GetClient201ApplicationJson;
 
-    public function handleIntegerPayloadToApplicationJsonContent(
+    public function getClientFromIntegerPayloadToApplicationJsonContent(
         float $qAgrez,
         string $hAzef,
         string $pClientId,
@@ -35,7 +35,7 @@ interface DefaultHandlerInterface
         TestRespApplicationJson |
         GetClient201ApplicationJson;
 
-    public function handleEmptyPayloadToApplicationJsonContent(
+    public function postClientClientIdParam1Param2Param3Param4Param5Param6FromEmptyPayloadToApplicationJsonContent(
         string $pClientId,
         float $pParam3,
         int $pParam4,
@@ -46,7 +46,7 @@ interface DefaultHandlerInterface
         PostClientClientIdParam1Param2Param3Param4Param5Param6200ApplicationJson |
         PostClientClientIdParam1Param2Param3Param4Param5Param6201ApplicationJson;
 
-    public function handleEmptyPayloadToApplicationJsonContent(
+    public function postTestFromEmptyPayloadToApplicationJsonContent(
         string $cC1,
         int $cC2,
         float $cC3,
@@ -67,7 +67,7 @@ interface DefaultHandlerInterface
         PostTest200ApplicationJson |
         PostTest201ApplicationJson;
 
-    public function handleTestPayloadToApplicationJsonContent(
+    public function postTestFromTestPayloadToApplicationJsonContent(
         string $cC1,
         int $cC2,
         float $cC3,

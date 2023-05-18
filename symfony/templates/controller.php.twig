@@ -117,7 +117,7 @@ class {{ className }} extends AbstractController
                 $responsePayload = match ($responsePayloadContentType) {
     {%~ for responseContentTypeNormalizedName, responseContentType in operation.allPossibleResponseContentTypes %}
                     {% if responseContentType is null %}null{% else %}'{{ responseContentType }}'{% endif %} =>
-                        $handler->handle{{ requestBodyPayloadTypeNormalizedName }}PayloadTo{{ responseContentTypeNormalizedName }}Content(
+                        $handler->{{ operation.operationId|u.camel }}From{{ requestBodyPayloadTypeNormalizedName }}PayloadTo{{ responseContentTypeNormalizedName }}Content(
         {%~ for param in operation.allSortedParameters %}
                             ${{ param.variableName }},
         {%~ endfor %}

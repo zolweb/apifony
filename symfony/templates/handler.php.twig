@@ -8,7 +8,7 @@ interface {{ interfaceName }}
 {%~ for operation in operations %}
 {%~ for requestBodyPayloadTypeNormalizedName, requestBodyPayloadType in operation.allPossibleRequestBodyPayloadTypes %}
     {%~ for responseContentTypeNormalizedName, responseContentType in operation.allPossibleResponseContentTypes %}
-    public function handle{{ requestBodyPayloadTypeNormalizedName }}PayloadTo{{ responseContentTypeNormalizedName }}Content(
+    public function {{ operation.operationId|u.camel }}From{{ requestBodyPayloadTypeNormalizedName }}PayloadTo{{ responseContentTypeNormalizedName }}Content(
         {%~ for param in operation.allSortedParameters %}
         {{ param.schema.type.methodParameterType }} ${{ param.variableName }},
         {%~ endfor %}
