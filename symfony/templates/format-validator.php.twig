@@ -5,10 +5,10 @@ namespace App\Controller;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
-class {{ schema.formatValidatorClassName }} extends ConstraintValidator
+class {{ validatorClassName }} extends ConstraintValidator
 {
     public function __construct(
-        private readonly {{ schema.formatDefinitionInterfaceName }} $formatDefinition,
+        private readonly {{ definitionInterfaceName }} $formatDefinition,
     ) {
     }
 

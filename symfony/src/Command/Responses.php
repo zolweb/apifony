@@ -41,10 +41,10 @@ class Responses
     {
     }
 
-    public function addFiles(array& $files): void
+    public function addFiles(array& $files, string $folder): void
     {
         foreach ($this->responses as $response) {
-            $response->addFiles($files);
+            $response->addFiles($files, $folder);
         }
     }
 }

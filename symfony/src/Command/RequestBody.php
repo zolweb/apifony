@@ -57,10 +57,10 @@ class RequestBody
     {
     }
 
-    public function addFiles(array& $files): void
+    public function addFiles(array& $files, string $folder): void
     {
         foreach ($this->mediaTypes as $mediaType) {
-            $mediaType->addFiles($files);
+            $mediaType->addFiles($files, $folder);
         }
     }
 }

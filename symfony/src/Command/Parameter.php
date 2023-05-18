@@ -57,9 +57,4 @@ class Parameter
     {
         return ['query' => 'query', 'header' => 'headers', 'cookie' => 'cookies'][$this->in];
     }
-
-    public function addFiles(array& $files): void
-    {
-        $this->schema->addFiles($files);
-    }
 }

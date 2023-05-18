@@ -94,7 +94,7 @@ class IntegerType implements Type
         return $constraints;
     }
 
-    public function addFiles(array& $files): void
+    public function addFiles(array& $files, string $folder): void
     {
     }
 

@@ -7,6 +7,7 @@ use function Symfony\Component\String\u;
 class Schema
 {
     public readonly string $className;
+    public readonly bool $isComponent;
     public readonly Type $type;
     public readonly bool $nullable;
     public readonly ?string $format;
@@ -38,9 +39,11 @@ class Schema
     {
         $schema = new self();
 
+        $isComponent = false;
         if (isset($data['$ref'])) {
             $className = explode('/', $data['$ref'])[3];
             $component = &$components['schemas'][$className];
+            $isComponent = true;
             if ($component['instance'] !== null) {
                 return $component['instance'];
             } else {
@@ -77,6 +80,7 @@ class Schema
         }
 
         $schema->className = $className;
+        $schema->isComponent = $isComponent;
         $schema->nullable = $nullable;
         $schema->format = $data['format'] ?? null;
         $schema->enum = $data['enum'] ?? null;
@@ -123,26 +127,6 @@ class Schema
     {
     }
 
-    public function getFormatDefinitionInterfaceName(): string
-    {
-        return "{$this->getNormalizedFormat()}Definition";
-    }
-
-    public function getFormatConstraintClassName(): string
-    {
-        return $this->getNormalizedFormat();
-    }
-
-    public function getFormatValidatorClassName(): string
-    {
-        return "{$this->getNormalizedFormat()}Validator";
-    }
-
-    public function getNormalizedFormat(): string
-    {
-        return u($this->format)->camel()->title();
-    }
-
     /**
      * @return array<Constraint>
      */
@@ -155,20 +139,50 @@ class Schema
         }
 
         if ($this->format !== null) {
-            $constraints[] = new Constraint($this->getNormalizedFormat(), []);
+            $constraints[] = new Constraint(u($this->format)->camel()->title(), []);
         }
 
         return $constraints;
     }
 
-    public function addFiles(array& $files): void
+    public function addFiles(array& $files, string $folder): void
     {
-        $this->type->addFiles($files);
+        $this->type->addFiles($files, $folder);
 
-        if ($this->format !== null && !isset($files[$this->getFormatDefinitionInterfaceName()])) {
-            $files[$this->getFormatDefinitionInterfaceName()] = ['template' => 'format-definition.php.twig', 'params' => ['schema' => $this]];
-            $files[$this->getFormatConstraintClassName()] = ['template' => 'format-constraint.php.twig', 'params' => ['schema' => $this]];
-            $files[$this->getFormatValidatorClassName()] = ['template' => 'format-validator.php.twig', 'params' => ['schema' => $this]];
+        $baseName = u($this->format)->camel()->title();
+        $definitionInterfaceName = "{$baseName}Definition";
+        $constraintClassName = "{$baseName}";
+        $validatorClassName = "{$baseName}Validator";
+
+        if ($this->format !== null && !isset($files["Format/{$definitionInterfaceName}"])) {
+            $files["Format/{$definitionInterfaceName}"] = [
+                'folder' => 'Format',
+                'name' => $definitionInterfaceName,
+                'template' => 'format-definition.php.twig',
+                'params' => [
+                    'schema' => $this,
+                    'definitionInterfaceName' => $definitionInterfaceName,
+                ],
+            ];
+            $files["Format/{$constraintClassName}"] = [
+                'folder' => 'Format',
+                'name' => $constraintClassName,
+                'template' => 'format-constraint.php.twig',
+                'params' => [
+                    'schema' => $this,
+                    'constraintClassName' => $constraintClassName,
+                ],
+            ];
+            $files["Format/{$validatorClassName}"] = [
+                'folder' => 'Format',
+                'name' => $validatorClassName,
+                'template' => 'format-validator.php.twig',
+                'params' => [
+                    'schema' => $this,
+                    'validatorClassName' => $validatorClassName,
+                    'definitionInterfaceName' => $definitionInterfaceName,
+                ],
+            ];
         }
     }
 }

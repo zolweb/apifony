@@ -65,21 +65,35 @@ class Response
     {
     }
 
-    public function addFiles(array& $files): void
+    public function addFiles(array& $files, string $folder): void
     {
         foreach ($this->headers as $header) {
-            $header->addFiles($files);
+            $header->addFiles($files, $folder);
         }
         foreach ($this->content as $mediaType) {
             if (!isset($files[$mediaType->className])) {
-                $files[$mediaType->className] =
-                    ['template' => 'response.php.twig', 'params' => ['response' => $this, 'mediaType' => $mediaType]];
-                $mediaType->addFiles($files);
+                $files["{$folder}/{$mediaType->className}"] = [
+                    'folder' => $folder,
+                    'name' => $mediaType->className,
+                    'template' => 'response.php.twig',
+                    'params' => [
+                        'response' => $this,
+                        'mediaType' => $mediaType,
+                    ],
+                ];
+                $mediaType->addFiles($files, $folder);
             }
         }
         if (count($this->content) === 0 && !isset($files["{$this->className}Empty"])) {
-            $files["{$this->className}Empty"] =
-                ['template' => 'response.php.twig', 'params' => ['response' => $this, 'mediaType' => null]];
+            $files["{$folder}/{$this->className}Empty"] = [
+                'folder' => $folder,
+                'name' => "{$this->className}Empty",
+                'template' => 'response.php.twig',
+                'params' => [
+                    'response' => $this,
+                    'mediaType' => null,
+                ],
+            ];
         }
     }
 }

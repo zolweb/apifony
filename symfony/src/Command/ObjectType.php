@@ -88,13 +88,22 @@ class ObjectType implements Type
         return [new Constraint('Assert\Valid', [])];
     }
 
-    public function addFiles(array& $files): void
+    public function addFiles(array& $files, string $folder): void
     {
-        if (!isset($files[$this->schema->className])) {
-            $files[$this->schema->className] = ['template' => 'schema.php.twig', 'params' => ['schema' => $this->schema]];
+        $folder = $this->schema->isComponent ? 'Schema' : $folder;
+
+        if (!isset($files["{$folder}/{$this->schema->className}"])) {
+            $files["{$folder}/{$this->schema->className}"] = [
+                'folder' => $folder,
+                'name' => $this->schema->className,
+                'template' => 'schema.php.twig',
+                'params' => [
+                    'schema' => $this->schema,
+                ],
+            ];
 
             foreach ($this->schema->properties as $property) {
-                $property->addFiles($files);
+                $property->addFiles($files, $folder);
             }
         }
     }

@@ -31,9 +31,13 @@ class GenService extends AbstractExtension
             }
         );
 
-        foreach (OpenApi::build($data)->getFiles() as $fileName => $file) {
+        foreach (OpenApi::build($data)->getFiles() as $file) {
+            if (!file_exists(__DIR__."/../../openapi/invoicing/bundle/{$file['folder']}")) {
+                mkdir(__DIR__."/../../openapi/invoicing/bundle/{$file['folder']}", recursive: true);
+            }
+
             file_put_contents(
-                __DIR__."/../../openapi/invoicing/bundle/{$fileName}.php",
+                __DIR__."/../../openapi/invoicing/bundle/{$file['folder']}/{$file['name']}.php",
                 $this->twig->render($file['template'], $file['params']));
         }
     }

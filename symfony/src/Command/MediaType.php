@@ -35,8 +35,8 @@ class MediaType
         return u($this->type)->camel()->title();
     }
 
-    public function addFiles(array& $files): void
+    public function addFiles(array& $files, string $folder): void
     {
-        $this->schema->addFiles($files);
+        $this->schema->addFiles($files, $folder);
     }
 }
