@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Zol\Invoicing\Presentation\Api\Bundle\Controller\user;
 
 use RuntimeException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;

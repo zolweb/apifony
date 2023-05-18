@@ -1,7 +1,7 @@
 {% autoescape false %}
 <?php
 
-namespace App\Controller;
+namespace {{ namespace }}\Controller\{{ operations[0].tags[0] ?? 'Default' }};
 
 interface {{ interfaceName }}
 {

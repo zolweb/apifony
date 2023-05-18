@@ -51,7 +51,7 @@ install: install-app wait-for-database install-db
 build-aws: clean-app build composer-install composer-dump yarn-install webpack-build start assets-install
 
 gen:
-	rm -rf symfony/openapi/invoicing/bundle/*
+	# rm -rf symfony/openapi/invoicing/bundle/*
 	# wget -O symfony/openapi/invoicing/openapi.yaml https://stoplight.io/api/v1/projects/bfav-zol/zol-skeleton/nodes/zol-invoicing.yaml
 	@$(RUNNER_DOCKER_EXEC) '$(symfony_console_path) gen -vvv'
 	make cc

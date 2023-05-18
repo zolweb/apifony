@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Controller;
+namespace App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default;
 
 class GetClient201ApplicationJson{
     public const CODE = '201';

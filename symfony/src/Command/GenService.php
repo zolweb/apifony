@@ -24,6 +24,7 @@ class GenService extends AbstractExtension
      */
     public function generate(array $data, string $bundleName, string $namespace, string $packageName): void
     {
+        $this->twig->addGlobal('namespace', $namespace);
         $this->twig->getExtension(EscaperExtension::class)->setEscaper(
             'phpSingleQuotedString',
             function (Environment $twig, string $string) {
@@ -45,7 +46,6 @@ class GenService extends AbstractExtension
             'name' => 'composer.json',
             'template' => 'composer.json.twig',
             'params' => [
-                'namespace' => $namespace,
                 'bundleName' => $bundleName,
                 'packageName' => $packageName,
             ],
@@ -55,7 +55,6 @@ class GenService extends AbstractExtension
             'name' => "{$bundleName}.php",
             'template' => 'bundle.php.twig',
             'params' => [
-                'namespace' => $namespace,
                 'bundleName' => $bundleName,
             ],
         ];
@@ -64,7 +63,6 @@ class GenService extends AbstractExtension
             'name' => 'routing.yaml',
             'template' => 'routing.yaml.twig',
             'params' => [
-                'namespace' => $namespace,
                 'paths' => $openApi->paths,
             ],
         ];
