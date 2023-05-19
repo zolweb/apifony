@@ -1,4 +1,19 @@
 services:
+
+    ### Controllers ###
+
+    app_zol_invoicing_presentation_api_bundle_default_controller:
+        class: 'App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController'
+
+    app_zol_invoicing_presentation_api_bundle_pet_controller:
+        class: 'App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Pet\PetController'
+
+    app_zol_invoicing_presentation_api_bundle_store_controller:
+        class: 'App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Store\StoreController'
+
+    app_zol_invoicing_presentation_api_bundle_user_controller:
+        class: 'App\Zol\Invoicing\Presentation\Api\Bundle\Controller\User\UserController'
+
     ### Serializer ###
 
     app_zol_invoicing_presentation_api_bundle_json_encoder:

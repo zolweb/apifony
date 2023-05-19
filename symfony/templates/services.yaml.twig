@@ -1,4 +1,15 @@
 services:
+
+    ### Controllers ###
+
+{% for tag in paths.allFirstTags %}
+    {{ namespace|u.snake }}_{{ tag|lower }}_controller:
+        class: '{{ namespace }}\Controller\{{ tag|u.camel.title }}\{{ tag|u.camel.title }}Controller'
+    {%~ if not loop.last %}
+
+    {%~ endif %}
+{% endfor %}
+
     ### Serializer ###
 
     {{ namespace|u.snake }}_json_encoder:

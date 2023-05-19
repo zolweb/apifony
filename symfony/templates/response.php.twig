@@ -1,6 +1,6 @@
 <?php
 
-namespace {{ namespace }}\Controller\{{ operations[0].tags[0] ?? 'Default' }};
+namespace {{ namespace }}\Controller\{{ (operations[0].tags[0] ?? 'Default')|u.camel.title }};
 
 class {% if mediaType is not null %}{{ mediaType.className }}{% else %}{{ response.className ~ 'Empty' }}{% endif %}
 {

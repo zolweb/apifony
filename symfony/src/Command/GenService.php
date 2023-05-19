@@ -58,18 +58,12 @@ class GenService extends AbstractExtension
             ],
         ];
         $files[] = [
-            'folder' => 'src',
-            'name' => "{$bundleName}Extension.php",
-            'template' => 'extension.php.twig',
-            'params' => [
-                'extensionName' => "{$bundleName}Extension",
-            ],
-        ];
-        $files[] = [
             'folder' => 'config',
             'name' => 'services.yaml',
             'template' => 'services.yaml.twig',
-            'params' => [],
+            'params' => [
+                'paths' => $openApi->paths,
+            ],
         ];
         $files[] = [
             'folder' => 'config',

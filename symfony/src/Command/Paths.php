@@ -32,6 +32,24 @@ class Paths
     }
 
     /**
+     * @return array<string>
+     */
+    public function getAllFirstTags(): array
+    {
+        return array_unique(
+            array_map(
+                static fn (Operation $operation) => $operation->tags[0] ?? 'Default',
+                array_merge(
+                    ...array_map(
+                        static fn (PathItem $pathItem) => $pathItem->operations,
+                        $this->pathItems,
+                    ),
+                ),
+            ),
+        );
+    }
+
+    /**
      * @return array<Operation>
      */
     public function getAllSortedOperations(): array

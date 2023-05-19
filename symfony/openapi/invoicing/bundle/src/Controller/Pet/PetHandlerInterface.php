@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Controller\pet;
+namespace App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Pet;
 
 interface PetHandlerInterface
 {

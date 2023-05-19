@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Controller\store;
+namespace App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Store;
 
 interface StoreHandlerInterface
 {

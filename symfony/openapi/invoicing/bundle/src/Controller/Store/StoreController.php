@@ -1,9 +1,8 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Controller\store;
+namespace App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Store;
 
 use RuntimeException;
-use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -14,7 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class StoreController extends AbstractController
+class StoreController
 {
     public function getInventory(
         Request $request,

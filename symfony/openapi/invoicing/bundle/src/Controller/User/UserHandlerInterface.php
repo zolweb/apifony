@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Controller\user;
+namespace App\Zol\Invoicing\Presentation\Api\Bundle\Controller\User;
 
 interface UserHandlerInterface
 {
