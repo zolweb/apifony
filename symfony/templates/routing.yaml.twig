@@ -8,7 +8,7 @@
         {%~ endfor %}
     {%~ endif %}
     methods: {{ operation.method }}
-    controller: {{ namespace }}\{{ operation.tag[0] ?? 'Default' }}Controller::{{ operation.operationId|u.camel }}
+    controller: {{ namespace }}\Controller\{{ operation.tag[0] ?? 'Default' }}\{{ operation.tag[0] ?? 'Default' }}Controller::{{ operation.operationId|u.camel }}
     {%~ if not loop.last %}
 
     {%~ endif %}
