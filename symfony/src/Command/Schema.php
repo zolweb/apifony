@@ -139,7 +139,7 @@ class Schema
         }
 
         if ($this->format !== null) {
-            $constraints[] = new Constraint(u($this->format)->camel()->title(), []);
+            $constraints[] = new Constraint(sprintf('AssertFormat\%s', u($this->format)->camel()->title()), []);
         }
 
         return $constraints;

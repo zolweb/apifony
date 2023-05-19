@@ -3,6 +3,7 @@
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Schema;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format as AssertFormat;
 
 class Pet
 {
@@ -12,7 +13,7 @@ class Pet
      */
     public function __construct(
         #[Assert\NotNull]
-        #[Int64]
+        #[AssertFormat\Int64]
         public readonly int $id,
 
         #[Assert\Valid]
@@ -44,7 +45,7 @@ class Pet
             'sold',
         ])]
         #[Assert\NotNull]
-        #[DateTime]
+        #[AssertFormat\DateTime]
         public readonly string $status,
 
         #[Assert\Valid]

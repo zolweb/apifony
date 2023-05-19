@@ -152,7 +152,7 @@ class DefaultController extends AbstractController
                     'item2',
                 ]),
                 new Assert\NotNull,
-                new Format,
+                new AssertFormat\Format,
             ]
         );
         if (count($violations) > 0) {
@@ -172,7 +172,7 @@ class DefaultController extends AbstractController
                     'item1',
                 ]),
                 new Assert\NotNull,
-                new Format,
+                new AssertFormat\Format,
             ]
         );
         if (count($violations) > 0) {
@@ -356,7 +356,7 @@ class DefaultController extends AbstractController
                     'item2',
                 ]),
                 new Assert\NotNull,
-                new Format,
+                new AssertFormat\Format,
             ]
         );
         if (count($violations) > 0) {
@@ -376,7 +376,7 @@ class DefaultController extends AbstractController
                     'item1',
                 ]),
                 new Assert\NotNull,
-                new Format,
+                new AssertFormat\Format,
             ]
         );
         if (count($violations) > 0) {
@@ -465,7 +465,7 @@ class DefaultController extends AbstractController
                     'ghi',
                 ]),
                 new Assert\NotNull,
-                new F13,
+                new AssertFormat\F13,
             ]
         );
         if (count($violations) > 0) {
@@ -489,7 +489,7 @@ class DefaultController extends AbstractController
                     3,
                 ]),
                 new Assert\NotNull,
-                new F14,
+                new AssertFormat\F14,
             ]
         );
         if (count($violations) > 0) {
@@ -513,7 +513,7 @@ class DefaultController extends AbstractController
                     0.3,
                 ]),
                 new Assert\NotNull,
-                new F15,
+                new AssertFormat\F15,
             ]
         );
         if (count($violations) > 0) {
@@ -529,7 +529,7 @@ class DefaultController extends AbstractController
             $cC4,
             [
                 new Assert\NotNull,
-                new F16,
+                new AssertFormat\F16,
             ]
         );
         if (count($violations) > 0) {
@@ -553,7 +553,7 @@ class DefaultController extends AbstractController
                     'ghi',
                 ]),
                 new Assert\NotNull,
-                new F5,
+                new AssertFormat\F5,
             ]
         );
         if (count($violations) > 0) {
@@ -577,7 +577,7 @@ class DefaultController extends AbstractController
                     3,
                 ]),
                 new Assert\NotNull,
-                new F6,
+                new AssertFormat\F6,
             ]
         );
         if (count($violations) > 0) {
@@ -601,7 +601,7 @@ class DefaultController extends AbstractController
                     0.3,
                 ]),
                 new Assert\NotNull,
-                new F7,
+                new AssertFormat\F7,
             ]
         );
         if (count($violations) > 0) {
@@ -643,7 +643,7 @@ class DefaultController extends AbstractController
                     'ghi',
                 ]),
                 new Assert\NotNull,
-                new F1,
+                new AssertFormat\F1,
             ]
         );
         if (count($violations) > 0) {
@@ -664,7 +664,7 @@ class DefaultController extends AbstractController
                     3,
                 ]),
                 new Assert\NotNull,
-                new F2,
+                new AssertFormat\F2,
             ]
         );
         if (count($violations) > 0) {
@@ -686,7 +686,7 @@ class DefaultController extends AbstractController
                     0.1,
                 ]),
                 new Assert\NotNull,
-                new F3,
+                new AssertFormat\F3,
             ]
         );
         if (count($violations) > 0) {
@@ -702,7 +702,7 @@ class DefaultController extends AbstractController
                     true,
                 ]),
                 new Assert\NotNull,
-                new F4,
+                new AssertFormat\F4,
             ]
         );
         if (count($violations) > 0) {
@@ -723,7 +723,7 @@ class DefaultController extends AbstractController
                     'ghi',
                 ]),
                 new Assert\NotNull,
-                new F9,
+                new AssertFormat\F9,
             ]
         );
         if (count($violations) > 0) {
@@ -747,7 +747,7 @@ class DefaultController extends AbstractController
                     3,
                 ]),
                 new Assert\NotNull,
-                new F10,
+                new AssertFormat\F10,
             ]
         );
         if (count($violations) > 0) {
@@ -771,7 +771,7 @@ class DefaultController extends AbstractController
                     0.3,
                 ]),
                 new Assert\NotNull,
-                new F13,
+                new AssertFormat\F13,
             ]
         );
         if (count($violations) > 0) {
@@ -787,7 +787,7 @@ class DefaultController extends AbstractController
             $qQ4,
             [
                 new Assert\NotNull,
-                new F12,
+                new AssertFormat\F12,
             ]
         );
         if (count($violations) > 0) {

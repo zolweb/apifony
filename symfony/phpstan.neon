@@ -1,7 +1,7 @@
 parameters:
     level: max
     paths:
-        - src/Controller
+        - openapi/invoicing/bundle/src
     exceptions:
         check:
             missingCheckedExceptionInThrows: true

@@ -3,12 +3,13 @@
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Schema;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format as AssertFormat;
 
 class User
 {
     public function __construct(
         #[Assert\NotNull]
-        #[Int64]
+        #[AssertFormat\Int64]
         public readonly int $id,
 
         #[Assert\NotNull]
@@ -30,7 +31,7 @@ class User
         public readonly string $phone,
 
         #[Assert\NotNull]
-        #[Int32]
+        #[AssertFormat\Int32]
         public readonly int $userStatus,
     ) {
     }

@@ -164,7 +164,7 @@ class StoreController extends AbstractController
             $pOrderId,
             [
                 new Assert\NotNull,
-                new Int64,
+                new AssertFormat\Int64,
             ]
         );
         if (count($violations) > 0) {
@@ -228,7 +228,7 @@ class StoreController extends AbstractController
             $pOrderId,
             [
                 new Assert\NotNull,
-                new Int64,
+                new AssertFormat\Int64,
             ]
         );
         if (count($violations) > 0) {
