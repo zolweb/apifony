@@ -13,89 +13,89 @@ app_zol_invoicing_presentation_api_bundle_get_client:
 app_zol_invoicing_presentation_api_bundle_add_pet:
     path: /pet
     methods: post
-    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController::addPet
+    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Pet\PetController::addPet
 
 app_zol_invoicing_presentation_api_bundle_create_user:
     path: /user
     methods: post
-    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController::createUser
+    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\User\UserController::createUser
 
 app_zol_invoicing_presentation_api_bundle_create_users_with_list_input:
     path: /user/createWithList
     methods: post
-    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController::createUsersWithListInput
+    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\User\UserController::createUsersWithListInput
 
 app_zol_invoicing_presentation_api_bundle_delete_order:
     path: /store/order/{orderId}
     requirements:
         orderId: '-?(0|[1-9]\\d*)'
     methods: delete
-    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController::deleteOrder
+    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Store\StoreController::deleteOrder
 
 app_zol_invoicing_presentation_api_bundle_delete_pet:
     path: /pet/{petId}
     requirements:
         petId: '-?(0|[1-9]\\d*)'
     methods: delete
-    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController::deletePet
+    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Pet\PetController::deletePet
 
 app_zol_invoicing_presentation_api_bundle_delete_user:
     path: /user/{username}
     requirements:
         username: '[^:/?#[]@!$&amp;\&#039;()*+,;=]+'
     methods: delete
-    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController::deleteUser
+    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\User\UserController::deleteUser
 
 app_zol_invoicing_presentation_api_bundle_find_pets_by_status:
     path: /pet/findByStatus
     methods: get
-    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController::findPetsByStatus
+    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Pet\PetController::findPetsByStatus
 
 app_zol_invoicing_presentation_api_bundle_find_pets_by_tags:
     path: /pet/findByTags
     methods: get
-    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController::findPetsByTags
+    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Pet\PetController::findPetsByTags
 
 app_zol_invoicing_presentation_api_bundle_get_inventory:
     path: /store/inventory
     methods: get
-    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController::getInventory
+    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Store\StoreController::getInventory
 
 app_zol_invoicing_presentation_api_bundle_get_order_by_id:
     path: /store/order/{orderId}
     requirements:
         orderId: '-?(0|[1-9]\\d*)'
     methods: get
-    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController::getOrderById
+    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Store\StoreController::getOrderById
 
 app_zol_invoicing_presentation_api_bundle_get_pet_by_id:
     path: /pet/{petId}
     requirements:
         petId: '-?(0|[1-9]\\d*)'
     methods: get
-    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController::getPetById
+    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Pet\PetController::getPetById
 
 app_zol_invoicing_presentation_api_bundle_get_user_by_name:
     path: /user/{username}
     requirements:
         username: '[^:/?#[]@!$&amp;\&#039;()*+,;=]+'
     methods: get
-    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController::getUserByName
+    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\User\UserController::getUserByName
 
 app_zol_invoicing_presentation_api_bundle_login_user:
     path: /user/login
     methods: get
-    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController::loginUser
+    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\User\UserController::loginUser
 
 app_zol_invoicing_presentation_api_bundle_logout_user:
     path: /user/logout
     methods: get
-    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController::logoutUser
+    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\User\UserController::logoutUser
 
 app_zol_invoicing_presentation_api_bundle_place_order:
     path: /store/order
     methods: post
-    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController::placeOrder
+    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Store\StoreController::placeOrder
 
 app_zol_invoicing_presentation_api_bundle_post_client_client_id_param1_param2_param3_param4_param5_param6:
     path: /client/{clientId}/{param1}/{param2}/{param3}/{param4}/{param5}
@@ -122,25 +122,25 @@ app_zol_invoicing_presentation_api_bundle_post_test:
 app_zol_invoicing_presentation_api_bundle_update_pet:
     path: /pet
     methods: put
-    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController::updatePet
+    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Pet\PetController::updatePet
 
 app_zol_invoicing_presentation_api_bundle_update_pet_with_form:
     path: /pet/{petId}
     requirements:
         petId: '-?(0|[1-9]\\d*)'
     methods: post
-    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController::updatePetWithForm
+    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Pet\PetController::updatePetWithForm
 
 app_zol_invoicing_presentation_api_bundle_update_user:
     path: /user/{username}
     requirements:
         username: '[^:/?#[]@!$&amp;\&#039;()*+,;=]+'
     methods: put
-    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController::updateUser
+    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\User\UserController::updateUser
 
 app_zol_invoicing_presentation_api_bundle_upload_file:
     path: /pet/{petId}/uploadImage
     requirements:
         petId: '-?(0|[1-9]\\d*)'
     methods: post
-    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController::uploadFile
+    controller: App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Pet\PetController::uploadFile
