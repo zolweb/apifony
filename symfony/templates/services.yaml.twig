@@ -1,0 +1,53 @@
+services:
+    ### Serializer ###
+
+    {{ namespace|u.snake }}_json_encoder:
+        class: 'Symfony\Component\Serializer\Encoder\JsonEncoder'
+
+    {{ namespace|u.snake }}_php_stan_extractor:
+        class: 'Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor'
+
+    {{ namespace|u.snake }}_reflection_extractor:
+        class: 'Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor'
+
+    {{ namespace|u.snake }}_property_info_extractor:
+        class: 'Symfony\Component\PropertyInfo\PropertyInfoExtractor'
+        arguments:
+            $typeExtractors:
+                - '@{{ namespace|u.snake }}_php_stan_extractor'
+                - '@{{ namespace|u.snake }}_reflection_extractor'
+
+    {{ namespace|u.snake }}_annotation_reader:
+        class: 'Doctrine\Common\Annotations\AnnotationReader'
+
+    {{ namespace|u.snake }}_annotation_loader:
+        class: 'Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader'
+        arguments:
+            $reader: '@{{ namespace|u.snake }}_annotation_reader'
+
+    {{ namespace|u.snake }}_class_metadata_factor:
+        class: 'Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory'
+        arguments:
+            $loader: '@{{ namespace|u.snake }}_annotation_loader'
+
+    {{ namespace|u.snake }}_metadata_aware_name_converter:
+        class: 'Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter'
+
+    {{ namespace|u.snake }}_object_normalizer:
+        class: 'Symfony\Component\Serializer\Normalizer\ObjectNormalizer'
+        arguments:
+            $propertyTypeExtractor: '@{{ namespace|u.snake }}_property_info_extractor'
+            $classMetadataFactory: '@{{ namespace|u.snake }}_class_metadata_factor:'
+            $nameConverter: '@{{ namespace|u.snake }}_metadata_aware_name_converter'
+
+    {{ namespace|u.snake }}_array_denormalizer:
+        class: 'Symfony\Component\Serializer\Normalizer\ArrayDenormalizer'
+
+    {{ namespace|u.snake }}_serializer_interface:
+        class: 'Symfony\Component\Serializer\Serializer'
+        arguments:
+            $encoders:
+                - '@{{ namespace|u.snake }}_json_encoder'
+            $normalizers:
+                - '@{{ namespace|u.snake }}_object_normalizer'
+                - '@{{ namespace|u.snake }}_array_denormalizer'

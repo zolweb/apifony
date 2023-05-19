@@ -1,0 +1,53 @@
+services:
+    ### Serializer ###
+
+    app_zol_invoicing_presentation_api_bundle_json_encoder:
+        class: 'Symfony\Component\Serializer\Encoder\JsonEncoder'
+
+    app_zol_invoicing_presentation_api_bundle_php_stan_extractor:
+        class: 'Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor'
+
+    app_zol_invoicing_presentation_api_bundle_reflection_extractor:
+        class: 'Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor'
+
+    app_zol_invoicing_presentation_api_bundle_property_info_extractor:
+        class: 'Symfony\Component\PropertyInfo\PropertyInfoExtractor'
+        arguments:
+            $typeExtractors:
+                - '@app_zol_invoicing_presentation_api_bundle_php_stan_extractor'
+                - '@app_zol_invoicing_presentation_api_bundle_reflection_extractor'
+
+    app_zol_invoicing_presentation_api_bundle_annotation_reader:
+        class: 'Doctrine\Common\Annotations\AnnotationReader'
+
+    app_zol_invoicing_presentation_api_bundle_annotation_loader:
+        class: 'Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader'
+        arguments:
+            $reader: '@app_zol_invoicing_presentation_api_bundle_annotation_reader'
+
+    app_zol_invoicing_presentation_api_bundle_class_metadata_factor:
+        class: 'Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory'
+        arguments:
+            $loader: '@app_zol_invoicing_presentation_api_bundle_annotation_loader'
+
+    app_zol_invoicing_presentation_api_bundle_metadata_aware_name_converter:
+        class: 'Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter'
+
+    app_zol_invoicing_presentation_api_bundle_object_normalizer:
+        class: 'Symfony\Component\Serializer\Normalizer\ObjectNormalizer'
+        arguments:
+            $propertyTypeExtractor: '@app_zol_invoicing_presentation_api_bundle_property_info_extractor'
+            $classMetadataFactory: '@app_zol_invoicing_presentation_api_bundle_class_metadata_factor:'
+            $nameConverter: '@app_zol_invoicing_presentation_api_bundle_metadata_aware_name_converter'
+
+    app_zol_invoicing_presentation_api_bundle_array_denormalizer:
+        class: 'Symfony\Component\Serializer\Normalizer\ArrayDenormalizer'
+
+    app_zol_invoicing_presentation_api_bundle_serializer_interface:
+        class: 'Symfony\Component\Serializer\Serializer'
+        arguments:
+            $encoders:
+                - '@app_zol_invoicing_presentation_api_bundle_json_encoder'
+            $normalizers:
+                - '@app_zol_invoicing_presentation_api_bundle_object_normalizer'
+                - '@app_zol_invoicing_presentation_api_bundle_array_denormalizer'

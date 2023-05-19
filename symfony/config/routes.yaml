@@ -5,4 +5,4 @@ controllers:
     type: attribute
 
 invoicing_open_api_server:
-    resource: "@InvoicingOpenApiServerBundle/config/routing.yaml"
+    resource: "@InvoicingOpenApiServerBundle/config/routes.yaml"

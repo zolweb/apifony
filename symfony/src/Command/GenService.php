@@ -46,22 +46,35 @@ class GenService extends AbstractExtension
             'name' => 'composer.json',
             'template' => 'composer.json.twig',
             'params' => [
-                'bundleName' => $bundleName,
                 'packageName' => $packageName,
             ],
         ];
         $files[] = [
             'folder' => 'src',
-            'name' => "{$bundleName}.php",
+            'name' => "{$bundleName}Bundle.php",
             'template' => 'bundle.php.twig',
             'params' => [
-                'bundleName' => $bundleName,
+                'bundleName' => "{$bundleName}Bundle",
+            ],
+        ];
+        $files[] = [
+            'folder' => 'src',
+            'name' => "{$bundleName}Extension.php",
+            'template' => 'extension.php.twig',
+            'params' => [
+                'extensionName' => "{$bundleName}Extension",
             ],
         ];
         $files[] = [
             'folder' => 'config',
-            'name' => 'routing.yaml',
-            'template' => 'routing.yaml.twig',
+            'name' => 'services.yaml',
+            'template' => 'services.yaml.twig',
+            'params' => [],
+        ];
+        $files[] = [
+            'folder' => 'config',
+            'name' => 'routes.yaml',
+            'template' => 'routes.yaml.twig',
             'params' => [
                 'paths' => $openApi->paths,
             ],

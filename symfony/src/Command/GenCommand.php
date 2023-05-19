@@ -23,7 +23,7 @@ class GenCommand extends Command
 
         $this->genService->generate(
             $spec,
-            'InvoicingOpenApiServerBundle',
+            'InvoicingOpenApiServer',
             'App\\Zol\\Invoicing\\Presentation\\Api\\Bundle',
             'zol/invoicing-api',
         );
