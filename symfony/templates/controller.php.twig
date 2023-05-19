@@ -4,23 +4,19 @@
 namespace {{ namespace }}\Controller\{{ (operations[0].tags[0] ?? 'Default')|u.camel.title }};
 
 use RuntimeException;
+use {{ namespace }}\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class {{ className }}
+class {{ className }} extends AbstractController
 {
 {%~ for operation in operations %}
     public function {{ operation.operationId|u.camel }}(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         {{ interfaceName }} $handler,
 {%~ for param in operation.allSortedParameters(['path']) %}
         {{ param.schema.type.methodParameterType }} ${{ param.name }},
@@ -34,7 +30,7 @@ class {{ className }}
 {%~ endfor %}
         $errors = [];
 {%~ for param in operation.allSortedParameters %}
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             ${{ param.variableName }},
             [
         {%~ for constraint in param.schema.constraints %}

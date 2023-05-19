@@ -3,22 +3,18 @@
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Store;
 
 use RuntimeException;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class StoreController
+class StoreController extends AbstractController
 {
     public function getInventory(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         StoreHandlerInterface $handler,
     ): Response {
         $errors = [];
@@ -62,8 +58,6 @@ class StoreController
 
     public function placeOrder(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         StoreHandlerInterface $handler,
     ): Response {
         $errors = [];
@@ -157,14 +151,12 @@ class StoreController
 
     public function getOrderById(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         StoreHandlerInterface $handler,
         int $orderId,
     ): Response {
         $pOrderId = $orderId;
         $errors = [];
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pOrderId,
             [
                 new Assert\NotNull,
@@ -224,14 +216,12 @@ class StoreController
 
     public function deleteOrder(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         StoreHandlerInterface $handler,
         int $orderId,
     ): Response {
         $pOrderId = $orderId;
         $errors = [];
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pOrderId,
             [
                 new Assert\NotNull,

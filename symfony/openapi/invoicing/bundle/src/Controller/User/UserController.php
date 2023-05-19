@@ -3,22 +3,18 @@
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Controller\User;
 
 use RuntimeException;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class UserController
+class UserController extends AbstractController
 {
     public function createUser(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         UserHandlerInterface $handler,
     ): Response {
         $errors = [];
@@ -103,8 +99,6 @@ class UserController
 
     public function createUsersWithListInput(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         UserHandlerInterface $handler,
     ): Response {
         $errors = [];
@@ -198,14 +192,12 @@ class UserController
 
     public function loginUser(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         UserHandlerInterface $handler,
     ): Response {
         $qPassword = strval($request->query->get('password'));
         $qUsername = strval($request->query->get('username'));
         $errors = [];
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $qPassword,
             [
                 new Assert\NotNull,
@@ -217,7 +209,7 @@ class UserController
                 iterator_to_array($violations),
             );
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $qUsername,
             [
                 new Assert\NotNull,
@@ -278,8 +270,6 @@ class UserController
 
     public function logoutUser(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         UserHandlerInterface $handler,
     ): Response {
         $errors = [];
@@ -323,14 +313,12 @@ class UserController
 
     public function getUserByName(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         UserHandlerInterface $handler,
         string $username,
     ): Response {
         $pUsername = $username;
         $errors = [];
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pUsername,
             [
                 new Assert\NotNull,
@@ -389,14 +377,12 @@ class UserController
 
     public function updateUser(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         UserHandlerInterface $handler,
         string $username,
     ): Response {
         $pUsername = $username;
         $errors = [];
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pUsername,
             [
                 new Assert\NotNull,
@@ -491,14 +477,12 @@ class UserController
 
     public function deleteUser(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         UserHandlerInterface $handler,
         string $username,
     ): Response {
         $pUsername = $username;
         $errors = [];
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pUsername,
             [
                 new Assert\NotNull,

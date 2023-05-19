@@ -2,17 +2,29 @@ services:
 
     ### Controllers ###
 
-    app_zol_invoicing_presentation_api_bundle_default_controller:
+    App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController:
         class: 'App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController'
+        arguments:
+            $serializer: '@app_zol_invoicing_presentation_api_bundle_serializer_interface'
+            $validator: '@validator'
 
-    app_zol_invoicing_presentation_api_bundle_pet_controller:
+    App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Pet\PetController:
         class: 'App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Pet\PetController'
+        arguments:
+            $serializer: '@app_zol_invoicing_presentation_api_bundle_serializer_interface'
+            $validator: '@validator'
 
-    app_zol_invoicing_presentation_api_bundle_store_controller:
+    App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Store\StoreController:
         class: 'App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Store\StoreController'
+        arguments:
+            $serializer: '@app_zol_invoicing_presentation_api_bundle_serializer_interface'
+            $validator: '@validator'
 
-    app_zol_invoicing_presentation_api_bundle_user_controller:
+    App\Zol\Invoicing\Presentation\Api\Bundle\Controller\User\UserController:
         class: 'App\Zol\Invoicing\Presentation\Api\Bundle\Controller\User\UserController'
+        arguments:
+            $serializer: '@app_zol_invoicing_presentation_api_bundle_serializer_interface'
+            $validator: '@validator'
 
     ### Serializer ###
 
@@ -52,7 +64,7 @@ services:
         class: 'Symfony\Component\Serializer\Normalizer\ObjectNormalizer'
         arguments:
             $propertyTypeExtractor: '@app_zol_invoicing_presentation_api_bundle_property_info_extractor'
-            $classMetadataFactory: '@app_zol_invoicing_presentation_api_bundle_class_metadata_factor:'
+            $classMetadataFactory: '@app_zol_invoicing_presentation_api_bundle_class_metadata_factor'
             $nameConverter: '@app_zol_invoicing_presentation_api_bundle_metadata_aware_name_converter'
 
     app_zol_invoicing_presentation_api_bundle_array_denormalizer:

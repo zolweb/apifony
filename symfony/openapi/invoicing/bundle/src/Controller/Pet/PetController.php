@@ -3,22 +3,18 @@
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Pet;
 
 use RuntimeException;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class PetController
+class PetController extends AbstractController
 {
     public function updatePet(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         PetHandlerInterface $handler,
     ): Response {
         $errors = [];
@@ -89,8 +85,6 @@ class PetController
 
     public function addPet(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         PetHandlerInterface $handler,
     ): Response {
         $errors = [];
@@ -161,13 +155,11 @@ class PetController
 
     public function findPetsByStatus(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         PetHandlerInterface $handler,
     ): Response {
         $qStatus = strval($request->query->get('status', 'available'));
         $errors = [];
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $qStatus,
             [
                 new Assert\Choice(choices: [
@@ -231,13 +223,11 @@ class PetController
 
     public function findPetsByTags(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         PetHandlerInterface $handler,
     ): Response {
         $qTags = strval($request->query->get('tags'));
         $errors = [];
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $qTags,
             [
                 new Assert\NotNull,
@@ -296,14 +286,12 @@ class PetController
 
     public function getPetById(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         PetHandlerInterface $handler,
         int $petId,
     ): Response {
         $pPetId = $petId;
         $errors = [];
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pPetId,
             [
                 new Assert\NotNull,
@@ -363,8 +351,6 @@ class PetController
 
     public function updatePetWithForm(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         PetHandlerInterface $handler,
         int $petId,
     ): Response {
@@ -372,7 +358,7 @@ class PetController
         $qName = strval($request->query->get('name'));
         $qStatus = strval($request->query->get('status'));
         $errors = [];
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $qName,
             [
                 new Assert\NotNull,
@@ -384,7 +370,7 @@ class PetController
                 iterator_to_array($violations),
             );
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pPetId,
             [
                 new Assert\NotNull,
@@ -397,7 +383,7 @@ class PetController
                 iterator_to_array($violations),
             );
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $qStatus,
             [
                 new Assert\NotNull,
@@ -452,15 +438,13 @@ class PetController
 
     public function deletePet(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         PetHandlerInterface $handler,
         int $petId,
     ): Response {
         $pPetId = $petId;
         $hApi_key = strval($request->headers->get('api_key'));
         $errors = [];
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $hApi_key,
             [
                 new Assert\NotNull,
@@ -472,7 +456,7 @@ class PetController
                 iterator_to_array($violations),
             );
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pPetId,
             [
                 new Assert\NotNull,
@@ -527,15 +511,13 @@ class PetController
 
     public function uploadFile(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         PetHandlerInterface $handler,
         int $petId,
     ): Response {
         $pPetId = $petId;
         $qAdditionalMetadata = strval($request->query->get('additionalMetadata'));
         $errors = [];
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $qAdditionalMetadata,
             [
                 new Assert\NotNull,
@@ -547,7 +529,7 @@ class PetController
                 iterator_to_array($violations),
             );
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pPetId,
             [
                 new Assert\NotNull,

@@ -3,22 +3,18 @@
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default;
 
 use RuntimeException;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
-use Symfony\Component\Validator\Validator\ValidatorInterface;
 
-class DefaultController
+class DefaultController extends AbstractController
 {
     public function getClient(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         DefaultHandlerInterface $handler,
         string $clientId,
         float $param3,
@@ -38,7 +34,7 @@ class DefaultController
         $cAzgrzeg = intval($request->cookies->get('azgrzeg', 10));
         $hGegzer = boolval($request->headers->get('gegzer', true));
         $errors = [];
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $qAgrez,
             [
                 new Assert\NotNull,
@@ -53,7 +49,7 @@ class DefaultController
         if (!$request->query->has('agrez')) {
             $errors['query']['agrez'][] = 'Parameter agrez in query is required.';
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $hAzef,
             [
                 new Assert\NotNull,
@@ -68,7 +64,7 @@ class DefaultController
         if (!$request->headers->has('azef')) {
             $errors['header']['azef'][] = 'Parameter azef in header is required.';
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pClientId,
             [
                 new Assert\NotNull,
@@ -80,7 +76,7 @@ class DefaultController
                 iterator_to_array($violations),
             );
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pParam3,
             [
                 new Assert\DivisibleBy(value: 1),
@@ -94,7 +90,7 @@ class DefaultController
                 iterator_to_array($violations),
             );
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pParam4,
             [
                 new Assert\NotNull,
@@ -106,7 +102,7 @@ class DefaultController
                 iterator_to_array($violations),
             );
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pParam5,
             [
                 new Assert\NotNull,
@@ -118,7 +114,7 @@ class DefaultController
                 iterator_to_array($violations),
             );
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $cAzgrzeg,
             [
                 new Assert\NotNull,
@@ -130,7 +126,7 @@ class DefaultController
                 iterator_to_array($violations),
             );
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $hGegzer,
             [
                 new Assert\NotNull,
@@ -142,7 +138,7 @@ class DefaultController
                 iterator_to_array($violations),
             );
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pParam1,
             [
                 new Assert\Choice(choices: [
@@ -159,7 +155,7 @@ class DefaultController
                 iterator_to_array($violations),
             );
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pParam2,
             [
                 new Assert\Regex(pattern: 'item'),
@@ -282,8 +278,6 @@ class DefaultController
 
     public function postClientClientIdParam1Param2Param3Param4Param5Param6(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         DefaultHandlerInterface $handler,
         string $clientId,
         float $param3,
@@ -299,7 +293,7 @@ class DefaultController
         $pParam1 = $param1;
         $pParam2 = $param2;
         $errors = [];
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pClientId,
             [
                 new Assert\NotNull,
@@ -311,7 +305,7 @@ class DefaultController
                 iterator_to_array($violations),
             );
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pParam3,
             [
                 new Assert\DivisibleBy(value: 1),
@@ -325,7 +319,7 @@ class DefaultController
                 iterator_to_array($violations),
             );
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pParam4,
             [
                 new Assert\NotNull,
@@ -337,7 +331,7 @@ class DefaultController
                 iterator_to_array($violations),
             );
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pParam5,
             [
                 new Assert\NotNull,
@@ -349,7 +343,7 @@ class DefaultController
                 iterator_to_array($violations),
             );
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pParam1,
             [
                 new Assert\Choice(choices: [
@@ -366,7 +360,7 @@ class DefaultController
                 iterator_to_array($violations),
             );
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pParam2,
             [
                 new Assert\Regex(pattern: 'item'),
@@ -432,8 +426,6 @@ class DefaultController
 
     public function postTest(
         Request $request,
-        SerializerInterface $serializer,
-        ValidatorInterface $validator,
         DefaultHandlerInterface $handler,
         string $p1,
         int $p2,
@@ -457,7 +449,7 @@ class DefaultController
         $qQ3 = floatval($request->query->get('q3', 0.1));
         $qQ4 = boolval($request->query->get('q4', true));
         $errors = [];
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $cC1,
             [
                 new Assert\Regex(pattern: '[a-z]{3}'),
@@ -481,7 +473,7 @@ class DefaultController
         if (!$request->cookies->has('c1')) {
             $errors['cookie']['c1'][] = 'Parameter c1 in cookie is required.';
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $cC2,
             [
                 new Assert\DivisibleBy(value: 1),
@@ -505,7 +497,7 @@ class DefaultController
         if (!$request->cookies->has('c2')) {
             $errors['cookie']['c2'][] = 'Parameter c2 in cookie is required.';
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $cC3,
             [
                 new Assert\DivisibleBy(value: 0.1),
@@ -529,7 +521,7 @@ class DefaultController
         if (!$request->cookies->has('c3')) {
             $errors['cookie']['c3'][] = 'Parameter c3 in cookie is required.';
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $cC4,
             [
                 new Assert\NotNull,
@@ -545,7 +537,7 @@ class DefaultController
         if (!$request->cookies->has('c4')) {
             $errors['cookie']['c4'][] = 'Parameter c4 in cookie is required.';
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $hH1,
             [
                 new Assert\Regex(pattern: '[a-z]{3}'),
@@ -569,7 +561,7 @@ class DefaultController
         if (!$request->headers->has('h1')) {
             $errors['header']['h1'][] = 'Parameter h1 in header is required.';
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $hH2,
             [
                 new Assert\DivisibleBy(value: 1),
@@ -593,7 +585,7 @@ class DefaultController
         if (!$request->headers->has('h2')) {
             $errors['header']['h2'][] = 'Parameter h2 in header is required.';
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $hH3,
             [
                 new Assert\DivisibleBy(value: 0.1),
@@ -617,7 +609,7 @@ class DefaultController
         if (!$request->headers->has('h3')) {
             $errors['header']['h3'][] = 'Parameter h3 in header is required.';
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $hH4,
             [
                 new Assert\Choice(choices: [
@@ -635,7 +627,7 @@ class DefaultController
         if (!$request->headers->has('h4')) {
             $errors['header']['h4'][] = 'Parameter h4 in header is required.';
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pP1,
             [
                 new Assert\Regex(pattern: '[a-z]{3}'),
@@ -656,7 +648,7 @@ class DefaultController
                 iterator_to_array($violations),
             );
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pP2,
             [
                 new Assert\DivisibleBy(value: 1),
@@ -677,7 +669,7 @@ class DefaultController
                 iterator_to_array($violations),
             );
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pP3,
             [
                 new Assert\DivisibleBy(value: 0.1),
@@ -699,7 +691,7 @@ class DefaultController
                 iterator_to_array($violations),
             );
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $pP4,
             [
                 new Assert\Choice(choices: [
@@ -715,7 +707,7 @@ class DefaultController
                 iterator_to_array($violations),
             );
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $qQ1,
             [
                 new Assert\Regex(pattern: '[a-z]{3}'),
@@ -739,7 +731,7 @@ class DefaultController
         if (!$request->query->has('q1')) {
             $errors['query']['q1'][] = 'Parameter q1 in query is required.';
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $qQ2,
             [
                 new Assert\DivisibleBy(value: 1),
@@ -763,7 +755,7 @@ class DefaultController
         if (!$request->query->has('q2')) {
             $errors['query']['q2'][] = 'Parameter q2 in query is required.';
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $qQ3,
             [
                 new Assert\DivisibleBy(value: 0.1),
@@ -787,7 +779,7 @@ class DefaultController
         if (!$request->query->has('q3')) {
             $errors['query']['q3'][] = 'Parameter q3 in query is required.';
         }
-        $violations = $validator->validate(
+        $violations = $this->validator->validate(
             $qQ4,
             [
                 new Assert\NotNull,

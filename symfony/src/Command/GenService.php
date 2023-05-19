@@ -42,6 +42,12 @@ class GenService extends AbstractExtension
 
         $files = $openApi->getFiles();
         $files[] = [
+            'folder' => 'src/Controller',
+            'name' => 'AbstractController.php',
+            'template' => 'abstract-controller.php.twig',
+            'params' => [],
+        ];
+        $files[] = [
             'folder' => '',
             'name' => 'composer.json',
             'template' => 'composer.json.twig',
