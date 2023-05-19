@@ -167,12 +167,12 @@ class Operation
                     'operations' => [$this],
                 ],
             ];
-
-            $this->requestBody?->addFiles($files, $folder);
-            $this->responses?->addFiles($files, $folder);
         } else {
             $files["{$folder}/{$controllerClassName}.php"]['params']['operations'][] = $this;
             $files["{$folder}/{$handlerInterfaceName}.php"]['params']['operations'][] = $this;
         }
+
+        $this->requestBody?->addFiles($files, $folder);
+        $this->responses?->addFiles($files, $folder);
     }
 }
