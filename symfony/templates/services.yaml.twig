@@ -9,6 +9,7 @@ services:
             $serializer: '@{{ namespace|u.snake }}_serializer_interface'
             $validator: '@validator'
     {%~ if not loop.last %}
+        public: true
 
     {%~ endif %}
 {% endfor %}
@@ -39,19 +40,21 @@ services:
         arguments:
             $reader: '@{{ namespace|u.snake }}_annotation_reader'
 
-    {{ namespace|u.snake }}_class_metadata_factor:
+    {{ namespace|u.snake }}_class_metadata_factory:
         class: 'Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory'
         arguments:
             $loader: '@{{ namespace|u.snake }}_annotation_loader'
 
     {{ namespace|u.snake }}_metadata_aware_name_converter:
         class: 'Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter'
+        arguments:
+            $metadataFactory: '@{{ namespace|u.snake }}_class_metadata_factory'
 
     {{ namespace|u.snake }}_object_normalizer:
         class: 'Symfony\Component\Serializer\Normalizer\ObjectNormalizer'
         arguments:
             $propertyTypeExtractor: '@{{ namespace|u.snake }}_property_info_extractor'
-            $classMetadataFactory: '@{{ namespace|u.snake }}_class_metadata_factor'
+            $classMetadataFactory: '@{{ namespace|u.snake }}_class_metadata_factory'
             $nameConverter: '@{{ namespace|u.snake }}_metadata_aware_name_converter'
 
     {{ namespace|u.snake }}_array_denormalizer:
