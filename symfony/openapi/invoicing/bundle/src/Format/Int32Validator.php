@@ -12,7 +12,7 @@ class Int32Validator extends ConstraintValidator
     ) {
     }
 
-    public function validate($value, Constraint $constraint): void
+    public function validate(mixed $value, Constraint $constraint): void
     {
         foreach ($this->formatDefinition->validate($value) as $violation) {
             $this->context->buildViolation($violation)->addViolation();
