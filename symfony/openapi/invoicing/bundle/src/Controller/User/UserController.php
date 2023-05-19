@@ -13,9 +13,15 @@ use Symfony\Component\Validator\ConstraintViolationInterface;
 
 class UserController extends AbstractController
 {
+    private UserHandlerInterface $handler;
+
+    public function setHandler(UserHandlerInterface $handler): void
+    {
+        $this->handler = $handler;
+    }
+
     public function createUser(
         Request $request,
-        UserHandlerInterface $handler,
     ): Response {
         $errors = [];
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
@@ -99,7 +105,6 @@ class UserController extends AbstractController
 
     public function createUsersWithListInput(
         Request $request,
-        UserHandlerInterface $handler,
     ): Response {
         $errors = [];
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
@@ -192,7 +197,6 @@ class UserController extends AbstractController
 
     public function loginUser(
         Request $request,
-        UserHandlerInterface $handler,
     ): Response {
         $qPassword = strval($request->query->get('password'));
         $qUsername = strval($request->query->get('username'));
@@ -270,7 +274,6 @@ class UserController extends AbstractController
 
     public function logoutUser(
         Request $request,
-        UserHandlerInterface $handler,
     ): Response {
         $errors = [];
         if (count($errors) > 0) {
@@ -313,7 +316,6 @@ class UserController extends AbstractController
 
     public function getUserByName(
         Request $request,
-        UserHandlerInterface $handler,
         string $username,
     ): Response {
         $pUsername = $username;
@@ -377,7 +379,6 @@ class UserController extends AbstractController
 
     public function updateUser(
         Request $request,
-        UserHandlerInterface $handler,
         string $username,
     ): Response {
         $pUsername = $username;
@@ -477,7 +478,6 @@ class UserController extends AbstractController
 
     public function deleteUser(
         Request $request,
-        UserHandlerInterface $handler,
         string $username,
     ): Response {
         $pUsername = $username;

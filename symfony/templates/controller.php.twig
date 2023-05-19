@@ -14,10 +14,16 @@ use Symfony\Component\Validator\ConstraintViolationInterface;
 
 class {{ className }} extends AbstractController
 {
+    private {{interfaceName }} $handler;
+
+    public function setHandler({{ interfaceName }} $handler): void
+    {
+        $this->handler = $handler;
+    }
+
 {%~ for operation in operations %}
     public function {{ operation.operationId|u.camel }}(
         Request $request,
-        {{ interfaceName }} $handler,
 {%~ for param in operation.allSortedParameters(['path']) %}
         {{ param.schema.type.methodParameterType }} ${{ param.name }},
 {%~ endfor %}

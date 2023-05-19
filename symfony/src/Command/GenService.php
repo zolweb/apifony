@@ -60,7 +60,8 @@ class GenService extends AbstractExtension
             'name' => "{$bundleName}Bundle.php",
             'template' => 'bundle.php.twig',
             'params' => [
-                'bundleName' => "{$bundleName}Bundle",
+                'bundleName' => $bundleName,
+                'paths' => $openApi->paths,
             ],
         ];
         $files[] = [

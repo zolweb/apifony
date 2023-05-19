@@ -13,9 +13,15 @@ use Symfony\Component\Validator\ConstraintViolationInterface;
 
 class PetController extends AbstractController
 {
+    private PetHandlerInterface $handler;
+
+    public function setHandler(PetHandlerInterface $handler): void
+    {
+        $this->handler = $handler;
+    }
+
     public function updatePet(
         Request $request,
-        PetHandlerInterface $handler,
     ): Response {
         $errors = [];
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
@@ -85,7 +91,6 @@ class PetController extends AbstractController
 
     public function addPet(
         Request $request,
-        PetHandlerInterface $handler,
     ): Response {
         $errors = [];
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
@@ -155,7 +160,6 @@ class PetController extends AbstractController
 
     public function findPetsByStatus(
         Request $request,
-        PetHandlerInterface $handler,
     ): Response {
         $qStatus = strval($request->query->get('status', 'available'));
         $errors = [];
@@ -223,7 +227,6 @@ class PetController extends AbstractController
 
     public function findPetsByTags(
         Request $request,
-        PetHandlerInterface $handler,
     ): Response {
         $qTags = strval($request->query->get('tags'));
         $errors = [];
@@ -286,7 +289,6 @@ class PetController extends AbstractController
 
     public function getPetById(
         Request $request,
-        PetHandlerInterface $handler,
         int $petId,
     ): Response {
         $pPetId = $petId;
@@ -351,7 +353,6 @@ class PetController extends AbstractController
 
     public function updatePetWithForm(
         Request $request,
-        PetHandlerInterface $handler,
         int $petId,
     ): Response {
         $pPetId = $petId;
@@ -438,7 +439,6 @@ class PetController extends AbstractController
 
     public function deletePet(
         Request $request,
-        PetHandlerInterface $handler,
         int $petId,
     ): Response {
         $pPetId = $petId;
@@ -511,7 +511,6 @@ class PetController extends AbstractController
 
     public function uploadFile(
         Request $request,
-        PetHandlerInterface $handler,
         int $petId,
     ): Response {
         $pPetId = $petId;

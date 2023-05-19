@@ -13,9 +13,15 @@ use Symfony\Component\Validator\ConstraintViolationInterface;
 
 class DefaultController extends AbstractController
 {
+    private DefaultHandlerInterface $handler;
+
+    public function setHandler(DefaultHandlerInterface $handler): void
+    {
+        $this->handler = $handler;
+    }
+
     public function getClient(
         Request $request,
-        DefaultHandlerInterface $handler,
         string $clientId,
         float $param3,
         int $param4,
@@ -278,7 +284,6 @@ class DefaultController extends AbstractController
 
     public function postClientClientIdParam1Param2Param3Param4Param5Param6(
         Request $request,
-        DefaultHandlerInterface $handler,
         string $clientId,
         float $param3,
         int $param4,
@@ -426,7 +431,6 @@ class DefaultController extends AbstractController
 
     public function postTest(
         Request $request,
-        DefaultHandlerInterface $handler,
         string $p1,
         int $p2,
         float $p3,

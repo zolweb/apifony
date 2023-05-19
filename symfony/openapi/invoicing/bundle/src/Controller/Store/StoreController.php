@@ -13,9 +13,15 @@ use Symfony\Component\Validator\ConstraintViolationInterface;
 
 class StoreController extends AbstractController
 {
+    private StoreHandlerInterface $handler;
+
+    public function setHandler(StoreHandlerInterface $handler): void
+    {
+        $this->handler = $handler;
+    }
+
     public function getInventory(
         Request $request,
-        StoreHandlerInterface $handler,
     ): Response {
         $errors = [];
         if (count($errors) > 0) {
@@ -58,7 +64,6 @@ class StoreController extends AbstractController
 
     public function placeOrder(
         Request $request,
-        StoreHandlerInterface $handler,
     ): Response {
         $errors = [];
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
@@ -151,7 +156,6 @@ class StoreController extends AbstractController
 
     public function getOrderById(
         Request $request,
-        StoreHandlerInterface $handler,
         int $orderId,
     ): Response {
         $pOrderId = $orderId;
@@ -216,7 +220,6 @@ class StoreController extends AbstractController
 
     public function deleteOrder(
         Request $request,
-        StoreHandlerInterface $handler,
         int $orderId,
     ): Response {
         $pOrderId = $orderId;
