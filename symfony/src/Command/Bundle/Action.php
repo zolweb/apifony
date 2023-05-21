@@ -14,6 +14,7 @@ class Action
     public readonly string $name;
     /** @var array<Parameter> */
     public readonly array $parameters;
+    public readonly Operation $operation;
 
     public static function build(
         Operation $operation,
@@ -85,6 +86,7 @@ class Action
         $action->name = u($operation->operationId)->camel();
         $action->methods = $methods;
         $action->parameters = $parameters;
+        $action->operation = $operation;
 
         return $action;
     }

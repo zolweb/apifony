@@ -58,11 +58,11 @@ class {{ file.className }} extends AbstractController
         }
     {%~ endif %}
 {%~ endfor %}
-{%~ if action.requestBody %}
+{%~ if action.operation.requestBody %}
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
-    {%~ for mediaType in action.requestBody.mediaTypes %}
-            case '{{ mediaType.type }}':
-        {%~ if mediaType.type is same as ('application/json') %}
+    {%~ for type, mediaType in action.operation.requestBody.mediaTypes %}
+            case '{{ type }}':
+        {%~ if type is same as ('application/json') %}
                 {{ mediaType.schema.type.requestBodyPayloadInitializationFromRequest }}
                 {{ mediaType.schema.type.requestBodyPayloadValidationViolationsInitialization }}
         {%~ endif %}
