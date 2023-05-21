@@ -1,27 +1,29 @@
 {% autoescape false %}
 <?php
 
-namespace {{ namespace }};
+namespace {{ file.namespace }};
 
 use RuntimeException;
-use {{ namespace }}\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
+{% for usedFile in file.usedPhpClassFiles %}
+use {{ usedFile.namespace }}\{{ usedFile.className }};
+{% endfor %}
 
-class {{ className }} extends AbstractController
+class {{ file.className }} extends AbstractController
 {
-    private {{interfaceName }} $handler;
+    private {{ file.handler.className }} $handler;
 
-    public function setHandler({{ interfaceName }} $handler): void
+    public function setHandler({{  file.handler.className }} $handler): void
     {
         $this->handler = $handler;
     }
 
-{%~ for operation in operations %}
+{%~ for operation in file.operations %}
     public function {{ operation.operationId|u.camel }}(
         Request $request,
 {%~ for param in operation.allSortedParameters(['path']) %}
@@ -106,7 +108,7 @@ class {{ className }} extends AbstractController
                 $responsePayload = match ($responsePayloadContentType) {
     {%~ for responseContentTypeNormalizedName, responseContentType in operation.allPossibleResponseContentTypes %}
                     {% if responseContentType is null %}null{% else %}'{{ responseContentType }}'{% endif %} =>
-                        $handler->{{ operation.operationId|u.camel }}From{{ requestBodyPayloadTypeNormalizedName }}PayloadTo{{ responseContentTypeNormalizedName }}Content(
+                        $this->handler->{{ operation.operationId|u.camel }}From{{ requestBodyPayloadTypeNormalizedName }}PayloadTo{{ responseContentTypeNormalizedName }}Content(
         {%~ for param in operation.allSortedParameters %}
                             ${{ param.variableName }},
         {%~ endfor %}

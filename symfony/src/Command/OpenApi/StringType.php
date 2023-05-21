@@ -43,7 +43,7 @@ class StringType implements Type
     public function getRequestBodyPayloadValidationViolationsInitialization(): string
     {
         return sprintf(
-            "\$violations = \$validator->validate(\$requestBodyPayload, [\n%s\n]);",
+            "\$violations = \$this->validator->validate(\$requestBodyPayload, [\n%s\n]);",
             implode(
                 '',
                 array_map(

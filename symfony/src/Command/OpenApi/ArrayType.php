@@ -50,9 +50,9 @@ class ArrayType implements Type
     public function getRequestBodyPayloadValidationViolationsInitialization(): string
     {
         return (string)$this->schema->items->type === 'object' ?
-            '$violations = $validator->validate($requestBodyPayload, [new Assert\Valid()]);' :
+            '$violations = $this->validator->validate($requestBodyPayload, [new Assert\Valid()]);' :
             sprintf(
-                "\$violations = \$validator->validate(\$requestBodyPayload, [\n%s\n]);",
+                "\$violations = \$this->validator->validate(\$requestBodyPayload, [\n%s\n]);",
                 implode(
                     '',
                     array_map(

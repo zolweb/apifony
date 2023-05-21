@@ -8,29 +8,29 @@ use function Symfony\Component\String\u;
 
 class Api
 {
-    public readonly string $folder;
-    public readonly string $namespace;
-    public readonly string $name;
+    private readonly string $folder;
+    private readonly string $bundleNamespace;
+    private readonly string $name;
+    private readonly AbstractController $abstractController;
     /** @var array<Aggregate> */
-    public readonly array $aggregates;
+    private readonly array $aggregates;
 
     /**
      * @param array<PathItem> $pathItems
      */
     public static function build(
-        string $folder,
-        string $namespace,
+        string $bundleNamespace,
         array $pathItems,
     ): self {
         $api = new self();
-        $api->folder = $folder;
-        $api->namespace = $namespace;
+        $api->bundleNamespace = $bundleNamespace;
+        $api->abstractController = AbstractController::build($bundleNamespace);
         $api->aggregates = array_map(
             static fn (array $aggregate) => Aggregate::build(
-                "{$folder}/{$aggregate['tag']}",
-                "{$namespace}\\{$aggregate['tag']}",
-                $aggregate['tag'],
+                $bundleNamespace,
+                u($aggregate['tag'])->camel()->title(),
                 $aggregate['operations'],
+                $api->abstractController,
             ),
             array_reduce(
                 array_merge(
@@ -40,7 +40,7 @@ class Api
                 ),
                 ),
                 static function (array $operations, Operation $operation) {
-                    $tag = (string) u($operation->tags[0] ?? 'default')->camel()->title();
+                    $tag = $operation->tags[0] ?? 'default';
                     if (!isset($operations[$tag])) {
                         $operations[$tag] = ['tag' => $tag, 'operations' => []];
                     }
@@ -63,14 +63,7 @@ class Api
      */
     public function addFiles(array& $files): void
     {
-        $files[] = new File(
-            $this->folder,
-            'AbstractController.php',
-            'abstract-controller.php.twig',
-            [
-                'namespace' => $this->namespace,
-            ],
-        );
+        $files[] = $this->abstractController;
 
         foreach ($this->aggregates as $aggregate) {
             $aggregate->addFiles($files);

@@ -3,19 +3,19 @@
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Store;
 
 use RuntimeException;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Api\Store\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Api\AbstractController;
 
 class StoreController extends AbstractController
 {
-    private Lol $handler;
+    private StoreHandler $handler;
 
-    public function setHandler(Lol $handler): void
+    public function setHandler(StoreHandler $handler): void
     {
         $this->handler = $handler;
     }
@@ -39,7 +39,7 @@ class StoreController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->getInventoryFromEmptyPayloadToApplicationJsonContent(
+                        $this->handler->getInventoryFromEmptyPayloadToApplicationJsonContent(
                         ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
@@ -69,7 +69,7 @@ class StoreController extends AbstractController
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'application/json':
                 $requestBodyPayload = $serializer->deserialize($request->getContent(), 'Order', JsonEncoder::FORMAT);
-                $violations = $validator->validate($requestBodyPayload);
+                $violations = $this->validator->validate($requestBodyPayload);
 
                 break;
             case 'unspecified':
@@ -106,10 +106,10 @@ class StoreController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->placeOrderFromEmptyPayloadToApplicationJsonContent(
+                        $this->handler->placeOrderFromEmptyPayloadToApplicationJsonContent(
                         ),
                     null =>
-                        $handler->placeOrderFromEmptyPayloadToEmptyContent(
+                        $this->handler->placeOrderFromEmptyPayloadToEmptyContent(
                         ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
@@ -124,11 +124,11 @@ class StoreController extends AbstractController
             case $requestBodyPayload instanceOf Order:
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->placeOrderFromOrderPayloadToApplicationJsonContent(
+                        $this->handler->placeOrderFromOrderPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         ),
                     null =>
-                        $handler->placeOrderFromOrderPayloadToEmptyContent(
+                        $this->handler->placeOrderFromOrderPayloadToEmptyContent(
                             $requestBodyPayload,
                         ),
                     default => (object) [
@@ -188,11 +188,11 @@ class StoreController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->getOrderByIdFromEmptyPayloadToApplicationJsonContent(
+                        $this->handler->getOrderByIdFromEmptyPayloadToApplicationJsonContent(
                             $pOrderId,
                         ),
                     null =>
-                        $handler->getOrderByIdFromEmptyPayloadToEmptyContent(
+                        $this->handler->getOrderByIdFromEmptyPayloadToEmptyContent(
                             $pOrderId,
                         ),
                     default => (object) [
@@ -252,7 +252,7 @@ class StoreController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     null =>
-                        $handler->deleteOrderFromEmptyPayloadToEmptyContent(
+                        $this->handler->deleteOrderFromEmptyPayloadToEmptyContent(
                             $pOrderId,
                         ),
                     default => (object) [

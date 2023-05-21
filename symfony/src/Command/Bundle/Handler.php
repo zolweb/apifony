@@ -4,29 +4,23 @@ namespace App\Command\Bundle;
 
 use App\Command\OpenApi\Operation;
 
-class Controller implements PhpClassFile
+class Handler implements PhpClassFile
 {
-    public readonly Handler $handler;
     /** @var array<Operation> */
     public readonly array $operations;
 
     private readonly string $bundleNamespace;
     private readonly string $aggregateName;
-    private readonly AbstractController $abstractController;
 
     public static function build(
         string $bundleNamespace,
         string $aggregateName,
         array $operations,
-        AbstractController $abstractController,
-        Handler $handler,
     ): self {
         $aggregate = new self();
         $aggregate->bundleNamespace = $bundleNamespace;
         $aggregate->aggregateName = $aggregateName;
         $aggregate->operations = $operations;
-        $aggregate->abstractController = $abstractController;
-        $aggregate->handler = $handler;
 
         return $aggregate;
     }
@@ -42,12 +36,12 @@ class Controller implements PhpClassFile
 
     public function getName(): string
     {
-        return "{$this->aggregateName}Controller.php";
+        return "{$this->aggregateName}Handler.php";
     }
 
     public function getTemplate(): string
     {
-        return 'controller.php.twig';
+        return 'handler.php.twig';
     }
 
     public function getNamespace(): string
@@ -57,13 +51,11 @@ class Controller implements PhpClassFile
 
     public function getClassName(): string
     {
-        return "{$this->aggregateName}Controller";
+        return "{$this->aggregateName}Handler";
     }
 
     public function getUsedPhpClassFiles(): array
     {
-        return [
-            $this->abstractController,
-        ];
+        return [];
     }
 }

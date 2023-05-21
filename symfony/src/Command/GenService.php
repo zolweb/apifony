@@ -103,13 +103,13 @@ class GenService extends AbstractExtension
         // ];
 
         foreach ($files as $file) {
-            if (!file_exists(__DIR__."/../../openapi/invoicing/bundle/{$file->folder}")) {
-                mkdir(__DIR__."/../../openapi/invoicing/bundle/{$file->folder}", recursive: true);
+            if (!file_exists(__DIR__."/../../openapi/invoicing/bundle/{$file->getFolder()}")) {
+                mkdir(__DIR__."/../../openapi/invoicing/bundle/{$file->getFolder()}", recursive: true);
             }
 
             file_put_contents(
-                __DIR__."/../../openapi/invoicing/bundle/{$file->folder}/{$file->name}",
-                $this->twig->render($file->template, $file->parameters));
+                __DIR__."/../../openapi/invoicing/bundle/{$file->getFolder()}/{$file->getName()}",
+                $this->twig->render($file->getTemplate(), ['file' => $file]));
         }
     }
 }

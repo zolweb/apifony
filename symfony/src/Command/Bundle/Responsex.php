@@ -8,8 +8,8 @@ use App\Command\OpenApi\Response;
 
 class Responsex
 {
-    public readonly Controller $controller;
-    public readonly array $responsex;
+    private readonly Controller $controller;
+    private readonly array $responsex;
 
     /**
      * @param array<Operation> $operations

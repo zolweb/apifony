@@ -6,10 +6,10 @@ use App\Command\OpenApi\OpenApi;
 
 class Bundle
 {
-    public readonly string $packageName;
-    public readonly string $namespace;
-    public readonly string $name;
-    public readonly Api $api;
+    private readonly string $packageName;
+    private readonly string $namespace;
+    private readonly string $name;
+    private readonly Api $api;
 
     public static function build(
         string $namespace,
@@ -17,8 +17,7 @@ class Bundle
     ): self {
         $bundle = new self();
         $bundle->api = Api::build(
-            'src/Api',
-            "{$namespace}\Api",
+            $namespace,
             $openApi->paths->pathItems,
         );
 

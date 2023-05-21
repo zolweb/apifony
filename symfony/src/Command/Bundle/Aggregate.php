@@ -2,30 +2,38 @@
 
 namespace App\Command\Bundle;
 
+use App\Command\OpenApi\Operation;
+
 class Aggregate
 {
-    public readonly string $folder;
-    public readonly string $namespace;
-    public readonly string $name;
-    public readonly Controller $controller;
-    public readonly array $responsex;
+    private readonly string $folder;
+    private readonly string $bundleNamespace;
+    private readonly string $name;
+    private readonly Handler $handler;
+    private readonly Controller $controller;
+    private readonly array $responsex;
 
     /**
      * @param array<Operation> $operations
      */
     public static function build(
-        string $folder,
-        string $namespace,
+        string $bundleNamespace,
         string $name,
         array $operations,
+        AbstractController $abstractController,
     ): self {
         $aggregate = new self();
-        $aggregate->controller = Controller::build(
-            $folder,
-            "{$name}Controller.php",
-            $namespace,
-            "{$name}Controller",
+        $aggregate->handler = Handler::build(
+            $bundleNamespace,
+            $name,
             $operations,
+        );
+        $aggregate->controller = Controller::build(
+            $bundleNamespace,
+            $name,
+            $operations,
+            $abstractController,
+            $aggregate->handler,
         );
 
         return $aggregate;
@@ -98,6 +106,7 @@ class Aggregate
      */
     public function addFiles(array& $files): void
     {
-        $files[] = $this->controller->getFile();
+        $files[] = $this->handler;
+        $files[] = $this->controller;
     }
 }

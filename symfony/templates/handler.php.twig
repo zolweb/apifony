@@ -1,11 +1,11 @@
 {% autoescape false %}
 <?php
 
-namespace {{ namespace }}\Controller\{{ (operations[0].tags[0] ?? 'Default')|u.camel.title }};
+namespace {{ file.namespace }};
 
-interface {{ interfaceName }}
+interface {{ file.className }}
 {
-{%~ for operation in operations %}
+{%~ for operation in file.operations %}
 {%~ for requestBodyPayloadTypeNormalizedName, requestBodyPayloadType in operation.allPossibleRequestBodyPayloadTypes %}
     {%~ for responseContentTypeNormalizedName, responseContentType in operation.allPossibleResponseContentTypes %}
     public function {{ operation.operationId|u.camel }}From{{ requestBodyPayloadTypeNormalizedName }}PayloadTo{{ responseContentTypeNormalizedName }}Content(

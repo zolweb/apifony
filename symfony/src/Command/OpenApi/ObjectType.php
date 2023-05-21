@@ -70,7 +70,7 @@ class ObjectType implements Type
 
     public function getRequestBodyPayloadValidationViolationsInitialization(): string
     {
-        return '$violations = $validator->validate($requestBodyPayload);';
+        return '$violations = $this->validator->validate($requestBodyPayload);';
     }
 
     public function getNormalizedType(): string

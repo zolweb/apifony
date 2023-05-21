@@ -3,19 +3,19 @@
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Default;
 
 use RuntimeException;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Api\Default\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Api\AbstractController;
 
 class DefaultController extends AbstractController
 {
-    private Lol $handler;
+    private DefaultHandler $handler;
 
-    public function setHandler(Lol $handler): void
+    public function setHandler(DefaultHandler $handler): void
     {
         $this->handler = $handler;
     }
@@ -184,7 +184,7 @@ class DefaultController extends AbstractController
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'application/json':
                 $requestBodyPayload = json_decode($request->getContent(), true);
-                $violations = $validator->validate($requestBodyPayload, [
+                $violations = $this->validator->validate($requestBodyPayload, [
 
 ]);
 
@@ -223,7 +223,7 @@ class DefaultController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->getClientFromEmptyPayloadToApplicationJsonContent(
+                        $this->handler->getClientFromEmptyPayloadToApplicationJsonContent(
                             $qAgrez,
                             $hAzef,
                             $pClientId,
@@ -248,7 +248,7 @@ class DefaultController extends AbstractController
             case is_int($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->getClientFromIntegerPayloadToApplicationJsonContent(
+                        $this->handler->getClientFromIntegerPayloadToApplicationJsonContent(
                             $qAgrez,
                             $hAzef,
                             $pClientId,
@@ -400,7 +400,7 @@ class DefaultController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->postClientClientIdParam1Param2Param3Param4Param5Param6FromEmptyPayloadToApplicationJsonContent(
+                        $this->handler->postClientClientIdParam1Param2Param3Param4Param5Param6FromEmptyPayloadToApplicationJsonContent(
                             $pClientId,
                             $pParam3,
                             $pParam4,
@@ -802,7 +802,7 @@ class DefaultController extends AbstractController
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'application/json':
                 $requestBodyPayload = $serializer->deserialize($request->getContent(), 'Test', JsonEncoder::FORMAT);
-                $violations = $validator->validate($requestBodyPayload);
+                $violations = $this->validator->validate($requestBodyPayload);
 
                 break;
             case 'unspecified':
@@ -839,7 +839,7 @@ class DefaultController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->postTestFromEmptyPayloadToApplicationJsonContent(
+                        $this->handler->postTestFromEmptyPayloadToApplicationJsonContent(
                             $cC1,
                             $cC2,
                             $cC3,
@@ -870,7 +870,7 @@ class DefaultController extends AbstractController
             case $requestBodyPayload instanceOf Test:
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->postTestFromTestPayloadToApplicationJsonContent(
+                        $this->handler->postTestFromTestPayloadToApplicationJsonContent(
                             $cC1,
                             $cC2,
                             $cC3,

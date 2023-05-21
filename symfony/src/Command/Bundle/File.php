@@ -2,16 +2,11 @@
 
 namespace App\Command\Bundle;
 
-class File
+interface File
 {
-    /**
-     * @param array<string, mixed> $parameters
-     */
-    public function __construct(
-        public readonly string $folder,
-        public readonly string $name,
-        public readonly string $template,
-        public readonly array $parameters,
-    ) {
-    }
+    public function getFolder(): string;
+
+    public function getName(): string;
+
+    public function getTemplate(): string;
 }

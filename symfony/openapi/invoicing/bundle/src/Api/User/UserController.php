@@ -3,19 +3,19 @@
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\User;
 
 use RuntimeException;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Api\User\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Api\AbstractController;
 
 class UserController extends AbstractController
 {
-    private Lol $handler;
+    private UserHandler $handler;
 
-    public function setHandler(Lol $handler): void
+    public function setHandler(UserHandler $handler): void
     {
         $this->handler = $handler;
     }
@@ -27,7 +27,7 @@ class UserController extends AbstractController
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'application/json':
                 $requestBodyPayload = $serializer->deserialize($request->getContent(), 'User', JsonEncoder::FORMAT);
-                $violations = $validator->validate($requestBodyPayload);
+                $violations = $this->validator->validate($requestBodyPayload);
 
                 break;
             case 'unspecified':
@@ -64,7 +64,7 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->createUserFromEmptyPayloadToApplicationJsonContent(
+                        $this->handler->createUserFromEmptyPayloadToApplicationJsonContent(
                         ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
@@ -79,7 +79,7 @@ class UserController extends AbstractController
             case $requestBodyPayload instanceOf User:
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->createUserFromUserPayloadToApplicationJsonContent(
+                        $this->handler->createUserFromUserPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         ),
                     default => (object) [
@@ -110,7 +110,7 @@ class UserController extends AbstractController
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'application/json':
                 $requestBodyPayload = $serializer->deserialize($request->getContent(), 'User[]', JsonEncoder::FORMAT);
-                $violations = $validator->validate($requestBodyPayload, [new Assert\Valid()]);
+                $violations = $this->validator->validate($requestBodyPayload, [new Assert\Valid()]);
 
                 break;
             case 'unspecified':
@@ -147,10 +147,10 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     null =>
-                        $handler->createUsersWithListInputFromEmptyPayloadToEmptyContent(
+                        $this->handler->createUsersWithListInputFromEmptyPayloadToEmptyContent(
                         ),
                     'application/json' =>
-                        $handler->createUsersWithListInputFromEmptyPayloadToApplicationJsonContent(
+                        $this->handler->createUsersWithListInputFromEmptyPayloadToApplicationJsonContent(
                         ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
@@ -165,11 +165,11 @@ class UserController extends AbstractController
             case is_array($requestBodyPayload) && $requestBodyPayload instanceOf User:
                 $responsePayload = match ($responsePayloadContentType) {
                     null =>
-                        $handler->createUsersWithListInputFromUserArrayPayloadToEmptyContent(
+                        $this->handler->createUsersWithListInputFromUserArrayPayloadToEmptyContent(
                             $requestBodyPayload,
                         ),
                     'application/json' =>
-                        $handler->createUsersWithListInputFromUserArrayPayloadToApplicationJsonContent(
+                        $this->handler->createUsersWithListInputFromUserArrayPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         ),
                     default => (object) [
@@ -240,12 +240,12 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->loginUserFromEmptyPayloadToApplicationJsonContent(
+                        $this->handler->loginUserFromEmptyPayloadToApplicationJsonContent(
                             $qPassword,
                             $qUsername,
                         ),
                     null =>
-                        $handler->loginUserFromEmptyPayloadToEmptyContent(
+                        $this->handler->loginUserFromEmptyPayloadToEmptyContent(
                             $qPassword,
                             $qUsername,
                         ),
@@ -291,7 +291,7 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     null =>
-                        $handler->logoutUserFromEmptyPayloadToEmptyContent(
+                        $this->handler->logoutUserFromEmptyPayloadToEmptyContent(
                         ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
@@ -347,11 +347,11 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $handler->getUserByNameFromEmptyPayloadToApplicationJsonContent(
+                        $this->handler->getUserByNameFromEmptyPayloadToApplicationJsonContent(
                             $pUsername,
                         ),
                     null =>
-                        $handler->getUserByNameFromEmptyPayloadToEmptyContent(
+                        $this->handler->getUserByNameFromEmptyPayloadToEmptyContent(
                             $pUsername,
                         ),
                     default => (object) [
@@ -398,7 +398,7 @@ class UserController extends AbstractController
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'application/json':
                 $requestBodyPayload = $serializer->deserialize($request->getContent(), 'User', JsonEncoder::FORMAT);
-                $violations = $validator->validate($requestBodyPayload);
+                $violations = $this->validator->validate($requestBodyPayload);
 
                 break;
             case 'unspecified':
@@ -435,7 +435,7 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     null =>
-                        $handler->updateUserFromEmptyPayloadToEmptyContent(
+                        $this->handler->updateUserFromEmptyPayloadToEmptyContent(
                             $pUsername,
                         ),
                     default => (object) [
@@ -451,7 +451,7 @@ class UserController extends AbstractController
             case $requestBodyPayload instanceOf User:
                 $responsePayload = match ($responsePayloadContentType) {
                     null =>
-                        $handler->updateUserFromUserPayloadToEmptyContent(
+                        $this->handler->updateUserFromUserPayloadToEmptyContent(
                             $pUsername,
                             $requestBodyPayload,
                         ),
@@ -509,7 +509,7 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     null =>
-                        $handler->deleteUserFromEmptyPayloadToEmptyContent(
+                        $this->handler->deleteUserFromEmptyPayloadToEmptyContent(
                             $pUsername,
                         ),
                     default => (object) [
