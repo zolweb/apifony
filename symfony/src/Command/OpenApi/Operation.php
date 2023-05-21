@@ -10,20 +10,19 @@ class Operation
     public readonly string $method;
     public readonly string $operationId;
     public readonly int $priority;
-    /** @var array<Parameter> */
+    /** @var array<Reference|Parameter> */
     public readonly array $parameters;
-    public readonly ?RequestBody $requestBody;
+    public readonly null|Reference|RequestBody $requestBody;
     public readonly ?Responses $responses;
     /** @var array<string> */
     public readonly array $tags;
 
     /**
-     * @param array<mixed> $components
      * @param array<mixed> $data
      *
      * @throws Exception
      */
-    public static function build(PathItem $pathItem, string $method, array& $components, array $data): self
+    public static function build(PathItem $pathItem, string $method, array $data): self
     {
         $operation = new self();
         $operation->method = $method;
@@ -31,23 +30,25 @@ class Operation
         $operation->operationId = $data['operationId'];
         $operation->priority = $data['x-priority'] ?? 0;
         $operation->parameters = array_map(
-            fn (array $parameterData) => Parameter::build(
-                u($data['operationId'])->camel()->title(),
-                $components,
-                $parameterData,
-            ),
+            fn (array $parameterData) => isset($parameterData['$ref']) ?
+                Reference::build($parameterData) :
+                Parameter::build(
+                    u($data['operationId'])->camel()->title(),
+                    $parameterData,
+                ),
             $data['parameters'] ?? []
         );
-        $operation->requestBody = isset($data['requestBody']) ?
-            RequestBody::build(
+        $operation->requestBody = match (true) {
+            isset($data['requestBody']['$ref']) => Reference::build($data['requestBody']),
+            isset($data['requestBody']) => RequestBody::build(
                 u($data['operationId'])->camel()->title(),
-                $components,
                 $data['requestBody'],
-            ) : null;
+            ),
+            default => null,
+        };
         $operation->responses = isset($data['responses']) ?
             Responses::build(
                 u($data['operationId'])->camel()->title(),
-                $components,
                 $data['responses'],
             ) : null;
         $operation->tags = $data['tags'] ?? [];

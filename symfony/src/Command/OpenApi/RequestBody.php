@@ -12,12 +12,11 @@ class RequestBody
     public readonly array $mediaTypes;
 
     /**
-     * @param array<mixed> $components
      * @param array<mixed> $data
      *
      * @throws Exception
      */
-    public static function build(string $className, array& $components, array $data): self
+    public static function build(string $className, array $data): self
     {
         $requestBody = new self();
 
@@ -38,7 +37,6 @@ class RequestBody
             fn (string $type) => MediaType::build(
                 sprintf('%s%sMediaType', $className, u($type)->camel()->title()),
                 $type,
-                $components,
                 $data['content'][$type],
             ),
             array_keys(

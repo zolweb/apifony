@@ -8,34 +8,23 @@ class Parameter
     public readonly string $name;
     public readonly string $in;
     public readonly bool $required;
-    public readonly Schema $schema;
+    public readonly Reference|Schema $schema;
 
     /**
-     * @param array<mixed> $components
      * @param array<mixed> $data
      *
      * @throws Exception
      */
-    public static function build(string $className, array& $components, array $data): self
+    public static function build(string $className, array $data): self
     {
         $parameter = new self();
-
-        if (isset($data['$ref'])) {
-            $className = explode('/', $data['$ref'])[3];
-            $component = &$components['parameters'][$className];
-            if ($component['instance'] !== null) {
-                return $component['instance'];
-            } else {
-                $component['instance'] = $parameter;
-                $data = $component['data'];
-            }
-        }
-
         $parameter->className = $className;
         $parameter->name = $data['name'];
         $parameter->in = $data['in'];
         $parameter->required = $data['required'] ?? false;
-        $parameter->schema = Schema::build("{$className}Schema", $components, $data['schema']);
+        $parameter->schema = isset($data['schema']['$ref']) ?
+            Reference::build($data['schema']) :
+            Schema::build("{$className}Schema", $data['schema']);
 
         return $parameter;
     }

@@ -7,49 +7,33 @@ use function Symfony\Component\String\u;
 class Response
 {
     public readonly string $className;
-    public readonly string $code;
-    /** @var array<Header> */
+    /** @var array<Reference|Header> */
     public readonly array $headers;
     /** @var array<MediaType> */
     public readonly array $content;
 
     /**
-     * @param array<mixed> $components
      * @param array<mixed> $data
      *
      * @throws Exception
      */
-    public static function build(string $className, string $code, array& $components, array $data): self
+    public static function build(string $className, array $data): self
     {
         $response = new self();
-
-        if (isset($data['$ref'])) {
-            $className = explode('/', $data['$ref'])[3];
-            $component = &$components['responses'][$className];
-            if ($component['instance'] !== null) {
-                return $component['instance'];
-            } else {
-                $component['instance'] = $response;
-                $data = $component['data'];
-            }
-        }
-
         $response->className = $className;
-        $response->code = $code;
         $response->headers = array_map(
-            fn (string $name) => Header::build(
-                sprintf('%s%sHeader', $className, u($name)->camel()->title()),
-                $name,
-                $components,
-                $data['headers'][$name],
-            ),
+            fn (string $name) => isset($data['headers'][$name]['$ref']) ?
+                Reference::build($data['headers'][$name]) :
+                Header::build(
+                    sprintf('%s%sHeader', $className, u($name)->camel()->title()),
+                    $data['headers'][$name],
+                ),
             array_keys($data['headers'] ?? []),
         );
         $response->content = array_map(
             fn (string $type) => MediaType::build(
                 sprintf('%s%s', $className, u($type)->camel()->title()),
                 $type,
-                $components,
                 $data['content'][$type],
             ),
             array_filter(

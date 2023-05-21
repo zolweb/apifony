@@ -7,7 +7,6 @@ use function Symfony\Component\String\u;
 class Schema
 {
     public readonly string $className;
-    public readonly bool $isComponent;
     public readonly Type $type;
     public readonly bool $nullable;
     public readonly ?string $format;
@@ -22,35 +21,21 @@ class Schema
     public readonly null|int|float $maximum;
     public readonly null|int|float $exclusiveMinimum;
     public readonly null|int|float $exclusiveMaximum;
-    public readonly ?Schema $items;
+    public readonly null|Reference|Schema $items;
     public readonly ?int $minItems;
     public readonly ?int $maxItems;
     public readonly bool $uniqueItems;
-    /** @var null|array<string, Schema> */
+    /** @var null|array<string, Reference|Schema> */
     public readonly ?array $properties;
 
     /**
-     * @param array<mixed> $components
      * @param array<mixed> $data
      *
      * @throws Exception
      */
-    public static function build(string $className, array& $components, array $data): self
+    public static function build(string $className, array $data): self
     {
         $schema = new self();
-
-        $isComponent = false;
-        if (isset($data['$ref'])) {
-            $className = explode('/', $data['$ref'])[3];
-            $component = &$components['schemas'][$className];
-            $isComponent = true;
-            if ($component['instance'] !== null) {
-                return $component['instance'];
-            } else {
-                $component['instance'] = $schema;
-                $data = $component['data'];
-            }
-        }
 
         if (!isset($data['type'])) {
             throw new Exception('Schemas without type are not supported.');
@@ -80,7 +65,6 @@ class Schema
         }
 
         $schema->className = $className;
-        $schema->isComponent = $isComponent;
         $schema->nullable = $nullable;
         $schema->format = $data['format'] ?? null;
         $schema->enum = $data['enum'] ?? null;
@@ -96,17 +80,21 @@ class Schema
         $schema->minItems = $data['minItems'] ?? null;
         $schema->maxItems = $data['maxItems'] ?? null;
         $schema->uniqueItems = $data['uniqueItems'] ?? false;
-        $schema->items = isset($data['items']) ?
-            Schema::build("{$className}List", $components, $data['items']) : null;
+        $schema->items = match (true) {
+            isset($data['items']['$ref']) => Reference::build($data['items']),
+            isset($data['items']) => Schema::build("{$className}List", $data['items']),
+            default => null,
+        };
         $schema->properties = isset($data['properties']) ?
             array_combine(
                 $keys = array_keys($data['properties']),
                 array_map(
-                    fn (string $name) => Schema::build(
-                        sprintf('%s%s', $className, u($name)->camel()->title()),
-                        $components,
-                        $data['properties'][$name],
-                    ),
+                    fn (string $name) => isset($data['properties'][$name]['$ref']) ?
+                        Reference::build($data['properties'][$name]) :
+                        Schema::build(
+                            sprintf('%s%s', $className, u($name)->camel()->title()),
+                            $data['properties'][$name],
+                        ),
                     $keys,
                 ),
             ) : null;

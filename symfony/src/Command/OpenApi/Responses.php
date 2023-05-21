@@ -5,21 +5,21 @@ namespace App\Command\OpenApi;
 class Responses
 {
     public readonly string $className;
-    /** @var array<Response> */
+    /** @var array<Reference|Response> */
     public readonly array $responses;
 
     /**
-     * @param array<mixed> $components
      * @param array<mixed> $data
      *
      * @throws Exception
      */
-    public static function build(string $className, array& $components, array $data): self
+    public static function build(string $className, array $data): self
     {
         $responses = new self();
         $responses->className = $className;
         $responses->responses = array_map(
-            fn (string $code) => Response::build("{$className}{$code}", $code, $components, $data[$code]),
+            fn (string $code) => isset($data[$code]['$ref']) ?
+                Reference::build($data[$code]) : Response::build("{$className}{$code}", $data[$code]),
             array_filter(
                 array_keys($data),
                 static fn (string $code) => in_array($code, [

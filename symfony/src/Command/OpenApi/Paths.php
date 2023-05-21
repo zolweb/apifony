@@ -8,16 +8,15 @@ class Paths
     public readonly array $pathItems;
 
     /**
-     * @param array<mixed> $components
      * @param array<mixed> $data
      *
      * @throws Exception
      */
-    public static function build(array& $components, array $data): self
+    public static function build(array $data): self
     {
         $paths = new self();
         $paths->pathItems = array_map(
-            fn (string $route) => PathItem::build($route, $components, $data[$route]),
+            fn (string $route) => PathItem::build($route, $data[$route]),
             array_filter(
                 array_keys($data),
                 static fn (string $route) => $route[0] === '/',

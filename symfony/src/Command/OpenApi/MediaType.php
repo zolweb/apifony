@@ -8,20 +8,20 @@ class MediaType
 {
     public readonly string $className;
     public readonly string $type;
-    public readonly Schema $schema;
+    public readonly Reference|Schema $schema;
 
     /**
-     * @param array<mixed> $components,
      * @param array<mixed> $data,
      *
      * @throws Exception
      */
-    public static function build(string $className, string $type, array& $components, array $data): self
+    public static function build(string $className, string $type, array $data): self
     {
         $mediaType = new self();
         $mediaType->className = $className;
         $mediaType->type = $type;
-        $mediaType->schema = Schema::build("{$className}Schema", $components, $data['schema']);
+        $mediaType->schema = isset($data['schema']['$ref']) ?
+            Reference::build($data['schema']) : Schema::build("{$className}Schema", $data['schema']);
 
         return $mediaType;
     }

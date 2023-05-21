@@ -4,6 +4,7 @@ namespace App\Command\OpenApi;
 
 class OpenApi
 {
+    public readonly ?Components $components;
     public readonly ?Paths $paths;
 
     /**
@@ -13,15 +14,9 @@ class OpenApi
      */
     public static function build(array $data): self
     {
-        $components = [];
-        foreach ($data['components'] ?? [] as $type => $typeComponents) {
-            foreach ($typeComponents as $name => $component) {
-                $components[$type][$name] = ['data' => $component, 'instance' => null];
-            }
-        }
-
         $openApi = new self();
-        $openApi->paths = isset($data['paths']) ? Paths::build($components, $data['paths']) : null;
+        $openApi->components = isset($data['components']) ? Components::build($data['components']) : null;
+        $openApi->paths = isset($data['paths']) ? Paths::build($data['paths']) : null;
 
         return $openApi;
     }
