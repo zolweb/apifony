@@ -22,17 +22,18 @@ class Action
             $requestBodyPayloadTypes['Empty'] = null;
         }
         foreach ($operation->requestBody?->mediaTypes ?? [] as $mediaType) {
+            $name = 'Lol';
             $schema = $mediaType->schema;
             if ($schema instanceof Reference) {
-                $schema = $components->schemas[$schema->getName()];
+                $schema = $components->schemas[$name = $schema->getName()];
             }
             $type = match ($schema->type) {
                 'string' => new StringType($schema),
                 'integer' => new IntegerType($schema),
                 'number' => new NumberType($schema),
                 'boolean' => new BooleanType($schema),
-                'object' => new ObjectType($schema),
-                'array' => new ArrayType($schema),
+                'object' => new ObjectType($schema, $name),
+                'array' => new ArrayType($schema, $components),
             };
             $requestBodyPayloadTypes[$type->getNormalizedType()] = $type;
         }
@@ -65,14 +66,6 @@ class Action
 
         $action = new self();
         $action->methods = $methods;
-
-
-        usort(
-            $params,
-            static fn (Parameter $param1, Parameter $param2) =>
-            ((int)($param1->schema->default !== null) - (int)($param2->schema->default !== null)) ?:
-                strcmp($param1->name, $param2->name),
-        );
 
         return $action;
     }

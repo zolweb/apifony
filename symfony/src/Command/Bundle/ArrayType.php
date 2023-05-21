@@ -2,13 +2,37 @@
 
 namespace App\Command\Bundle;
 
+use App\Command\OpenApi\Components;
+use App\Command\OpenApi\Reference;
 use App\Command\OpenApi\Schema;
 
 class ArrayType implements Type
 {
+    private readonly Schema $schema;
+    private readonly Type $itemType;
+
     public function __construct(
-        private readonly Schema $schema,
+        Reference|Schema $schema,
+        Components $components,
     ) {
+        if ($schema instanceof Reference) {
+            $schema = $components->schemas[$schema->getName()];
+        }
+
+        $items = $schema->items;
+        if ($items instanceof Reference) {
+            $items = $components->schemas[$items->getName()];
+        }
+
+        $this->schema = $schema;
+        $this->itemType = match ($items->type) {
+            'string' => new StringType($items),
+            'integer' => new IntegerType($items),
+            'number' => new NumberType($items),
+            'boolean' => new BooleanType($items),
+            'object' => new ObjectType($items, 'Cool'),
+            'array' => new ArrayType($items, $components),
+        };
     }
 
     public function getMethodParameterType(): string
@@ -18,7 +42,7 @@ class ArrayType implements Type
 
     public function getPhpDocParameterAnnotationType(): string
     {
-        return "array<{$this->schema->items->type->getPhpDocParameterAnnotationType()}>";
+        return "array<{$this->itemType->getPhpDocParameterAnnotationType()}>";
     }
 
     public function getMethodParameterDefault(): ?string
@@ -44,14 +68,14 @@ class ArrayType implements Type
 
     public function getRequestBodyPayloadInitializationFromRequest(): string
     {
-        return (string)$this->schema->items->type === 'object' ?
-            "\$requestBodyPayload = \$serializer->deserialize(\$request->getContent(), '{$this->schema->items->className}[]', JsonEncoder::FORMAT);" :
+        return (string)$this->itemType === 'object' ?
+            "\$requestBodyPayload = \$serializer->deserialize(\$request->getContent(), 'Flex[]', JsonEncoder::FORMAT);" :
             '$requestBodyPayload = json_decode($request->getContent(), true)';
     }
 
     public function getRequestBodyPayloadValidationViolationsInitialization(): string
     {
-        return (string)$this->schema->items->type === 'object' ?
+        return (string)$this->itemType === 'object' ?
             '$violations = $this->validator->validate($requestBodyPayload, [new Assert\Valid()]);' :
             sprintf(
                 "\$violations = \$this->validator->validate(\$requestBodyPayload, [\n%s\n]);",
@@ -67,12 +91,12 @@ class ArrayType implements Type
 
     public function getNormalizedType(): string
     {
-        return "{$this->schema->items->type->getNormalizedType()}Array";
+        return "{$this->itemType->getNormalizedType()}Array";
     }
 
     public function getRequestBodyPayloadTypeChecking(): string
     {
-        return "is_array(\$requestBodyPayload) && {$this->schema->items->type->getRequestBodyPayloadTypeChecking()}";
+        return "is_array(\$requestBodyPayload) && {$this->itemType->getRequestBodyPayloadTypeChecking()}";
     }
 
     public function getConstraints(): array
@@ -91,8 +115,8 @@ class ArrayType implements Type
             $constraints[] = new Constraint('Assert\Unique', []);
         }
 
-        if (count($this->schema->items->getConstraints()) > 0) {
-            $constraints[] = new Constraint('Assert\All', ['constraints' => $this->schema->items->getConstraints()]);
+        if (count($this->itemType->getConstraints()) > 0) {
+            $constraints[] = new Constraint('Assert\All', ['constraints' => $this->itemType->getConstraints()]);
         }
 
         return $constraints;

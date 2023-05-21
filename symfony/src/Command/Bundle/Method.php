@@ -3,7 +3,6 @@
 namespace App\Command\Bundle;
 
 use App\Command\OpenApi\Operation;
-use App\Command\OpenApi\Type;
 use function Symfony\Component\String\u;
 
 class Method
@@ -23,8 +22,16 @@ class Method
         ?string $responseContentType,
         Operation $operation,
     ): self {
+        $params = $operation->parameters;
+        usort(
+            $params,
+            static fn (\App\Command\OpenApi\Parameter $param1, \App\Command\OpenApi\Parameter $param2) =>
+            ((int)($param1->schema->default !== null) - (int)($param2->schema->default !== null)) ?:
+                strcmp($param1->name, $param2->name),
+        );
+
         $parameters = [];
-        foreach ($operation->getAllSortedParameters() as $parameter) {
+        foreach ($params as $parameter) {
             $parameters[] = Parameter::build($parameter);
         }
 

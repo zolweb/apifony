@@ -8,6 +8,7 @@ class ObjectType implements Type
 {
     public function __construct(
         private readonly Schema $schema,
+        private readonly string $name,
     ) {
     }
 
@@ -36,12 +37,12 @@ class ObjectType implements Type
 
     public function getPhpDocParameterAnnotationType(): string
     {
-        return $this->schema->className;
+        return $this->name;
     }
 
     public function getMethodParameterType(): string
     {
-        return $this->schema->className;
+        return $this->name;
     }
 
     public function getMethodParameterDefault(): ?string
@@ -67,7 +68,7 @@ class ObjectType implements Type
 
     public function getRequestBodyPayloadInitializationFromRequest(): string
     {
-        return "\$requestBodyPayload = \$serializer->deserialize(\$request->getContent(), '{$this->schema->className}', JsonEncoder::FORMAT);";
+        return "\$requestBodyPayload = \$serializer->deserialize(\$request->getContent(), '{$this->name}', JsonEncoder::FORMAT);";
     }
 
     public function getRequestBodyPayloadValidationViolationsInitialization(): string
@@ -77,12 +78,12 @@ class ObjectType implements Type
 
     public function getNormalizedType(): string
     {
-        return $this->schema->className;
+        return $this->name;
     }
 
     public function getRequestBodyPayloadTypeChecking(): string
     {
-        return "\$requestBodyPayload instanceOf {$this->schema->className}";
+        return "\$requestBodyPayload instanceOf {$this->name}";
     }
 
     public function getConstraints(): array
@@ -94,10 +95,10 @@ class ObjectType implements Type
     {
         $folder = $this->schema->isComponent ? 'src/Schema' : $folder;
 
-        if (!isset($files["{$folder}/{$this->schema->className}.php"])) {
-            $files["{$folder}/{$this->schema->className}.php"] = [
+        if (!isset($files["{$folder}/{$this->name}.php"])) {
+            $files["{$folder}/{$this->name}.php"] = [
                 'folder' => $folder,
-                'name' => "{$this->schema->className}.php",
+                'name' => "{$this->name}.php",
                 'template' => 'schema.php.twig',
                 'params' => [
                     'schema' => $this->schema,
