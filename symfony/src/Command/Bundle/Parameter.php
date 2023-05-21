@@ -7,7 +7,7 @@ use App\Command\OpenApi\Components;
 class Parameter
 {
     public readonly Type $type;
-    private readonly \App\Command\OpenApi\Parameter $parameter;
+    public readonly \App\Command\OpenApi\Parameter $parameter;
 
     public static function build(
         \App\Command\OpenApi\Parameter $parameter,
@@ -42,6 +42,6 @@ class Parameter
 
     public function getRequestCollection(): string
     {
-        return ['query' => 'query', 'header' => 'headers', 'cookie' => 'cookies'][$this->in];
+        return ['query' => 'query', 'header' => 'headers', 'cookie' => 'cookies'][$this->parameter->in];
     }
 }

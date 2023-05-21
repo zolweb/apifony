@@ -3,6 +3,7 @@
 namespace App\Command\Bundle;
 
 use App\Command\OpenApi\Schema;
+use function Symfony\Component\String\u;
 
 class StringType implements Type
 {

@@ -84,16 +84,20 @@ class Action
         $action = new self();
         $action->name = u($operation->operationId)->camel();
         $action->methods = $methods;
-        $action->methodParameters = $parameters;
-        $action->parameters = array_filter(
-            $parameters,
-            static fn (Parameter $parameter) => $parameter->
-        );
+        $action->parameters = $parameters;
 
         return $action;
     }
 
     private function __construct()
     {
+    }
+
+    public function getParameters(array $in = ['path', 'query', 'header', 'cookie']): array
+    {
+        return array_filter(
+            $this->parameters,
+            static fn (Parameter $param) => in_array($param->parameter->in, $in, true),
+        );
     }
 }

@@ -26,35 +26,35 @@ class {{ file.className }} extends AbstractController
 {%~ for action in file.actions %}
     public function {{ action.name }}(
         Request $request,
-{%~ for param in action.allSortedParameters(['path']) %}
-        {{ param.schema.type.methodParameterType }} ${{ param.name }},
+{%~ for param in action.parameters(['path']) %}
+        {{ param.type.methodParameterType }} ${{ param.parameter.name }},
 {%~ endfor %}
     ): Response {
-    {%~ for param in action.allSortedParameters(['path']) %}
-        ${{ param.variableName }} = ${{ param.name }};
+    {%~ for param in action.parameters %}
+        ${{ param.variableName }} = ${{ param.parameter.name }};
     {%~ endfor %}
-{%~ for param in action.allSortedParameters(['query', 'header', 'cookie']) %}
-        ${{ param.variableName }} = {{ param.schema.type.stringToTypeCastFunction }}($request->{{ param.requestCollection }}->get('{{ param.name|e('phpSingleQuotedString') }}'{% if param.schema.default %}, {{ param.schema.type.methodParameterDefault}}{% endif %}));
+{%~ for param in action.parameters(['query', 'header', 'cookie']) %}
+        ${{ param.variableName }} = {{ param.type.stringToTypeCastFunction }}($request->{{ param.requestCollection }}->get('{{ param.parameter.name|e('phpSingleQuotedString') }}'{% if param.parameter.schema.default %}, {{ param.type.methodParameterDefault}}{% endif %}));
 {%~ endfor %}
         $errors = [];
-{%~ for param in action.allSortedParameters %}
+{%~ for param in action.parameters %}
         $violations = $this->validator->validate(
             ${{ param.variableName }},
             [
-        {%~ for constraint in param.schema.constraints %}
+        {%~ for constraint in param.type.constraints %}
                 {{~ constraint.instantiation(4) }},
         {%~ endfor %}
             ]
         );
         if (count($violations) > 0) {
-            $errors['{{ param.in }}']['{{ param.name }}'] = array_map(
+            $errors['{{ param.parameter.in }}']['{{ param.parameter.name }}'] = array_map(
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
-    {%~ if param.required and param.in in ['query', 'header', 'cookie'] %}
-        if (!$request->{{ param.requestCollection }}->has('{{ param.name|e('phpSingleQuotedString') }}')) {
-            $errors['{{ param.in }}']['{{ param.name }}'][] = 'Parameter {{ param.name }} in {{ param.in }} is required.';
+    {%~ if param.parameter.required and param.parameter.in in ['query', 'header', 'cookie'] %}
+        if (!$request->{{ param.requestCollection }}->has('{{ param.parameter.name|e('phpSingleQuotedString') }}')) {
+            $errors['{{ param.parameter.in }}']['{{ param.parameter.name }}'][] = 'Parameter {{ param.parameter.name }} in {{ param.parameter.in }} is required.';
         }
     {%~ endif %}
 {%~ endfor %}
