@@ -9,14 +9,29 @@ use function Symfony\Component\String\u;
 
 class Action
 {
-    /** @var array<Method>
-     */
+    /** @var array<Method> */
     public readonly array $methods;
+    public readonly string $name;
+    /** @var array<Parameter> */
+    public readonly array $parameters;
 
     public static function build(
         Operation $operation,
         Components $components,
     ): self {
+        $params = $operation->parameters;
+        usort(
+            $params,
+            static fn (\App\Command\OpenApi\Parameter $param1, \App\Command\OpenApi\Parameter $param2) =>
+            ((int)($param1->schema->default !== null) - (int)($param2->schema->default !== null)) ?:
+                strcmp($param1->name, $param2->name),
+        );
+
+        $parameters = [];
+        foreach ($params as $parameter) {
+            $parameters[] = Parameter::build($parameter, $components);
+        }
+
         $requestBodyPayloadTypes = [];
         if ($operation->requestBody === null || !$operation->requestBody->required) {
             $requestBodyPayloadTypes['Empty'] = null;
@@ -59,6 +74,7 @@ class Action
                     $requestBodyPayloadType,
                     $responseContentTypeNormalizedName,
                     $responseContentType,
+                    $parameters,
                     $operation,
                     $components,
                 );
@@ -66,7 +82,13 @@ class Action
         }
 
         $action = new self();
+        $action->name = u($operation->operationId)->camel();
         $action->methods = $methods;
+        $action->methodParameters = $parameters;
+        $action->parameters = array_filter(
+            $parameters,
+            static fn (Parameter $parameter) => $parameter->
+        );
 
         return $action;
     }

@@ -19,27 +19,18 @@ class Method
     /** @var array<Responsex> */
     public readonly array $responses;
 
+    /**
+     * @param array<Parameter> $parameters
+     */
     public static function build(
         string $requestBodyPayloadTypeNormalizedName,
         ?Type $requestBodyPayloadType,
         string $responseContentTypeNormalizedName,
         ?string $responseContentType,
+        array $parameters,
         Operation $operation,
         Components $components,
     ): self {
-        $params = $operation->parameters;
-        usort(
-            $params,
-            static fn (\App\Command\OpenApi\Parameter $param1, \App\Command\OpenApi\Parameter $param2) =>
-            ((int)($param1->schema->default !== null) - (int)($param2->schema->default !== null)) ?:
-                strcmp($param1->name, $param2->name),
-        );
-
-        $parameters = [];
-        foreach ($params as $parameter) {
-            $parameters[] = Parameter::build($parameter, $components);
-        }
-
         $responses = [];
         foreach ($operation->responses->responses as $code => $response) {
             if ($response instanceof Reference) {

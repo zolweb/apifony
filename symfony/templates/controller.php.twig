@@ -23,21 +23,21 @@ class {{ file.className }} extends AbstractController
         $this->handler = $handler;
     }
 
-{%~ for operation in file.operations %}
-    public function {{ operation.operationId|u.camel }}(
+{%~ for action in file.actions %}
+    public function {{ action.name }}(
         Request $request,
-{%~ for param in operation.allSortedParameters(['path']) %}
+{%~ for param in action.allSortedParameters(['path']) %}
         {{ param.schema.type.methodParameterType }} ${{ param.name }},
 {%~ endfor %}
     ): Response {
-    {%~ for param in operation.allSortedParameters(['path']) %}
+    {%~ for param in action.allSortedParameters(['path']) %}
         ${{ param.variableName }} = ${{ param.name }};
     {%~ endfor %}
-{%~ for param in operation.allSortedParameters(['query', 'header', 'cookie']) %}
+{%~ for param in action.allSortedParameters(['query', 'header', 'cookie']) %}
         ${{ param.variableName }} = {{ param.schema.type.stringToTypeCastFunction }}($request->{{ param.requestCollection }}->get('{{ param.name|e('phpSingleQuotedString') }}'{% if param.schema.default %}, {{ param.schema.type.methodParameterDefault}}{% endif %}));
 {%~ endfor %}
         $errors = [];
-{%~ for param in operation.allSortedParameters %}
+{%~ for param in action.allSortedParameters %}
         $violations = $this->validator->validate(
             ${{ param.variableName }},
             [
@@ -58,9 +58,9 @@ class {{ file.className }} extends AbstractController
         }
     {%~ endif %}
 {%~ endfor %}
-{%~ if operation.requestBody %}
+{%~ if action.requestBody %}
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
-    {%~ for mediaType in operation.requestBody.mediaTypes %}
+    {%~ for mediaType in action.requestBody.mediaTypes %}
             case '{{ mediaType.type }}':
         {%~ if mediaType.type is same as ('application/json') %}
                 {{ mediaType.schema.type.requestBodyPayloadInitializationFromRequest }}
@@ -69,7 +69,7 @@ class {{ file.className }} extends AbstractController
 
                 break;
     {%~ endfor %}
-    {%~ if not operation.requestBody.required %}
+    {%~ if not action.requestBody.required %}
             case 'unspecified':
                 $requestBodyPayload = null;
                 $violations = [];
@@ -103,13 +103,13 @@ class {{ file.className }} extends AbstractController
         }
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
-{%~ for requestBodyPayloadTypeNormalizedName, requestBodyPayloadType in operation.allPossibleRequestBodyPayloadTypes %}
+{%~ for requestBodyPayloadTypeNormalizedName, requestBodyPayloadType in action.allPossibleRequestBodyPayloadTypes %}
             case {% if requestBodyPayloadType is null %}is_null($requestBodyPayload){% else %}{{ requestBodyPayloadType.requestBodyPayloadTypeChecking }}{% endif %}:
                 $responsePayload = match ($responsePayloadContentType) {
-    {%~ for responseContentTypeNormalizedName, responseContentType in operation.allPossibleResponseContentTypes %}
+    {%~ for responseContentTypeNormalizedName, responseContentType in action.allPossibleResponseContentTypes %}
                     {% if responseContentType is null %}null{% else %}'{{ responseContentType }}'{% endif %} =>
-                        $this->handler->{{ operation.operationId|u.camel }}From{{ requestBodyPayloadTypeNormalizedName }}PayloadTo{{ responseContentTypeNormalizedName }}Content(
-        {%~ for param in operation.allSortedParameters %}
+                        $this->handler->{{ action.operationId|u.camel }}From{{ requestBodyPayloadTypeNormalizedName }}PayloadTo{{ responseContentTypeNormalizedName }}Content(
+        {%~ for param in action.allSortedParameters %}
                             ${{ param.variableName }},
         {%~ endfor %}
         {%~ if requestBodyPayloadType is not null %}
@@ -132,7 +132,7 @@ class {{ file.className }} extends AbstractController
                 throw new RuntimeException();
         }
         switch ($responsePayload::CONTENT_TYPE) {
-{%~ for responseContentType in operation.allPossibleResponseContentTypes %}
+{%~ for responseContentType in action.allPossibleResponseContentTypes %}
             case {% if responseContentType is null %}null{% else %}'{{ responseContentType }}'{% endif %}:
     {%~ if responseContentType is null %}
                 return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
