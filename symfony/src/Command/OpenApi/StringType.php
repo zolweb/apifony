@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\OpenApi;
 
-class BooleanType implements Type
+class StringType implements Type
 {
     public function __construct(
         private readonly Schema $schema,
@@ -11,27 +11,28 @@ class BooleanType implements Type
 
     public function getPhpDocParameterAnnotationType(): string
     {
-        return 'bool';
+        return 'string';
     }
 
     public function getMethodParameterType(): string
     {
-        return 'bool';
+        return 'string';
     }
 
     public function getMethodParameterDefault(): ?string
     {
-        return [true => 'true', false => 'false', null => null][$this->schema->default];
+        return $this->schema->default !== null ?
+            sprintf('\'%s\'', str_replace('\'', '\\\'', $this->schema->default)) : null;
     }
 
     public function getRouteRequirementPattern(): string
     {
-        return 'true|false';
+        return $this->schema->pattern !== null ? $this->schema->pattern : '[^:/?#[]@!$&\'()*+,;=]+';
     }
 
     public function getStringToTypeCastFunction(): string
     {
-        return 'boolval';
+        return 'strval';
     }
 
     public function getRequestBodyPayloadInitializationFromRequest(): string
@@ -55,17 +56,29 @@ class BooleanType implements Type
 
     public function getNormalizedType(): string
     {
-        return 'Boolean';
+        return 'String';
     }
 
     public function getRequestBodyPayloadTypeChecking(): string
     {
-        return 'is_bool($requestBodyPayload)';
+        return 'is_string($requestBodyPayload)';
     }
 
     public function getConstraints(): array
     {
         $constraints = [];
+
+        if ($this->schema->pattern !== null) {
+            $constraints[] = new Constraint('Assert\Regex', ['pattern' => $this->schema->pattern]);
+        }
+
+        if ($this->schema->minLength !== null) {
+            $constraints[] = new Constraint('Assert\Length', ['min' => $this->schema->minLength]);
+        }
+
+        if ($this->schema->maxLength !== null) {
+            $constraints[] = new Constraint('Assert\Length', ['max' => $this->schema->maxLength]);
+        }
 
         if ($this->schema->enum !== null) {
             $constraints[] = new Constraint('Assert\Choice', ['choices' => $this->schema->enum]);
@@ -80,6 +93,6 @@ class BooleanType implements Type
 
     public function __toString(): string
     {
-        return 'boolean';
+        return 'string';
     }
 }

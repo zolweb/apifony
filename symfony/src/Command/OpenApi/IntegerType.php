@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\OpenApi;
 
-class NumberType implements Type
+class IntegerType implements Type
 {
     public function __construct(
         private readonly Schema $schema,
@@ -11,12 +11,12 @@ class NumberType implements Type
 
     public function getPhpDocParameterAnnotationType(): string
     {
-        return 'float';
+        return 'int';
     }
 
     public function getMethodParameterType(): string
     {
-        return 'float';
+        return 'int';
     }
 
     public function getMethodParameterDefault(): ?string
@@ -26,12 +26,12 @@ class NumberType implements Type
 
     public function getRouteRequirementPattern(): string
     {
-        return '-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?';
+        return '-?(0|[1-9]\d*)';
     }
 
     public function getStringToTypeCastFunction(): string
     {
-        return 'floatval';
+        return 'intval';
     }
 
     public function getRequestBodyPayloadInitializationFromRequest(): string
@@ -55,12 +55,12 @@ class NumberType implements Type
 
     public function getNormalizedType(): string
     {
-        return 'Float';
+        return 'Integer';
     }
 
     public function getRequestBodyPayloadTypeChecking(): string
     {
-        return 'is_float($requestBodyPayload)';
+        return 'is_int($requestBodyPayload)';
     }
 
     public function getConstraints(): array
@@ -100,6 +100,6 @@ class NumberType implements Type
 
     public function __toString(): string
     {
-        return 'number';
+        return 'integer';
     }
 }

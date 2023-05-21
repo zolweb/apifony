@@ -1,7 +1,9 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\Bundle;
 
+use App\Command\OpenApi\Operation;
+use App\Command\OpenApi\PathItem;
 use function Symfony\Component\String\u;
 
 class Api

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\OpenApi;
 
 use function Symfony\Component\String\u;
 

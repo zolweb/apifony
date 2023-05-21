@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\Bundle;
 
-use function Symfony\Component\String\u;
+use App\Command\OpenApi\OpenApi;
 
 class Bundle
 {

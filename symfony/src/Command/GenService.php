@@ -2,6 +2,9 @@
 
 namespace App\Command;
 
+use App\Command\Bundle\Bundle;
+use App\Command\OpenApi\Exception;
+use App\Command\OpenApi\OpenApi;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;

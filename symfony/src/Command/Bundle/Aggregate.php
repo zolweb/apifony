@@ -1,24 +1,41 @@
 <?php
 
-namespace App\Command;
+namespace App\Command\Bundle;
 
-class Responsex
+class Aggregate
 {
+    public readonly string $folder;
+    public readonly string $namespace;
+    public readonly string $name;
     public readonly Controller $controller;
     public readonly array $responsex;
 
     /**
      * @param array<Operation> $operations
      */
-    public static function build(Operation $operation, Response $response, MediaType $mediaType): self
-    {
-        return new self();
+    public static function build(
+        string $folder,
+        string $namespace,
+        string $name,
+        array $operations,
+    ): self {
+        $aggregate = new self();
+        $aggregate->controller = Controller::build(
+            $folder,
+            "{$name}Controller.php",
+            $namespace,
+            "{$name}Controller",
+            $operations,
+        );
+
+        return $aggregate;
+
         $aggregate->responsex = array_merge(
             ...array_map(
                 static fn (Operation $operation) => array_merge(
                     ...array_map(
                         static fn (Response $response) => array_map(
-                            static fn (MediaType $mediaType) => new Responsex($operation, $response, $mediaType),
+                            static fn (MediaType $mediaType) => Responsex::build($operation, $response, $mediaType),
                             $response->content,
                         ),
                         $operation->responses->responses,
@@ -74,5 +91,13 @@ class Responsex
 
     private function __construct()
     {
+    }
+
+    /**
+     * @param array<File> $files
+     */
+    public function addFiles(array& $files): void
+    {
+        $files[] = $this->controller->getFile();
     }
 }
