@@ -9,10 +9,9 @@ class PathItem
      *
      * @throws Exception
      */
-    public static function build(string $route, array $data): self
+    public static function build(array $data): self
     {
         return new self(
-            $route,
             $parameters = array_map(
                 fn (array $data) => isset($data['$ref']) ? Reference::build($data) : Parameter::build($data),
                 $data['parameters'] ?? []
@@ -32,7 +31,6 @@ class PathItem
     }
 
     private function __construct(
-        public readonly string $route,
         /** @var array<Reference|Parameter> */
         public readonly array $parameters,
         /** @var array<Operation> */

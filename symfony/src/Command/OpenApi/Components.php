@@ -51,15 +51,15 @@ class Components
     }
 
     private function __construct(
-        /** @var array<Schema> */
+        /** @var array<string, Schema> */
         public readonly array $schemas,
-        /** @var array<Response> */
+        /** @var array<string, Response> */
         public readonly array $responses,
-        /** @var array<Parameter> */
+        /** @var array<string, Parameter> */
         public readonly array $parameters,
-        /** @var array<RequestBody> */
+        /** @var array<string, RequestBody> */
         public readonly array $requestBodies,
-        /** @var array<Header> */
+        /** @var array<string, Header> */
         public readonly array $headers,
     ) {
     }

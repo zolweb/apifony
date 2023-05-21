@@ -13,25 +13,27 @@ class RequestBody
     {
         return new self(
             $data['required'] ?? false,
-            array_map(
-                fn (string $type) => MediaType::build(
-                    $type,
-                    $data['content'][$type],
-                ),
-                array_keys(
+            array_combine(
+                $types = array_keys(
                     array_filter(
                         $data['content'],
                         static fn (string $type) => in_array($type, ['application/json'], true),
                         ARRAY_FILTER_USE_KEY,
                     ),
                 ),
-            ),
+                array_map(
+                    fn (string $type) => MediaType::build(
+                        $data['content'][$type],
+                    ),
+                    $types,
+                ),
+            )
         );
     }
 
     private function __construct(
         public readonly bool $required,
-        /** @var array<MediaType> */
+        /** @var array<string, MediaType> */
         public readonly array $mediaTypes,
     ) {
     }

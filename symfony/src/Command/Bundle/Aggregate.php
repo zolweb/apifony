@@ -24,21 +24,18 @@ class Aggregate
         AbstractController $abstractController,
         Components $components,
     ): self {
-        $actions = array_map(
-            static fn (Operation $operation) => Action::build($operation, $components),
-            $operations,
-        );
-
         $aggregate = new self();
         $aggregate->handler = Handler::build(
             $bundleNamespace,
             $name,
-            $actions,
+            $operations,
+            $components,
         );
         $aggregate->controller = Controller::build(
             $bundleNamespace,
             $name,
-            $actions,
+            $operations,
+            $components,
             $abstractController,
             $aggregate->handler,
         );

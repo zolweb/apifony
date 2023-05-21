@@ -4,7 +4,7 @@ namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Default;
 
 interface DefaultHandler
 {
-    public function getClientFromEmptyPayloadToApplicationJsonContent(
+    public function GetClientFromEmptyPayloadToApplicationJsonContent(
         float $qAgrez,
         string $hAzef,
         string $pClientId,
@@ -16,10 +16,9 @@ interface DefaultHandler
         string $pParam1,
         string $pParam2,
     ):
-        TestRespApplicationJson |
+        GetClient200ApplicationJson |
         GetClient201ApplicationJson;
-
-    public function getClientFromIntegerPayloadToApplicationJsonContent(
+    public function GetClientFromIntegerPayloadToApplicationJsonContent(
         float $qAgrez,
         string $hAzef,
         string $pClientId,
@@ -32,10 +31,10 @@ interface DefaultHandler
         string $pParam2,
         int $requestBodyPayload,
     ):
-        TestRespApplicationJson |
+        GetClient200ApplicationJson |
         GetClient201ApplicationJson;
 
-    public function postClientClientIdParam1Param2Param3Param4Param5Param6FromEmptyPayloadToApplicationJsonContent(
+    public function PostClientClientIdParam1Param2Param3Param4Param5Param6FromEmptyPayloadToApplicationJsonContent(
         string $pClientId,
         float $pParam3,
         int $pParam4,
@@ -46,7 +45,7 @@ interface DefaultHandler
         PostClientClientIdParam1Param2Param3Param4Param5Param6200ApplicationJson |
         PostClientClientIdParam1Param2Param3Param4Param5Param6201ApplicationJson;
 
-    public function postTestFromEmptyPayloadToApplicationJsonContent(
+    public function PostTestFromEmptyPayloadToApplicationJsonContent(
         string $cC1,
         int $cC2,
         float $cC3,
@@ -66,8 +65,7 @@ interface DefaultHandler
     ):
         PostTest200ApplicationJson |
         PostTest201ApplicationJson;
-
-    public function postTestFromTestPayloadToApplicationJsonContent(
+    public function PostTestFromTestPayloadToApplicationJsonContent(
         string $cC1,
         int $cC2,
         float $cC3,

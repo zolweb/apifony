@@ -12,10 +12,8 @@ class Responses
     public static function build(array $data): self
     {
         return new self(
-            array_map(
-                fn (string $code) => isset($data[$code]['$ref']) ?
-                    Reference::build($data[$code]) : Response::build($data[$code]),
-                array_filter(
+            array_combine(
+                $codes = array_filter(
                     array_keys($data),
                     static fn (string $code) => in_array($code, [
                         'default',
@@ -27,12 +25,17 @@ class Responses
                         '500', '501', '502', '503', '504', '505', '506', '507', '508', '511',
                     ], true),
                 ),
-            ),
+                array_map(
+                    fn (string $code) => isset($data[$code]['$ref']) ?
+                        Reference::build($data[$code]) : Response::build($data[$code]),
+                    $codes,
+                ),
+            )
         );
     }
 
     private function __construct(
-        /** @var array<Reference|Response> */
+        /** @var array<string, Reference|Response> */
         public readonly array $responses,
     ) {
     }

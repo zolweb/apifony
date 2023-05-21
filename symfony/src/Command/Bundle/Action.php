@@ -46,8 +46,8 @@ class Action
             if (count($response->content) === 0) {
                 $responseContentTypes['Empty'] = null;
             }
-            foreach ($response->content as $mediaType) {
-                $responseContentTypes[(string) u($mediaType->type)->camel()->title()] = $mediaType->type;
+            foreach ($response->content as $type => $mediaType) {
+                $responseContentTypes[(string) u($type)->camel()->title()] = $type;
             }
         }
 
@@ -60,6 +60,7 @@ class Action
                     $responseContentTypeNormalizedName,
                     $responseContentType,
                     $operation,
+                    $components,
                 );
             }
         }
@@ -72,24 +73,5 @@ class Action
 
     private function __construct()
     {
-    }
-
-    public function getAllPossibleResponsesForContentType(?string $contentType): array
-    {
-        $responses = [];
-
-        foreach ($this->responses->responses as $response) {
-            if ($contentType === null && count($response->content) === 0) {
-                $responses[] = "{$response->className}Empty";
-            }
-
-            foreach ($response->content as $mediaType) {
-                if ($contentType === $mediaType->type) {
-                    $responses[] = $mediaType->className;
-                }
-            }
-        }
-
-        return $responses;
     }
 }

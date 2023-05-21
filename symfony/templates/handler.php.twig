@@ -9,13 +9,13 @@ interface {{ file.className }}
     {%~ for method in action.methods %}
     public function {{ method.name }}(
         {%~ for param in method.parameters %}
-        {{ param.schema.type.methodParameterType }} ${{ param.variableName }},
+        {{ param.type.methodParameterType }} ${{ param.variableName }},
         {%~ endfor %}
-        {%~ if requestBodyPayloadTypeNormalizedName is not same as ('Empty') %}
-        {{ requestBodyPayloadType.methodParameterType }} $requestBodyPayload,
+        {%~ if method.requestBodyPayloadType is not null %}
+        {{ method.requestBodyPayloadType.methodParameterType }} $requestBodyPayload,
         {%~ endif %}
     ):
-        {%~ for response in operation.allPossibleResponsesForContentType(responseContentType) %}
+        {%~ for response in method.responses %}
         {{ response }}{%~ if not loop.last %} |
         {%~ else %};
         {%~ endif %}

@@ -2,13 +2,29 @@
 
 namespace App\Command\Bundle;
 
+use App\Command\OpenApi\Components;
+
 class Parameter
 {
-    public static function build(\App\Command\OpenApi\Parameter $parameter): self
-    {
-        $parameter = new self();
+    public readonly Type $type;
+    private readonly \App\Command\OpenApi\Parameter $parameter;
 
-        return $parameter;
+    public static function build(
+        \App\Command\OpenApi\Parameter $parameter,
+        Components $components,
+    ): self {
+        $self = new self();
+        $self->parameter = $parameter;
+        $self->type = match ($parameter->schema->type) {
+            'string' => new StringType($parameter->schema),
+            'integer' => new IntegerType($parameter->schema),
+            'number' => new NumberType($parameter->schema),
+            'boolean' => new BooleanType($parameter->schema),
+            'object' => new ObjectType($parameter->schema, 'Cool'),
+            'array' => new ArrayType($parameter->schema, $components),
+        };
+
+        return $self;
     }
 
     private function __construct()
@@ -19,8 +35,8 @@ class Parameter
     {
         return sprintf(
             '%s%s',
-            ['path' => 'p', 'query' => 'q', 'cookie' => 'c', 'header' => 'h'][$this->in],
-            ucfirst($this->name),
+            ['path' => 'p', 'query' => 'q', 'cookie' => 'c', 'header' => 'h'][$this->parameter->in],
+            ucfirst($this->parameter->name),
         );
     }
 
