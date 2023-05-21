@@ -24,7 +24,6 @@ class GenService extends AbstractExtension
      */
     public function generate(array $data, string $bundleName, string $namespace, string $packageName): void
     {
-        $this->twig->addGlobal('namespace', $namespace);
         $this->twig->getExtension(EscaperExtension::class)->setEscaper(
             'phpSingleQuotedString',
             function (Environment $twig, string $string) {
@@ -39,56 +38,75 @@ class GenService extends AbstractExtension
         );
 
         $openApi = OpenApi::build($data);
+        $bundle = Bundle::build($namespace, $openApi);
+        $files = $bundle->getFiles();
 
-        $files = $openApi->getFiles();
-        $files[] = [
-            'folder' => 'src/Controller',
-            'name' => 'AbstractController.php',
-            'template' => 'abstract-controller.php.twig',
-            'params' => [],
-        ];
-        $files[] = [
-            'folder' => '',
-            'name' => 'composer.json',
-            'template' => 'composer.json.twig',
-            'params' => [
-                'packageName' => $packageName,
-            ],
-        ];
-        $files[] = [
-            'folder' => 'src',
-            'name' => "{$bundleName}Bundle.php",
-            'template' => 'bundle.php.twig',
-            'params' => [
-                'bundleName' => $bundleName,
-                'paths' => $openApi->paths,
-            ],
-        ];
-        $files[] = [
-            'folder' => 'config',
-            'name' => 'services.yaml',
-            'template' => 'services.yaml.twig',
-            'params' => [
-                'paths' => $openApi->paths,
-            ],
-        ];
-        $files[] = [
-            'folder' => 'config',
-            'name' => 'routes.yaml',
-            'template' => 'routes.yaml.twig',
-            'params' => [
-                'paths' => $openApi->paths,
-            ],
-        ];
+        // foreach ($bundle->aggregates as $aggregate) {
+        //     $files[] = [
+        //         'folder' => 'src/Controller',
+        //         'name' => 'AbstractController.php',
+        //         'template' => 'abstract-controller.php.twig',
+        //         'params' => [],
+        //     ];
+        //     foreach ($aggregate->responsex as $responsex) {
+        //         $files[] = [
+        //             'folder' => 'src/Controller',
+        //             'name' => 'AbstractController.php',
+        //             'template' => 'abstract-controller.php.twig',
+        //             'params' => [],
+        //         ];
+        //     }
+        // }
+
+        // // $files = $openApi->getFiles();
+        // $files[] = [
+        //     'folder' => 'src/Controller',
+        //     'name' => 'AbstractController.php',
+        //     'template' => 'abstract-controller.php.twig',
+        //     'params' => [],
+        // ];
+        // $files[] = [
+        //     'folder' => '',
+        //     'name' => 'composer.json',
+        //     'template' => 'composer.json.twig',
+        //     'params' => [
+        //         'packageName' => $packageName,
+        //     ],
+        // ];
+        // $files[] = [
+        //     'folder' => 'src',
+        //     'name' => "{$bundleName}Bundle.php",
+        //     'template' => 'bundle.php.twig',
+        //     'params' => [
+        //         'bundleName' => $bundleName,
+        //         'paths' => $openApi->paths,
+        //     ],
+        // ];
+        // $files[] = [
+        //     'folder' => 'config',
+        //     'name' => 'services.yaml',
+        //     'template' => 'services.yaml.twig',
+        //     'params' => [
+        //         'paths' => $openApi->paths,
+        //     ],
+        // ];
+        // $files[] = [
+        //     'folder' => 'config',
+        //     'name' => 'routes.yaml',
+        //     'template' => 'routes.yaml.twig',
+        //     'params' => [
+        //         'paths' => $openApi->paths,
+        //     ],
+        // ];
 
         foreach ($files as $file) {
-            if (!file_exists(__DIR__."/../../openapi/invoicing/bundle/{$file['folder']}")) {
-                mkdir(__DIR__."/../../openapi/invoicing/bundle/{$file['folder']}", recursive: true);
+            if (!file_exists(__DIR__."/../../openapi/invoicing/bundle/{$file->folder}")) {
+                mkdir(__DIR__."/../../openapi/invoicing/bundle/{$file->folder}", recursive: true);
             }
 
             file_put_contents(
-                __DIR__."/../../openapi/invoicing/bundle/{$file['folder']}/{$file['name']}",
-                $this->twig->render($file['template'], $file['params']));
+                __DIR__."/../../openapi/invoicing/bundle/{$file->folder}/{$file->name}",
+                $this->twig->render($file->template, $file->parameters));
         }
     }
 }

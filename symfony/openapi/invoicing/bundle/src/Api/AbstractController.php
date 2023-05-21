@@ -1,7 +1,6 @@
-{% autoescape false %}
 <?php
 
-namespace {{ namespace }};
+namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api;
 
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -14,4 +13,3 @@ class AbstractController
     ) {
     }
 }
-{% endautoescape %}
