@@ -2,6 +2,7 @@
 
 namespace App\Command\Bundle;
 
+use App\Command\OpenApi\Components;
 use App\Command\OpenApi\Operation;
 use App\Command\OpenApi\PathItem;
 use function Symfony\Component\String\u;
@@ -21,6 +22,7 @@ class Api
     public static function build(
         string $bundleNamespace,
         array $pathItems,
+        Components $components,
     ): self {
         $api = new self();
         $api->bundleNamespace = $bundleNamespace;
@@ -31,6 +33,7 @@ class Api
                 u($aggregate['tag'])->camel()->title(),
                 $aggregate['operations'],
                 $api->abstractController,
+                $components,
             ),
             array_reduce(
                 array_merge(

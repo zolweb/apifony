@@ -4,9 +4,6 @@ namespace App\Command\OpenApi;
 
 class OpenApi
 {
-    public readonly ?Components $components;
-    public readonly ?Paths $paths;
-
     /**
      * @param array<mixed> $data
      *
@@ -14,23 +11,15 @@ class OpenApi
      */
     public static function build(array $data): self
     {
-        $openApi = new self();
-        $openApi->components = isset($data['components']) ? Components::build($data['components']) : null;
-        $openApi->paths = isset($data['paths']) ? Paths::build($data['paths']) : null;
-
-        return $openApi;
+        return new self(
+            isset($data['components']) ? Components::build($data['components']) : null,
+            isset($data['paths']) ? Paths::build($data['paths']) : null,
+        );
     }
 
-    private function __construct()
-    {
-    }
-
-    public function getFiles(): array
-    {
-        $files = [];
-
-        $this->paths->addFiles($files);
-
-        return $files;
+    private function __construct(
+        public readonly ?Components $components,
+        public readonly ?Paths $paths,
+    ) {
     }
 }

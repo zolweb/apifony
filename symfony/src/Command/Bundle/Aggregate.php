@@ -2,6 +2,7 @@
 
 namespace App\Command\Bundle;
 
+use App\Command\OpenApi\Components;
 use App\Command\OpenApi\Operation;
 
 class Aggregate
@@ -21,17 +22,23 @@ class Aggregate
         string $name,
         array $operations,
         AbstractController $abstractController,
+        Components $components,
     ): self {
+        $actions = array_map(
+            static fn (Operation $operation) => Action::build($operation, $components),
+            $operations,
+        );
+
         $aggregate = new self();
         $aggregate->handler = Handler::build(
             $bundleNamespace,
             $name,
-            $operations,
+            $actions,
         );
         $aggregate->controller = Controller::build(
             $bundleNamespace,
             $name,
-            $operations,
+            $actions,
             $abstractController,
             $aggregate->handler,
         );

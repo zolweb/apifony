@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Command\OpenApi;
+namespace App\Command\Bundle;
 
-class NumberType implements Type
+use App\Command\OpenApi\Schema;
+
+class StringType implements Type
 {
     public function __construct(
         private readonly Schema $schema,
@@ -11,27 +13,28 @@ class NumberType implements Type
 
     public function getPhpDocParameterAnnotationType(): string
     {
-        return 'float';
+        return 'string';
     }
 
     public function getMethodParameterType(): string
     {
-        return 'float';
+        return 'string';
     }
 
     public function getMethodParameterDefault(): ?string
     {
-        return $this->schema->default !== null ? (string)$this->schema->default : null;
+        return $this->schema->default !== null ?
+            sprintf('\'%s\'', str_replace('\'', '\\\'', $this->schema->default)) : null;
     }
 
     public function getRouteRequirementPattern(): string
     {
-        return '-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?';
+        return $this->schema->pattern !== null ? $this->schema->pattern : '[^:/?#[]@!$&\'()*+,;=]+';
     }
 
     public function getStringToTypeCastFunction(): string
     {
-        return 'floatval';
+        return 'strval';
     }
 
     public function getRequestBodyPayloadInitializationFromRequest(): string
@@ -55,36 +58,36 @@ class NumberType implements Type
 
     public function getNormalizedType(): string
     {
-        return 'Float';
+        return 'String';
     }
 
     public function getRequestBodyPayloadTypeChecking(): string
     {
-        return 'is_float($requestBodyPayload)';
+        return 'is_string($requestBodyPayload)';
     }
 
     public function getConstraints(): array
     {
         $constraints = [];
 
-        if ($this->schema->multipleOf !== null) {
-            $constraints[] = new Constraint('Assert\DivisibleBy', ['value' => $this->schema->multipleOf]);
+        if (!$this->schema->nullable) {
+            $constraints[] = new Constraint('Assert\NotNull', []);
         }
 
-        if ($this->schema->minimum !== null) {
-            $constraints[] = new Constraint('Assert\GreaterThanOrEqual', ['value' => $this->schema->minimum]);
+        if ($this->schema->format !== null) {
+            $constraints[] = new Constraint(sprintf('AssertFormat\%s', u($this->schema->format)->camel()->title()), []);
         }
 
-        if ($this->schema->maximum !== null) {
-            $constraints[] = new Constraint('Assert\LessThanOrEqual', ['value' => $this->schema->maximum]);
+        if ($this->schema->pattern !== null) {
+            $constraints[] = new Constraint('Assert\Regex', ['pattern' => $this->schema->pattern]);
         }
 
-        if ($this->schema->exclusiveMinimum !== null) {
-            $constraints[] = new Constraint('Assert\GreaterThan', ['value' => $this->schema->exclusiveMinimum]);
+        if ($this->schema->minLength !== null) {
+            $constraints[] = new Constraint('Assert\Length', ['min' => $this->schema->minLength]);
         }
 
-        if ($this->schema->exclusiveMaximum !== null) {
-            $constraints[] = new Constraint('Assert\LessThan', ['value' => $this->schema->exclusiveMaximum]);
+        if ($this->schema->maxLength !== null) {
+            $constraints[] = new Constraint('Assert\Length', ['max' => $this->schema->maxLength]);
         }
 
         if ($this->schema->enum !== null) {
@@ -100,6 +103,6 @@ class NumberType implements Type
 
     public function __toString(): string
     {
-        return 'number';
+        return 'string';
     }
 }

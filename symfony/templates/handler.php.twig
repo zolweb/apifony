@@ -5,11 +5,10 @@ namespace {{ file.namespace }};
 
 interface {{ file.className }}
 {
-{%~ for operation in file.operations %}
-{%~ for requestBodyPayloadTypeNormalizedName, requestBodyPayloadType in operation.allPossibleRequestBodyPayloadTypes %}
-    {%~ for responseContentTypeNormalizedName, responseContentType in operation.allPossibleResponseContentTypes %}
-    public function {{ operation.operationId|u.camel }}From{{ requestBodyPayloadTypeNormalizedName }}PayloadTo{{ responseContentTypeNormalizedName }}Content(
-        {%~ for param in operation.allSortedParameters %}
+{%~ for action in file.actions %}
+    {%~ for method in action.methods %}
+    public function {{ method.name }}(
+        {%~ for param in method.parameters %}
         {{ param.schema.type.methodParameterType }} ${{ param.variableName }},
         {%~ endfor %}
         {%~ if requestBodyPayloadTypeNormalizedName is not same as ('Empty') %}
@@ -22,10 +21,6 @@ interface {{ file.className }}
         {%~ endif %}
         {%~ endfor %}
     {%~ endfor %}
-    {%~ if not loop.last %}
-
-    {%~ endif %}
-{%~ endfor %}
     {%~ if not loop.last %}
 
     {%~ endif %}

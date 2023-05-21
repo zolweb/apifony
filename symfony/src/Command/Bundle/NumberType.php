@@ -1,8 +1,10 @@
 <?php
 
-namespace App\Command\OpenApi;
+namespace App\Command\Bundle;
 
-class BooleanType implements Type
+use App\Command\OpenApi\Schema;
+
+class NumberType implements Type
 {
     public function __construct(
         private readonly Schema $schema,
@@ -11,27 +13,27 @@ class BooleanType implements Type
 
     public function getPhpDocParameterAnnotationType(): string
     {
-        return 'bool';
+        return 'float';
     }
 
     public function getMethodParameterType(): string
     {
-        return 'bool';
+        return 'float';
     }
 
     public function getMethodParameterDefault(): ?string
     {
-        return [true => 'true', false => 'false', null => null][$this->schema->default];
+        return $this->schema->default !== null ? (string)$this->schema->default : null;
     }
 
     public function getRouteRequirementPattern(): string
     {
-        return 'true|false';
+        return '-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?';
     }
 
     public function getStringToTypeCastFunction(): string
     {
-        return 'boolval';
+        return 'floatval';
     }
 
     public function getRequestBodyPayloadInitializationFromRequest(): string
@@ -55,17 +57,37 @@ class BooleanType implements Type
 
     public function getNormalizedType(): string
     {
-        return 'Boolean';
+        return 'Float';
     }
 
     public function getRequestBodyPayloadTypeChecking(): string
     {
-        return 'is_bool($requestBodyPayload)';
+        return 'is_float($requestBodyPayload)';
     }
 
     public function getConstraints(): array
     {
         $constraints = [];
+
+        if ($this->schema->multipleOf !== null) {
+            $constraints[] = new Constraint('Assert\DivisibleBy', ['value' => $this->schema->multipleOf]);
+        }
+
+        if ($this->schema->minimum !== null) {
+            $constraints[] = new Constraint('Assert\GreaterThanOrEqual', ['value' => $this->schema->minimum]);
+        }
+
+        if ($this->schema->maximum !== null) {
+            $constraints[] = new Constraint('Assert\LessThanOrEqual', ['value' => $this->schema->maximum]);
+        }
+
+        if ($this->schema->exclusiveMinimum !== null) {
+            $constraints[] = new Constraint('Assert\GreaterThan', ['value' => $this->schema->exclusiveMinimum]);
+        }
+
+        if ($this->schema->exclusiveMaximum !== null) {
+            $constraints[] = new Constraint('Assert\LessThan', ['value' => $this->schema->exclusiveMaximum]);
+        }
 
         if ($this->schema->enum !== null) {
             $constraints[] = new Constraint('Assert\Choice', ['choices' => $this->schema->enum]);
@@ -80,6 +102,6 @@ class BooleanType implements Type
 
     public function __toString(): string
     {
-        return 'boolean';
+        return 'number';
     }
 }

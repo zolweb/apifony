@@ -2,12 +2,10 @@
 
 namespace App\Command\Bundle;
 
-use App\Command\OpenApi\Operation;
-
 class Handler implements PhpClassFile
 {
-    /** @var array<Operation> */
-    public readonly array $operations;
+    /** @var array<Action> */
+    public readonly array $actions;
 
     private readonly string $bundleNamespace;
     private readonly string $aggregateName;
@@ -15,12 +13,12 @@ class Handler implements PhpClassFile
     public static function build(
         string $bundleNamespace,
         string $aggregateName,
-        array $operations,
+        array $actions,
     ): self {
         $aggregate = new self();
         $aggregate->bundleNamespace = $bundleNamespace;
         $aggregate->aggregateName = $aggregateName;
-        $aggregate->operations = $operations;
+        $aggregate->actions = $actions;
 
         return $aggregate;
     }

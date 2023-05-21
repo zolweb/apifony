@@ -1,6 +1,8 @@
 <?php
 
-namespace App\Command\OpenApi;
+namespace App\Command\Bundle;
+
+use App\Command\OpenApi\Schema;
 
 class IntegerType implements Type
 {
