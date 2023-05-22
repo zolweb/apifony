@@ -2,21 +2,49 @@
 
 namespace App\Command;
 
+use App\Command\Bundle\ArrayType;
+use App\Command\Bundle\BooleanType;
 use App\Command\Bundle\Bundle;
+use App\Command\Bundle\IntegerType;
+use App\Command\Bundle\NumberType;
+use App\Command\Bundle\ObjectType;
+use App\Command\Bundle\StringType;
+use App\Command\Bundle\Type;
 use App\Command\OpenApi\Exception;
 use App\Command\OpenApi\OpenApi;
+use App\Command\OpenApi\Schema;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
 use Twig\Extension\AbstractExtension;
 use Twig\Extension\EscaperExtension;
+use Twig\TwigFilter;
 
 class GenService extends AbstractExtension
 {
     public function __construct(
         private readonly Environment $twig,
     ) {
+    }
+
+    public function getFilters(): array
+    {
+        return [
+            new TwigFilter('type', [$this, 'getType']),
+        ];
+    }
+
+    public function getType(Schema $schema): Type
+    {
+        return match ($schema->type) {
+            'string' => new StringType($schema),
+            'integer' => new IntegerType($schema),
+            'number' => new NumberType($schema),
+            'boolean' => new BooleanType($schema),
+            'object' => new ObjectType($schema, 'Cool'),
+            'array' => new ArrayType($schema, null),
+        };
     }
 
     /**

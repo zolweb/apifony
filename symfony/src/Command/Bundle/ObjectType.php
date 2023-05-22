@@ -2,6 +2,7 @@
 
 namespace App\Command\Bundle;
 
+use App\Command\OpenApi\Reference;
 use App\Command\OpenApi\Schema;
 
 class ObjectType implements Type
@@ -16,7 +17,10 @@ class ObjectType implements Type
     {
         return array_filter(
             $this->schema->properties,
-            static fn (Schema $property) => (string)$property->type === 'array',
+            static fn (Reference|Schema $property) =>
+                $property instanceof Reference ?
+                    $this->components->schemas[$property->getName()]->type === 'array' :
+                    (string)$property->type === 'array',
         );
     }
 
