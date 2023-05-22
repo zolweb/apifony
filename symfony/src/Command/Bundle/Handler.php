@@ -2,17 +2,8 @@
 
 namespace App\Command\Bundle;
 
-use App\Command\OpenApi\Components;
-use App\Command\OpenApi\Operation;
-
 class Handler implements PhpClassFile
 {
-    /** @var array<Action> */
-    public readonly array $actions;
-
-    private readonly string $bundleNamespace;
-    private readonly string $aggregateName;
-
     /**
      * @param array<Action> $actions
      */
@@ -21,15 +12,19 @@ class Handler implements PhpClassFile
         string $aggregateName,
         array $actions,
     ): self {
-        $handler = new self();
-        $handler->bundleNamespace = $bundleNamespace;
-        $handler->aggregateName = $aggregateName;
-
-        return $handler;
+        return new self(
+            $actions,
+            $bundleNamespace,
+            $aggregateName,
+        );
     }
 
-    private function __construct()
-    {
+    private function __construct(
+        /** @var array<Action> */
+        public readonly array $actions,
+        private readonly string $bundleNamespace,
+        private readonly string $aggregateName,
+    ) {
     }
 
     public function getFolder(): string
