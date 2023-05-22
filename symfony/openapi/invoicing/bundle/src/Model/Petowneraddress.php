@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Schema;
+namespace App\Zol\Invoicing\Presentation\Api\Bundle\Payload\Schema;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format as AssertFormat;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Payload\Format as AssertFormat;
 
-class PetOwnerAddress
+class Petowneraddress
 {
     /**
-     * @param array<PetOwnerAddressPhoneNumbersList> $phoneNumbers
+     * @param array<PetowneraddressPhoneNumbers> $phoneNumbers
      */
     public function __construct(
         #[Assert\NotNull]
@@ -19,9 +19,7 @@ class PetOwnerAddress
 
         #[Assert\All(constraints: [
             new Assert\Valid,
-            new Assert\NotNull,
         ])]
-        #[Assert\NotNull]
         public readonly array $phoneNumbers,
     ) {
     }

@@ -9,4 +9,6 @@ interface File
     public function getName(): string;
 
     public function getTemplate(): string;
+
+    public function getParametersRootName(): string;
 }

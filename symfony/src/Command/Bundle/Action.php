@@ -48,8 +48,8 @@ class Action
                 'integer' => new IntegerType($schema),
                 'number' => new NumberType($schema),
                 'boolean' => new BooleanType($schema),
-                'object' => new ObjectType($schema, $name),
-                'array' => new ArrayType($schema, $components),
+                'object' => new ObjectType($schema, $name, $components),
+                'array' => new ArrayType($schema, 'Cool', $components),
             };
             $requestBodyPayloadTypes[$type->getNormalizedType()] = $type;
         }

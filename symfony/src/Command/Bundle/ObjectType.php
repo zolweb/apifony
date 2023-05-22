@@ -2,6 +2,7 @@
 
 namespace App\Command\Bundle;
 
+use App\Command\OpenApi\Components;
 use App\Command\OpenApi\Reference;
 use App\Command\OpenApi\Schema;
 
@@ -10,6 +11,7 @@ class ObjectType implements Type
     public function __construct(
         private readonly Schema $schema,
         private readonly string $name,
+        private readonly Components $components,
     ) {
     }
 
@@ -17,10 +19,11 @@ class ObjectType implements Type
     {
         return array_filter(
             $this->schema->properties,
-            static fn (Reference|Schema $property) =>
+            fn (Reference|Schema $property) => (
                 $property instanceof Reference ?
-                    $this->components->schemas[$property->getName()]->type === 'array' :
-                    (string)$property->type === 'array',
+                    $this->components->schemas[$property->getName()]->type :
+                    $property->type
+            ) === 'array',
         );
     }
 
@@ -28,12 +31,20 @@ class ObjectType implements Type
     {
         $propertiesWithoutDefault = array_filter(
             $this->schema->properties,
-            static fn (Schema $property) => $property->default === null,
+            fn (Reference|Schema $property) => (
+                $property instanceof Reference ?
+                    $this->components->schemas[$property->getName()]->default :
+                    $property->default
+            ) === null,
         );
 
         $propertiesWithDefault = array_filter(
             $this->schema->properties,
-            static fn (Schema $property) => $property->default !== null,
+            fn (Reference|Schema $property) => (
+                $property instanceof Reference ?
+                    $this->components->schemas[$property->getName()]->default :
+                    $property->default
+            ) !== null,
         );
 
         return array_merge($propertiesWithoutDefault, $propertiesWithDefault);

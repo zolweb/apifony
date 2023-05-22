@@ -48,6 +48,11 @@ class Controller implements PhpClassFile
         return 'controller.php.twig';
     }
 
+    public function getParametersRootName(): string
+    {
+        return 'controller';
+    }
+
     public function getNamespace(): string
     {
         return "{$this->bundleNamespace}\Api\\{$this->aggregateName}";

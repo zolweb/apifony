@@ -5,14 +5,19 @@ namespace App\Command\Bundle;
 use App\Command\OpenApi\Components;
 use App\Command\OpenApi\Reference;
 use App\Command\OpenApi\Schema;
+use function Symfony\Component\String\u;
 
 class ArrayType implements Type
 {
     private readonly Schema $schema;
     private readonly Type $itemType;
 
+    /**
+     * @throws Exception
+     */
     public function __construct(
         Reference|Schema $schema,
+        string $className,
         Components $components,
     ) {
         if ($schema instanceof Reference) {
@@ -21,7 +26,8 @@ class ArrayType implements Type
 
         $items = $schema->items;
         if ($items instanceof Reference) {
-            $items = $components->schemas[$items->getName()];
+            $items = $components->schemas[$className = $items->getName()];
+            $className = u($className)->camel()->title();
         }
 
         $this->schema = $schema;
@@ -30,8 +36,8 @@ class ArrayType implements Type
             'integer' => new IntegerType($items),
             'number' => new NumberType($items),
             'boolean' => new BooleanType($items),
-            'object' => new ObjectType($items, 'Cool'),
-            'array' => new ArrayType($items, $components),
+            'object' => new ObjectType($items, $className, $components),
+            'array' => throw new Exception('Arrays of array are not supported.'),
         };
     }
 

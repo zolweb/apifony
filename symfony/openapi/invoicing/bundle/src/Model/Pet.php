@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Schema;
+namespace App\Zol\Invoicing\Presentation\Api\Bundle\Payload\Schema;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format as AssertFormat;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Payload\Format as AssertFormat;
 
 class Pet
 {
@@ -12,20 +12,16 @@ class Pet
      * @param array<Tag> $tags
      */
     public function __construct(
-        #[Assert\NotNull]
-        #[AssertFormat\Int64]
         public readonly int $id,
 
         #[Assert\Valid]
-        #[Assert\NotNull]
         public readonly Category $category,
 
         #[Assert\All(constraints: [
+            new Assert\NotNull,
             new Assert\Length(min: 3),
             new Assert\Length(max: 10),
-            new Assert\NotNull,
         ])]
-        #[Assert\NotNull]
         public readonly array $photoUrls,
 
         #[Assert\Count(min: 2)]
@@ -33,25 +29,23 @@ class Pet
         #[Assert\Unique]
         #[Assert\All(constraints: [
             new Assert\Valid,
-            new Assert\NotNull,
         ])]
-        #[Assert\NotNull]
         public readonly array $tags,
 
+        #[Assert\NotNull]
+        #[AssertFormat\DateTime]
         #[Assert\Regex(pattern: 'A-z')]
         #[Assert\Choice(choices: [
             'available',
             'pending',
             'sold',
         ])]
-        #[Assert\NotNull]
-        #[AssertFormat\DateTime]
         public readonly string $status,
 
         #[Assert\Valid]
-        #[Assert\NotNull]
         public readonly PetOwner $owner,
 
+        #[Assert\NotNull]
         #[Assert\Length(min: 2)]
         #[Assert\Length(max: 5)]
         #[Assert\Choice(choices: [
@@ -59,7 +53,6 @@ class Pet
             'flex',
             'lol',
         ])]
-        #[Assert\NotNull]
         public readonly string $name = 'cool',
     ) {
     }

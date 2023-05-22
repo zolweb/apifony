@@ -42,6 +42,11 @@ class Handler implements PhpClassFile
         return 'handler.php.twig';
     }
 
+    public function getParametersRootName(): string
+    {
+        return 'handler';
+    }
+
     public function getNamespace(): string
     {
         return "{$this->bundleNamespace}\Api\\{$this->aggregateName}";

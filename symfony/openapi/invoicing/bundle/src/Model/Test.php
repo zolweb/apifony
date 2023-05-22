@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Schema;
+namespace App\Zol\Invoicing\Presentation\Api\Bundle\Payload\Schema;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format as AssertFormat;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Payload\Format as AssertFormat;
 
 class Test
 {
@@ -13,13 +13,14 @@ class Test
      */
     public function __construct(
         #[Assert\Valid]
-        #[Assert\NotNull]
         public readonly Test $a5,
 
         #[Assert\Count(min: 1)]
         #[Assert\Count(max: 3)]
         #[Assert\Unique]
         #[Assert\All(constraints: [
+            new Assert\NotNull,
+            new AssertFormat\F25,
             new Assert\Regex(pattern: '[a-z]{3}'),
             new Assert\Length(min: 3),
             new Assert\Length(max: 3),
@@ -28,10 +29,7 @@ class Test
                 'def',
                 'ghi',
             ]),
-            new Assert\NotNull,
-            new AssertFormat\F25,
         ])]
-        #[Assert\NotNull]
         public readonly array $a6,
 
         #[Assert\Count(min: 0)]
@@ -39,11 +37,11 @@ class Test
         #[Assert\Unique]
         #[Assert\All(constraints: [
             new Assert\Valid,
-            new Assert\NotNull,
         ])]
-        #[Assert\NotNull]
         public readonly array $a7,
 
+        #[Assert\NotNull]
+        #[AssertFormat\F21]
         #[Assert\Regex(pattern: '[a-z]{3}')]
         #[Assert\Length(min: 3)]
         #[Assert\Length(max: 3)]
@@ -52,8 +50,6 @@ class Test
             'def',
             'ghi',
         ])]
-        #[Assert\NotNull]
-        #[AssertFormat\F21]
         public readonly string $a1 = 'abc',
 
         #[Assert\DivisibleBy(value: 1)]
@@ -64,8 +60,6 @@ class Test
             2,
             3,
         ])]
-        #[Assert\NotNull]
-        #[AssertFormat\F22]
         public readonly int $a2 = 1,
 
         #[Assert\DivisibleBy(value: 0.1)]
@@ -76,11 +70,8 @@ class Test
             0.2,
             0.3,
         ])]
-        #[Assert\NotNull]
-        #[AssertFormat\F23]
         public readonly float $a3 = 0.1,
 
-        #[Assert\NotNull]
         public readonly bool $a4 = true,
     ) {
     }

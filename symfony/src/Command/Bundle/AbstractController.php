@@ -33,6 +33,11 @@ class AbstractController implements PhpClassFile
         return 'abstract-controller.php.twig';
     }
 
+    public function getParametersRootName(): string
+    {
+        return 'abstractController';
+    }
+
     public function getNamespace(): string
     {
         return "{$this->bundleNamespace}\Api";

@@ -2,50 +2,56 @@
 
 namespace App\Command\Bundle;
 
+use App\Command\OpenApi\Components;
 use App\Command\OpenApi\OpenApi;
 use App\Command\OpenApi\Reference;
 use App\Command\OpenApi\Schema;
+use Twig\Extension\AbstractExtension;
+use Twig\TwigFilter;
+use function Symfony\Component\String\u;
 
-class Bundle
+class Bundle // extends AbstractExtension
 {
     public static function build(
         string $namespace,
         OpenApi $openApi,
     ): self {
-        $payloads = [];
+        $models = [];
 
-        $addPayloads = function(string $name, Reference|Schema $schema) use (&$addPayloads, &$payloads, $namespace, $openApi) {
+        $addModels = function(string $name, Reference|Schema $schema) use (&$addModels, &$models, $namespace, $openApi) {
             if ($schema instanceof Reference) {
                 $schema = $openApi->components->schemas[$name = $schema->getName()];
             }
-            if (!isset($payloads[$name])) {
+            if (!isset($models[$name])) {
                 if ($schema->type === 'object') {
-                    $payloads[$name] = Payload::build($namespace, $name, $schema);
+                    $models[$name] = Model::build($namespace, $name, $schema, $openApi->components);
                     foreach ($schema->properties as $propertyName => $property) {
-                        $addPayloads("{$name}{$propertyName}", $property);
+                        $addModels("{$name}{$propertyName}", $property);
                     }
                 } elseif ($schema->type === 'array') {
-                    $addPayloads("{$name}List", $schema->items);
+                    $addModels("{$name}List", $schema->items);
                 }
             }
         };
 
         foreach ($openApi->components->schemas as $name => $schema) {
-            $addPayloads($name, $schema);
+            $addModels($name, $schema);
         }
 
         return new self(
             Api::build($namespace, $openApi),
-            $payloads,
+            $models,
+            $openApi->components ?? Components::build([]),
         );
     }
 
     /**
-     * @param array<Payload> $payloads
+     * @param array<Model> $models
      */
     private function __construct(
         private readonly Api $api,
-        private readonly array $payloads,
+        private readonly array $models,
+        private readonly Components $components,
     ) {
     }
 
@@ -54,7 +60,7 @@ class Bundle
      */
     public function getFiles(): array
     {
-        $files = $this->payloads;
+        $files = $this->models;
 
         // $this->api->addFiles($files);
 
@@ -81,5 +87,27 @@ class Bundle
     //     );
 
     //     return $operations;
+    // }
+
+    // public function getFilters(): array
+    // {
+    //     return [
+    //         // new TwigFilter('type', [$this, 'getType']),
+    //     ];
+    // }
+
+    // public function getType(Reference|Schema $schema, string $name = ''): Type
+    // {
+    //     if ($schema instanceof Reference) {
+    //         $schema = $this->components->schemas[$name = $schema->getName()];
+    //     }
+    //     return match ($schema->type) {
+    //         'string' => new StringType($schema),
+    //         'integer' => new IntegerType($schema),
+    //         'number' => new NumberType($schema),
+    //         'boolean' => new BooleanType($schema),
+    //         'object' => new ObjectType($schema, $name, $this->components),
+    //         'array' => new ArrayType($schema, $this->components),
+    //     };
     // }
 }

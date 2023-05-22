@@ -1,0 +1,94 @@
+<?php
+
+namespace App\Command\Bundle;
+
+use App\Command\OpenApi\Components;
+use App\Command\OpenApi\Reference;
+use App\Command\OpenApi\Schema;
+use function Symfony\Component\String\u;
+
+class ModelAttribute
+{
+    public static function build(
+        string $modelClassName,
+        string $propertyName,
+        Reference|Schema $property,
+        Components $components,
+    ): self {
+        $variableName = u($propertyName)->camel();
+
+        if ($property instanceof Reference) {
+            $property = $components->schemas[$className = $property->getName()];
+            $className = u($className)->camel()->title();
+        } else {
+            $className = sprintf('%s%s', $modelClassName, $variableName->title());
+        }
+
+        return new self(
+            $propertyName,
+            $variableName,
+            $property,
+            match ($property->type) {
+                'string' => new StringType($property),
+                'integer' => new IntegerType($property),
+                'number' => new NumberType($property),
+                'boolean' => new BooleanType($property),
+                'object' => new ObjectType($property, $className, $components),
+                'array' => new ArrayType($property, $className, $components),
+            },
+        );
+    }
+
+    private function __construct(
+        private readonly string $propertyName,
+        private readonly string $variableName,
+        private readonly Schema $schema,
+        private readonly Type $type,
+    ) {
+    }
+
+    public function isArray(): bool
+    {
+        return $this->schema->type === 'array';
+    }
+
+    public function hasDefault(): bool
+    {
+        return $this->schema->default !== null;
+    }
+
+    public function getDefault(): string
+    {
+        return $this->type->getMethodParameterDefault();
+    }
+
+    public function getPropertyName(): string
+    {
+        return $this->propertyName;
+    }
+
+    public function getVariableName(): string
+    {
+        return $this->variableName;
+    }
+
+    public function getConstraints(): array
+    {
+        return $this->type->getConstraints();
+    }
+
+    public function isNullable(): bool
+    {
+        return $this->schema->nullable;
+    }
+
+    public function getPhpType(): string
+    {
+        return $this->type->getMethodParameterType();
+    }
+
+    public function getPhpStanType(): string
+    {
+        return $this->type->getPhpDocParameterAnnotationType();
+    }
+}

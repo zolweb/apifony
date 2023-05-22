@@ -20,7 +20,7 @@ class Parameter
             'integer' => new IntegerType($parameter->schema),
             'number' => new NumberType($parameter->schema),
             'boolean' => new BooleanType($parameter->schema),
-            'object' => new ObjectType($parameter->schema, 'Cool'),
+            'object' => new ObjectType($parameter->schema, 'Cool', $components),
             'array' => new ArrayType($parameter->schema, $components),
         };
 

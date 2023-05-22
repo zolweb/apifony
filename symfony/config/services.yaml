@@ -23,10 +23,6 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    App\Command\GenService:
-        class: App\Command\GenService
-        tags: ['twig.extension']
-
     ### Serializer ###
 
     Symfony\Component\Serializer\Encoder\JsonEncoder: ~
