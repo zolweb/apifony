@@ -5,14 +5,14 @@ namespace App\Zol\Invoicing\Presentation\Api\Bundle\Payload\Schema;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Payload\Format as AssertFormat;
 
-class PetowneraddressphoneNumbersList
+class PetOwnerAddressPhoneNumbersListComment
 {
     public function __construct(
         #[Assert\NotNull]
-        public readonly string $number,
+        public readonly string $title,
 
-        #[Assert\Valid]
-        public readonly PetowneraddressphoneNumbersListComment $comment,
+        #[Assert\NotNull]
+        public readonly string $description,
     ) {
     }
 }

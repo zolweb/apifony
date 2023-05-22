@@ -16,8 +16,6 @@ class Bundle // extends AbstractExtension
         string $namespace,
         OpenApi $openApi,
     ): self {
-        $models = [];
-
         $addModels = function(string $name, Reference|Schema $schema) use (&$addModels, &$models, $namespace, $openApi) {
             if ($schema instanceof Reference) {
                 $schema = $openApi->components->schemas[$name = $schema->getName()];
@@ -26,7 +24,7 @@ class Bundle // extends AbstractExtension
                 if ($schema->type === 'object') {
                     $models[$name] = Model::build($namespace, $name, $schema, $openApi->components);
                     foreach ($schema->properties as $propertyName => $property) {
-                        $addModels("{$name}{$propertyName}", $property);
+                        $addModels("{$name}_{$propertyName}", $property);
                     }
                 } elseif ($schema->type === 'array') {
                     $addModels("{$name}List", $schema->items);

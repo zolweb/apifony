@@ -16,13 +16,11 @@ class ModelAttribute
         Components $components,
     ): self {
         $variableName = u($propertyName)->camel();
-
+        $className = sprintf('%s_%s', $modelClassName, $variableName);
         if ($property instanceof Reference) {
             $property = $components->schemas[$className = $property->getName()];
-            $className = u($className)->camel()->title();
-        } else {
-            $className = sprintf('%s%s', $modelClassName, $variableName->title());
         }
+        $className = u($className)->camel()->title();
 
         return new self(
             $propertyName,
