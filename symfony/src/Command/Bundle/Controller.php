@@ -2,45 +2,35 @@
 
 namespace App\Command\Bundle;
 
-use App\Command\OpenApi\Components;
-use App\Command\OpenApi\Operation;
-
 class Controller implements PhpClassFile
 {
-    public readonly Handler $handler;
-    /** @var array<Action> */
-    public readonly array $actions;
-
-    private readonly string $bundleNamespace;
-    private readonly string $aggregateName;
-    private readonly AbstractController $abstractController;
-
     /**
      * @param array<Action> $actions
      */
     public static function build(
         string $bundleNamespace,
         string $aggregateName,
-        array $operations,
-        Components $components,
+        array $actions,
         AbstractController $abstractController,
         Handler $handler,
     ): self {
-        $controller = new self();
-        $controller->bundleNamespace = $bundleNamespace;
-        $controller->aggregateName = $aggregateName;
-        $controller->abstractController = $abstractController;
-        $controller->handler = $handler;
-        $controller->actions = array_map(
-            static fn (Operation $operation) => Action::build($operation, $components),
-            $operations,
+        return new self(
+            $handler,
+            $actions,
+            $bundleNamespace,
+            $aggregateName,
+            $abstractController,
         );
-
-        return $controller;
     }
 
-    private function __construct()
-    {
+    private function __construct(
+        public readonly Handler $handler,
+        /** @var array<Action> */
+        public readonly array $actions,
+        private readonly string $bundleNamespace,
+        private readonly string $aggregateName,
+        private readonly AbstractController $abstractController,
+    ) {
     }
 
     public function getFolder(): string

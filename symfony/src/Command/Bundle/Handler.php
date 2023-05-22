@@ -14,21 +14,16 @@ class Handler implements PhpClassFile
     private readonly string $aggregateName;
 
     /**
-     * @param array<Operation> $operations
+     * @param array<Action> $actions
      */
     public static function build(
         string $bundleNamespace,
         string $aggregateName,
-        array $operations,
-        Components $components,
+        array $actions,
     ): self {
         $handler = new self();
         $handler->bundleNamespace = $bundleNamespace;
         $handler->aggregateName = $aggregateName;
-        $handler->actions = array_map(
-            static fn (Operation $operation) => Action::build($operation, $components),
-            $operations,
-        );
 
         return $handler;
     }

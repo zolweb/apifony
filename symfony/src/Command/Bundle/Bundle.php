@@ -6,25 +6,18 @@ use App\Command\OpenApi\OpenApi;
 
 class Bundle
 {
-    private readonly string $packageName;
-    private readonly Api $api;
-
     public static function build(
         string $namespace,
         OpenApi $openApi,
     ): self {
-        $bundle = new self();
-        $bundle->api = Api::build(
-            $namespace,
-            $openApi->paths->pathItems,
-            $openApi->components,
+        return new self(
+            Api::build($namespace, $openApi),
         );
-
-        return $bundle;
     }
 
-    private function __construct()
-    {
+    private function __construct(
+        private readonly Api $api,
+    ) {
     }
 
     /**

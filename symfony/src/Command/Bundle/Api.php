@@ -2,30 +2,17 @@
 
 namespace App\Command\Bundle;
 
-use App\Command\OpenApi\Components;
-use App\Command\OpenApi\Operation;
-use App\Command\OpenApi\PathItem;
+use App\Command\OpenApi\OpenApi;
 use function Symfony\Component\String\u;
 
 class Api
 {
-    private readonly string $folder;
-    private readonly string $bundleNamespace;
-    private readonly string $name;
-    private readonly AbstractController $abstractController;
-    /** @var array<Aggregate> */
-    private readonly array $aggregates;
-
-    /**
-     * @param array<PathItem> $pathItems
-     */
     public static function build(
         string $bundleNamespace,
-        array $pathItems,
-        Components $components,
+        OpenApi $openApi,
     ): self {
         $aggregates = [];
-        foreach ($pathItems as $pathItem) {
+        foreach ($openApi->paths->pathItems as $pathItem) {
             foreach ($pathItem->operations as $operation) {
                 $tag = $operation->tags[0] ?? 'default';
                 if (!isset($aggregates[$tag])) {
@@ -35,25 +22,26 @@ class Api
             }
         }
 
-        $api = new self();
-        $api->bundleNamespace = $bundleNamespace;
-        $api->abstractController = AbstractController::build($bundleNamespace);
-        $api->aggregates = array_map(
-            static fn (string $tag) => Aggregate::build(
-                $bundleNamespace,
-                u($tag)->camel()->title(),
-                $aggregates[$tag],
-                $api->abstractController,
-                $components,
+        return new self(
+            $abstractController = AbstractController::build($bundleNamespace),
+            array_map(
+                static fn (string $tag) => Aggregate::build(
+                    $bundleNamespace,
+                    u($tag)->camel()->title(),
+                    $aggregates[$tag],
+                    $abstractController,
+                    $openApi->components,
+                ),
+                array_keys($aggregates),
             ),
-            array_keys($aggregates),
         );
-
-        return $api;
     }
 
-    private function __construct()
-    {
+    private function __construct(
+        private readonly AbstractController $abstractController,
+        /** @var array<Aggregate> */
+        private readonly array $aggregates,
+    ) {
     }
 
     /**

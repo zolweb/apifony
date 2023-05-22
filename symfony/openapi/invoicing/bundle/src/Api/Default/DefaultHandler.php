@@ -18,6 +18,7 @@ interface DefaultHandler
     ):
         GetClient200ApplicationJson |
         GetClient201ApplicationJson;
+
     public function GetClientFromIntegerPayloadToApplicationJsonContent(
         float $qAgrez,
         string $hAzef,
@@ -65,6 +66,7 @@ interface DefaultHandler
     ):
         PostTest200ApplicationJson |
         PostTest201ApplicationJson;
+
     public function PostTestFromTestPayloadToApplicationJsonContent(
         string $cC1,
         int $cC2,

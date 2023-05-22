@@ -20,6 +20,9 @@ interface {{ file.className }}
         {%~ else %};
         {%~ endif %}
         {%~ endfor %}
+        {%~ if not loop.last %}
+
+        {%~ endif %}
     {%~ endfor %}
     {%~ if not loop.last %}
 

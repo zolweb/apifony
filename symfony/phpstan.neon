@@ -1,7 +1,8 @@
 parameters:
     level: max
     paths:
-        - openapi/invoicing/bundle/src
+        #- openapi/invoicing/bundle/src
+        - src/Command/OpenApi
     exceptions:
         check:
             missingCheckedExceptionInThrows: true
