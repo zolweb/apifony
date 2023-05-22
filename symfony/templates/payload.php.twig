@@ -1,14 +1,14 @@
 {% autoescape false %}
 <?php
 
-namespace {{ namespace }}\Schema;
+namespace {{ file.namespace }}\Schema;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use {{ namespace }}\Format as AssertFormat;
+use {{ file.namespace }}\Format as AssertFormat;
 
-class {{ schema.className }}
+class {{ file.className }}
 {
-{%~ if schema.type.arrayProperties %}
+{%~ if file.schema.type.arrayProperties %}
     /**
     {%~ for name, property in schema.type.arrayProperties %}
      * @param {% if property.nullable %}?{% endif %}{{ property.type.phpDocParameterAnnotationType }} ${{ name }}
