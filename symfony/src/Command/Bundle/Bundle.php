@@ -30,7 +30,7 @@ class Bundle // extends AbstractExtension
                         $addModels("{$name}_{$propertyName}", $property);
                     }
                 } elseif ($schema->type === 'array') {
-                    $addModels("{$name}List", $schema->items);
+                    $addModels($name, $schema->items);
                 }
             }
         };
