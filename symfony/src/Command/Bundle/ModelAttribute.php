@@ -9,6 +9,9 @@ use function Symfony\Component\String\u;
 
 class ModelAttribute
 {
+    /**
+     * @throws Exception
+     */
     public static function build(
         string $modelClassName,
         string $propertyName,

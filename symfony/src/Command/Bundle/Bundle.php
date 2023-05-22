@@ -12,6 +12,9 @@ use function Symfony\Component\String\u;
 
 class Bundle // extends AbstractExtension
 {
+    /**
+     * @throws Exception
+     */
     public static function build(
         string $namespace,
         OpenApi $openApi,
@@ -39,7 +42,6 @@ class Bundle // extends AbstractExtension
         return new self(
             Api::build($namespace, $openApi),
             $models,
-            $openApi->components ?? Components::build([]),
         );
     }
 
@@ -49,7 +51,6 @@ class Bundle // extends AbstractExtension
     private function __construct(
         private readonly Api $api,
         private readonly array $models,
-        private readonly Components $components,
     ) {
     }
 

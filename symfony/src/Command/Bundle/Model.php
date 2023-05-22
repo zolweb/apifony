@@ -8,6 +8,9 @@ use function Symfony\Component\String\u;
 
 class Model implements PhpClassFile
 {
+    /**
+     * @throws Exception
+     */
     public static function build(
         string $bundleNamespace,
         string $name,
