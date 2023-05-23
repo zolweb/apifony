@@ -12,12 +12,16 @@ class MediaType
     public static function build(array $data): self
     {
         return new self(
-            isset($data['schema']['$ref']) ? Reference::build($data['schema']) : Schema::build($data['schema']),
+            match (true) {
+                isset($data['schema']['$ref']) => Reference::build($data['schema']),
+                isset($data['schema']) => Schema::build($data['schema']),
+                default => null,
+            }
         );
     }
 
     private function __construct(
-        public readonly Reference|Schema $schema,
+        public readonly null|Reference|Schema $schema,
     ) {
     }
 }

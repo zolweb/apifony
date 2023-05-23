@@ -12,13 +12,9 @@ class Api
         OpenApi $openApi,
     ): self {
         $aggregates = [];
-        foreach ($openApi->paths->pathItems as $pathItem) {
+        foreach ($openApi->paths?->pathItems ?? [] as $pathItem) {
             foreach ($pathItem->operations as $operation) {
-                $tag = $operation->tags[0] ?? 'default';
-                if (!isset($aggregates[$tag])) {
-                    $aggregates[$tag] = [];
-                }
-                $aggregates[$tag][] = $operation;
+                $aggregates[$operation->tags[0] ?? 'default'][] = $operation;
             }
         }
 
@@ -27,7 +23,7 @@ class Api
             array_map(
                 static fn (string $tag) => Aggregate::build(
                     $bundleNamespace,
-                    u($tag)->camel()->title(),
+                    $tag,
                     $aggregates[$tag],
                     $abstractController,
                     $openApi->components,
@@ -45,14 +41,18 @@ class Api
     }
 
     /**
-     * @param array<File> $files
+     * @return array<File>
      */
-    public function addFiles(array& $files): void
+    public function getFiles(): array
     {
-        $files[] = $this->abstractController;
+        $files = [$this->abstractController];
 
         foreach ($this->aggregates as $aggregate) {
-            $aggregate->addFiles($files);
+            foreach ($aggregate->getFiles() as $file) {
+                $files[] = $file;
+            }
         }
+
+        return $files;
     }
 }

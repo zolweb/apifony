@@ -2,7 +2,7 @@
 
 namespace App\Command\Bundle;
 
-class Handler implements PhpClassFile
+class Handler implements File
 {
     /**
      * @param array<Action> $actions
@@ -19,12 +19,32 @@ class Handler implements PhpClassFile
         );
     }
 
+    /**
+     * @param array<Action> $actions
+     */
     private function __construct(
-        /** @var array<Action> */
-        public readonly array $actions,
+        private readonly array $actions,
         private readonly string $bundleNamespace,
         private readonly string $aggregateName,
     ) {
+    }
+
+    /**
+     * @return array<Action>
+     */
+    public function getActions(): array
+    {
+        return $this->actions;
+    }
+
+    public function getNamespace(): string
+    {
+        return "{$this->bundleNamespace}\Api\\{$this->aggregateName}";
+    }
+
+    public function getClassName(): string
+    {
+        return "{$this->aggregateName}Handler";
     }
 
     public function getFolder(): string
@@ -45,20 +65,5 @@ class Handler implements PhpClassFile
     public function getParametersRootName(): string
     {
         return 'handler';
-    }
-
-    public function getNamespace(): string
-    {
-        return "{$this->bundleNamespace}\Api\\{$this->aggregateName}";
-    }
-
-    public function getClassName(): string
-    {
-        return "{$this->aggregateName}Handler";
-    }
-
-    public function getUsedPhpClassFiles(): array
-    {
-        return [];
     }
 }

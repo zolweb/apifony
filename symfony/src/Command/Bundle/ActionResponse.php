@@ -2,34 +2,28 @@
 
 namespace App\Command\Bundle;
 
-class Controller implements File
+use function Symfony\Component\String\u;
+
+class ActionResponse implements File
 {
-    /**
-     * @param array<Action> $actions
-     */
     public static function build(
         string $bundleNamespace,
         string $aggregateName,
-        array $actions,
-        AbstractController $abstractController,
-        Handler $handler,
+        string $actionName,
+        string $responseCode,
+        string $contentType,
     ): self {
         return new self(
-            $handler,
-            $actions,
             $bundleNamespace,
             $aggregateName,
-            $abstractController,
+            u("{$actionName}_{$responseCode}_{$contentType}")->camel()->title(),
         );
     }
 
     private function __construct(
-        public readonly Handler $handler,
-        /** @var array<Action> */
-        public readonly array $actions,
         private readonly string $bundleNamespace,
         private readonly string $aggregateName,
-        private readonly AbstractController $abstractController,
+        private readonly string $name,
     ) {
     }
 
@@ -40,14 +34,7 @@ class Controller implements File
 
     public function getClassName(): string
     {
-        return "{$this->aggregateName}Controller";
-    }
-
-    public function getUsedPhpClassFiles(): array
-    {
-        return [
-            $this->abstractController,
-        ];
+        return $this->name;
     }
 
     public function getFolder(): string
@@ -57,16 +44,16 @@ class Controller implements File
 
     public function getName(): string
     {
-        return "{$this->aggregateName}Controller.php";
+        return "{$this->name}.php";
     }
 
     public function getTemplate(): string
     {
-        return 'controller.php.twig';
+        return 'response.php.twig';
     }
 
     public function getParametersRootName(): string
     {
-        return 'controller';
+        return 'response';
     }
 }

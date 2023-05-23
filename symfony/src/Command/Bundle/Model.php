@@ -38,7 +38,7 @@ class Model implements File
         usort(
             $attributes,
             static fn (ModelAttribute $attr1, ModelAttribute $attr2) =>
-            ((int)($attr1->hasDefault()) - (int)($attr2->hasDefault())) ?:
+            ((int)$attr1->hasDefault() - (int)$attr2->hasDefault()) ?:
                 ($ordinals[$attr1->getRawName()] - $ordinals[$attr2->getRawName()]),
         );
 

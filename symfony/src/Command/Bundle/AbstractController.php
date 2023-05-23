@@ -2,7 +2,7 @@
 
 namespace App\Command\Bundle;
 
-class AbstractController implements PhpClassFile
+class AbstractController implements File
 {
     public static function build(string $bundleNamespace): self
     {
@@ -12,6 +12,11 @@ class AbstractController implements PhpClassFile
     private function __construct(
         private readonly string $bundleNamespace,
     ) {
+    }
+
+    public function getNamespace(): string
+    {
+        return "{$this->bundleNamespace}\Api";
     }
 
     public function getFolder(): string
@@ -32,20 +37,5 @@ class AbstractController implements PhpClassFile
     public function getParametersRootName(): string
     {
         return 'abstractController';
-    }
-
-    public function getNamespace(): string
-    {
-        return "{$this->bundleNamespace}\Api";
-    }
-
-    public function getClassName(): string
-    {
-        return 'AbstractController';
-    }
-
-    public function getUsedPhpClassFiles(): array
-    {
-        return [];
     }
 }

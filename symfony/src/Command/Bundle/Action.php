@@ -4,73 +4,150 @@ namespace App\Command\Bundle;
 
 use App\Command\OpenApi\Components;
 use App\Command\OpenApi\Operation;
+use App\Command\OpenApi\Parameter;
 use App\Command\OpenApi\Reference;
 use function Symfony\Component\String\u;
 
 class Action
 {
-    /** @var array<Method> */
-    public readonly array $methods;
-    public readonly string $name;
-    /** @var array<Parameter> */
-    public readonly array $parameters;
-    public readonly Operation $operation;
-
+    /**
+     * @throws Exception
+     */
     public static function build(
+        string $bundleNamespace,
+        string $aggregateName,
         Operation $operation,
         Components $components,
     ): self {
-        $params = $operation->parameters;
-        usort(
-            $params,
-            static fn (\App\Command\OpenApi\Parameter $param1, \App\Command\OpenApi\Parameter $param2) =>
-            ((int)($param1->schema->default !== null) - (int)($param2->schema->default !== null)) ?:
-                strcmp($param1->name, $param2->name),
+        return new self(
+            $className = u($operation->operationId)->camel(),
+            $parameters = self::buildParameters($className, $operation, $components),
+            self::buildCases($bundleNamespace, $aggregateName, $className, $operation, $components, $parameters),
+        );
+    }
+
+    /**
+     * @param array<ActionParameter> $parameters
+     * @param array<ActionCase> $cases
+     */
+    private function __construct(
+        private readonly string $name,
+        private readonly array $parameters,
+        private readonly array $cases,
+    ) {
+    }
+
+    /**
+     * @return array<ActionParameter>
+     */
+    public function getParameters(array $in = ['path', 'query', 'header', 'cookie']): array
+    {
+        return array_filter(
+            $this->parameters,
+            static fn (Parameter $param) => in_array($param->parameter->in, $in, true),
+        );
+    }
+
+    /**
+     * @return array<ActionCase>
+     */
+    public function getCases(): array
+    {
+        return $this->cases;
+    }
+
+    /**
+     * @return array<ActionParameter>
+     *
+     * @throws Exception
+     */
+    private static function buildParameters(
+        string $actionClassName,
+        Operation $operation,
+        Components $components,
+    ): array {
+        $parameters = array_map(
+            static fn (Parameter $parameter) =>
+            ActionParameter::build($actionClassName, $parameter, $components),
+            $operation->parameters,
         );
 
-        $parameters = [];
-        foreach ($params as $parameter) {
-            $parameters[] = Parameter::build($parameter, $components);
+        $ordinal = 0;
+        $ordinals = [];
+        foreach ($operation->parameters as $parameter) {
+            $ordinals[$parameter->name] = ++$ordinal;
         }
 
-        $requestBodyPayloadTypes = [];
+        usort(
+            $parameters,
+            static fn (ActionParameter $param1, ActionParameter $param2) =>
+            ((int)$param1->hasDefault() - (int)$param2->hasDefault()) ?:
+                ($ordinals[$param1->getRawName()] - $ordinals[$param2->getRawName()]),
+        );
+
+        return $parameters;
+    }
+
+    /**
+     * @return array<ActionCase>
+     * @return array<ActionParameter>
+     *
+     * @throws Exception
+     */
+    private static function buildCases(
+        string $bundleNamespace,
+        string $aggregateName,
+        string $actionClassName,
+        Operation $operation,
+        Components $components,
+        array $parameters,
+    ): array {
+        $allPossibleRequestBodyPayloadTypes = [];
+        $allPossibleResponseContentTypes = [];
+
         if ($operation->requestBody === null || !$operation->requestBody->required) {
-            $requestBodyPayloadTypes['Empty'] = null;
+            $allPossibleRequestBodyPayloadTypes['Empty'] = null;
         }
+
         foreach ($operation->requestBody?->mediaTypes ?? [] as $mediaType) {
-            $name = 'Lol';
+            $className = "{$actionClassName}RequestBodyPayload";
+            if ($mediaType->schema === null) {
+                throw new Exception('MediaTypes without schema are not supported.');
+            }
             $schema = $mediaType->schema;
             if ($schema instanceof Reference) {
-                $schema = $components->schemas[$name = $schema->getName()];
+                $schema = $components->schemas[$className = $schema->getName()];
             }
             $type = match ($schema->type) {
                 'string' => new StringType($schema),
                 'integer' => new IntegerType($schema),
                 'number' => new NumberType($schema),
                 'boolean' => new BooleanType($schema),
-                'object' => new ObjectType($schema, $name, $components),
-                'array' => new ArrayType($schema, 'Cool', $components),
+                'object' => new ObjectType($schema, $className, $components),
+                'array' => new ArrayType($schema, $className, $components),
             };
-            $requestBodyPayloadTypes[$type->getNormalizedType()] = $type;
+            $allPossibleRequestBodyPayloadTypes[$type->getNormalizedType()] = $type;
         }
 
-        $responseContentTypes = [];
         foreach ($operation->responses->responses as $response) {
             if ($response instanceof Reference) {
                 $response = $components->responses[$response->getName()];
             }
             if (count($response->content) === 0) {
-                $responseContentTypes['Empty'] = null;
+                $allPossibleResponseContentTypes['Empty'] = null;
             }
             foreach ($response->content as $type => $mediaType) {
-                $responseContentTypes[(string) u($type)->camel()->title()] = $type;
+                $allPossibleResponseContentTypes[(string) u($type)->camel()->title()] = $type;
             }
         }
 
-        $methods = [];
-        foreach ($requestBodyPayloadTypes as $requestBodyPayloadTypeNormalizedName => $requestBodyPayloadType) {
-            foreach ($responseContentTypes as $responseContentTypeNormalizedName => $responseContentType) {
-                $methods[] = Method::build(
+        $cases = [];
+        foreach ($allPossibleRequestBodyPayloadTypes as $requestBodyPayloadTypeNormalizedName => $requestBodyPayloadType) {
+            foreach ($allPossibleResponseContentTypes as $responseContentTypeNormalizedName => $responseContentType) {
+                $cases[] = ActionCase::build(
+                    $bundleNamespace,
+                    $aggregateName,
+                    $actionClassName,
                     $requestBodyPayloadTypeNormalizedName,
                     $requestBodyPayloadType,
                     $responseContentTypeNormalizedName,
@@ -82,24 +159,6 @@ class Action
             }
         }
 
-        $action = new self();
-        $action->name = u($operation->operationId)->camel();
-        $action->methods = $methods;
-        $action->parameters = $parameters;
-        $action->operation = $operation;
-
-        return $action;
-    }
-
-    private function __construct()
-    {
-    }
-
-    public function getParameters(array $in = ['path', 'query', 'header', 'cookie']): array
-    {
-        return array_filter(
-            $this->parameters,
-            static fn (Parameter $param) => in_array($param->parameter->in, $in, true),
-        );
+        return $cases;
     }
 }

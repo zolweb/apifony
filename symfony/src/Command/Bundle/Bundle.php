@@ -24,8 +24,9 @@ class Bundle // extends AbstractExtension
         OpenApi $openApi,
     ): self {
         return new self(
-            $formats = self::extractFormats($namespace, $openApi),
-            self::extractModels($namespace, $openApi, $formats),
+            $formats = self::buildFormats($namespace, $openApi),
+            $models = self::buildModels($namespace, $openApi, $formats),
+            Api::build($namespace, $openApi, $formats, $models),
         );
     }
 
@@ -36,6 +37,7 @@ class Bundle // extends AbstractExtension
     private function __construct(
         private readonly array $formats,
         private readonly array $models,
+        private readonly Api $api,
     ) {
     }
 
@@ -56,7 +58,9 @@ class Bundle // extends AbstractExtension
             $files[] = $model;
         }
 
-        // $this->api->addFiles($files);
+        foreach ($this->api->getFiles() as $file){
+            $files[] = $file;
+        }
 
         return $files;
     }
@@ -64,7 +68,7 @@ class Bundle // extends AbstractExtension
     /**
      * @return array<string, Format>
      */
-    private static function extractFormats(string $namespace, OpenApi $openApi): array
+    private static function buildFormats(string $namespace, OpenApi $openApi): array
     {
         $formats = [];
 
@@ -152,7 +156,7 @@ class Bundle // extends AbstractExtension
      *
      * @throws Exception
      */
-    private static function extractModels(string $namespace, OpenApi $openApi, array $formats): array
+    private static function buildModels(string $namespace, OpenApi $openApi, array $formats): array
     {
         $addModels = function(string $rawName, Reference|Schema $schema) use (&$addModels, &$models, $namespace, $openApi, $formats) {
             if ($schema instanceof Reference) {

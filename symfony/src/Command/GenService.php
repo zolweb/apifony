@@ -9,7 +9,6 @@ use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
 use Twig\Error\SyntaxError;
-use Twig\Extension\EscaperExtension;
 
 class GenService
 {
@@ -26,19 +25,6 @@ class GenService
      */
     public function generate(array $data, string $bundleName, string $namespace, string $packageName): void
     {
-        $this->twig->getExtension(EscaperExtension::class)->setEscaper(
-            'phpSingleQuotedString',
-            function (Environment $twig, string $string) {
-                return addcslashes($string, '\'\\');
-            }
-        );
-        $this->twig->getExtension(EscaperExtension::class)->setEscaper(
-            'jsonString',
-            function (Environment $twig, string $string) {
-                return addcslashes($string, '"\\');
-            }
-        );
-
         $openApi = OpenApi::build($data);
         $bundle = Bundle::build($namespace, $openApi);
 
