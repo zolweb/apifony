@@ -45,9 +45,7 @@ class Controller implements File
 
     public function getUsedPhpClassFiles(): array
     {
-        return [
-            $this->abstractController,
-        ];
+        return [];
     }
 
     public function getFolder(): string

@@ -37,6 +37,11 @@ class Action
     ) {
     }
 
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
     /**
      * @return array<ActionParameter>
      */
@@ -44,7 +49,7 @@ class Action
     {
         return array_filter(
             $this->parameters,
-            static fn (Parameter $param) => in_array($param->parameter->in, $in, true),
+            static fn (ActionParameter $param) => in_array($param->getIn(), $in, true),
         );
     }
 

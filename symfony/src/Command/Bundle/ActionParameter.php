@@ -28,7 +28,6 @@ class ActionParameter
         $className = u($className)->camel()->title();
 
         return new self(
-            $parameter->name,
             $variableName,
             $parameter,
             match ($parameter->schema->type) {
@@ -43,11 +42,15 @@ class ActionParameter
     }
 
     private function __construct(
-        private readonly string $rawName,
         private readonly string $variableName,
         private readonly Parameter $parameter,
         private readonly Type $type,
     ) {
+    }
+
+    public function getIn(): string
+    {
+        return $this->parameter->in;
     }
 
     public function isArray(): bool
@@ -67,7 +70,7 @@ class ActionParameter
 
     public function getRawName(): string
     {
-        return $this->rawName;
+        return $this->parameter->name;
     }
 
     public function getVariableName(): string
@@ -93,5 +96,20 @@ class ActionParameter
     public function getPhpStanType(): string
     {
         return $this->type->getPhpDocParameterAnnotationType();
+    }
+
+    public function getCastFunction(): string
+    {
+        return $this->type->getStringToTypeCastFunction();
+    }
+
+    public function getRequestCollection(): string
+    {
+        return ['query' => 'query', 'header' => 'headers', 'cookie' => 'cookies'][$this->parameter->in];
+    }
+
+    public function isRequired(): bool
+    {
+        return $this->parameter->required;
     }
 }
