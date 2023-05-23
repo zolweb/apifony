@@ -19,7 +19,7 @@ class ModelAttribute
         Components $components,
     ): self {
         $variableName = u($rawName)->camel();
-        $className = sprintf('%s_%s', $modelClassName, $variableName);
+        $className = "{$modelClassName}_{$variableName}";
         if ($property instanceof Reference) {
             $property = $components->schemas[$className = $property->getName()];
         }
