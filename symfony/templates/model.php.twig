@@ -4,7 +4,9 @@
 namespace {{ model.namespace }}\Schema;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use {{ model.namespace }}\Format as AssertFormat;
+{% for classFile in model.usedFormatConstraints %}
+use {{ classFile.namespace }}\{{ classFile.className }} as Assert{{ classFile.className }};
+{% endfor %}
 
 class {{ model.className }}
 {

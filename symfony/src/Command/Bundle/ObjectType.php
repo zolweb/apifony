@@ -5,6 +5,7 @@ namespace App\Command\Bundle;
 use App\Command\OpenApi\Components;
 use App\Command\OpenApi\Reference;
 use App\Command\OpenApi\Schema;
+use function Symfony\Component\String\u;
 
 class ObjectType implements Type
 {
@@ -103,31 +104,16 @@ class ObjectType implements Type
 
     public function getConstraints(): array
     {
-        return [new Constraint('Assert\Valid', [])];
-    }
+        $constraints = [new Constraint('Assert\Valid', [])];
 
-    public function addFiles(array& $files, string $folder): void
-    {
-        $folder = $this->schema->isComponent ? 'src/Schema' : $folder;
-
-        if (!isset($files["{$folder}/{$this->name}.php"])) {
-            $files["{$folder}/{$this->name}.php"] = [
-                'folder' => $folder,
-                'name' => "{$this->name}.php",
-                'template' => 'schema.php.twig',
-                'params' => [
-                    'schema' => $this->schema,
-                ],
-            ];
-
-            foreach ($this->schema->properties as $property) {
-                $property->addFiles($files, $folder);
-            }
+        if (!$this->schema->nullable) {
+            $constraints[] = new Constraint('Assert\NotNull', []);
         }
-    }
 
-    public function __toString(): string
-    {
-        return 'object';
+        if ($this->schema->format !== null) {
+            $constraints[] = new Constraint(sprintf('Assert%s', u($this->schema->format)->camel()->title()), []);
+        }
+
+        return $constraints;
     }
 }

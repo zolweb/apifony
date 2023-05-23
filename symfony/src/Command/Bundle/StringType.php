@@ -76,7 +76,7 @@ class StringType implements Type
         }
 
         if ($this->schema->format !== null) {
-            $constraints[] = new Constraint(sprintf('AssertFormat\%s', u($this->schema->format)->camel()->title()), []);
+            $constraints[] = new Constraint(sprintf('Assert%s', u($this->schema->format)->camel()->title()), []);
         }
 
         if ($this->schema->pattern !== null) {
@@ -96,14 +96,5 @@ class StringType implements Type
         }
 
         return $constraints;
-    }
-
-    public function addFiles(array& $files, string $folder): void
-    {
-    }
-
-    public function __toString(): string
-    {
-        return 'string';
     }
 }

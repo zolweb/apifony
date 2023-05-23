@@ -3,6 +3,7 @@
 namespace App\Command\Bundle;
 
 use App\Command\OpenApi\Schema;
+use function Symfony\Component\String\u;
 
 class NumberType implements Type
 {
@@ -69,6 +70,14 @@ class NumberType implements Type
     {
         $constraints = [];
 
+        if (!$this->schema->nullable) {
+            $constraints[] = new Constraint('Assert\NotNull', []);
+        }
+
+        if ($this->schema->format !== null) {
+            $constraints[] = new Constraint(sprintf('Assert%s', u($this->schema->format)->camel()->title()), []);
+        }
+
         if ($this->schema->multipleOf !== null) {
             $constraints[] = new Constraint('Assert\DivisibleBy', ['value' => $this->schema->multipleOf]);
         }
@@ -94,14 +103,5 @@ class NumberType implements Type
         }
 
         return $constraints;
-    }
-
-    public function addFiles(array& $files, string $folder): void
-    {
-    }
-
-    public function __toString(): string
-    {
-        return 'number';
     }
 }

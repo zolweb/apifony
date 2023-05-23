@@ -2,32 +2,40 @@
 
 namespace App\Command\Bundle;
 
-use function Symfony\Component\String\u;
-
-class FormatValidator implements PhpClassFile
+class FormatValidator implements File
 {
     public static function build(
         string $bundleNamespace,
-        string $format,
+        string $formatName,
         FormatDefinition $formatDefinition,
     ): self {
         return new self(
             $bundleNamespace,
-            u($format)->camel()->title(),
+            $formatName,
             $formatDefinition,
         );
     }
 
     private function __construct(
         private readonly string $bundleNamespace,
-        private readonly string $format,
+        private readonly string $formatName,
         private readonly FormatDefinition $formatDefinition,
     ) {
     }
 
-    public function getDefinitionClassName(): string
+    public function getDefinitionInterfaceName(): string
     {
-        return $this->formatDefinition->getClassName();
+        return $this->formatDefinition->getInterfaceName();
+    }
+
+    public function getNamespace(): string
+    {
+        return "{$this->bundleNamespace}\Format";
+    }
+
+    public function getClassName(): string
+    {
+        return "{$this->formatName}Validator";
     }
 
     public function getFolder(): string
@@ -37,7 +45,7 @@ class FormatValidator implements PhpClassFile
 
     public function getName(): string
     {
-        return "{$this->format}Validator.php";
+        return "{$this->formatName}Validator.php";
     }
 
     public function getTemplate(): string
@@ -48,20 +56,5 @@ class FormatValidator implements PhpClassFile
     public function getParametersRootName(): string
     {
         return 'validator';
-    }
-
-    public function getNamespace(): string
-    {
-        return "{$this->bundleNamespace}\Format";
-    }
-
-    public function getClassName(): string
-    {
-        return "{$this->format}Validator";
-    }
-
-    public function getUsedPhpClassFiles(): array
-    {
-        return [];
     }
 }

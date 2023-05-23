@@ -3,7 +3,6 @@
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Payload\Schema;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Payload\Format as AssertFormat;
 
 class PetOwnerAddress
 {
@@ -17,8 +16,10 @@ class PetOwnerAddress
         #[Assert\NotNull]
         public readonly string $country,
 
+        #[Assert\NotNull]
         #[Assert\All(constraints: [
             new Assert\Valid,
+            new Assert\NotNull,
         ])]
         public readonly array $phoneNumbers,
     ) {

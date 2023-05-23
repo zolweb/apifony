@@ -24,17 +24,18 @@ class Bundle // extends AbstractExtension
         OpenApi $openApi,
     ): self {
         return new self(
-            self::extractModels($namespace, $openApi),
-            self::extractFormats($namespace, $openApi),
+            $formats = self::extractFormats($namespace, $openApi),
+            self::extractModels($namespace, $openApi, $formats),
         );
     }
 
     /**
+     * @param array<string, Format> $formats
      * @param array<Model> $models
      */
     private function __construct(
-        private readonly array $models,
         private readonly array $formats,
+        private readonly array $models,
     ) {
     }
 
@@ -46,9 +47,9 @@ class Bundle // extends AbstractExtension
         $files = [];
 
         foreach ($this->formats as $format) {
-            $files[] = $format['definition'];
-            $files[] = $format['constraint'];
-            $files[] = $format['validator'];
+            foreach ($format->getFiles() as $file) {
+                $files[] = $file;
+            }
         }
 
         foreach ($this->models as $model) {
@@ -61,37 +62,7 @@ class Bundle // extends AbstractExtension
     }
 
     /**
-     * @return array<Model>
-     *
-     * @throws Exception
-     */
-    private static function extractModels(string $namespace, OpenApi $openApi): array
-    {
-        $addModels = function(string $name, Reference|Schema $schema) use (&$addModels, &$models, $namespace, $openApi) {
-            if ($schema instanceof Reference) {
-                $schema = $openApi->components->schemas[$name = $schema->getName()];
-            }
-            if (!isset($models[$name])) {
-                if ($schema->type === 'object') {
-                    $models[$name] = Model::build($namespace, $name, $schema, $openApi->components);
-                    foreach ($schema->properties as $propertyName => $property) {
-                        $addModels("{$name}_{$propertyName}", $property);
-                    }
-                } elseif ($schema->type === 'array') {
-                    $addModels($name, $schema->items);
-                }
-            }
-        };
-
-        foreach ($openApi->components->schemas as $name => $schema) {
-            $addModels($name, $schema);
-        }
-
-        return $models;
-    }
-
-    /**
-     * @return array<string, array{definition: FormatDefinition, constraint: FormatConstraint, validator: FormatValidator}>
+     * @return array<string, Format>
      */
     private static function extractFormats(string $namespace, OpenApi $openApi): array
     {
@@ -100,7 +71,7 @@ class Bundle // extends AbstractExtension
         $addSchemaFormats = function (Reference|Schema $schema) use (&$addSchemaFormats, &$formats, $openApi) {
             if ($schema instanceof Schema) {
                 if ($schema->format !== null) {
-                    $formats[$schema->format] = [];
+                    $formats[$schema->format] = null;
                 }
                 foreach ($schema->properties ?? [] as $property) {
                     $addSchemaFormats($property);
@@ -167,13 +138,43 @@ class Bundle // extends AbstractExtension
             }
         }
 
-        foreach ($formats as $name => &$format) {
-            $format['definition'] = FormatDefinition::build($namespace, $name);
-            $format['constraint'] = FormatConstraint::build($namespace, $name);
-            $format['validator'] = FormatValidator::build($namespace, $name, $format['definition']);
+        foreach ($formats as $rawName => &$format) {
+            $format = Format::build($namespace, $rawName);
         }
 
         return $formats;
+    }
+
+    /**
+     * @param array<string, Format> $formats
+     *
+     * @return array<Model>
+     *
+     * @throws Exception
+     */
+    private static function extractModels(string $namespace, OpenApi $openApi, array $formats): array
+    {
+        $addModels = function(string $rawName, Reference|Schema $schema) use (&$addModels, &$models, $namespace, $openApi, $formats) {
+            if ($schema instanceof Reference) {
+                $schema = $openApi->components->schemas[$rawName = $schema->getName()];
+            }
+            if (!isset($models[$rawName])) {
+                if ($schema->type === 'object') {
+                    $models[$rawName] = Model::build($namespace, $rawName, $schema, $openApi->components, $formats);
+                    foreach ($schema->properties as $propertyName => $property) {
+                        $addModels("{$rawName}_{$propertyName}", $property);
+                    }
+                } elseif ($schema->type === 'array') {
+                    $addModels($rawName, $schema->items);
+                }
+            }
+        };
+
+        foreach ($openApi->components->schemas as $rawName => $schema) {
+            $addModels($rawName, $schema);
+        }
+
+        return $models;
     }
 
     // /**

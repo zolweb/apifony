@@ -3,11 +3,13 @@
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Payload\Schema;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Payload\Format as AssertFormat;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\Int32 as AssertInt32;
 
 class ApiResponse
 {
     public function __construct(
+        #[Assert\NotNull]
+        #[AssertInt32]
         public readonly int $code,
 
         #[Assert\NotNull]

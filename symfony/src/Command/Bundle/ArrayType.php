@@ -109,6 +109,14 @@ class ArrayType implements Type
     {
         $constraints = [];
 
+        if (!$this->schema->nullable) {
+            $constraints[] = new Constraint('Assert\NotNull', []);
+        }
+
+        if ($this->schema->format !== null) {
+            $constraints[] = new Constraint(sprintf('Assert%s', u($this->schema->format)->camel()->title()), []);
+        }
+
         if ($this->schema->minItems !== null) {
             $constraints[] = new Constraint('Assert\Count', ['min' => $this->schema->minItems]);
         }
@@ -126,15 +134,5 @@ class ArrayType implements Type
         }
 
         return $constraints;
-    }
-
-    public function addFiles(array& $files, string $folder): void
-    {
-        $this->schema->items->addFiles($files, $folder);
-    }
-
-    public function __toString(): string
-    {
-        return 'array';
     }
 }

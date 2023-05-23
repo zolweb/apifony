@@ -14,11 +14,11 @@ class ModelAttribute
      */
     public static function build(
         string $modelClassName,
-        string $propertyName,
+        string $rawName,
         Reference|Schema $property,
         Components $components,
     ): self {
-        $variableName = u($propertyName)->camel();
+        $variableName = u($rawName)->camel();
         $className = sprintf('%s_%s', $modelClassName, $variableName);
         if ($property instanceof Reference) {
             $property = $components->schemas[$className = $property->getName()];
@@ -26,7 +26,7 @@ class ModelAttribute
         $className = u($className)->camel()->title();
 
         return new self(
-            $propertyName,
+            $rawName,
             $variableName,
             $property,
             match ($property->type) {
@@ -41,7 +41,7 @@ class ModelAttribute
     }
 
     private function __construct(
-        private readonly string $propertyName,
+        private readonly string $rawName,
         private readonly string $variableName,
         private readonly Schema $schema,
         private readonly Type $type,
@@ -63,9 +63,9 @@ class ModelAttribute
         return $this->type->getMethodParameterDefault();
     }
 
-    public function getPropertyName(): string
+    public function getRawName(): string
     {
-        return $this->propertyName;
+        return $this->rawName;
     }
 
     public function getVariableName(): string

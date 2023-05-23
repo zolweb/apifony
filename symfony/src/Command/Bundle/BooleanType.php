@@ -3,6 +3,7 @@
 namespace App\Command\Bundle;
 
 use App\Command\OpenApi\Schema;
+use function Symfony\Component\String\u;
 
 class BooleanType implements Type
 {
@@ -69,19 +70,18 @@ class BooleanType implements Type
     {
         $constraints = [];
 
+        if (!$this->schema->nullable) {
+            $constraints[] = new Constraint('Assert\NotNull', []);
+        }
+
+        if ($this->schema->format !== null) {
+            $constraints[] = new Constraint(sprintf('Assert%s', u($this->schema->format)->camel()->title()), []);
+        }
+
         if ($this->schema->enum !== null) {
             $constraints[] = new Constraint('Assert\Choice', ['choices' => $this->schema->enum]);
         }
 
         return $constraints;
-    }
-
-    public function addFiles(array& $files, string $folder): void
-    {
-    }
-
-    public function __toString(): string
-    {
-        return 'boolean';
     }
 }

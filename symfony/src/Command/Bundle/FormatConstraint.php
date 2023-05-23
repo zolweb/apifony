@@ -2,24 +2,32 @@
 
 namespace App\Command\Bundle;
 
-use function Symfony\Component\String\u;
-
-class FormatConstraint implements PhpClassFile
+class FormatConstraint implements File
 {
     public static function build(
         string $bundleNamespace,
-        string $format,
+        string $formatName,
     ): self {
         return new self(
             $bundleNamespace,
-            u($format)->camel()->title(),
+            $formatName,
         );
     }
 
     private function __construct(
         private readonly string $bundleNamespace,
-        private readonly string $format,
+        private readonly string $formatName,
     ) {
+    }
+
+    public function getNamespace(): string
+    {
+        return "{$this->bundleNamespace}\Format";
+    }
+
+    public function getClassName(): string
+    {
+        return $this->formatName;
     }
 
     public function getFolder(): string
@@ -29,7 +37,7 @@ class FormatConstraint implements PhpClassFile
 
     public function getName(): string
     {
-        return "{$this->format}.php";
+        return "{$this->formatName}.php";
     }
 
     public function getTemplate(): string
@@ -40,20 +48,5 @@ class FormatConstraint implements PhpClassFile
     public function getParametersRootName(): string
     {
         return 'constraint';
-    }
-
-    public function getNamespace(): string
-    {
-        return "{$this->bundleNamespace}\Format";
-    }
-
-    public function getClassName(): string
-    {
-        return $this->format;
-    }
-
-    public function getUsedPhpClassFiles(): array
-    {
-        return [];
     }
 }

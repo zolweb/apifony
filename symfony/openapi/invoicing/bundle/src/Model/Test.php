@@ -3,7 +3,10 @@
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Payload\Schema;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Payload\Format as AssertFormat;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F21 as AssertF21;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F22 as AssertF22;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F23 as AssertF23;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F25 as AssertF25;
 
 class Test
 {
@@ -13,14 +16,16 @@ class Test
      */
     public function __construct(
         #[Assert\Valid]
+        #[Assert\NotNull]
         public readonly Test $a5,
 
+        #[Assert\NotNull]
         #[Assert\Count(min: 1)]
         #[Assert\Count(max: 3)]
         #[Assert\Unique]
         #[Assert\All(constraints: [
             new Assert\NotNull,
-            new AssertFormat\F25,
+            new AssertF25,
             new Assert\Regex(pattern: '[a-z]{3}'),
             new Assert\Length(min: 3),
             new Assert\Length(max: 3),
@@ -32,16 +37,18 @@ class Test
         ])]
         public readonly array $a6,
 
+        #[Assert\NotNull]
         #[Assert\Count(min: 0)]
         #[Assert\Count(max: 3)]
         #[Assert\Unique]
         #[Assert\All(constraints: [
             new Assert\Valid,
+            new Assert\NotNull,
         ])]
         public readonly array $a7,
 
         #[Assert\NotNull]
-        #[AssertFormat\F21]
+        #[AssertF21]
         #[Assert\Regex(pattern: '[a-z]{3}')]
         #[Assert\Length(min: 3)]
         #[Assert\Length(max: 3)]
@@ -52,6 +59,8 @@ class Test
         ])]
         public readonly string $a1 = 'abc',
 
+        #[Assert\NotNull]
+        #[AssertF22]
         #[Assert\DivisibleBy(value: 1)]
         #[Assert\GreaterThanOrEqual(value: 1)]
         #[Assert\LessThanOrEqual(value: 3)]
@@ -62,6 +71,8 @@ class Test
         ])]
         public readonly int $a2 = 1,
 
+        #[Assert\NotNull]
+        #[AssertF23]
         #[Assert\DivisibleBy(value: 0.1)]
         #[Assert\GreaterThanOrEqual(value: 0)]
         #[Assert\LessThanOrEqual(value: 1)]
@@ -72,6 +83,7 @@ class Test
         ])]
         public readonly float $a3 = 0.1,
 
+        #[Assert\NotNull]
         public readonly bool $a4 = true,
     ) {
     }
