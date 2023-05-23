@@ -22,17 +22,28 @@ class Action
         return new self(
             $className = u($operation->operationId)->camel(),
             $parameters = self::buildParameters($className, $operation, $components),
-            self::buildCases($bundleNamespace, $aggregateName, $className, $operation, $components, $parameters),
+            $requestBodies = self::buildRequestBodies($className, $operation, $components),
+            self::buildCases(
+                $bundleNamespace,
+                $aggregateName,
+                $className,
+                $operation,
+                $components,
+                $parameters,
+                $requestBodies,
+            ),
         );
     }
 
     /**
      * @param array<ActionParameter> $parameters
+     * @param array<ActionRequestBody> $requestBodies
      * @param array<ActionCase> $cases
      */
     private function __construct(
         private readonly string $name,
         private readonly array $parameters,
+        private readonly array $requestBodies,
         private readonly array $cases,
     ) {
     }
@@ -51,6 +62,14 @@ class Action
             $this->parameters,
             static fn (ActionParameter $param) => in_array($param->getIn(), $in, true),
         );
+    }
+
+    /**
+     * @return array<ActionRequestBody>
+     */
+    public function getRequestBodies(): array
+    {
+        return $this->requestBodies;
     }
 
     /**
@@ -94,10 +113,51 @@ class Action
     }
 
     /**
-     * @return array<ActionCase>
-     * @return array<ActionParameter>
+     * @return array<ActionRequestBody>
      *
      * @throws Exception
+     */
+    private static function buildRequestBodies(
+        string $actionClassName,
+        Operation $operation,
+        Components $components,
+    ): array {
+        $allPossibleRequestBodies = [];
+
+        $requestBody = $operation->requestBody;
+        if ($requestBody instanceof Reference) {
+            $requestBody = $components->requestBodies[$requestBody->getName()];
+        }
+
+        if ($requestBody === null || !$requestBody->required) {
+            $allPossibleRequestBodies[] = ActionRequestBody::build(
+                $actionClassName,
+                null,
+                null,
+                $components,
+            );
+        }
+
+        foreach ($operation->requestBody?->mediaTypes ?? [] as $mimeType => $mediaType) {
+            if ($mediaType->schema === null) {
+                throw new Exception('MediaTypes without schema are not supported.');
+            }
+            $allPossibleRequestBodies[] = ActionRequestBody::build(
+                $actionClassName,
+                $mimeType,
+                $mediaType,
+                $components,
+            );
+        }
+
+        return $allPossibleRequestBodies;
+    }
+
+    /**
+     * @param array<ActionParameter> $parameters
+     * @param array<ActionRequestBody> $requestBodies
+     *
+     * @return array<ActionCase>
      */
     private static function buildCases(
         string $bundleNamespace,
@@ -106,32 +166,13 @@ class Action
         Operation $operation,
         Components $components,
         array $parameters,
+        array $requestBodies,
     ): array {
         $allPossibleRequestBodyPayloadTypes = [];
         $allPossibleResponseContentTypes = [];
 
-        if ($operation->requestBody === null || !$operation->requestBody->required) {
-            $allPossibleRequestBodyPayloadTypes['Empty'] = null;
-        }
-
-        foreach ($operation->requestBody?->mediaTypes ?? [] as $mediaType) {
-            $className = "{$actionClassName}RequestBodyPayload";
-            if ($mediaType->schema === null) {
-                throw new Exception('MediaTypes without schema are not supported.');
-            }
-            $schema = $mediaType->schema;
-            if ($schema instanceof Reference) {
-                $schema = $components->schemas[$className = $schema->getName()];
-            }
-            $type = match ($schema->type) {
-                'string' => new StringType($schema),
-                'integer' => new IntegerType($schema),
-                'number' => new NumberType($schema),
-                'boolean' => new BooleanType($schema),
-                'object' => new ObjectType($schema, $className, $components),
-                'array' => new ArrayType($schema, $className, $components),
-            };
-            $allPossibleRequestBodyPayloadTypes[$type->getNormalizedType()] = $type;
+        foreach ($requestBodies as $requestBody) {
+            $allPossibleRequestBodyPayloadTypes[$requestBody->getPayloadNormalizedType()] = $requestBody;
         }
 
         foreach ($operation->responses->responses as $response) {
@@ -147,13 +188,12 @@ class Action
         }
 
         $cases = [];
-        foreach ($allPossibleRequestBodyPayloadTypes as $requestBodyPayloadTypeNormalizedName => $requestBodyPayloadType) {
+        foreach ($allPossibleRequestBodyPayloadTypes as $requestBodyPayloadType) {
             foreach ($allPossibleResponseContentTypes as $responseContentTypeNormalizedName => $responseContentType) {
                 $cases[] = ActionCase::build(
                     $bundleNamespace,
                     $aggregateName,
                     $actionClassName,
-                    $requestBodyPayloadTypeNormalizedName,
                     $requestBodyPayloadType,
                     $responseContentTypeNormalizedName,
                     $responseContentType,

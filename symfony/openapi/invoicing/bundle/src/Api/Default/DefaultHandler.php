@@ -67,7 +67,7 @@ interface DefaultHandler
         PostTest200ApplicationJson |
         PostTest201ApplicationJson;
 
-    public function PostTestFromTestPayloadToApplicationJsonContent(
+    public function PostTestFromPostTestApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
         string $pp1,
         int $pp2,
         float $pp3,
@@ -84,7 +84,7 @@ interface DefaultHandler
         int $cc2,
         float $cc3,
         bool $cc4,
-        Test $requestBodyPayload,
+        PostTestApplicationJsonRequestBodyPayload $requestBodyPayload,
     ):
         PostTest200ApplicationJson |
         PostTest201ApplicationJson;

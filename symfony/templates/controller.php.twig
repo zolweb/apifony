@@ -58,24 +58,23 @@ class {{ controller.className }} extends AbstractController
         }
     {%~ endif %}
 {%~ endfor %}
-{%~ if action.requestBody %}
+{%~ if action.requestBodies %}
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
-    {%~ for type, mediaType in action.operation.requestBody.mediaTypes %}
-            case '{{ type }}':
-        {%~ if type is same as ('application/json') %}
-                {{ mediaType.schema.type.requestBodyPayloadInitializationFromRequest }}
-                {{ mediaType.schema.type.requestBodyPayloadValidationViolationsInitialization }}
-        {%~ endif %}
-
-                break;
-    {%~ endfor %}
-    {%~ if not action.requestBody.required %}
+    {%~ for requestBody in action.requestBodies %}
+            case '{{ requestBody.mimeType ?? 'unspecified' }}':
+        {%~ if requestBody.mimeType is null %}
             case 'unspecified':
                 $requestBodyPayload = null;
                 $violations = [];
 
                 break;
-    {%~ endif %}
+        {%~ elseif requestBody.mimeType is same as ('application/json') %}
+                {{ requestBody.initializationFromRequest }}
+                {{ requestBody.validationViolationsInitialization }}
+        {%~ endif %}
+
+                break;
+    {%~ endfor %}
             default:
                 return new JsonResponse(
                     [

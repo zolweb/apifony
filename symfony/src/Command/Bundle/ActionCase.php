@@ -16,8 +16,7 @@ class ActionCase
         string $bundleNamespace,
         string $aggregateName,
         string $actionName,
-        string $requestBodyPayloadTypeNormalizedName,
-        ?Type $requestBodyPayloadType,
+        ActionRequestBody $requestBody,
         string $responseContentTypeNormalizedName,
         ?string $responseContentType,
         array $parameters,
@@ -52,14 +51,13 @@ class ActionCase
         }
 
         return new self(
-            $requestBodyPayloadTypeNormalizedName,
-            $requestBodyPayloadType,
+            $requestBody,
             $responseContentTypeNormalizedName,
             $responseContentType,
             sprintf(
                 '%sFrom%sPayloadTo%sContent',
                 u($operation->operationId)->camel()->title(),
-                $requestBodyPayloadTypeNormalizedName,
+                $requestBody->getPayloadNormalizedType(),
                 $responseContentTypeNormalizedName,
             ),
             $parameters,
@@ -68,8 +66,7 @@ class ActionCase
     }
 
     private function __construct(
-        private readonly string $requestBodyPayloadTypeNormalizedName,
-        private readonly ?Type $requestBodyPayloadType,
+        private readonly ActionRequestBody $requestBody,
         private readonly string $responseContentTypeNormalizedName,
         private readonly ?string $responseContentType,
         private readonly string $name,
@@ -93,12 +90,12 @@ class ActionCase
 
     public function hasRequestBodyPayloadParameter(): bool
     {
-        return $this->requestBodyPayloadType !== null;
+        return $this->requestBody->getMimeType() !== null;
     }
 
     public function getRequestBodyPayloadParameterPhpType(): string
     {
-        return $this->requestBodyPayloadType->getMethodParameterType();
+        return $this->requestBody->getPayloadPhpType();
     }
 
     /**
