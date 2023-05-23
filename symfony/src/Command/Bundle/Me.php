@@ -4,7 +4,7 @@ namespace App\Command\Bundle;
 
 use App\Command\OpenApi\Components;
 
-class Parameter
+class Me
 {
     public readonly Type $type;
     public readonly \App\Command\OpenApi\Parameter $parameter;

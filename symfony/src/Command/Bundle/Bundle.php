@@ -3,8 +3,12 @@
 namespace App\Command\Bundle;
 
 use App\Command\OpenApi\Components;
+use App\Command\OpenApi\Header;
 use App\Command\OpenApi\OpenApi;
+use App\Command\OpenApi\Parameter;
 use App\Command\OpenApi\Reference;
+use App\Command\OpenApi\RequestBody;
+use App\Command\OpenApi\Response;
 use App\Command\OpenApi\Schema;
 use Twig\Extension\AbstractExtension;
 use Twig\TwigFilter;
@@ -19,6 +23,50 @@ class Bundle // extends AbstractExtension
         string $namespace,
         OpenApi $openApi,
     ): self {
+        return new self(
+            self::extractModels($namespace, $openApi),
+            self::extractFormats($namespace, $openApi),
+        );
+    }
+
+    /**
+     * @param array<Model> $models
+     */
+    private function __construct(
+        private readonly array $models,
+        private readonly array $formats,
+    ) {
+    }
+
+    /**
+     * @return array<File>
+     */
+    public function getFiles(): array
+    {
+        $files = [];
+
+        foreach ($this->formats as $format) {
+            $files[] = $format['definition'];
+            $files[] = $format['constraint'];
+            $files[] = $format['validator'];
+        }
+
+        foreach ($this->models as $model) {
+            $files[] = $model;
+        }
+
+        // $this->api->addFiles($files);
+
+        return $files;
+    }
+
+    /**
+     * @return array<Model>
+     *
+     * @throws Exception
+     */
+    private static function extractModels(string $namespace, OpenApi $openApi): array
+    {
         $addModels = function(string $name, Reference|Schema $schema) use (&$addModels, &$models, $namespace, $openApi) {
             if ($schema instanceof Reference) {
                 $schema = $openApi->components->schemas[$name = $schema->getName()];
@@ -39,31 +87,93 @@ class Bundle // extends AbstractExtension
             $addModels($name, $schema);
         }
 
-        return new self(
-            Api::build($namespace, $openApi),
-            $models,
-        );
+        return $models;
     }
 
     /**
-     * @param array<Model> $models
+     * @return array<string, array{definition: FormatDefinition, constraint: FormatConstraint, validator: FormatValidator}>
      */
-    private function __construct(
-        private readonly Api $api,
-        private readonly array $models,
-    ) {
-    }
-
-    /**
-     * @return array<File>
-     */
-    public function getFiles(): array
+    private static function extractFormats(string $namespace, OpenApi $openApi): array
     {
-        $files = $this->models;
+        $formats = [];
 
-        // $this->api->addFiles($files);
+        $addSchemaFormats = function (Reference|Schema $schema) use (&$addSchemaFormats, &$formats, $openApi) {
+            if ($schema instanceof Schema) {
+                if ($schema->format !== null) {
+                    $formats[$schema->format] = [];
+                }
+                foreach ($schema->properties ?? [] as $property) {
+                    $addSchemaFormats($property);
+                }
+                if ($schema->items !== null) {
+                    $addSchemaFormats($schema->items);
+                }
+            }
+        };
 
-        return $files;
+        foreach ($openApi->components->schemas as $schema) {
+            $addSchemaFormats($schema);
+        }
+        foreach ($openApi->components->parameters as $parameter) {
+            $addSchemaFormats($parameter->schema);
+        }
+        foreach ($openApi->components->requestBodies as $requestBody) {
+            foreach ($requestBody->mediaTypes as $mediaType) {
+                $addSchemaFormats($mediaType->schema);
+            }
+        }
+        foreach ($openApi->components->responses as $response) {
+            foreach ($response->headers as $header) {
+                if ($header instanceof Header) {
+                    $addSchemaFormats($header->schema);
+                }
+            }
+            foreach ($response->content as $mediaType) {
+                $addSchemaFormats($mediaType->schema);
+            }
+        }
+        foreach ($openApi->components->headers as $header) {
+            $addSchemaFormats($header->schema);
+        }
+        foreach ($openApi?->paths->pathItems ?? [] as $pathItem) {
+            foreach ($pathItem->parameters as $parameter) {
+                if ($parameter instanceof Parameter) {
+                    $addSchemaFormats($parameter->schema);
+                }
+            }
+            foreach ($pathItem->operations as $operation) {
+                foreach ($operation->parameters as $parameter) {
+                    if ($parameter instanceof Parameter) {
+                        $addSchemaFormats($parameter->schema);
+                    }
+                }
+                if ($operation->requestBody instanceof RequestBody) {
+                    foreach ($operation->requestBody->mediaTypes as $mediaType) {
+                        $addSchemaFormats($mediaType->schema);
+                    }
+                }
+                foreach ($operation?->responses->responses ?? [] as $response) {
+                    if ($response instanceof Response) {
+                        foreach ($response->headers as $header) {
+                            if ($header instanceof Header) {
+                                $addSchemaFormats($header->schema);
+                            }
+                        }
+                        foreach ($response->content as $mediaType) {
+                            $addSchemaFormats($mediaType->schema);
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach ($formats as $name => &$format) {
+            $format['definition'] = FormatDefinition::build($namespace, $name);
+            $format['constraint'] = FormatConstraint::build($namespace, $name);
+            $format['validator'] = FormatValidator::build($namespace, $name, $format['definition']);
+        }
+
+        return $formats;
     }
 
     // /**

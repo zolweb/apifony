@@ -2,46 +2,54 @@
 
 namespace App\Command\Bundle;
 
-class AbstractController implements PhpClassFile
+use function Symfony\Component\String\u;
+
+class FormatConstraint implements PhpClassFile
 {
-    public static function build(string $bundleNamespace): self
-    {
-        return new self($bundleNamespace);
+    public static function build(
+        string $bundleNamespace,
+        string $format,
+    ): self {
+        return new self(
+            $bundleNamespace,
+            u($format)->camel()->title(),
+        );
     }
 
     private function __construct(
         private readonly string $bundleNamespace,
+        private readonly string $format,
     ) {
     }
 
     public function getFolder(): string
     {
-        return 'src/Api';
+        return 'src/Format';
     }
 
     public function getName(): string
     {
-        return 'AbstractController.php';
+        return "{$this->format}.php";
     }
 
     public function getTemplate(): string
     {
-        return 'abstract-controller.php.twig';
+        return 'format-constraint.php.twig';
     }
 
     public function getParametersRootName(): string
     {
-        return 'abstractController';
+        return 'constraint';
     }
 
     public function getNamespace(): string
     {
-        return "{$this->bundleNamespace}\Api";
+        return "{$this->bundleNamespace}\Format";
     }
 
     public function getClassName(): string
     {
-        return 'AbstractController';
+        return $this->format;
     }
 
     public function getUsedPhpClassFiles(): array

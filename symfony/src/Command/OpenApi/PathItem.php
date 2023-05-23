@@ -16,9 +16,8 @@ class PathItem
                 fn (array $data) => isset($data['$ref']) ? Reference::build($data) : Parameter::build($data),
                 $data['parameters'] ?? []
             ),
-            array_map(
-                fn (string $method) => Operation::build($method, $parameters, $data[$method]),
-                array_filter(
+            array_combine(
+                $methods = array_filter(
                     array_keys($data),
                     static fn (string $method) => in_array(
                         $method,
@@ -26,14 +25,18 @@ class PathItem
                         true,
                     ),
                 ),
-            ),
+                array_map(
+                    fn (string $method) => Operation::build($parameters, $data[$method]),
+                    $methods,
+                ),
+            )
         );
     }
 
     private function __construct(
         /** @var array<Reference|Parameter> */
         public readonly array $parameters,
-        /** @var array<Operation> */
+        /** @var array<string, Operation> */
         public readonly array $operations,
     ) {
     }

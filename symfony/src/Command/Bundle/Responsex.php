@@ -5,7 +5,7 @@ namespace App\Command\Bundle;
 use App\Command\OpenApi\MediaType;
 use App\Command\OpenApi\Operation;
 
-class Response
+class Responsex
 {
     private readonly Controller $controller;
     private readonly array $responsex;

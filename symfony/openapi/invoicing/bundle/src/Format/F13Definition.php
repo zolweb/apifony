@@ -1,8 +1,8 @@
 <?php
 
-namespace {{ definition.namespace }};
+namespace App\Zol\Invoicing\Presentation\Api\Bundle\Format;
 
-interface {{ definition.className }}
+interface F13Definition
 {
     /**
      * @return array<string>

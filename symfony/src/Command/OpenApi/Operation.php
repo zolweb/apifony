@@ -10,7 +10,7 @@ class Operation
      *
      * @throws Exception
      */
-    public static function build(string $method, array $pathItemParameters, array $data): self
+    public static function build(array $pathItemParameters, array $data): self
     {
         $operationParameters = array_map(
             fn (array $parameterData) => isset($parameterData['$ref']) ?
@@ -31,7 +31,6 @@ class Operation
         $parameters = array_values(array_merge($pathItemParameters, $operationParameters));
 
         return new self(
-            $method,
             $data['operationId'],
             $data['x-priority'] ?? 0,
             $parameters,
@@ -47,7 +46,6 @@ class Operation
     }
 
     private function __construct(
-        public readonly string $method,
         public readonly string $operationId,
         public readonly int $priority,
         /** @var array<Reference|Parameter> */

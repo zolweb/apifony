@@ -1,14 +1,14 @@
 <?php
 
-namespace {{ validator.namespace }};
+namespace App\Zol\Invoicing\Presentation\Api\Bundle\Format;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintValidator;
 
-class {{ validator.className }} extends ConstraintValidator
+class F7Validator extends ConstraintValidator
 {
     public function __construct(
-        private readonly {{ validator.definitionClassName }} $formatDefinition,
+        private readonly F7Definition $formatDefinition,
     ) {
     }
 
