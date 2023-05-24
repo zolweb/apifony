@@ -9,7 +9,7 @@ class Operation
      *
      * @throws Exception
      */
-    public static function build(array $pathItemParameters, mixed $data, Components $components): self
+    public static function build(array $pathItemParameters, mixed $data, ?Components $components): self
     {
         if (!is_array($data)) {
             throw new Exception('Operation objects must be arrays.');

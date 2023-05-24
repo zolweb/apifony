@@ -7,7 +7,7 @@ class PathItem
     /**
      * @throws Exception
      */
-    public static function build(mixed $data, Components $components): self
+    public static function build(mixed $data, ?Components $components): self
     {
         if (!is_array($data)) {
             throw new Exception('PathItem objects must be arrays.');
