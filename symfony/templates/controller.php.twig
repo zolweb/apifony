@@ -102,7 +102,7 @@ class {{ controller.className }} extends AbstractController
         switch (true) {
 {%~ for requestBodyPayloadType in action.requestBodyPayloadTypes %}
             case {{ requestBodyPayloadType is null ? 'is_null($requestBodyPayload)' : requestBodyPayloadType.requestBodyPayloadTypeChecking }}:
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
     {%~ for responseContentType in action.responseContentTypes %}
         {%~ set case = action.getCase(requestBodyPayloadType, responseContentType) %}
                     {{ case.responseContentType is null ? 'null' : '\'' ~ case.responseContentType ~ '\'' }} =>
@@ -129,13 +129,13 @@ class {{ controller.className }} extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
 {%~ for responseContentType in action.responseContentTypes %}
             case {{ responseContentType is null ? 'null' : '\'' ~ responseContentType ~ '\'' }}:
     {%~ if responseContentType is null %}
-                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+                return new Response('', $response::CODE, $response->getHeaders());
     {%~ elseif responseContentType is same as ('application/json') %}
-                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
     {%~ endif %}
 {%~ endfor %}
             default:
