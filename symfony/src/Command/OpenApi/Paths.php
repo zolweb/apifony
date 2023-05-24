@@ -5,28 +5,29 @@ namespace App\Command\OpenApi;
 class Paths
 {
     /**
-     * @param array<mixed> $data
-     *
      * @throws Exception
      */
-    public static function build(array $data): self
+    public static function build(mixed $data): self
     {
-        return new self(
-            array_combine(
-                $routes = array_filter(
-                    array_keys($data),
-                    static fn (string $route) => $route[0] === '/',
-                ),
-                array_map(
-                    fn (string $route) => PathItem::build($data[$route]),
-                    $routes,
-                ),
-            )
-        );
+        if (!is_array($data)) {
+            throw new Exception('Paths object must be an array.');
+        }
+
+        $pathItems = [];
+        foreach ($data as $route => $pathItemData) {
+            if ($route[0] !== '/') {
+                throw new Exception('Paths array keys must start with a slash.');
+            }
+            $pathItems[] = PathItem::build($pathItemData);
+        }
+
+        return new self($pathItems);
     }
 
+    /**
+     * @param array<string, PathItem> $pathItems
+     */
     private function __construct(
-        /** @var array<string, PathItem> */
         public readonly array $pathItems,
     ) {
     }

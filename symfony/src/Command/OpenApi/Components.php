@@ -5,55 +5,57 @@ namespace App\Command\OpenApi;
 class Components
 {
     /**
-     * @param array<mixed> $data
-     *
      * @throws Exception
      */
-    public static function build(array $data): self
+    public static function build(mixed $data): self
     {
+        if (!is_array($data)) {
+            throw new Exception('Components object must be an array.');
+        }
+
         $schemas = [];
-        foreach ($data['schemas'] ?? [] as $name => $schema) {
+        foreach ($data['schemas'] ?? [] as $name => $schemaData) {
             if (!is_string($name)) {
-                throw new Exception('Component schemas names must be strings');
+                throw new Exception('Component schemas array keys must be strings');
             }
 
-            $schemas[$name] = Schema::build($schema);
+            $schemas[$name] = Schema::build($schemaData);
         }
 
         $responses = [];
-        foreach ($data['responses'] ?? [] as $name => $response) {
+        foreach ($data['responses'] ?? [] as $name => $responseData) {
             if (!is_string($name)) {
-                throw new Exception('Component responses names must be strings');
+                throw new Exception('Component responses array keys must be strings');
             }
 
-            $responses[$name] = Response::build($response);
+            $responses[$name] = Response::build($responseData);
         }
 
         $parameters = [];
-        foreach ($data['parameters'] ?? [] as $name => $parameter) {
+        foreach ($data['parameters'] ?? [] as $name => $parameterData) {
             if (!is_string($name)) {
-                throw new Exception('Component parameters names must be strings');
+                throw new Exception('Component parameters array keys must be strings');
             }
 
-            $parameters[$name] = Parameter::build($parameter);
+            $parameters[$name] = Parameter::build($parameterData);
         }
 
         $requestBodies = [];
-        foreach ($data['requestBodies'] ?? [] as $name => $requestBody) {
+        foreach ($data['requestBodies'] ?? [] as $name => $requestBodyData) {
             if (!is_string($name)) {
-                throw new Exception('Component requestBodies names must be strings');
+                throw new Exception('Component requestBodies array keys must be strings');
             }
 
-            $requestBodies[$name] = RequestBody::build($requestBody);
+            $requestBodies[$name] = RequestBody::build($requestBodyData);
         }
 
         $headers = [];
-        foreach ($data['headers'] ?? [] as $name => $header) {
+        foreach ($data['headers'] ?? [] as $name => $headerData) {
             if (!is_string($name)) {
-                throw new Exception('Component headers names must be strings');
+                throw new Exception('Component headers array keys must be strings');
             }
 
-            $headers[$name] = Header::build($header);
+            $headers[$name] = Header::build($headerData);
         }
 
         return new self(
