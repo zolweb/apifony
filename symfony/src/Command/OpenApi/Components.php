@@ -11,55 +11,72 @@ class Components
      */
     public static function build(array $data): self
     {
+        $schemas = [];
+        foreach ($data['schemas'] ?? [] as $name => $schema) {
+            if (!is_string($name)) {
+                throw new Exception('Component schemas names must be strings');
+            }
+
+            $schemas[$name] = Schema::build($schema);
+        }
+
+        $responses = [];
+        foreach ($data['responses'] ?? [] as $name => $response) {
+            if (!is_string($name)) {
+                throw new Exception('Component responses names must be strings');
+            }
+
+            $responses[$name] = Response::build($response);
+        }
+
+        $parameters = [];
+        foreach ($data['parameters'] ?? [] as $name => $parameter) {
+            if (!is_string($name)) {
+                throw new Exception('Component parameters names must be strings');
+            }
+
+            $parameters[$name] = Parameter::build($parameter);
+        }
+
+        $requestBodies = [];
+        foreach ($data['requestBodies'] ?? [] as $name => $requestBody) {
+            if (!is_string($name)) {
+                throw new Exception('Component requestBodies names must be strings');
+            }
+
+            $requestBodies[$name] = RequestBody::build($requestBody);
+        }
+
+        $headers = [];
+        foreach ($data['headers'] ?? [] as $name => $header) {
+            if (!is_string($name)) {
+                throw new Exception('Component headers names must be strings');
+            }
+
+            $headers[$name] = Header::build($header);
+        }
+
         return new self(
-            array_combine(
-                $names = array_keys($data['schemas'] ?? []),
-                array_map(
-                    static fn (string $name) => Schema::build($data['schemas'][$name]),
-                    $names,
-                )
-            ),
-            array_combine(
-                $names = array_keys($data['responses'] ?? []),
-                array_map(
-                    static fn (string $name) => Response::build($data['responses'][$name]),
-                    $names,
-                )
-            ),
-            array_combine(
-                $names = array_keys($data['parameters'] ?? []),
-                array_map(
-                    static fn (string $name) => Parameter::build($data['parameters'][$name]),
-                    $names,
-                )
-            ),
-            array_combine(
-                $names = array_keys($data['requestBodies'] ?? []),
-                array_map(
-                    static fn (string $name) => RequestBody::build($data['requestBodies'][$name]),
-                    $names,
-                )
-            ),
-            array_combine(
-                $names = array_keys($data['headers'] ?? []),
-                array_map(
-                    static fn (string $name) => Header::build($data['headers'][$name]),
-                    $names,
-                )
-            ),
+            $schemas,
+            $responses,
+            $parameters,
+            $requestBodies,
+            $headers,
         );
     }
 
+    /**
+     *  @param array<string, Schema> $schemas
+     *  @param array<string, Response> $responses
+     *  @param array<string, Parameter> $parameters
+     *  @param array<string, RequestBody> $requestBodies
+     *  @param array<string, Header> $headers
+     */
     private function __construct(
-        /** @var array<string, Schema> */
         public readonly array $schemas,
-        /** @var array<string, Response> */
         public readonly array $responses,
-        /** @var array<string, Parameter> */
         public readonly array $parameters,
-        /** @var array<string, RequestBody> */
         public readonly array $requestBodies,
-        /** @var array<string, Header> */
         public readonly array $headers,
     ) {
     }
