@@ -1,15 +1,15 @@
 <?php
 
-namespace {{ namespace }};
+namespace {{ response.namespace }};
 
-class {% if mediaType is not null %}{{ mediaType.className }}{% else %}{{ response.className ~ 'Empty' }}{% endif %}
+class {{ response.getClassName }}
 {
     public const CODE = '{{ response.code }}';
-    public const CONTENT_TYPE = {% if mediaType is not null %}'{{ mediaType.type }}'{% else %}null{% endif %};
+    public const CONTENT_TYPE = {{ response.contentType is null ? 'null' : '\'' ~ response.contentType ~ '\'' }};
 
     public function __construct(
-{%~ if mediaType is not null %}
-        public readonly {{ mediaType.schema.type.methodParameterType }} $payload,
+{%~ if response.contentType is not null %}
+        public readonly {{ response.payloadPhpType }} $payload,
 {%~ endif %}
 {%~ for header in response.headers %}
         public readonly {{ header.schema.type.methodParameterType }} ${{ header.name|u.camel }},

@@ -11,6 +11,8 @@ class ActionCase
 {
     /**
      * @param array<ActionParameter> $parameters
+     *
+     * @throws Exception
      */
     public static function build(
         string $bundleNamespace,
@@ -33,7 +35,9 @@ class ActionCase
                     $aggregateName,
                     $actionName,
                     $code,
-                    'Empty',
+                    null,
+                    null,
+                    $components,
                 );
             }
             foreach ($response->content as $type => $mediaType) {
@@ -44,6 +48,8 @@ class ActionCase
                         $actionName,
                         $code,
                         $type,
+                        $mediaType->schema,
+                        $components,
                     );
                 }
             }

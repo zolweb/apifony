@@ -2,21 +2,44 @@
 
 namespace App\Command\Bundle;
 
+use App\Command\OpenApi\Components;
+use App\Command\OpenApi\Reference;
+use App\Command\OpenApi\Schema;
 use function Symfony\Component\String\u;
 
 class ActionResponse implements File
 {
+    /**
+     * @throws Exception
+     */
     public static function build(
         string $bundleNamespace,
         string $aggregateName,
         string $actionName,
-        string $responseCode,
-        string $contentType,
+        string $code,
+        ?string $contentType,
+        null|Reference|Schema $payload,
+        Components $components,
     ): self {
+        if ($payload instanceof Reference) {
+            $payload = $components->schemas[$payload->getName()];
+        }
+
         return new self(
             $bundleNamespace,
             $aggregateName,
-            u("{$actionName}_{$responseCode}_{$contentType}")->camel()->title(),
+            $className = u(sprintf('%s_%s_%s', $actionName, $code, $contentType ?? 'Empty'))->camel()->title(),
+            $code,
+            $contentType,
+            match ($payload->type ?? 'null') {
+                'string' => new StringType($payload),
+                'integer' => new IntegerType($payload),
+                'number' => new NumberType($payload),
+                'boolean' => new BooleanType($payload),
+                'object' => new ObjectType($payload, $className, $components),
+                'array' => new ArrayType($payload, $className, $components),
+                'null' => null,
+            },
         );
     }
 
@@ -24,7 +47,25 @@ class ActionResponse implements File
         private readonly string $bundleNamespace,
         private readonly string $aggregateName,
         private readonly string $name,
+        private readonly string $code,
+        private readonly ?string $contentType,
+        private readonly ?Type $payloadType,
     ) {
+    }
+
+    public function getCode(): string
+    {
+        return $this->code;
+    }
+
+    public function getContentType(): ?string
+    {
+        return $this->contentType;
+    }
+
+    public function getPayloadPhpType(): ?string
+    {
+        return $this->payloadType->getMethodParameterType();
     }
 
     public function getNamespace(): string

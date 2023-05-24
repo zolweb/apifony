@@ -115,6 +115,22 @@ class Action
     }
 
     /**
+     * @return array<File>
+     */
+    public function getFiles(): array
+    {
+        $files = [];
+
+        foreach ($this->cases as $case) {
+            foreach ($case->getResponses() as $response) {
+                $files[] = $response;
+            }
+        }
+
+        return $files;
+    }
+
+    /**
      * @return array<ActionParameter>
      *
      * @throws Exception
@@ -233,6 +249,8 @@ class Action
      * @param array<?string> $responseContentTypes
      *
      * @return array<ActionCase>
+     *
+     * @throws Exception
      */
     private static function buildCases(
         string $bundleNamespace,

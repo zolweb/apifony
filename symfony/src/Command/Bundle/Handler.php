@@ -37,6 +37,22 @@ class Handler implements File
         return $this->actions;
     }
 
+    /**
+     * @return array<File>
+     */
+    public function getFiles(): array
+    {
+        $files = [];
+
+        foreach ($this->actions as $action) {
+            foreach ($action->getFiles() as $file) {
+                $files[] = $file;
+            }
+        }
+
+        return $files;
+    }
+
     public function getNamespace(): string
     {
         return "{$this->bundleNamespace}\Api\\{$this->aggregateName}";

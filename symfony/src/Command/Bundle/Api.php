@@ -3,10 +3,12 @@
 namespace App\Command\Bundle;
 
 use App\Command\OpenApi\OpenApi;
-use function Symfony\Component\String\u;
 
 class Api
 {
+    /**
+     * @throws Exception
+     */
     public static function build(
         string $bundleNamespace,
         OpenApi $openApi,
@@ -19,13 +21,12 @@ class Api
         }
 
         return new self(
-            $abstractController = AbstractController::build($bundleNamespace),
+            AbstractController::build($bundleNamespace),
             array_map(
                 static fn (string $tag) => Aggregate::build(
                     $bundleNamespace,
                     $tag,
                     $aggregates[$tag],
-                    $abstractController,
                     $openApi->components,
                 ),
                 array_keys($aggregates),

@@ -17,7 +17,6 @@ class Aggregate
         string $bundleNamespace,
         string $tag,
         array $operations,
-        AbstractController $abstractController,
         Components $components,
     ): self {
         $name = u($tag)->camel()->title();
@@ -52,9 +51,15 @@ class Aggregate
      */
     public function getFiles(): array
     {
-        return [
+        $files = [
             $this->handler,
             $this->controller,
         ];
+
+        foreach ($this->handler->getFiles() as $file) {
+            $files[] = $file;
+        }
+
+        return $files;
     }
 }
