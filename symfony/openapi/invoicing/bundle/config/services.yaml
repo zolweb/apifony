@@ -1,3 +1,86 @@
 services:
 
     ### Controllers ###
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Api\Default\DefaultController:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Api\Default\DefaultController
+        arguments:
+            $serializer: '@app_zol_invoicing_presentation_api_bundle.serializer_interface'
+            $validator: '@validator'
+        public: true
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Api\Pet\PetController:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Api\Pet\PetController
+        arguments:
+            $serializer: '@app_zol_invoicing_presentation_api_bundle.serializer_interface'
+            $validator: '@validator'
+        public: true
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Api\Store\StoreController:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Api\Store\StoreController
+        arguments:
+            $serializer: '@app_zol_invoicing_presentation_api_bundle.serializer_interface'
+            $validator: '@validator'
+        public: true
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Api\User\UserController:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Api\User\UserController
+        arguments:
+            $serializer: '@app_zol_invoicing_presentation_api_bundle.serializer_interface'
+            $validator: '@validator'
+        public: true
+
+    ### Serializer ###
+
+    app_zol_invoicing_presentation_api_bundle.json_encoder:
+        class: 'Symfony\Component\Serializer\Encoder\JsonEncoder'
+
+    app_zol_invoicing_presentation_api_bundle.php_stan_extractor:
+        class: 'Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor'
+
+    app_zol_invoicing_presentation_api_bundle.reflection_extractor:
+        class: 'Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor'
+
+    app_zol_invoicing_presentation_api_bundle.property_info_extractor:
+        class: 'Symfony\Component\PropertyInfo\PropertyInfoExtractor'
+        arguments:
+            $typeExtractors:
+                - '@app_zol_invoicing_presentation_api_bundle.php_stan_extractor'
+                - '@app_zol_invoicing_presentation_api_bundle.reflection_extractor'
+
+    app_zol_invoicing_presentation_api_bundle.annotation_reader:
+        class: 'Doctrine\Common\Annotations\AnnotationReader'
+
+    app_zol_invoicing_presentation_api_bundle.annotation_loader:
+        class: 'Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader'
+        arguments:
+            $reader: '@app_zol_invoicing_presentation_api_bundle.annotation_reader'
+
+    app_zol_invoicing_presentation_api_bundle.class_metadata_factory:
+        class: 'Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory'
+        arguments:
+            $loader: '@app_zol_invoicing_presentation_api_bundle.annotation_loader'
+
+    app_zol_invoicing_presentation_api_bundle.metadata_aware_name_converter:
+        class: 'Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter'
+        arguments:
+            $metadataFactory: '@app_zol_invoicing_presentation_api_bundle.class_metadata_factory'
+
+    app_zol_invoicing_presentation_api_bundle.object_normalizer:
+        class: 'Symfony\Component\Serializer\Normalizer\ObjectNormalizer'
+        arguments:
+            $propertyTypeExtractor: '@app_zol_invoicing_presentation_api_bundle.property_info_extractor'
+            $classMetadataFactory: '@app_zol_invoicing_presentation_api_bundle.class_metadata_factory'
+            $nameConverter: '@app_zol_invoicing_presentation_api_bundle.metadata_aware_name_converter'
+
+    app_zol_invoicing_presentation_api_bundle.array_denormalizer:
+        class: 'Symfony\Component\Serializer\Normalizer\ArrayDenormalizer'
+
+    app_zol_invoicing_presentation_api_bundle.serializer_interface:
+        class: 'Symfony\Component\Serializer\Serializer'
+        arguments:
+            $encoders:
+                - '@app_zol_invoicing_presentation_api_bundle.json_encoder'
+            $normalizers:
+                - '@app_zol_invoicing_presentation_api_bundle.object_normalizer'
+                - '@app_zol_invoicing_presentation_api_bundle.array_denormalizer'

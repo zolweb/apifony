@@ -2,11 +2,11 @@ services:
 
     ### Controllers ###
 
-{% for tag in paths.allFirstTags %}
-    {{ namespace }}\Controller\{{ tag|u.camel.title }}\{{ tag|u.camel.title }}Controller:
-        class: '{{ namespace }}\Controller\{{ tag|u.camel.title }}\{{ tag|u.camel.title }}Controller'
+{% for controller in services.controllers %}
+    {{ controller.namespace }}\{{ controller.className }}:
+        class: {{ controller.namespace }}\{{ controller.className }}
         arguments:
-            $serializer: '@{{ namespace|u.snake }}.serializer_interface'
+            $serializer: '@{{ services.serviceNamespace }}.serializer_interface'
             $validator: '@validator'
         public: true
     {%~ if not loop.last %}
@@ -16,55 +16,55 @@ services:
 
     ### Serializer ###
 
-    {{ namespace|u.snake }}.json_encoder:
+    {{ services.serviceNamespace }}.json_encoder:
         class: 'Symfony\Component\Serializer\Encoder\JsonEncoder'
 
-    {{ namespace|u.snake }}.php_stan_extractor:
+    {{ services.serviceNamespace }}.php_stan_extractor:
         class: 'Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor'
 
-    {{ namespace|u.snake }}.reflection_extractor:
+    {{ services.serviceNamespace }}.reflection_extractor:
         class: 'Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor'
 
-    {{ namespace|u.snake }}.property_info_extractor:
+    {{ services.serviceNamespace }}.property_info_extractor:
         class: 'Symfony\Component\PropertyInfo\PropertyInfoExtractor'
         arguments:
             $typeExtractors:
-                - '@{{ namespace|u.snake }}.php_stan_extractor'
-                - '@{{ namespace|u.snake }}.reflection_extractor'
+                - '@{{ services.serviceNamespace }}.php_stan_extractor'
+                - '@{{ services.serviceNamespace }}.reflection_extractor'
 
-    {{ namespace|u.snake }}.annotation_reader:
+    {{ services.serviceNamespace }}.annotation_reader:
         class: 'Doctrine\Common\Annotations\AnnotationReader'
 
-    {{ namespace|u.snake }}.annotation_loader:
+    {{ services.serviceNamespace }}.annotation_loader:
         class: 'Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader'
         arguments:
-            $reader: '@{{ namespace|u.snake }}.annotation_reader'
+            $reader: '@{{ services.serviceNamespace }}.annotation_reader'
 
-    {{ namespace|u.snake }}.class_metadata_factory:
+    {{ services.serviceNamespace }}.class_metadata_factory:
         class: 'Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory'
         arguments:
-            $loader: '@{{ namespace|u.snake }}.annotation_loader'
+            $loader: '@{{ services.serviceNamespace }}.annotation_loader'
 
-    {{ namespace|u.snake }}.metadata_aware_name_converter:
+    {{ services.serviceNamespace }}.metadata_aware_name_converter:
         class: 'Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter'
         arguments:
-            $metadataFactory: '@{{ namespace|u.snake }}.class_metadata_factory'
+            $metadataFactory: '@{{ services.serviceNamespace }}.class_metadata_factory'
 
-    {{ namespace|u.snake }}.object_normalizer:
+    {{ services.serviceNamespace }}.object_normalizer:
         class: 'Symfony\Component\Serializer\Normalizer\ObjectNormalizer'
         arguments:
-            $propertyTypeExtractor: '@{{ namespace|u.snake }}.property_info_extractor'
-            $classMetadataFactory: '@{{ namespace|u.snake }}.class_metadata_factory'
-            $nameConverter: '@{{ namespace|u.snake }}.metadata_aware_name_converter'
+            $propertyTypeExtractor: '@{{ services.serviceNamespace }}.property_info_extractor'
+            $classMetadataFactory: '@{{ services.serviceNamespace }}.class_metadata_factory'
+            $nameConverter: '@{{ services.serviceNamespace }}.metadata_aware_name_converter'
 
-    {{ namespace|u.snake }}.array_denormalizer:
+    {{ services.serviceNamespace }}.array_denormalizer:
         class: 'Symfony\Component\Serializer\Normalizer\ArrayDenormalizer'
 
-    {{ namespace|u.snake }}.serializer_interface:
+    {{ services.serviceNamespace }}.serializer_interface:
         class: 'Symfony\Component\Serializer\Serializer'
         arguments:
             $encoders:
-                - '@{{ namespace|u.snake }}.json_encoder'
+                - '@{{ services.serviceNamespace }}.json_encoder'
             $normalizers:
-                - '@{{ namespace|u.snake }}.object_normalizer'
-                - '@{{ namespace|u.snake }}.array_denormalizer'
+                - '@{{ services.serviceNamespace }}.object_normalizer'
+                - '@{{ services.serviceNamespace }}.array_denormalizer'

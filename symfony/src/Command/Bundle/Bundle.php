@@ -28,6 +28,7 @@ class Bundle implements File
             self::buildModels($namespace, $openApi),
             $api = Api::build($namespace, $openApi),
             RoutesConfig::build($namespace, $api),
+            ServicesConfig::build($namespace, $api),
         );
     }
 
@@ -42,6 +43,7 @@ class Bundle implements File
         private readonly array $models,
         private readonly Api $api,
         private readonly RoutesConfig $routesConfig,
+        private readonly ServicesConfig $servicesConfig,
     ) {
     }
 
@@ -53,6 +55,7 @@ class Bundle implements File
         $files = [
             $this,
             $this->routesConfig,
+            $this->servicesConfig,
         ];
 
         foreach ($this->formats as $format) {
