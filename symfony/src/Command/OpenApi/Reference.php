@@ -21,6 +21,7 @@ class Reference
             throw new Exception('Reference object $ref attribute must be a string.');
         }
         if (preg_match('%^#/components/(schemas|responses|parameters|requestBodies|headers)/[a-zA-Z0-9.\-_]+$%', $data['ref']) !== false) {
+            // TODO Be less strict here in OpenApi package, and do the check in Bundle package ?
             throw new Exception('Reference object $ref attribute with format not matching ^#/components/(schemas|responses|parameters|requestBodies|headers)/[a-zA-Z0-9.\-_]+$ as not supported');
         }
         if (is_null($components)) {
