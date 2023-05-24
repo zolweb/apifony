@@ -22,6 +22,7 @@ class Aggregate
         $name = u($tag)->camel()->title();
 
         return new self(
+            $name,
             $handler = Handler::build(
                 $bundleNamespace,
                 $name,
@@ -41,9 +42,20 @@ class Aggregate
     }
 
     private function __construct(
+        private readonly string $name,
         private readonly Handler $handler,
         private readonly Controller $controller,
     ) {
+    }
+
+    public function getTag(): string
+    {
+        return u($this->name)->snake();
+    }
+
+    public function getController(): Controller
+    {
+        return $this->controller;
     }
 
     /**

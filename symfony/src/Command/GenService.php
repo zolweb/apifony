@@ -26,7 +26,7 @@ class GenService
     public function generate(array $data, string $bundleName, string $namespace, string $packageName): void
     {
         $openApi = OpenApi::build($data);
-        $bundle = Bundle::build($namespace, $openApi);
+        $bundle = Bundle::build($bundleName, $namespace, $openApi);
 
         foreach ($bundle->getFiles() as $file) {
             if (!file_exists(__DIR__."/../../openapi/invoicing/bundle/{$file->getFolder()}")) {

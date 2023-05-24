@@ -22,28 +22,28 @@ class InvoicingOpenApiServerBundle extends AbstractBundle
                             switch ($tag['controller']) {
                                 case 'default':
                                     $container
-                                        ->findDefinition('App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Default\DefaultController')
+                                        ->findDefinition('App\Zol\Invoicing\Presentation\Api\Bundle\Api\Default\DefaultController')
                                         ->addMethodCall('setHandler', [new Reference($id)]);
 
                                 break;
 
                                 case 'pet':
                                     $container
-                                        ->findDefinition('App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Pet\PetController')
+                                        ->findDefinition('App\Zol\Invoicing\Presentation\Api\Bundle\Api\Pet\PetController')
                                         ->addMethodCall('setHandler', [new Reference($id)]);
 
                                 break;
 
                                 case 'store':
                                     $container
-                                        ->findDefinition('App\Zol\Invoicing\Presentation\Api\Bundle\Controller\Store\StoreController')
+                                        ->findDefinition('App\Zol\Invoicing\Presentation\Api\Bundle\Api\Store\StoreController')
                                         ->addMethodCall('setHandler', [new Reference($id)]);
 
                                 break;
 
                                 case 'user':
                                     $container
-                                        ->findDefinition('App\Zol\Invoicing\Presentation\Api\Bundle\Controller\User\UserController')
+                                        ->findDefinition('App\Zol\Invoicing\Presentation\Api\Bundle\Api\User\UserController')
                                         ->addMethodCall('setHandler', [new Reference($id)]);
 
                                 break;

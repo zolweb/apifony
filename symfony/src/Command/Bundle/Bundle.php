@@ -9,17 +9,21 @@ use App\Command\OpenApi\Reference;
 use App\Command\OpenApi\RequestBody;
 use App\Command\OpenApi\Response;
 use App\Command\OpenApi\Schema;
+use function Symfony\Component\String\u;
 
-class Bundle
+class Bundle implements File
 {
     /**
      * @throws Exception
      */
     public static function build(
+        string $rawName,
         string $namespace,
         OpenApi $openApi,
     ): self {
         return new self(
+            u($rawName)->camel()->title(),
+            $namespace,
             self::buildFormats($namespace, $openApi),
             self::buildModels($namespace, $openApi),
             Api::build($namespace, $openApi),
@@ -31,6 +35,8 @@ class Bundle
      * @param array<Model> $models
      */
     private function __construct(
+        private readonly string $name,
+        private readonly string $namespace,
         private readonly array $formats,
         private readonly array $models,
         private readonly Api $api,
@@ -42,7 +48,7 @@ class Bundle
      */
     public function getFiles(): array
     {
-        $files = [];
+        $files = [$this];
 
         foreach ($this->formats as $format) {
             foreach ($format->getFiles() as $file) {
@@ -225,4 +231,47 @@ class Bundle
     //         'array' => new ArrayType($schema, $this->components),
     //     };
     // }
+
+    public function getClassName(): string
+    {
+        return "{$this->name}Bundle";
+    }
+
+    public function getNamespace(): string
+    {
+        return $this->namespace;
+    }
+
+    public function getServiceName(): string
+    {
+        return u($this->name)->snake();
+    }
+
+    /**
+     * @return array<Aggregate>
+     */
+    public function getAggregates(): array
+    {
+        return $this->api->getAggregates();
+    }
+
+    public function getFolder(): string
+    {
+        return 'src';
+    }
+
+    public function getName(): string
+    {
+        return "{$this->name}Bundle.php";
+    }
+
+    public function getTemplate(): string
+    {
+        return 'bundle.php.twig';
+    }
+
+    public function getParametersRootName(): string
+    {
+        return 'bundle';
+    }
 }

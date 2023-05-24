@@ -42,6 +42,14 @@ class Api
     }
 
     /**
+     * @return array<Controller>
+     */
+    public function getAggregates(): array
+    {
+        return $this->aggregates;
+    }
+
+    /**
      * @return array<File>
      */
     public function getFiles(): array
