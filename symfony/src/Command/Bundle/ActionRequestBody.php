@@ -56,6 +56,11 @@ class ActionRequestBody
         return $this->mimeType;
     }
 
+    public function getPayloadType(): ?Type
+    {
+        return $this->payloadType;
+    }
+
     public function getPayloadNormalizedType(): string
     {
         return $this->payloadType?->getNormalizedType() ?? 'Empty';

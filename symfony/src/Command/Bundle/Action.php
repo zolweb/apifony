@@ -23,6 +23,8 @@ class Action
             $className = u($operation->operationId)->camel(),
             $parameters = self::buildParameters($className, $operation, $components),
             $requestBodies = self::buildRequestBodies($className, $operation, $components),
+            $requestBodyPayloadTypes = self::buildRequestBodyPayloadTypes($requestBodies),
+            $responseContentTypes = self::buildResponseContentTypes($operation, $components),
             self::buildCases(
                 $bundleNamespace,
                 $aggregateName,
@@ -30,7 +32,8 @@ class Action
                 $operation,
                 $components,
                 $parameters,
-                $requestBodies,
+                $requestBodyPayloadTypes,
+                $responseContentTypes,
             ),
         );
     }
@@ -38,12 +41,16 @@ class Action
     /**
      * @param array<ActionParameter> $parameters
      * @param array<ActionRequestBody> $requestBodies
+     * @param array<?Type> $requestBodyPayloadTypes
+     * @param array<?string> $responseContentTypes
      * @param array<ActionCase> $cases
      */
     private function __construct(
         private readonly string $name,
         private readonly array $parameters,
         private readonly array $requestBodies,
+        private readonly array $requestBodyPayloadTypes,
+        private readonly array $responseContentTypes,
         private readonly array $cases,
     ) {
     }
@@ -73,11 +80,38 @@ class Action
     }
 
     /**
+     * @return array<?Type>
+     */
+    public function getRequestBodyPayloadTypes(): array
+    {
+        return $this->requestBodyPayloadTypes;
+    }
+
+    /**
+     * @return array<?string>
+     */
+    public function getResponseContentTypes(): array
+    {
+        return $this->responseContentTypes;
+    }
+
+    /**
      * @return array<ActionCase>
      */
     public function getCases(): array
     {
         return $this->cases;
+    }
+
+    public function getCase(?Type $requestBodyPayloadType, ?string $responseContentType): ActionCase
+    {
+        return array_values(
+            array_filter(
+                $this->cases, static fn (ActionCase $case) =>
+                    $case->getRequestBodyPayloadType() === $requestBodyPayloadType &&
+                    $case->getResponseContentType() === $responseContentType,
+            ),
+        )[0];
     }
 
     /**
@@ -122,7 +156,7 @@ class Action
         Operation $operation,
         Components $components,
     ): array {
-        $allPossibleRequestBodies = [];
+        $requestBodies = [];
 
         $requestBody = $operation->requestBody;
         if ($requestBody instanceof Reference) {
@@ -130,7 +164,7 @@ class Action
         }
 
         if ($requestBody === null || !$requestBody->required) {
-            $allPossibleRequestBodies[] = ActionRequestBody::build(
+            $requestBodies[] = ActionRequestBody::build(
                 $actionClassName,
                 null,
                 null,
@@ -142,7 +176,7 @@ class Action
             if ($mediaType->schema === null) {
                 throw new Exception('MediaTypes without schema are not supported.');
             }
-            $allPossibleRequestBodies[] = ActionRequestBody::build(
+            $requestBodies[] = ActionRequestBody::build(
                 $actionClassName,
                 $mimeType,
                 $mediaType,
@@ -150,12 +184,53 @@ class Action
             );
         }
 
-        return $allPossibleRequestBodies;
+        return $requestBodies;
+    }
+
+    /**
+     * @param array<ActionRequestBody> $requestBodies
+     *
+     * @return array<?Type>
+     */
+    private static function buildRequestBodyPayloadTypes(array $requestBodies): array
+    {
+        $requestBodyPayloadTypes = [];
+
+        foreach ($requestBodies as $requestBody) {
+            $requestBodyPayloadTypes[$requestBody->getPayloadNormalizedType()] = $requestBody->getPayloadType();
+        }
+
+        return array_values($requestBodyPayloadTypes);
+    }
+
+    /**
+     * @return array<?string>
+     */
+    private static function buildResponseContentTypes(
+        Operation $operation,
+        Components $components,
+    ): array {
+        $responseContentTypes = [];
+
+        foreach ($operation->responses->responses as $response) {
+            if ($response instanceof Reference) {
+                $response = $components->responses[$response->getName()];
+            }
+            if (count($response->content) === 0) {
+                $responseContentTypes['Empty'] = null;
+            }
+            foreach ($response->content as $type => $mediaType) {
+                $responseContentTypes[(string) u($type)->camel()->title()] = $type;
+            }
+        }
+
+        return array_values($responseContentTypes);
     }
 
     /**
      * @param array<ActionParameter> $parameters
-     * @param array<ActionRequestBody> $requestBodies
+     * @param array<?Type> $requestBodyPayloadTypes
+     * @param array<?string> $responseContentTypes
      *
      * @return array<ActionCase>
      */
@@ -166,36 +241,18 @@ class Action
         Operation $operation,
         Components $components,
         array $parameters,
-        array $requestBodies,
+        array $requestBodyPayloadTypes,
+        array $responseContentTypes,
     ): array {
-        $allPossibleRequestBodyPayloadTypes = [];
-        $allPossibleResponseContentTypes = [];
-
-        foreach ($requestBodies as $requestBody) {
-            $allPossibleRequestBodyPayloadTypes[$requestBody->getPayloadNormalizedType()] = $requestBody;
-        }
-
-        foreach ($operation->responses->responses as $response) {
-            if ($response instanceof Reference) {
-                $response = $components->responses[$response->getName()];
-            }
-            if (count($response->content) === 0) {
-                $allPossibleResponseContentTypes['Empty'] = null;
-            }
-            foreach ($response->content as $type => $mediaType) {
-                $allPossibleResponseContentTypes[(string) u($type)->camel()->title()] = $type;
-            }
-        }
-
         $cases = [];
-        foreach ($allPossibleRequestBodyPayloadTypes as $requestBodyPayloadType) {
-            foreach ($allPossibleResponseContentTypes as $responseContentTypeNormalizedName => $responseContentType) {
+
+        foreach ($requestBodyPayloadTypes as $requestBodyPayloadType) {
+            foreach ($responseContentTypes as $responseContentType) {
                 $cases[] = ActionCase::build(
                     $bundleNamespace,
                     $aggregateName,
                     $actionClassName,
                     $requestBodyPayloadType,
-                    $responseContentTypeNormalizedName,
                     $responseContentType,
                     $parameters,
                     $operation,

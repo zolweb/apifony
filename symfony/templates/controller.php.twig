@@ -102,16 +102,17 @@ class {{ controller.className }} extends AbstractController
         }
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
-{%~ for requestBodyPayloadTypeNormalizedName, requestBodyPayloadType in action.allPossibleRequestBodyPayloadTypes %}
-            case {% if requestBodyPayloadType is null %}is_null($requestBodyPayload){% else %}{{ requestBodyPayloadType.requestBodyPayloadTypeChecking }}{% endif %}:
+{%~ for requestBodyPayloadType in action.requestBodyPayloadTypes %}
+            case {{ requestBodyPayloadType is null ? 'is_null($requestBodyPayload)' : requestBodyPayloadType.requestBodyPayloadTypeChecking }}:
                 $responsePayload = match ($responsePayloadContentType) {
-    {%~ for responseContentTypeNormalizedName, responseContentType in action.allPossibleResponseContentTypes %}
-                    {% if responseContentType is null %}null{% else %}'{{ responseContentType }}'{% endif %} =>
-                        $this->handler->{{ action.operationId|u.camel }}From{{ requestBodyPayloadTypeNormalizedName }}PayloadTo{{ responseContentTypeNormalizedName }}Content(
-        {%~ for param in action.allSortedParameters %}
+    {%~ for responseContentType in action.responseContentTypes %}
+        {%~ set case = action.getCase(requestBodyPayloadType, responseContentType) %}
+                    {{ case.responseContentType is null ? 'null' : '\'' ~ case.responseContentType ~ '\'' }} =>
+                        $this->handler->{{ case.name }}(
+        {%~ for param in case.parameters %}
                             ${{ param.variableName }},
         {%~ endfor %}
-        {%~ if requestBodyPayloadType is not null %}
+        {%~ if case.requestBodyPayloadParameter %}
                             $requestBodyPayload,
         {%~ endif %}
                         ),
@@ -123,7 +124,7 @@ class {{ controller.className }} extends AbstractController
                             'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
                         ],
                     ],
-                };
+                %};
 
                 break;
 {%~ endfor %}

@@ -16,8 +16,7 @@ class ActionCase
         string $bundleNamespace,
         string $aggregateName,
         string $actionName,
-        ActionRequestBody $requestBody,
-        string $responseContentTypeNormalizedName,
+        ?Type $requestBodyPayloadType,
         ?string $responseContentType,
         array $parameters,
         Operation $operation,
@@ -51,14 +50,13 @@ class ActionCase
         }
 
         return new self(
-            $requestBody,
-            $responseContentTypeNormalizedName,
+            $requestBodyPayloadType,
             $responseContentType,
             sprintf(
                 '%sFrom%sPayloadTo%sContent',
                 u($operation->operationId)->camel()->title(),
-                $requestBody->getPayloadNormalizedType(),
-                $responseContentTypeNormalizedName,
+                $requestBodyPayloadType?->getNormalizedType() ?? 'Empty',
+                u($responseContentType)->camel()->title(),
             ),
             $parameters,
             $responses,
@@ -66,8 +64,7 @@ class ActionCase
     }
 
     private function __construct(
-        private readonly ActionRequestBody $requestBody,
-        private readonly string $responseContentTypeNormalizedName,
+        private readonly ?Type $requestBodyPayloadType,
         private readonly ?string $responseContentType,
         private readonly string $name,
         private readonly array $parameters,
@@ -90,12 +87,22 @@ class ActionCase
 
     public function hasRequestBodyPayloadParameter(): bool
     {
-        return $this->requestBody->getMimeType() !== null;
+        return $this->requestBodyPayloadType !== null;
+    }
+
+    public function getRequestBodyPayloadType(): ?Type
+    {
+        return $this->requestBodyPayloadType;
     }
 
     public function getRequestBodyPayloadParameterPhpType(): string
     {
-        return $this->requestBody->getPayloadPhpType();
+        return $this->requestBodyPayloadType->getPhpDocParameterAnnotationType();
+    }
+
+    public function getResponseContentType(): ?string
+    {
+        return $this->responseContentType;
     }
 
     /**
