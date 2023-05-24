@@ -64,18 +64,37 @@ class Operation
 
         $parameters = array_values(array_merge($indexedPathItemParameters, $indexedOperationParameters));
 
+        if (!isset($data['operationId'])){
+            throw new Exception('Operation operationId is mandatory.');
+        }
+        if (!is_string($data['operationId'])) {
+            throw new Exception('Operation operationId attribute must be a string.');
+        }
+        if (isset($data['x-priority']) && !is_int($data['x-priority'])) {
+            throw new Exception('Operation x-priority attribute must be a string.');
+        }
+        if (isset($data['tags'])) {
+            if (!is_array($data['tags'])) {
+                throw new Exception('Operation tags attribute must be an array.');
+            }
+            foreach ($data['tags'] as $tag) {
+                if (!is_string($tag)) {
+                    throw new Exception('Operation tags array values must be strings.');
+                }
+            }
+        }
+
         return new self(
             $data['operationId'],
-            $data['x-priority'] ?? 0,
+            $data['x-priority'] ?? 0, // TODO Not stantard openapi, save all custom attributes instead
             $parameters,
             match (true) {
                 isset($data['requestBody']['$ref']) => Reference::build($data['requestBody']),
                 isset($data['requestBody']) => RequestBody::build($data['requestBody']),
                 default => null,
             },
-            isset($data['responses']) ?
-                Responses::build($data['responses']) : null,
-            $data['tags'] ?? [],
+            isset($data['responses']) ? Responses::build($data['responses']) : null,
+            array_values($data['tags'] ?? []),
         );
     }
 
