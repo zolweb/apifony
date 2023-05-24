@@ -25,14 +25,14 @@ class UserController extends AbstractController
     ): Response {
         $errors = [];
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
-            case 'application/json':
-                $requestBodyPayload = $serializer->deserialize($request->getContent(), 'User', JsonEncoder::FORMAT);
-                $violations = $this->validator->validate($requestBodyPayload);
-
-                break;
             case 'unspecified':
                 $requestBodyPayload = null;
                 $violations = [];
+
+                break;
+            case 'application/json':
+                $requestBodyPayload = $this->serializer->deserialize($request->getContent(), 'CreateUserApplicationJsonRequestBodyPayload', JsonEncoder::FORMAT);
+                $violations = $this->validator->validate($requestBodyPayload);
 
                 break;
             default:
@@ -64,7 +64,7 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $this->handler->createUserFromEmptyPayloadToApplicationJsonContent(
+                        $this->handler->CreateUserFromEmptyPayloadToApplicationJsonContent(
                         ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
@@ -76,10 +76,10 @@ class UserController extends AbstractController
                 };
 
                 break;
-            case $requestBodyPayload instanceOf User:
+            case $requestBodyPayload instanceOf CreateUserApplicationJsonRequestBodyPayload:
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $this->handler->createUserFromUserPayloadToApplicationJsonContent(
+                        $this->handler->CreateUserFromCreateUserApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         ),
                     default => (object) [
@@ -108,14 +108,19 @@ class UserController extends AbstractController
     ): Response {
         $errors = [];
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
-            case 'application/json':
-                $requestBodyPayload = $serializer->deserialize($request->getContent(), 'User[]', JsonEncoder::FORMAT);
-                $violations = $this->validator->validate($requestBodyPayload, [new Assert\Valid()]);
-
-                break;
             case 'unspecified':
                 $requestBodyPayload = null;
                 $violations = [];
+
+                break;
+            case 'application/json':
+                $requestBodyPayload = json_decode($request->getContent(), true)
+                $violations = $this->validator->validate($requestBodyPayload, [
+                    new Assert\NotNull                    new Assert\All(constraints: [
+                        new Assert\Valid,
+                        new Assert\NotNull,
+                    ])
+]);
 
                 break;
             default:
@@ -147,10 +152,10 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     null =>
-                        $this->handler->createUsersWithListInputFromEmptyPayloadToEmptyContent(
+                        $this->handler->CreateUsersWithListInputFromEmptyPayloadToContent(
                         ),
                     'application/json' =>
-                        $this->handler->createUsersWithListInputFromEmptyPayloadToApplicationJsonContent(
+                        $this->handler->CreateUsersWithListInputFromEmptyPayloadToApplicationJsonContent(
                         ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
@@ -165,11 +170,11 @@ class UserController extends AbstractController
             case is_array($requestBodyPayload) && $requestBodyPayload instanceOf User:
                 $responsePayload = match ($responsePayloadContentType) {
                     null =>
-                        $this->handler->createUsersWithListInputFromUserArrayPayloadToEmptyContent(
+                        $this->handler->CreateUsersWithListInputFromUserArrayPayloadToContent(
                             $requestBodyPayload,
                         ),
                     'application/json' =>
-                        $this->handler->createUsersWithListInputFromUserArrayPayloadToApplicationJsonContent(
+                        $this->handler->CreateUsersWithListInputFromUserArrayPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         ),
                     default => (object) [
@@ -198,11 +203,23 @@ class UserController extends AbstractController
     public function loginUser(
         Request $request,
     ): Response {
-        $qPassword = strval($request->query->get('password'));
-        $qUsername = strval($request->query->get('username'));
+        $qusername = strval($request->query->get('username'));
+        $qpassword = strval($request->query->get('password'));
         $errors = [];
         $violations = $this->validator->validate(
-            $qPassword,
+            $qusername,
+            [
+                new Assert\NotNull,
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['query']['username'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $this->validator->validate(
+            $qpassword,
             [
                 new Assert\NotNull,
             ]
@@ -213,17 +230,25 @@ class UserController extends AbstractController
                 iterator_to_array($violations),
             );
         }
-        $violations = $this->validator->validate(
-            $qUsername,
-            [
-                new Assert\NotNull,
-            ]
-        );
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
+            case 'unspecified':
+                $requestBodyPayload = null;
+                $violations = [];
+
+                break;
+            default:
+                return new JsonResponse(
+                    [
+                        'code' => 'unsupported_request_type',
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
+                    ],
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                );
+        }
         if (count($violations) > 0) {
-            $errors['query']['username'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
+            foreach ($violations as $violation) {
+                $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+            }
         }
         if (count($errors) > 0) {
             return new JsonResponse(
@@ -240,14 +265,14 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $this->handler->loginUserFromEmptyPayloadToApplicationJsonContent(
-                            $qPassword,
-                            $qUsername,
+                        $this->handler->LoginUserFromEmptyPayloadToApplicationJsonContent(
+                            $qusername,
+                            $qpassword,
                         ),
                     null =>
-                        $this->handler->loginUserFromEmptyPayloadToEmptyContent(
-                            $qPassword,
-                            $qUsername,
+                        $this->handler->LoginUserFromEmptyPayloadToContent(
+                            $qusername,
+                            $qpassword,
                         ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
@@ -276,131 +301,7 @@ class UserController extends AbstractController
         Request $request,
     ): Response {
         $errors = [];
-        if (count($errors) > 0) {
-            return new JsonResponse(
-                [
-                    'code' => 'validation_failed',
-                    'message' => 'Validation has failed.',
-                    'errors' => $errors,
-                ],
-                Response::HTTP_BAD_REQUEST,
-            );
-        }
-        $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
-        switch (true) {
-            case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->logoutUserFromEmptyPayloadToEmptyContent(
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
-
-                break;
-            default:
-                throw new RuntimeException();
-        }
-        switch ($responsePayload::CONTENT_TYPE) {
-            case null:
-                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
-            default:
-                throw new RuntimeException();
-        }
-    }
-
-    public function getUserByName(
-        Request $request,
-        string $username,
-    ): Response {
-        $pUsername = $username;
-        $errors = [];
-        $violations = $this->validator->validate(
-            $pUsername,
-            [
-                new Assert\NotNull,
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['path']['username'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
-        if (count($errors) > 0) {
-            return new JsonResponse(
-                [
-                    'code' => 'validation_failed',
-                    'message' => 'Validation has failed.',
-                    'errors' => $errors,
-                ],
-                Response::HTTP_BAD_REQUEST,
-            );
-        }
-        $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
-        switch (true) {
-            case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
-                    'application/json' =>
-                        $this->handler->getUserByNameFromEmptyPayloadToApplicationJsonContent(
-                            $pUsername,
-                        ),
-                    null =>
-                        $this->handler->getUserByNameFromEmptyPayloadToEmptyContent(
-                            $pUsername,
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
-
-                break;
-            default:
-                throw new RuntimeException();
-        }
-        switch ($responsePayload::CONTENT_TYPE) {
-            case 'application/json':
-                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
-            case null:
-                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
-            default:
-                throw new RuntimeException();
-        }
-    }
-
-    public function updateUser(
-        Request $request,
-        string $username,
-    ): Response {
-        $pUsername = $username;
-        $errors = [];
-        $violations = $this->validator->validate(
-            $pUsername,
-            [
-                new Assert\NotNull,
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['path']['username'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
-            case 'application/json':
-                $requestBodyPayload = $serializer->deserialize($request->getContent(), 'User', JsonEncoder::FORMAT);
-                $violations = $this->validator->validate($requestBodyPayload);
-
-                break;
             case 'unspecified':
                 $requestBodyPayload = null;
                 $violations = [];
@@ -435,8 +336,7 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     null =>
-                        $this->handler->updateUserFromEmptyPayloadToEmptyContent(
-                            $pUsername,
+                        $this->handler->LogoutUserFromEmptyPayloadToContent(
                         ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
@@ -448,11 +348,176 @@ class UserController extends AbstractController
                 };
 
                 break;
-            case $requestBodyPayload instanceOf User:
+            default:
+                throw new RuntimeException();
+        }
+        switch ($responsePayload::CONTENT_TYPE) {
+            case null:
+                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+            default:
+                throw new RuntimeException();
+        }
+    }
+
+    public function getUserByName(
+        Request $request,
+        string $username,
+    ): Response {
+        $pusername = $username;
+        $errors = [];
+        $violations = $this->validator->validate(
+            $pusername,
+            [
+                new Assert\NotNull,
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['path']['username'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
+            case 'unspecified':
+                $requestBodyPayload = null;
+                $violations = [];
+
+                break;
+            default:
+                return new JsonResponse(
+                    [
+                        'code' => 'unsupported_request_type',
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
+                    ],
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                );
+        }
+        if (count($violations) > 0) {
+            foreach ($violations as $violation) {
+                $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+            }
+        }
+        if (count($errors) > 0) {
+            return new JsonResponse(
+                [
+                    'code' => 'validation_failed',
+                    'message' => 'Validation has failed.',
+                    'errors' => $errors,
+                ],
+                Response::HTTP_BAD_REQUEST,
+            );
+        }
+        $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
+        switch (true) {
+            case is_null($requestBodyPayload):
+                $responsePayload = match ($responsePayloadContentType) {
+                    'application/json' =>
+                        $this->handler->GetUserByNameFromEmptyPayloadToApplicationJsonContent(
+                            $pusername,
+                        ),
+                    null =>
+                        $this->handler->GetUserByNameFromEmptyPayloadToContent(
+                            $pusername,
+                        ),
+                    default => (object) [
+                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        'content' => [
+                            'code' => 'unsupported_response_type',
+                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                        ],
+                    ],
+                };
+
+                break;
+            default:
+                throw new RuntimeException();
+        }
+        switch ($responsePayload::CONTENT_TYPE) {
+            case 'application/json':
+                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+            case null:
+                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+            default:
+                throw new RuntimeException();
+        }
+    }
+
+    public function updateUser(
+        Request $request,
+        string $username,
+    ): Response {
+        $pusername = $username;
+        $errors = [];
+        $violations = $this->validator->validate(
+            $pusername,
+            [
+                new Assert\NotNull,
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['path']['username'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
+            case 'unspecified':
+                $requestBodyPayload = null;
+                $violations = [];
+
+                break;
+            case 'application/json':
+                $requestBodyPayload = $this->serializer->deserialize($request->getContent(), 'UpdateUserApplicationJsonRequestBodyPayload', JsonEncoder::FORMAT);
+                $violations = $this->validator->validate($requestBodyPayload);
+
+                break;
+            default:
+                return new JsonResponse(
+                    [
+                        'code' => 'unsupported_request_type',
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
+                    ],
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                );
+        }
+        if (count($violations) > 0) {
+            foreach ($violations as $violation) {
+                $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+            }
+        }
+        if (count($errors) > 0) {
+            return new JsonResponse(
+                [
+                    'code' => 'validation_failed',
+                    'message' => 'Validation has failed.',
+                    'errors' => $errors,
+                ],
+                Response::HTTP_BAD_REQUEST,
+            );
+        }
+        $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
+        switch (true) {
+            case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     null =>
-                        $this->handler->updateUserFromUserPayloadToEmptyContent(
-                            $pUsername,
+                        $this->handler->UpdateUserFromEmptyPayloadToContent(
+                            $pusername,
+                        ),
+                    default => (object) [
+                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        'content' => [
+                            'code' => 'unsupported_response_type',
+                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                        ],
+                    ],
+                };
+
+                break;
+            case $requestBodyPayload instanceOf UpdateUserApplicationJsonRequestBodyPayload:
+                $responsePayload = match ($responsePayloadContentType) {
+                    null =>
+                        $this->handler->UpdateUserFromUpdateUserApplicationJsonRequestBodyPayloadPayloadToContent(
+                            $pusername,
                             $requestBodyPayload,
                         ),
                     default => (object) [
@@ -480,10 +545,10 @@ class UserController extends AbstractController
         Request $request,
         string $username,
     ): Response {
-        $pUsername = $username;
+        $pusername = $username;
         $errors = [];
         $violations = $this->validator->validate(
-            $pUsername,
+            $pusername,
             [
                 new Assert\NotNull,
             ]
@@ -493,6 +558,26 @@ class UserController extends AbstractController
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
+        }
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
+            case 'unspecified':
+                $requestBodyPayload = null;
+                $violations = [];
+
+                break;
+            default:
+                return new JsonResponse(
+                    [
+                        'code' => 'unsupported_request_type',
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
+                    ],
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                );
+        }
+        if (count($violations) > 0) {
+            foreach ($violations as $violation) {
+                $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+            }
         }
         if (count($errors) > 0) {
             return new JsonResponse(
@@ -509,8 +594,8 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     null =>
-                        $this->handler->deleteUserFromEmptyPayloadToEmptyContent(
-                            $pUsername,
+                        $this->handler->DeleteUserFromEmptyPayloadToContent(
+                            $pusername,
                         ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,

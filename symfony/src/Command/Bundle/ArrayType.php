@@ -74,14 +74,14 @@ class ArrayType implements Type
 
     public function getRequestBodyPayloadInitializationFromRequest(): string
     {
-        return (string)$this->itemType === 'object' ?
-            "\$requestBodyPayload = \$serializer->deserialize(\$request->getContent(), 'Flex[]', JsonEncoder::FORMAT);" :
+        return $this->schema->type === 'object' ?
+            "\$requestBodyPayload = \$this->serializer->deserialize(\$request->getContent(), 'Flex[]', JsonEncoder::FORMAT);" :
             '$requestBodyPayload = json_decode($request->getContent(), true)';
     }
 
     public function getRequestBodyPayloadValidationViolationsInitialization(): string
     {
-        return (string)$this->itemType === 'object' ?
+        return $this->schema->type === 'object' ?
             '$violations = $this->validator->validate($requestBodyPayload, [new Assert\Valid()]);' :
             sprintf(
                 "\$violations = \$this->validator->validate(\$requestBodyPayload, [\n%s\n]);",

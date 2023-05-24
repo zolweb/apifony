@@ -11,7 +11,6 @@ class Controller implements File
         string $bundleNamespace,
         string $aggregateName,
         array $actions,
-        AbstractController $abstractController,
         Handler $handler,
     ): self {
         return new self(
@@ -19,7 +18,6 @@ class Controller implements File
             $actions,
             $bundleNamespace,
             $aggregateName,
-            $abstractController,
         );
     }
 
@@ -29,8 +27,12 @@ class Controller implements File
         public readonly array $actions,
         private readonly string $bundleNamespace,
         private readonly string $aggregateName,
-        private readonly AbstractController $abstractController,
     ) {
+    }
+
+    public function getBundleNamespace(): string
+    {
+        return $this->bundleNamespace;
     }
 
     public function getNamespace(): string

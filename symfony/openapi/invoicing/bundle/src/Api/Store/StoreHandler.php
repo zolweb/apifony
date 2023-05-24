@@ -4,38 +4,41 @@ namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Store;
 
 interface StoreHandler
 {
-    public function getInventoryFromEmptyPayloadToApplicationJsonContent(
+    public function GetInventoryFromEmptyPayloadToApplicationJsonContent(
     ):
         GetInventory200ApplicationJson;
 
-    public function placeOrderFromEmptyPayloadToApplicationJsonContent(
+    public function PlaceOrderFromEmptyPayloadToApplicationJsonContent(
     ):
         PlaceOrder200ApplicationJson;
-    public function placeOrderFromEmptyPayloadToEmptyContent(
+
+    public function PlaceOrderFromEmptyPayloadToContent(
     ):
         PlaceOrder405Empty;
 
-    public function placeOrderFromOrderPayloadToApplicationJsonContent(
-        Order $requestBodyPayload,
+    public function PlaceOrderFromPlaceOrderApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
+        PlaceOrderApplicationJsonRequestBodyPayload $requestBodyPayload,
     ):
         PlaceOrder200ApplicationJson;
-    public function placeOrderFromOrderPayloadToEmptyContent(
-        Order $requestBodyPayload,
+
+    public function PlaceOrderFromPlaceOrderApplicationJsonRequestBodyPayloadPayloadToContent(
+        PlaceOrderApplicationJsonRequestBodyPayload $requestBodyPayload,
     ):
         PlaceOrder405Empty;
 
-    public function getOrderByIdFromEmptyPayloadToApplicationJsonContent(
-        int $pOrderId,
+    public function GetOrderByIdFromEmptyPayloadToApplicationJsonContent(
+        int $porderId,
     ):
         GetOrderById200ApplicationJson;
-    public function getOrderByIdFromEmptyPayloadToEmptyContent(
-        int $pOrderId,
+
+    public function GetOrderByIdFromEmptyPayloadToContent(
+        int $porderId,
     ):
         GetOrderById400Empty |
         GetOrderById404Empty;
 
-    public function deleteOrderFromEmptyPayloadToEmptyContent(
-        int $pOrderId,
+    public function DeleteOrderFromEmptyPayloadToContent(
+        int $porderId,
     ):
         DeleteOrder200Empty |
         DeleteOrder400Empty |

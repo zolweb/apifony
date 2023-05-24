@@ -10,6 +10,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
+use {{ controller.bundleNamespace }}\Api\AbstractController;
 {% for usedFile in controller.usedPhpClassFiles %}
 use {{ usedFile.namespace }}\{{ usedFile.className }};
 {% endfor %}
@@ -30,7 +31,7 @@ class {{ controller.className }} extends AbstractController
         {{ param.phpType }} ${{ param.rawName }},
 {%~ endfor %}
     ): Response {
-    {%~ for param in action.parameters %}
+    {%~ for param in action.parameters(['path']) %}
         ${{ param.variableName }} = ${{ param.rawName }};
     {%~ endfor %}
 {%~ for param in action.parameters(['query', 'header', 'cookie']) %}
@@ -63,11 +64,8 @@ class {{ controller.className }} extends AbstractController
     {%~ for requestBody in action.requestBodies %}
             case '{{ requestBody.mimeType ?? 'unspecified' }}':
         {%~ if requestBody.mimeType is null %}
-            case 'unspecified':
                 $requestBodyPayload = null;
                 $violations = [];
-
-                break;
         {%~ elseif requestBody.mimeType is same as ('application/json') %}
                 {{ requestBody.initializationFromRequest }}
                 {{ requestBody.validationViolationsInitialization }}
@@ -124,7 +122,7 @@ class {{ controller.className }} extends AbstractController
                             'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
                         ],
                     ],
-                %};
+                };
 
                 break;
 {%~ endfor %}
@@ -132,8 +130,8 @@ class {{ controller.className }} extends AbstractController
                 throw new RuntimeException();
         }
         switch ($responsePayload::CONTENT_TYPE) {
-{%~ for responseContentType in action.allPossibleResponseContentTypes %}
-            case {% if responseContentType is null %}null{% else %}'{{ responseContentType }}'{% endif %}:
+{%~ for responseContentType in action.responseContentTypes %}
+            case {{ responseContentType is null ? 'null' : '\'' ~ responseContentType ~ '\'' }}:
     {%~ if responseContentType is null %}
                 return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
     {%~ elseif responseContentType is same as ('application/json') %}

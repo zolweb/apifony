@@ -36,7 +36,6 @@ class Aggregate
                 $bundleNamespace,
                 $name,
                 $actions,
-                $abstractController,
                 $handler,
             ),
         );

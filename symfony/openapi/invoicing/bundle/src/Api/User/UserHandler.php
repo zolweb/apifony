@@ -4,70 +4,74 @@ namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\User;
 
 interface UserHandler
 {
-    public function createUserFromEmptyPayloadToApplicationJsonContent(
+    public function CreateUserFromEmptyPayloadToApplicationJsonContent(
     ):
         CreateUser201ApplicationJson;
 
-    public function createUserFromUserPayloadToApplicationJsonContent(
-        User $requestBodyPayload,
+    public function CreateUserFromCreateUserApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
+        CreateUserApplicationJsonRequestBodyPayload $requestBodyPayload,
     ):
         CreateUser201ApplicationJson;
 
-    public function createUsersWithListInputFromEmptyPayloadToEmptyContent(
+    public function CreateUsersWithListInputFromEmptyPayloadToContent(
     ):
         CreateUsersWithListInput100Empty;
-    public function createUsersWithListInputFromEmptyPayloadToApplicationJsonContent(
+
+    public function CreateUsersWithListInputFromEmptyPayloadToApplicationJsonContent(
     ):
         CreateUsersWithListInput200ApplicationJson;
 
-    public function createUsersWithListInputFromUserArrayPayloadToEmptyContent(
-        array $requestBodyPayload,
+    public function CreateUsersWithListInputFromUserArrayPayloadToContent(
+        array<User> $requestBodyPayload,
     ):
         CreateUsersWithListInput100Empty;
-    public function createUsersWithListInputFromUserArrayPayloadToApplicationJsonContent(
-        array $requestBodyPayload,
+
+    public function CreateUsersWithListInputFromUserArrayPayloadToApplicationJsonContent(
+        array<User> $requestBodyPayload,
     ):
         CreateUsersWithListInput200ApplicationJson;
 
-    public function loginUserFromEmptyPayloadToApplicationJsonContent(
-        string $qPassword,
-        string $qUsername,
+    public function LoginUserFromEmptyPayloadToApplicationJsonContent(
+        string $qusername,
+        string $qpassword,
     ):
         LoginUser200ApplicationJson;
-    public function loginUserFromEmptyPayloadToEmptyContent(
-        string $qPassword,
-        string $qUsername,
+
+    public function LoginUserFromEmptyPayloadToContent(
+        string $qusername,
+        string $qpassword,
     ):
         LoginUser400Empty;
 
-    public function logoutUserFromEmptyPayloadToEmptyContent(
+    public function LogoutUserFromEmptyPayloadToContent(
     ):
         LogoutUser100Empty |
         LogoutUser200Empty;
 
-    public function getUserByNameFromEmptyPayloadToApplicationJsonContent(
-        string $pUsername,
+    public function GetUserByNameFromEmptyPayloadToApplicationJsonContent(
+        string $pusername,
     ):
         GetUserByName200ApplicationJson;
-    public function getUserByNameFromEmptyPayloadToEmptyContent(
-        string $pUsername,
+
+    public function GetUserByNameFromEmptyPayloadToContent(
+        string $pusername,
     ):
         GetUserByName400Empty |
         GetUserByName404Empty;
 
-    public function updateUserFromEmptyPayloadToEmptyContent(
-        string $pUsername,
+    public function UpdateUserFromEmptyPayloadToContent(
+        string $pusername,
     ):
         UpdateUser201Empty;
 
-    public function updateUserFromUserPayloadToEmptyContent(
-        string $pUsername,
-        User $requestBodyPayload,
+    public function UpdateUserFromUpdateUserApplicationJsonRequestBodyPayloadPayloadToContent(
+        string $pusername,
+        UpdateUserApplicationJsonRequestBodyPayload $requestBodyPayload,
     ):
         UpdateUser201Empty;
 
-    public function deleteUserFromEmptyPayloadToEmptyContent(
-        string $pUsername,
+    public function DeleteUserFromEmptyPayloadToContent(
+        string $pusername,
     ):
         DeleteUser200Empty |
         DeleteUser400Empty |

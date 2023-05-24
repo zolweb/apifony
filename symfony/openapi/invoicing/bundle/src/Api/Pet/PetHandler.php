@@ -4,72 +4,77 @@ namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Pet;
 
 interface PetHandler
 {
-    public function updatePetFromUpdatePetApplicationJsonMediaTypeSchemaPayloadToApplicationJsonContent(
-        UpdatePetApplicationJsonMediaTypeSchema $requestBodyPayload,
+    public function UpdatePetFromUpdatePetApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
+        UpdatePetApplicationJsonRequestBodyPayload $requestBodyPayload,
     ):
         UpdatePet200ApplicationJson;
-    public function updatePetFromUpdatePetApplicationJsonMediaTypeSchemaPayloadToEmptyContent(
-        UpdatePetApplicationJsonMediaTypeSchema $requestBodyPayload,
+
+    public function UpdatePetFromUpdatePetApplicationJsonRequestBodyPayloadPayloadToContent(
+        UpdatePetApplicationJsonRequestBodyPayload $requestBodyPayload,
     ):
         UpdatePet400Empty |
         UpdatePet404Empty |
         UpdatePet405Empty;
 
-    public function addPetFromPetPayloadToApplicationJsonContent(
-        Pet $requestBodyPayload,
+    public function AddPetFromAddPetApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
+        AddPetApplicationJsonRequestBodyPayload $requestBodyPayload,
     ):
         AddPet200ApplicationJson;
-    public function addPetFromPetPayloadToEmptyContent(
-        Pet $requestBodyPayload,
+
+    public function AddPetFromAddPetApplicationJsonRequestBodyPayloadPayloadToContent(
+        AddPetApplicationJsonRequestBodyPayload $requestBodyPayload,
     ):
         AddPet405Empty;
 
-    public function findPetsByStatusFromEmptyPayloadToApplicationJsonContent(
-        string $qStatus,
+    public function FindPetsByStatusFromEmptyPayloadToApplicationJsonContent(
+        string $qstatus,
     ):
         FindPetsByStatus200ApplicationJson;
-    public function findPetsByStatusFromEmptyPayloadToEmptyContent(
-        string $qStatus,
+
+    public function FindPetsByStatusFromEmptyPayloadToContent(
+        string $qstatus,
     ):
         FindPetsByStatus400Empty;
 
-    public function findPetsByTagsFromEmptyPayloadToApplicationJsonContent(
-        string $qTags,
+    public function FindPetsByTagsFromEmptyPayloadToApplicationJsonContent(
+        string $qtags,
     ):
         FindPetsByTags200ApplicationJson;
-    public function findPetsByTagsFromEmptyPayloadToEmptyContent(
-        string $qTags,
+
+    public function FindPetsByTagsFromEmptyPayloadToContent(
+        string $qtags,
     ):
         FindPetsByTags400Empty;
 
-    public function getPetByIdFromEmptyPayloadToApplicationJsonContent(
-        int $pPetId,
+    public function GetPetByIdFromEmptyPayloadToApplicationJsonContent(
+        int $ppetId,
     ):
         GetPetById200ApplicationJson;
-    public function getPetByIdFromEmptyPayloadToEmptyContent(
-        int $pPetId,
+
+    public function GetPetByIdFromEmptyPayloadToContent(
+        int $ppetId,
     ):
         GetPetById400Empty |
         GetPetById404Empty;
 
-    public function updatePetWithFormFromEmptyPayloadToEmptyContent(
-        string $qName,
-        int $pPetId,
-        string $qStatus,
+    public function UpdatePetWithFormFromEmptyPayloadToContent(
+        int $ppetId,
+        string $qname,
+        string $qstatus,
     ):
         UpdatePetWithForm204Empty |
         UpdatePetWithForm405Empty;
 
-    public function deletePetFromEmptyPayloadToEmptyContent(
-        string $hApi_key,
-        int $pPetId,
+    public function DeletePetFromEmptyPayloadToContent(
+        string $hapiKey,
+        int $ppetId,
     ):
         DeletePet200Empty |
         DeletePet400Empty;
 
-    public function uploadFileFromEmptyPayloadToApplicationJsonContent(
-        string $qAdditionalMetadata,
-        int $pPetId,
+    public function UploadFileFromEmptyPayloadToApplicationJsonContent(
+        int $ppetId,
+        string $qadditionalMetadata,
     ):
         UploadFile200ApplicationJson;
 }

@@ -84,7 +84,7 @@ class ObjectType implements Type
 
     public function getRequestBodyPayloadInitializationFromRequest(): string
     {
-        return "\$requestBodyPayload = \$serializer->deserialize(\$request->getContent(), '{$this->name}', JsonEncoder::FORMAT);";
+        return "\$requestBodyPayload = \$this->serializer->deserialize(\$request->getContent(), '{$this->name}', JsonEncoder::FORMAT);";
     }
 
     public function getRequestBodyPayloadValidationViolationsInitialization(): string

@@ -24,54 +24,7 @@ class StoreController extends AbstractController
         Request $request,
     ): Response {
         $errors = [];
-        if (count($errors) > 0) {
-            return new JsonResponse(
-                [
-                    'code' => 'validation_failed',
-                    'message' => 'Validation has failed.',
-                    'errors' => $errors,
-                ],
-                Response::HTTP_BAD_REQUEST,
-            );
-        }
-        $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
-        switch (true) {
-            case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
-                    'application/json' =>
-                        $this->handler->getInventoryFromEmptyPayloadToApplicationJsonContent(
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
-
-                break;
-            default:
-                throw new RuntimeException();
-        }
-        switch ($responsePayload::CONTENT_TYPE) {
-            case 'application/json':
-                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
-            default:
-                throw new RuntimeException();
-        }
-    }
-
-    public function placeOrder(
-        Request $request,
-    ): Response {
-        $errors = [];
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
-            case 'application/json':
-                $requestBodyPayload = $serializer->deserialize($request->getContent(), 'Order', JsonEncoder::FORMAT);
-                $violations = $this->validator->validate($requestBodyPayload);
-
-                break;
             case 'unspecified':
                 $requestBodyPayload = null;
                 $violations = [];
@@ -106,10 +59,7 @@ class StoreController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $this->handler->placeOrderFromEmptyPayloadToApplicationJsonContent(
-                        ),
-                    null =>
-                        $this->handler->placeOrderFromEmptyPayloadToEmptyContent(
+                        $this->handler->GetInventoryFromEmptyPayloadToApplicationJsonContent(
                         ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
@@ -121,14 +71,84 @@ class StoreController extends AbstractController
                 };
 
                 break;
-            case $requestBodyPayload instanceOf Order:
+            default:
+                throw new RuntimeException();
+        }
+        switch ($responsePayload::CONTENT_TYPE) {
+            case 'application/json':
+                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+            default:
+                throw new RuntimeException();
+        }
+    }
+
+    public function placeOrder(
+        Request $request,
+    ): Response {
+        $errors = [];
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
+            case 'unspecified':
+                $requestBodyPayload = null;
+                $violations = [];
+
+                break;
+            case 'application/json':
+                $requestBodyPayload = $this->serializer->deserialize($request->getContent(), 'PlaceOrderApplicationJsonRequestBodyPayload', JsonEncoder::FORMAT);
+                $violations = $this->validator->validate($requestBodyPayload);
+
+                break;
+            default:
+                return new JsonResponse(
+                    [
+                        'code' => 'unsupported_request_type',
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
+                    ],
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                );
+        }
+        if (count($violations) > 0) {
+            foreach ($violations as $violation) {
+                $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+            }
+        }
+        if (count($errors) > 0) {
+            return new JsonResponse(
+                [
+                    'code' => 'validation_failed',
+                    'message' => 'Validation has failed.',
+                    'errors' => $errors,
+                ],
+                Response::HTTP_BAD_REQUEST,
+            );
+        }
+        $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
+        switch (true) {
+            case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $this->handler->placeOrderFromOrderPayloadToApplicationJsonContent(
+                        $this->handler->PlaceOrderFromEmptyPayloadToApplicationJsonContent(
+                        ),
+                    null =>
+                        $this->handler->PlaceOrderFromEmptyPayloadToContent(
+                        ),
+                    default => (object) [
+                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        'content' => [
+                            'code' => 'unsupported_response_type',
+                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                        ],
+                    ],
+                };
+
+                break;
+            case $requestBodyPayload instanceOf PlaceOrderApplicationJsonRequestBodyPayload:
+                $responsePayload = match ($responsePayloadContentType) {
+                    'application/json' =>
+                        $this->handler->PlaceOrderFromPlaceOrderApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         ),
                     null =>
-                        $this->handler->placeOrderFromOrderPayloadToEmptyContent(
+                        $this->handler->PlaceOrderFromPlaceOrderApplicationJsonRequestBodyPayloadPayloadToContent(
                             $requestBodyPayload,
                         ),
                     default => (object) [
@@ -158,13 +178,13 @@ class StoreController extends AbstractController
         Request $request,
         int $orderId,
     ): Response {
-        $pOrderId = $orderId;
+        $porderId = $orderId;
         $errors = [];
         $violations = $this->validator->validate(
-            $pOrderId,
+            $porderId,
             [
                 new Assert\NotNull,
-                new AssertFormat\Int64,
+                new AssertInt64,
             ]
         );
         if (count($violations) > 0) {
@@ -172,6 +192,26 @@ class StoreController extends AbstractController
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
+        }
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
+            case 'unspecified':
+                $requestBodyPayload = null;
+                $violations = [];
+
+                break;
+            default:
+                return new JsonResponse(
+                    [
+                        'code' => 'unsupported_request_type',
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
+                    ],
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                );
+        }
+        if (count($violations) > 0) {
+            foreach ($violations as $violation) {
+                $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+            }
         }
         if (count($errors) > 0) {
             return new JsonResponse(
@@ -188,12 +228,12 @@ class StoreController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $this->handler->getOrderByIdFromEmptyPayloadToApplicationJsonContent(
-                            $pOrderId,
+                        $this->handler->GetOrderByIdFromEmptyPayloadToApplicationJsonContent(
+                            $porderId,
                         ),
                     null =>
-                        $this->handler->getOrderByIdFromEmptyPayloadToEmptyContent(
-                            $pOrderId,
+                        $this->handler->GetOrderByIdFromEmptyPayloadToContent(
+                            $porderId,
                         ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
@@ -222,13 +262,13 @@ class StoreController extends AbstractController
         Request $request,
         int $orderId,
     ): Response {
-        $pOrderId = $orderId;
+        $porderId = $orderId;
         $errors = [];
         $violations = $this->validator->validate(
-            $pOrderId,
+            $porderId,
             [
                 new Assert\NotNull,
-                new AssertFormat\Int64,
+                new AssertInt64,
             ]
         );
         if (count($violations) > 0) {
@@ -236,6 +276,26 @@ class StoreController extends AbstractController
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
+        }
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
+            case 'unspecified':
+                $requestBodyPayload = null;
+                $violations = [];
+
+                break;
+            default:
+                return new JsonResponse(
+                    [
+                        'code' => 'unsupported_request_type',
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
+                    ],
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                );
+        }
+        if (count($violations) > 0) {
+            foreach ($violations as $violation) {
+                $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+            }
         }
         if (count($errors) > 0) {
             return new JsonResponse(
@@ -252,8 +312,8 @@ class StoreController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     null =>
-                        $this->handler->deleteOrderFromEmptyPayloadToEmptyContent(
-                            $pOrderId,
+                        $this->handler->DeleteOrderFromEmptyPayloadToContent(
+                            $porderId,
                         ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,

@@ -26,7 +26,7 @@ class PetController extends AbstractController
         $errors = [];
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'application/json':
-                $requestBodyPayload = $serializer->deserialize($request->getContent(), 'UpdatePetApplicationJsonMediaTypeSchema', JsonEncoder::FORMAT);
+                $requestBodyPayload = $this->serializer->deserialize($request->getContent(), 'UpdatePetApplicationJsonRequestBodyPayload', JsonEncoder::FORMAT);
                 $violations = $this->validator->validate($requestBodyPayload);
 
                 break;
@@ -56,14 +56,14 @@ class PetController extends AbstractController
         }
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
-            case $requestBodyPayload instanceOf UpdatePetApplicationJsonMediaTypeSchema:
+            case $requestBodyPayload instanceOf UpdatePetApplicationJsonRequestBodyPayload:
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $this->handler->updatePetFromUpdatePetApplicationJsonMediaTypeSchemaPayloadToApplicationJsonContent(
+                        $this->handler->UpdatePetFromUpdatePetApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         ),
                     null =>
-                        $this->handler->updatePetFromUpdatePetApplicationJsonMediaTypeSchemaPayloadToEmptyContent(
+                        $this->handler->UpdatePetFromUpdatePetApplicationJsonRequestBodyPayloadPayloadToContent(
                             $requestBodyPayload,
                         ),
                     default => (object) [
@@ -95,7 +95,7 @@ class PetController extends AbstractController
         $errors = [];
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'application/json':
-                $requestBodyPayload = $serializer->deserialize($request->getContent(), 'Pet', JsonEncoder::FORMAT);
+                $requestBodyPayload = $this->serializer->deserialize($request->getContent(), 'AddPetApplicationJsonRequestBodyPayload', JsonEncoder::FORMAT);
                 $violations = $this->validator->validate($requestBodyPayload);
 
                 break;
@@ -125,14 +125,14 @@ class PetController extends AbstractController
         }
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
-            case $requestBodyPayload instanceOf Pet:
+            case $requestBodyPayload instanceOf AddPetApplicationJsonRequestBodyPayload:
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $this->handler->addPetFromPetPayloadToApplicationJsonContent(
+                        $this->handler->AddPetFromAddPetApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         ),
                     null =>
-                        $this->handler->addPetFromPetPayloadToEmptyContent(
+                        $this->handler->AddPetFromAddPetApplicationJsonRequestBodyPayloadPayloadToContent(
                             $requestBodyPayload,
                         ),
                     default => (object) [
@@ -161,17 +161,17 @@ class PetController extends AbstractController
     public function findPetsByStatus(
         Request $request,
     ): Response {
-        $qStatus = strval($request->query->get('status', 'available'));
+        $qstatus = strval($request->query->get('status', 'available'));
         $errors = [];
         $violations = $this->validator->validate(
-            $qStatus,
+            $qstatus,
             [
+                new Assert\NotNull,
                 new Assert\Choice(choices: [
                     'available',
                     'pending',
                     'sold',
                 ]),
-                new Assert\NotNull,
             ]
         );
         if (count($violations) > 0) {
@@ -179,6 +179,26 @@ class PetController extends AbstractController
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
+        }
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
+            case 'unspecified':
+                $requestBodyPayload = null;
+                $violations = [];
+
+                break;
+            default:
+                return new JsonResponse(
+                    [
+                        'code' => 'unsupported_request_type',
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
+                    ],
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                );
+        }
+        if (count($violations) > 0) {
+            foreach ($violations as $violation) {
+                $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+            }
         }
         if (count($errors) > 0) {
             return new JsonResponse(
@@ -195,12 +215,12 @@ class PetController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $this->handler->findPetsByStatusFromEmptyPayloadToApplicationJsonContent(
-                            $qStatus,
+                        $this->handler->FindPetsByStatusFromEmptyPayloadToApplicationJsonContent(
+                            $qstatus,
                         ),
                     null =>
-                        $this->handler->findPetsByStatusFromEmptyPayloadToEmptyContent(
-                            $qStatus,
+                        $this->handler->FindPetsByStatusFromEmptyPayloadToContent(
+                            $qstatus,
                         ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
@@ -228,10 +248,10 @@ class PetController extends AbstractController
     public function findPetsByTags(
         Request $request,
     ): Response {
-        $qTags = strval($request->query->get('tags'));
+        $qtags = strval($request->query->get('tags'));
         $errors = [];
         $violations = $this->validator->validate(
-            $qTags,
+            $qtags,
             [
                 new Assert\NotNull,
             ]
@@ -241,6 +261,26 @@ class PetController extends AbstractController
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
+        }
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
+            case 'unspecified':
+                $requestBodyPayload = null;
+                $violations = [];
+
+                break;
+            default:
+                return new JsonResponse(
+                    [
+                        'code' => 'unsupported_request_type',
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
+                    ],
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                );
+        }
+        if (count($violations) > 0) {
+            foreach ($violations as $violation) {
+                $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+            }
         }
         if (count($errors) > 0) {
             return new JsonResponse(
@@ -257,12 +297,12 @@ class PetController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $this->handler->findPetsByTagsFromEmptyPayloadToApplicationJsonContent(
-                            $qTags,
+                        $this->handler->FindPetsByTagsFromEmptyPayloadToApplicationJsonContent(
+                            $qtags,
                         ),
                     null =>
-                        $this->handler->findPetsByTagsFromEmptyPayloadToEmptyContent(
-                            $qTags,
+                        $this->handler->FindPetsByTagsFromEmptyPayloadToContent(
+                            $qtags,
                         ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
@@ -291,248 +331,13 @@ class PetController extends AbstractController
         Request $request,
         int $petId,
     ): Response {
-        $pPetId = $petId;
+        $ppetId = $petId;
         $errors = [];
         $violations = $this->validator->validate(
-            $pPetId,
+            $ppetId,
             [
                 new Assert\NotNull,
-                new AssertFormat\Int64,
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['path']['petId'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
-        if (count($errors) > 0) {
-            return new JsonResponse(
-                [
-                    'code' => 'validation_failed',
-                    'message' => 'Validation has failed.',
-                    'errors' => $errors,
-                ],
-                Response::HTTP_BAD_REQUEST,
-            );
-        }
-        $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
-        switch (true) {
-            case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
-                    'application/json' =>
-                        $this->handler->getPetByIdFromEmptyPayloadToApplicationJsonContent(
-                            $pPetId,
-                        ),
-                    null =>
-                        $this->handler->getPetByIdFromEmptyPayloadToEmptyContent(
-                            $pPetId,
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
-
-                break;
-            default:
-                throw new RuntimeException();
-        }
-        switch ($responsePayload::CONTENT_TYPE) {
-            case 'application/json':
-                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
-            case null:
-                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
-            default:
-                throw new RuntimeException();
-        }
-    }
-
-    public function updatePetWithForm(
-        Request $request,
-        int $petId,
-    ): Response {
-        $pPetId = $petId;
-        $qName = strval($request->query->get('name'));
-        $qStatus = strval($request->query->get('status'));
-        $errors = [];
-        $violations = $this->validator->validate(
-            $qName,
-            [
-                new Assert\NotNull,
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['query']['name'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
-        $violations = $this->validator->validate(
-            $pPetId,
-            [
-                new Assert\NotNull,
-                new AssertFormat\Int64,
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['path']['petId'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
-        $violations = $this->validator->validate(
-            $qStatus,
-            [
-                new Assert\NotNull,
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['query']['status'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
-        if (count($errors) > 0) {
-            return new JsonResponse(
-                [
-                    'code' => 'validation_failed',
-                    'message' => 'Validation has failed.',
-                    'errors' => $errors,
-                ],
-                Response::HTTP_BAD_REQUEST,
-            );
-        }
-        $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
-        switch (true) {
-            case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->updatePetWithFormFromEmptyPayloadToEmptyContent(
-                            $qName,
-                            $pPetId,
-                            $qStatus,
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
-
-                break;
-            default:
-                throw new RuntimeException();
-        }
-        switch ($responsePayload::CONTENT_TYPE) {
-            case null:
-                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
-            default:
-                throw new RuntimeException();
-        }
-    }
-
-    public function deletePet(
-        Request $request,
-        int $petId,
-    ): Response {
-        $pPetId = $petId;
-        $hApi_key = strval($request->headers->get('api_key'));
-        $errors = [];
-        $violations = $this->validator->validate(
-            $hApi_key,
-            [
-                new Assert\NotNull,
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['header']['api_key'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
-        $violations = $this->validator->validate(
-            $pPetId,
-            [
-                new Assert\NotNull,
-                new AssertFormat\Int64,
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['path']['petId'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
-        if (count($errors) > 0) {
-            return new JsonResponse(
-                [
-                    'code' => 'validation_failed',
-                    'message' => 'Validation has failed.',
-                    'errors' => $errors,
-                ],
-                Response::HTTP_BAD_REQUEST,
-            );
-        }
-        $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
-        switch (true) {
-            case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->deletePetFromEmptyPayloadToEmptyContent(
-                            $hApi_key,
-                            $pPetId,
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
-
-                break;
-            default:
-                throw new RuntimeException();
-        }
-        switch ($responsePayload::CONTENT_TYPE) {
-            case null:
-                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
-            default:
-                throw new RuntimeException();
-        }
-    }
-
-    public function uploadFile(
-        Request $request,
-        int $petId,
-    ): Response {
-        $pPetId = $petId;
-        $qAdditionalMetadata = strval($request->query->get('additionalMetadata'));
-        $errors = [];
-        $violations = $this->validator->validate(
-            $qAdditionalMetadata,
-            [
-                new Assert\NotNull,
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['query']['additionalMetadata'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
-        $violations = $this->validator->validate(
-            $pPetId,
-            [
-                new Assert\NotNull,
-                new AssertFormat\Int64,
+                new AssertInt64,
             ]
         );
         if (count($violations) > 0) {
@@ -576,9 +381,304 @@ class PetController extends AbstractController
             case is_null($requestBodyPayload):
                 $responsePayload = match ($responsePayloadContentType) {
                     'application/json' =>
-                        $this->handler->uploadFileFromEmptyPayloadToApplicationJsonContent(
-                            $qAdditionalMetadata,
-                            $pPetId,
+                        $this->handler->GetPetByIdFromEmptyPayloadToApplicationJsonContent(
+                            $ppetId,
+                        ),
+                    null =>
+                        $this->handler->GetPetByIdFromEmptyPayloadToContent(
+                            $ppetId,
+                        ),
+                    default => (object) [
+                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        'content' => [
+                            'code' => 'unsupported_response_type',
+                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                        ],
+                    ],
+                };
+
+                break;
+            default:
+                throw new RuntimeException();
+        }
+        switch ($responsePayload::CONTENT_TYPE) {
+            case 'application/json':
+                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+            case null:
+                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+            default:
+                throw new RuntimeException();
+        }
+    }
+
+    public function updatePetWithForm(
+        Request $request,
+        int $petId,
+    ): Response {
+        $ppetId = $petId;
+        $qname = strval($request->query->get('name'));
+        $qstatus = strval($request->query->get('status'));
+        $errors = [];
+        $violations = $this->validator->validate(
+            $ppetId,
+            [
+                new Assert\NotNull,
+                new AssertInt64,
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['path']['petId'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $this->validator->validate(
+            $qname,
+            [
+                new Assert\NotNull,
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['query']['name'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $this->validator->validate(
+            $qstatus,
+            [
+                new Assert\NotNull,
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['query']['status'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
+            case 'unspecified':
+                $requestBodyPayload = null;
+                $violations = [];
+
+                break;
+            default:
+                return new JsonResponse(
+                    [
+                        'code' => 'unsupported_request_type',
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
+                    ],
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                );
+        }
+        if (count($violations) > 0) {
+            foreach ($violations as $violation) {
+                $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+            }
+        }
+        if (count($errors) > 0) {
+            return new JsonResponse(
+                [
+                    'code' => 'validation_failed',
+                    'message' => 'Validation has failed.',
+                    'errors' => $errors,
+                ],
+                Response::HTTP_BAD_REQUEST,
+            );
+        }
+        $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
+        switch (true) {
+            case is_null($requestBodyPayload):
+                $responsePayload = match ($responsePayloadContentType) {
+                    null =>
+                        $this->handler->UpdatePetWithFormFromEmptyPayloadToContent(
+                            $ppetId,
+                            $qname,
+                            $qstatus,
+                        ),
+                    default => (object) [
+                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        'content' => [
+                            'code' => 'unsupported_response_type',
+                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                        ],
+                    ],
+                };
+
+                break;
+            default:
+                throw new RuntimeException();
+        }
+        switch ($responsePayload::CONTENT_TYPE) {
+            case null:
+                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+            default:
+                throw new RuntimeException();
+        }
+    }
+
+    public function deletePet(
+        Request $request,
+        int $petId,
+    ): Response {
+        $ppetId = $petId;
+        $hapiKey = strval($request->headers->get('api_key'));
+        $errors = [];
+        $violations = $this->validator->validate(
+            $hapiKey,
+            [
+                new Assert\NotNull,
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['header']['api_key'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $this->validator->validate(
+            $ppetId,
+            [
+                new Assert\NotNull,
+                new AssertInt64,
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['path']['petId'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
+            case 'unspecified':
+                $requestBodyPayload = null;
+                $violations = [];
+
+                break;
+            default:
+                return new JsonResponse(
+                    [
+                        'code' => 'unsupported_request_type',
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
+                    ],
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                );
+        }
+        if (count($violations) > 0) {
+            foreach ($violations as $violation) {
+                $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+            }
+        }
+        if (count($errors) > 0) {
+            return new JsonResponse(
+                [
+                    'code' => 'validation_failed',
+                    'message' => 'Validation has failed.',
+                    'errors' => $errors,
+                ],
+                Response::HTTP_BAD_REQUEST,
+            );
+        }
+        $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
+        switch (true) {
+            case is_null($requestBodyPayload):
+                $responsePayload = match ($responsePayloadContentType) {
+                    null =>
+                        $this->handler->DeletePetFromEmptyPayloadToContent(
+                            $hapiKey,
+                            $ppetId,
+                        ),
+                    default => (object) [
+                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        'content' => [
+                            'code' => 'unsupported_response_type',
+                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                        ],
+                    ],
+                };
+
+                break;
+            default:
+                throw new RuntimeException();
+        }
+        switch ($responsePayload::CONTENT_TYPE) {
+            case null:
+                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+            default:
+                throw new RuntimeException();
+        }
+    }
+
+    public function uploadFile(
+        Request $request,
+        int $petId,
+    ): Response {
+        $ppetId = $petId;
+        $qadditionalMetadata = strval($request->query->get('additionalMetadata'));
+        $errors = [];
+        $violations = $this->validator->validate(
+            $ppetId,
+            [
+                new Assert\NotNull,
+                new AssertInt64,
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['path']['petId'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        $violations = $this->validator->validate(
+            $qadditionalMetadata,
+            [
+                new Assert\NotNull,
+            ]
+        );
+        if (count($violations) > 0) {
+            $errors['query']['additionalMetadata'] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
+            case 'unspecified':
+                $requestBodyPayload = null;
+                $violations = [];
+
+                break;
+            default:
+                return new JsonResponse(
+                    [
+                        'code' => 'unsupported_request_type',
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
+                    ],
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                );
+        }
+        if (count($violations) > 0) {
+            foreach ($violations as $violation) {
+                $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+            }
+        }
+        if (count($errors) > 0) {
+            return new JsonResponse(
+                [
+                    'code' => 'validation_failed',
+                    'message' => 'Validation has failed.',
+                    'errors' => $errors,
+                ],
+                Response::HTTP_BAD_REQUEST,
+            );
+        }
+        $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
+        switch (true) {
+            case is_null($requestBodyPayload):
+                $responsePayload = match ($responsePayloadContentType) {
+                    'application/json' =>
+                        $this->handler->UploadFileFromEmptyPayloadToApplicationJsonContent(
+                            $ppetId,
+                            $qadditionalMetadata,
                         ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
