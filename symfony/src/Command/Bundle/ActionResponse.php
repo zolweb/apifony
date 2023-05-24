@@ -3,7 +3,9 @@
 namespace App\Command\Bundle;
 
 use App\Command\OpenApi\Components;
+use App\Command\OpenApi\Header;
 use App\Command\OpenApi\Reference;
+use App\Command\OpenApi\Response;
 use App\Command\OpenApi\Schema;
 use function Symfony\Component\String\u;
 
@@ -17,6 +19,7 @@ class ActionResponse implements File
         string $aggregateName,
         string $actionName,
         string $code,
+        Response $response,
         ?string $contentType,
         null|Reference|Schema $payload,
         Components $components,
@@ -40,9 +43,17 @@ class ActionResponse implements File
                 'array' => new ArrayType($payload, $className, $components),
                 'null' => null,
             },
+            array_map(
+                static fn (string $name) =>
+                    ActionResponseHeader::build($name, $response->headers[$name], $components),
+                array_keys($response->headers),
+            ),
         );
     }
 
+    /**
+     * @param array<ActionResponseHeader> $headers
+     */
     private function __construct(
         private readonly string $bundleNamespace,
         private readonly string $aggregateName,
@@ -50,6 +61,7 @@ class ActionResponse implements File
         private readonly string $code,
         private readonly ?string $contentType,
         private readonly ?Type $payloadType,
+        private readonly array $headers,
     ) {
     }
 
@@ -66,6 +78,14 @@ class ActionResponse implements File
     public function getPayloadPhpType(): ?string
     {
         return $this->payloadType->getMethodParameterType();
+    }
+
+    /**
+     * @return array<ActionResponseHeader>
+     */
+    public function getHeaders(): array
+    {
+        return $this->headers;
     }
 
     public function getNamespace(): string
