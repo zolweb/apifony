@@ -7,7 +7,7 @@ class Paths
     /**
      * @throws Exception
      */
-    public static function build(mixed $data): self
+    public static function build(mixed $data, Components $components): self
     {
         if (!is_array($data)) {
             throw new Exception('Paths object must be an array.');
@@ -18,7 +18,7 @@ class Paths
             if ($route[0] !== '/') {
                 throw new Exception('Paths array keys must start with a slash.');
             }
-            $pathItems[$route] = PathItem::build($pathItemData);
+            $pathItems[$route] = PathItem::build($pathItemData, $components);
         }
 
         return new self($pathItems);

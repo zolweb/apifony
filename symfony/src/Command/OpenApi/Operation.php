@@ -9,25 +9,60 @@ class Operation
      *
      * @throws Exception
      */
-    public static function build(array $pathItemParameters, mixed $data): self
+    public static function build(array $pathItemParameters, mixed $data, Components $components): self
     {
-        $operationParameters = array_map(
-            fn (array $parameterData) => isset($parameterData['$ref']) ?
-                Reference::build($parameterData) : Parameter::build($parameterData),
-            $data['parameters'] ?? []
-        );
+        if (!is_array($data)) {
+            throw new Exception('Operation objects must be arrays.');
+        }
 
-        $pathItemParameters = array_combine(
-            array_map(fn (Parameter $param) => "{$param->in}:{$param->name}", $pathItemParameters),
-            $pathItemParameters,
-        );
+        $operationParameters = [];
+        if (isset($data['parameters'])) {
+            if (!is_array($data['parameters'])) {
+                throw new Exception('Operation parameters must be an array.');
+            }
+            foreach ($data['parameters'] as $parameterData) {
+                if (!is_array($parameterData)) {
+                    throw new Exception('Parameter or Reference objects must be arrays.');
+                }
+                $operationParameters[] = isset($parameterData['$ref']) ?
+                    Reference::build($parameterData) :
+                    Parameter::build($parameterData);
+            }
+        }
 
-        $operationParameters = array_combine(
-            array_map(fn (Parameter $param) => "{$param->in}:{$param->name}", $operationParameters),
-            $operationParameters,
-        );
+        $indexedPathItemParameters = [];
+        foreach ($pathItemParameters as $parameterReference) {
+            $parameter = $parameterReference;
+            if ($parameter instanceof Reference) {
+                if (!isset($components->parameters[$parameter->getName()])) {
+                    throw new Exception('All references to parameters must exist in components object parameters.');
+                }
+                $parameter = $components->parameters[$parameter->getName()];
+            }
+            $index = "{$parameter->in}:{$parameter->name}";
+            if (isset($indexedPathItemParameters[$index])) {
+                throw new Exception('PathItem parameters must be unique by \'in\' and \'name\'.');
+            }
+            $indexedPathItemParameters[$index] = $parameter;
+        }
 
-        $parameters = array_values(array_merge($pathItemParameters, $operationParameters));
+        $indexedOperationParameters = [];
+        foreach ($operationParameters as $parameterReference) {
+            $parameter = $parameterReference;
+            if ($parameter instanceof Reference) {
+                if (!isset($components->parameters[$parameter->getName()])) {
+                    throw new Exception('All references to parameters must exist in components object parameters.');
+                }
+                $parameter = $components->parameters[$parameter->getName()];
+            }
+            $index = "{$parameter->in}:{$parameter->name}";
+            if (isset($indexedOperationParameters[$index])) {
+                throw new Exception('PathItem parameters must be unique by \'in\' and \'name\'.');
+            }
+            $indexedOperationParameters[$index] = $parameter;
+        }
+
+        $parameters = array_values(array_merge($indexedPathItemParameters, $indexedOperationParameters));
 
         return new self(
             $data['operationId'],
@@ -44,14 +79,16 @@ class Operation
         );
     }
 
+    /**
+     * @param array<Reference|Parameter> $parameters
+     * @param array<string> $tags
+     */
     private function __construct(
         public readonly string $operationId,
         public readonly int $priority,
-        /** @var array<Reference|Parameter> */
         public readonly array $parameters,
         public readonly null|Reference|RequestBody $requestBody,
         public readonly ?Responses $responses,
-        /** @var array<string> */
         public readonly array $tags,
     ) {
     }

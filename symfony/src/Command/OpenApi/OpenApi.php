@@ -14,8 +14,8 @@ class OpenApi
         }
 
         return new self(
-            isset($data['components']) ? Components::build($data['components']) : null,
-            isset($data['paths']) ? Paths::build($data['paths']) : null,
+            $components = isset($data['components']) ? Components::build($data['components']) : null,
+            isset($data['paths']) ? Paths::build($data['paths'], $components) : null,
         );
     }
 

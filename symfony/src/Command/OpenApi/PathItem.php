@@ -7,7 +7,7 @@ class PathItem
     /**
      * @throws Exception
      */
-    public static function build(mixed $data): self
+    public static function build(mixed $data, Components $components): self
     {
         if (!is_array($data)) {
             throw new Exception('PathItem objects must be arrays.');
@@ -31,7 +31,7 @@ class PathItem
         $operations = [];
         foreach (['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'] as $method) {
             if (isset($data[$method])) {
-                $operations[$method] = Operation::build($parameters, $data[$method]);
+                $operations[$method] = Operation::build($parameters, $data[$method], $components);
             }
         }
 
