@@ -5,11 +5,9 @@ namespace App\Command\OpenApi;
 class Parameter
 {
     /**
-     * @param array<mixed> $data
-     *
      * @throws Exception
      */
-    public static function build(array $data): self
+    public static function build(mixed $data): self
     {
         return new self(
             $data['name'],

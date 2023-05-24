@@ -5,38 +5,45 @@ namespace App\Command\OpenApi;
 class PathItem
 {
     /**
-     * @param array<mixed> $data
-     *
      * @throws Exception
      */
-    public static function build(array $data): self
+    public static function build(mixed $data): self
     {
-        return new self(
-            $parameters = array_map(
-                fn (array $data) => isset($data['$ref']) ? Reference::build($data) : Parameter::build($data),
-                $data['parameters'] ?? []
-            ),
-            array_combine(
-                $methods = array_filter(
-                    array_keys($data),
-                    static fn (string $method) => in_array(
-                        $method,
-                        ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'],
-                        true,
-                    ),
-                ),
-                array_map(
-                    fn (string $method) => Operation::build($parameters, $data[$method]),
-                    $methods,
-                ),
-            )
-        );
+        if (!is_array($data)) {
+            throw new Exception('PathItem objects must be arrays.');
+        }
+
+        $parameters = [];
+        if (isset($data['parameters'])) {
+            if (!is_array($data['parameters'])) {
+                throw new Exception('PathItem parameters must be an array.');
+            }
+            foreach ($data['parameters'] as $parameterData) {
+                if (!is_array($parameterData)) {
+                    throw new Exception('Parameter or Reference objects must be arrays.');
+                }
+                $parameters[] = isset($parameterData['$ref']) ?
+                    Reference::build($parameterData) :
+                    Parameter::build($parameterData);
+            }
+        }
+
+        $operations = [];
+        foreach (['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'] as $method) {
+            if (isset($data[$method])) {
+                $operations[$method] = Operation::build($parameters, $data[$method]);
+            }
+        }
+
+        return new self($parameters, $operations);
     }
 
+    /**
+     * @param array<Reference|Parameter> $parameters
+     * @param array<string, Operation> $operations
+     */
     private function __construct(
-        /** @var array<Reference|Parameter> */
         public readonly array $parameters,
-        /** @var array<string, Operation> */
         public readonly array $operations,
     ) {
     }

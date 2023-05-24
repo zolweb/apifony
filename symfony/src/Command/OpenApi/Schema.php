@@ -5,11 +5,9 @@ namespace App\Command\OpenApi;
 class Schema
 {
     /**
-     * @param array<mixed> $data
-     *
      * @throws Exception
      */
-    public static function build(array $data): self
+    public static function build(mixed $data): self
     {
         if (!isset($data['type'])) {
             throw new Exception('Schemas without type are not supported.');

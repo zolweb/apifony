@@ -18,7 +18,7 @@ class Paths
             if ($route[0] !== '/') {
                 throw new Exception('Paths array keys must start with a slash.');
             }
-            $pathItems[] = PathItem::build($pathItemData);
+            $pathItems[$route] = PathItem::build($pathItemData);
         }
 
         return new self($pathItems);

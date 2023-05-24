@@ -5,12 +5,11 @@ namespace App\Command\OpenApi;
 class Operation
 {
     /**
-     * @param array<Parameter> $pathItemParameters
-     * @param array<mixed> $data
+     * @param array<Reference|Parameter> $pathItemParameters
      *
      * @throws Exception
      */
-    public static function build(array $pathItemParameters, array $data): self
+    public static function build(array $pathItemParameters, mixed $data): self
     {
         $operationParameters = array_map(
             fn (array $parameterData) => isset($parameterData['$ref']) ?
