@@ -46,6 +46,14 @@ class Controller implements File
     ) {
     }
 
+    /**
+     * @return array<Action>
+     */
+    public function getActions(): array
+    {
+        return $this->actions;
+    }
+
     public function getBundleNamespace(): string
     {
         return $this->bundleNamespace;

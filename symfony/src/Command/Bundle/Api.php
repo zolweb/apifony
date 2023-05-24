@@ -14,9 +14,13 @@ class Api
         OpenApi $openApi,
     ): self {
         $aggregates = [];
-        foreach ($openApi->paths?->pathItems ?? [] as $pathItem) {
-            foreach ($pathItem->operations as $operation) {
-                $aggregates[$operation->tags[0] ?? 'default'][] = $operation;
+        foreach ($openApi->paths?->pathItems ?? [] as $route => $pathItem) {
+            foreach ($pathItem->operations as $method => $operation) {
+                $aggregates[$operation->tags[0] ?? 'default'][] = [
+                    'route' => $route,
+                    'method' => $method,
+                    'operation' => $operation,
+                ];
             }
         }
 

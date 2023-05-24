@@ -16,11 +16,15 @@ class Action
     public static function build(
         string $bundleNamespace,
         string $aggregateName,
+        string $route,
+        string $method,
         Operation $operation,
         Components $components,
     ): self {
         return new self(
             $className = u($operation->operationId)->camel(),
+            $route,
+            $method,
             $parameters = self::buildParameters($className, $operation, $components),
             $requestBodies = self::buildRequestBodies($bundleNamespace, $aggregateName, $className, $operation, $components),
             $requestBodyPayloadTypes = self::buildRequestBodyPayloadTypes($requestBodies),
@@ -47,6 +51,8 @@ class Action
      */
     private function __construct(
         private readonly string $name,
+        private readonly string $route,
+        private readonly string $method,
         private readonly array $parameters,
         private readonly array $requestBodies,
         private readonly array $requestBodyPayloadTypes,
@@ -58,6 +64,21 @@ class Action
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function getServiceName(): string
+    {
+        return u($this->name)->snake();
+    }
+
+    public function getRoute(): string
+    {
+        return $this->route;
+    }
+
+    public function getMethod(): string
+    {
+        return $this->method;
     }
 
     /**

@@ -9,7 +9,7 @@ use function Symfony\Component\String\u;
 class Aggregate
 {
     /**
-     * @param array<Operation> $operations
+     * @param array<array{route: string, method: string, operation: Operation}> $operations
      *
      * @throws Exception
      */
@@ -27,8 +27,15 @@ class Aggregate
                 $bundleNamespace,
                 $name,
                 $actions = array_map(
-                    static fn (Operation $operation) =>
-                        Action::build($bundleNamespace, $name, $operation, $components),
+                    static fn (array $operation) =>
+                        Action::build(
+                            $bundleNamespace,
+                            $name,
+                            $operation['route'],
+                            $operation['method'],
+                            $operation['operation'],
+                            $components,
+                        ),
                     $operations,
                 ),
             ),

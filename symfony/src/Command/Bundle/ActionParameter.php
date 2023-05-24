@@ -115,4 +115,9 @@ class ActionParameter
     {
         return $this->parameter->required;
     }
+
+    public function getRouteRequirementPattern(): string
+    {
+        return $this->type->getRouteRequirementPattern();
+    }
 }

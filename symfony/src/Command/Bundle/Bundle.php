@@ -26,7 +26,8 @@ class Bundle implements File
             $namespace,
             self::buildFormats($namespace, $openApi),
             self::buildModels($namespace, $openApi),
-            Api::build($namespace, $openApi),
+            $api = Api::build($namespace, $openApi),
+            RoutesConfig::build($namespace, $api),
         );
     }
 
@@ -40,6 +41,7 @@ class Bundle implements File
         private readonly array $formats,
         private readonly array $models,
         private readonly Api $api,
+        private readonly RoutesConfig $routesConfig,
     ) {
     }
 
@@ -48,7 +50,10 @@ class Bundle implements File
      */
     public function getFiles(): array
     {
-        $files = [$this];
+        $files = [
+            $this,
+            $this->routesConfig,
+        ];
 
         foreach ($this->formats as $format) {
             foreach ($format->getFiles() as $file) {

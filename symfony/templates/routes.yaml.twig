@@ -1,14 +1,19 @@
-{%~ for operation in paths.allSortedOperations %}
-{{ namespace|u.snake }}_{{ operation.operationId|u.snake }}:
-    path: {{ operation.pathItem.route }}
-    {%~ if operation.allSortedParameters(['path']) %}
+{%~ for controller in routes.controllers %}
+    {%~ for action in controller.actions %}
+{{ routes.serviceNamespace }}_{{ action.serviceName }}:
+    path: {{ action.route }}
+    {%~ if action.parameters(['path']) %}
     requirements:
-        {%~ for param in operation.allSortedParameters(['path']) %}
-        {{ param.name }}: '{{ param.schema.type.routeRequirementPattern|e('phpSingleQuotedString') }}'
+        {%~ for param in action.parameters(['path']) %}
+        {{ param.rawName }}: '{{ param.routeRequirementPattern }}'
         {%~ endfor %}
     {%~ endif %}
-    methods: {{ operation.method }}
-    controller: {{ namespace }}\Controller\{{ (operation.tags[0] ?? 'Default')|u.camel.title }}\{{ (operation.tags[0] ?? 'Default')|u.camel.title }}Controller::{{ operation.operationId|u.camel }}
+    methods: {{ action.method }}
+    controller: {{ controller.namespace }}\{{ controller.className }}::{{ action.name }}
+        {%~ if not loop.last %}
+
+        {%~ endif %}
+    {%~ endfor %}
     {%~ if not loop.last %}
 
     {%~ endif %}
