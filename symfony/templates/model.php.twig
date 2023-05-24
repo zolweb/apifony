@@ -1,7 +1,7 @@
 {% autoescape false %}
 <?php
 
-namespace {{ model.namespace }}\Schema;
+namespace {{ model.namespace }};
 
 use Symfony\Component\Validator\Constraints as Assert;
 {% for constraintName in model.usedFormatConstraintNames %}

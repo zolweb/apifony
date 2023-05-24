@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Payload\Schema;
+namespace App\Zol\Invoicing\Presentation\Api\Bundle\Model;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F25 as AssertF25;

@@ -22,7 +22,7 @@ class Action
         return new self(
             $className = u($operation->operationId)->camel(),
             $parameters = self::buildParameters($className, $operation, $components),
-            $requestBodies = self::buildRequestBodies($className, $operation, $components),
+            $requestBodies = self::buildRequestBodies($bundleNamespace, $aggregateName, $className, $operation, $components),
             $requestBodyPayloadTypes = self::buildRequestBodyPayloadTypes($requestBodies),
             $responseContentTypes = self::buildResponseContentTypes($operation, $components),
             self::buildCases(
@@ -126,6 +126,11 @@ class Action
                 $files[] = $response;
             }
         }
+        foreach ($this->requestBodies as $requestBody) {
+            foreach ($requestBody->getPayloadModels() as $payloadModel) {
+                $files[] = $payloadModel;
+            }
+        }
 
         return $files;
     }
@@ -168,6 +173,8 @@ class Action
      * @throws Exception
      */
     private static function buildRequestBodies(
+        string $bundleNamespace,
+        string $aggregateName,
         string $actionClassName,
         Operation $operation,
         Components $components,
@@ -181,6 +188,8 @@ class Action
 
         if ($requestBody === null || !$requestBody->required) {
             $requestBodies[] = ActionRequestBody::build(
+                $bundleNamespace,
+                $aggregateName,
                 $actionClassName,
                 null,
                 null,
@@ -193,6 +202,8 @@ class Action
                 throw new Exception('MediaTypes without schema are not supported.');
             }
             $requestBodies[] = ActionRequestBody::build(
+                $bundleNamespace,
+                $aggregateName,
                 $actionClassName,
                 $mimeType,
                 $mediaType,

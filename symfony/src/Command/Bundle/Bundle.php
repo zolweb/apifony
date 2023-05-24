@@ -158,7 +158,14 @@ class Bundle
             }
             if (!isset($models[$rawName])) {
                 if ($schema->type === 'object') {
-                    $models[$rawName] = Model::build($namespace, $rawName, $schema, $openApi->components);
+                    $models[$rawName] = Model::build(
+                        $namespace,
+                        "{$namespace}\Model",
+                        "src/Model",
+                        $rawName,
+                        $schema,
+                        $openApi->components,
+                    );
                     foreach ($schema->properties as $propertyName => $property) {
                         $addModels("{$rawName}_{$propertyName}", $property);
                     }

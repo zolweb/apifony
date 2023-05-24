@@ -13,6 +13,8 @@ class Model implements File
      */
     public static function build(
         string $bundleNamespace,
+        string $namespace,
+        string $folder,
         string $rawName,
         Schema $schema,
         Components $components,
@@ -49,6 +51,8 @@ class Model implements File
 
         return new self(
             $bundleNamespace,
+            $namespace,
+            $folder,
             $className,
             $attributes,
             array_keys($usedFormatConstraintNames),
@@ -61,12 +65,17 @@ class Model implements File
      */
     private function __construct(
         private readonly string $bundleNamespace,
+        private readonly string $namespace,
+        private readonly string $folder,
         private readonly string $className,
         private readonly array $attributes,
         private readonly array $usedFormatConstraintNames,
     ) {
     }
 
+    /**
+     * @return string
+     */
     public function getBundleNamespace(): string
     {
         return $this->bundleNamespace;
@@ -93,7 +102,7 @@ class Model implements File
 
     public function getNamespace(): string
     {
-        return "{$this->bundleNamespace}\Payload";
+        return $this->namespace;
     }
 
     public function getClassName(): string
@@ -111,7 +120,7 @@ class Model implements File
 
     public function getFolder(): string
     {
-        return 'src/Model';
+        return $this->folder;
     }
 
     public function getName(): string
