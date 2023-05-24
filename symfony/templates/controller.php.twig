@@ -11,8 +11,8 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use {{ controller.bundleNamespace }}\Api\AbstractController;
-{% for usedFile in controller.usedPhpClassFiles %}
-use {{ usedFile.namespace }}\{{ usedFile.className }};
+{% for constraintName in controller.usedFormatConstraintNames %}
+use {{ controller.bundleNamespace }}\Format\{{ constraintName }} as Assert{{ constraintName }};
 {% endfor %}
 
 class {{ controller.className }} extends AbstractController

@@ -75,7 +75,7 @@ class BooleanType implements Type
         }
 
         if ($this->schema->format !== null) {
-            $constraints[] = new Constraint(sprintf('Assert%s', u($this->schema->format)->camel()->title()), []);
+            $constraints[] = new Constraint(sprintf('Assert%s', u($this->schema->format)->camel()->title()), [], $this->schema->format);
         }
 
         if ($this->schema->enum !== null) {

@@ -3,10 +3,10 @@
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Payload\Schema;
 
 use Symfony\Component\Validator\Constraints as Assert;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F25 as AssertF25;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F21 as AssertF21;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F22 as AssertF22;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F23 as AssertF23;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F25 as AssertF25;
 
 class Test
 {

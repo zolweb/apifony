@@ -2,7 +2,6 @@
 
 namespace App\Command\Bundle;
 
-use App\Command\OpenApi\Components;
 use App\Command\OpenApi\Header;
 use App\Command\OpenApi\OpenApi;
 use App\Command\OpenApi\Parameter;
@@ -10,11 +9,8 @@ use App\Command\OpenApi\Reference;
 use App\Command\OpenApi\RequestBody;
 use App\Command\OpenApi\Response;
 use App\Command\OpenApi\Schema;
-use Twig\Extension\AbstractExtension;
-use Twig\TwigFilter;
-use function Symfony\Component\String\u;
 
-class Bundle // extends AbstractExtension
+class Bundle
 {
     /**
      * @throws Exception
@@ -24,9 +20,9 @@ class Bundle // extends AbstractExtension
         OpenApi $openApi,
     ): self {
         return new self(
-            $formats = self::buildFormats($namespace, $openApi),
-            $models = self::buildModels($namespace, $openApi, $formats),
-            Api::build($namespace, $openApi, $formats, $models),
+            self::buildFormats($namespace, $openApi),
+            self::buildModels($namespace, $openApi),
+            Api::build($namespace, $openApi),
         );
     }
 
@@ -150,21 +146,19 @@ class Bundle // extends AbstractExtension
     }
 
     /**
-     * @param array<string, Format> $formats
-     *
      * @return array<Model>
      *
      * @throws Exception
      */
-    private static function buildModels(string $namespace, OpenApi $openApi, array $formats): array
+    private static function buildModels(string $namespace, OpenApi $openApi): array
     {
-        $addModels = function(string $rawName, Reference|Schema $schema) use (&$addModels, &$models, $namespace, $openApi, $formats) {
+        $addModels = function(string $rawName, Reference|Schema $schema) use (&$addModels, &$models, $namespace, $openApi) {
             if ($schema instanceof Reference) {
                 $schema = $openApi->components->schemas[$rawName = $schema->getName()];
             }
             if (!isset($models[$rawName])) {
                 if ($schema->type === 'object') {
-                    $models[$rawName] = Model::build($namespace, $rawName, $schema, $openApi->components, $formats);
+                    $models[$rawName] = Model::build($namespace, $rawName, $schema, $openApi->components);
                     foreach ($schema->properties as $propertyName => $property) {
                         $addModels("{$rawName}_{$propertyName}", $property);
                     }

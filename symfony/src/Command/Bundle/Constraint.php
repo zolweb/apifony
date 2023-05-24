@@ -2,12 +2,39 @@
 
 namespace App\Command\Bundle;
 
+use function Symfony\Component\String\u;
+
 class Constraint
 {
     public function __construct(
         private readonly string $name,
         private readonly array $parameters,
+        private readonly ?string $formatName = null,
     ) {
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function getFormatConstraintClassNames(): array
+    {
+        $formatConstraintNames = [];
+
+        if ($this->formatName !== null) {
+            $formatConstraintNames[] =  (string) u($this->formatName)->camel()->title();
+        }
+
+        foreach ($this->parameters as $parameter) {
+            if (is_array($parameter)) {
+                foreach ($parameter as $value) {
+                    if ($value instanceof Constraint && $value->formatName !== null) {
+                        $formatConstraintNames[] = (string) u($value->formatName)->camel()->title();
+                    }
+                }
+            }
+        }
+
+        return $formatConstraintNames;
     }
 
     public function getInstantiation(int $indentation): string

@@ -73,6 +73,9 @@ class ModelAttribute
         return $this->variableName;
     }
 
+    /**
+     * @return array<Constraint>
+     */
     public function getConstraints(): array
     {
         return $this->type->getConstraints();

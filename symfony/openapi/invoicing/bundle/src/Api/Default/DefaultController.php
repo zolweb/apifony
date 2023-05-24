@@ -10,6 +10,21 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Api\AbstractController;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\Format as AssertFormat;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F1 as AssertF1;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F2 as AssertF2;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F3 as AssertF3;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F4 as AssertF4;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F5 as AssertF5;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F6 as AssertF6;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F7 as AssertF7;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F9 as AssertF9;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F10 as AssertF10;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F13 as AssertF13;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F12 as AssertF12;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F14 as AssertF14;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F15 as AssertF15;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F16 as AssertF16;
 
 class DefaultController extends AbstractController
 {
@@ -221,7 +236,7 @@ class DefaultController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     'application/json' =>
                         $this->handler->GetClientFromEmptyPayloadToApplicationJsonContent(
                             $pclientId,
@@ -246,7 +261,7 @@ class DefaultController extends AbstractController
 
                 break;
             case is_int($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     'application/json' =>
                         $this->handler->GetClientFromIntegerPayloadToApplicationJsonContent(
                             $pclientId,
@@ -274,9 +289,9 @@ class DefaultController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
             case 'application/json':
-                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -418,7 +433,7 @@ class DefaultController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     'application/json' =>
                         $this->handler->PostClientClientIdParam1Param2Param3Param4Param5Param6FromEmptyPayloadToApplicationJsonContent(
                             $pclientId,
@@ -441,9 +456,9 @@ class DefaultController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
             case 'application/json':
-                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -857,7 +872,7 @@ class DefaultController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     'application/json' =>
                         $this->handler->PostTestFromEmptyPayloadToApplicationJsonContent(
                             $pp1,
@@ -888,7 +903,7 @@ class DefaultController extends AbstractController
 
                 break;
             case $requestBodyPayload instanceOf PostTestApplicationJsonRequestBodyPayload:
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     'application/json' =>
                         $this->handler->PostTestFromPostTestApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
                             $pp1,
@@ -922,9 +937,9 @@ class DefaultController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
             case 'application/json':
-                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }

@@ -62,7 +62,7 @@ class UserController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     'application/json' =>
                         $this->handler->CreateUserFromEmptyPayloadToApplicationJsonContent(
                         ),
@@ -77,7 +77,7 @@ class UserController extends AbstractController
 
                 break;
             case $requestBodyPayload instanceOf CreateUserApplicationJsonRequestBodyPayload:
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     'application/json' =>
                         $this->handler->CreateUserFromCreateUserApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
                             $requestBodyPayload,
@@ -95,9 +95,9 @@ class UserController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
             case 'application/json':
-                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -150,7 +150,7 @@ class UserController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     null =>
                         $this->handler->CreateUsersWithListInputFromEmptyPayloadToContent(
                         ),
@@ -168,7 +168,7 @@ class UserController extends AbstractController
 
                 break;
             case is_array($requestBodyPayload) && $requestBodyPayload instanceOf User:
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     null =>
                         $this->handler->CreateUsersWithListInputFromUserArrayPayloadToContent(
                             $requestBodyPayload,
@@ -190,11 +190,11 @@ class UserController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
             case null:
-                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+                return new Response('', $response::CODE, $response->getHeaders());
             case 'application/json':
-                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -263,7 +263,7 @@ class UserController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     'application/json' =>
                         $this->handler->LoginUserFromEmptyPayloadToApplicationJsonContent(
                             $qusername,
@@ -287,11 +287,11 @@ class UserController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
             case 'application/json':
-                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             case null:
-                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -334,7 +334,7 @@ class UserController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     null =>
                         $this->handler->LogoutUserFromEmptyPayloadToContent(
                         ),
@@ -351,9 +351,9 @@ class UserController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
             case null:
-                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -410,7 +410,7 @@ class UserController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     'application/json' =>
                         $this->handler->GetUserByNameFromEmptyPayloadToApplicationJsonContent(
                             $pusername,
@@ -432,11 +432,11 @@ class UserController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
             case 'application/json':
-                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             case null:
-                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -498,7 +498,7 @@ class UserController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     null =>
                         $this->handler->UpdateUserFromEmptyPayloadToContent(
                             $pusername,
@@ -514,7 +514,7 @@ class UserController extends AbstractController
 
                 break;
             case $requestBodyPayload instanceOf UpdateUserApplicationJsonRequestBodyPayload:
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     null =>
                         $this->handler->UpdateUserFromUpdateUserApplicationJsonRequestBodyPayloadPayloadToContent(
                             $pusername,
@@ -533,9 +533,9 @@ class UserController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
             case null:
-                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -592,7 +592,7 @@ class UserController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     null =>
                         $this->handler->DeleteUserFromEmptyPayloadToContent(
                             $pusername,
@@ -610,9 +610,9 @@ class UserController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
             case null:
-                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }

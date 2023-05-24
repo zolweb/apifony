@@ -3,15 +3,12 @@
 namespace App\Command\Bundle;
 
 use App\Command\OpenApi\Components;
-use App\Command\OpenApi\Reference;
 use App\Command\OpenApi\Schema;
 use function Symfony\Component\String\u;
 
 class Model implements File
 {
     /**
-     * @param array<string, Format> $formats
-     *
      * @throws Exception
      */
     public static function build(
@@ -19,7 +16,6 @@ class Model implements File
         string $rawName,
         Schema $schema,
         Components $components,
-        array $formats,
     ): self {
         $className = u($rawName)->camel()->title();
 
@@ -42,21 +38,11 @@ class Model implements File
                 ($ordinals[$attr1->getRawName()] - $ordinals[$attr2->getRawName()]),
         );
 
-        $usedFormatConstraints = [];
-        foreach ($schema->properties as $property) {
-            if ($property instanceof Reference) {
-                $property = $components->schemas[$property->getName()];
-            }
-            if ($property->format !== null) {
-                $usedFormatConstraints[] = $formats[$property->format]->getConstraint();
-            }
-            if ($property->items !== null) {
-                $items = $property->items;
-                if ($items instanceof Reference) {
-                    $items = $components->schemas[$items->getName()];
-                }
-                if ($items->format !== null) {
-                    $usedFormatConstraints[] = $formats[$items->format]->getConstraint();
+        $usedFormatConstraintNames = [];
+        foreach ($attributes as $attribute) {
+            foreach ($attribute->getConstraints() as $constraint) {
+                foreach ($constraint->getFormatConstraintClassNames() as $constraintName) {
+                    $usedFormatConstraintNames[$constraintName] = true ;
                 }
             }
         }
@@ -65,20 +51,25 @@ class Model implements File
             $bundleNamespace,
             $className,
             $attributes,
-            $usedFormatConstraints,
+            array_keys($usedFormatConstraintNames),
         );
     }
 
     /**
      * @param array<ModelAttribute> $attributes
-     * @param array<FormatConstraint> $usedFormatConstraints
+     * @param array<string> $usedFormatConstraintNames
      */
     private function __construct(
         private readonly string $bundleNamespace,
         private readonly string $className,
         private readonly array $attributes,
-        private readonly array $usedFormatConstraints,
+        private readonly array $usedFormatConstraintNames,
     ) {
+    }
+
+    public function getBundleNamespace(): string
+    {
+        return $this->bundleNamespace;
     }
 
     /**
@@ -113,9 +104,9 @@ class Model implements File
     /**
      * @return array<FormatConstraint>
      */
-    public function getUsedFormatConstraints(): array
+    public function getUsedFormatConstraintNames(): array
     {
-        return $this->usedFormatConstraints;
+        return $this->usedFormatConstraintNames;
     }
 
     public function getFolder(): string

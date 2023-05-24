@@ -10,6 +10,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Api\AbstractController;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\Int64 as AssertInt64;
 
 class StoreController extends AbstractController
 {
@@ -57,7 +58,7 @@ class StoreController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     'application/json' =>
                         $this->handler->GetInventoryFromEmptyPayloadToApplicationJsonContent(
                         ),
@@ -74,9 +75,9 @@ class StoreController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
             case 'application/json':
-                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -124,7 +125,7 @@ class StoreController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     'application/json' =>
                         $this->handler->PlaceOrderFromEmptyPayloadToApplicationJsonContent(
                         ),
@@ -142,7 +143,7 @@ class StoreController extends AbstractController
 
                 break;
             case $requestBodyPayload instanceOf PlaceOrderApplicationJsonRequestBodyPayload:
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     'application/json' =>
                         $this->handler->PlaceOrderFromPlaceOrderApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
                             $requestBodyPayload,
@@ -164,11 +165,11 @@ class StoreController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
             case 'application/json':
-                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             case null:
-                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -226,7 +227,7 @@ class StoreController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     'application/json' =>
                         $this->handler->GetOrderByIdFromEmptyPayloadToApplicationJsonContent(
                             $porderId,
@@ -248,11 +249,11 @@ class StoreController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
             case 'application/json':
-                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             case null:
-                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -310,7 +311,7 @@ class StoreController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     null =>
                         $this->handler->DeleteOrderFromEmptyPayloadToContent(
                             $porderId,
@@ -328,9 +329,9 @@ class StoreController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
             case null:
-                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }

@@ -10,6 +10,7 @@ use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Api\AbstractController;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Format\Int64 as AssertInt64;
 
 class PetController extends AbstractController
 {
@@ -57,7 +58,7 @@ class PetController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case $requestBodyPayload instanceOf UpdatePetApplicationJsonRequestBodyPayload:
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     'application/json' =>
                         $this->handler->UpdatePetFromUpdatePetApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
                             $requestBodyPayload,
@@ -79,11 +80,11 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
             case 'application/json':
-                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             case null:
-                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -126,7 +127,7 @@ class PetController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case $requestBodyPayload instanceOf AddPetApplicationJsonRequestBodyPayload:
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     'application/json' =>
                         $this->handler->AddPetFromAddPetApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
                             $requestBodyPayload,
@@ -148,11 +149,11 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
             case 'application/json':
-                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             case null:
-                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -213,7 +214,7 @@ class PetController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     'application/json' =>
                         $this->handler->FindPetsByStatusFromEmptyPayloadToApplicationJsonContent(
                             $qstatus,
@@ -235,11 +236,11 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
             case 'application/json':
-                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             case null:
-                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -295,7 +296,7 @@ class PetController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     'application/json' =>
                         $this->handler->FindPetsByTagsFromEmptyPayloadToApplicationJsonContent(
                             $qtags,
@@ -317,11 +318,11 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
             case 'application/json':
-                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             case null:
-                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -379,7 +380,7 @@ class PetController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     'application/json' =>
                         $this->handler->GetPetByIdFromEmptyPayloadToApplicationJsonContent(
                             $ppetId,
@@ -401,11 +402,11 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
             case 'application/json':
-                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             case null:
-                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -489,7 +490,7 @@ class PetController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     null =>
                         $this->handler->UpdatePetWithFormFromEmptyPayloadToContent(
                             $ppetId,
@@ -509,9 +510,9 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
             case null:
-                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -582,7 +583,7 @@ class PetController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     null =>
                         $this->handler->DeletePetFromEmptyPayloadToContent(
                             $hapiKey,
@@ -601,9 +602,9 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
             case null:
-                return new Response('', $responsePayload::CODE, $responsePayload->getHeaders());
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -674,7 +675,7 @@ class PetController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $responsePayload = match ($responsePayloadContentType) {
+                $response = match ($responsePayloadContentType) {
                     'application/json' =>
                         $this->handler->UploadFileFromEmptyPayloadToApplicationJsonContent(
                             $ppetId,
@@ -693,9 +694,9 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-        switch ($responsePayload::CONTENT_TYPE) {
+        switch ($response::CONTENT_TYPE) {
             case 'application/json':
-                return new JsonResponse($responsePayload->payload, $responsePayload::CODE, $responsePayload->getHeaders());
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }

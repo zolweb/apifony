@@ -13,26 +13,50 @@ class Controller implements File
         array $actions,
         Handler $handler,
     ): self {
+        $usedFormatConstraintNames = [];
+        foreach ($actions as $action) {
+            foreach ($action->getParameters() as $parameter) {
+                foreach ($parameter->getConstraints() as $constraint) {
+                    foreach ($constraint->getFormatConstraintClassNames() as $constraintName) {
+                        $usedFormatConstraintNames[$constraintName] = true;
+                    }
+                }
+            }
+        }
+
         return new self(
             $handler,
             $actions,
             $bundleNamespace,
             $aggregateName,
+            array_keys($usedFormatConstraintNames),
         );
     }
 
+    /**
+     * @param array<Action> $actions
+     * @param array<string> $usedFormatConstraintNames
+     */
     private function __construct(
         public readonly Handler $handler,
-        /** @var array<Action> */
         public readonly array $actions,
         private readonly string $bundleNamespace,
         private readonly string $aggregateName,
+        private readonly array $usedFormatConstraintNames,
     ) {
     }
 
     public function getBundleNamespace(): string
     {
         return $this->bundleNamespace;
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function getUsedFormatConstraintNames(): array
+    {
+        return $this->usedFormatConstraintNames;
     }
 
     public function getNamespace(): string
@@ -43,11 +67,6 @@ class Controller implements File
     public function getClassName(): string
     {
         return "{$this->aggregateName}Controller";
-    }
-
-    public function getUsedPhpClassFiles(): array
-    {
-        return [];
     }
 
     public function getFolder(): string

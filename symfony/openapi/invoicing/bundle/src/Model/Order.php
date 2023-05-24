@@ -4,7 +4,6 @@ namespace App\Zol\Invoicing\Presentation\Api\Bundle\Payload\Schema;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Format\Int64 as AssertInt64;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\Int64 as AssertInt64;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Format\Int32 as AssertInt32;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Format\DateTime as AssertDateTime;
 
