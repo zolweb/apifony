@@ -35,14 +35,7 @@ class ActionRequestBody
                 $schema = $components->schemas[$schema->getName()];
                 $hasModel = false;
             }
-            $payloadType = match ($schema->type) {
-                'string' => new StringType($schema),
-                'integer' => new IntegerType($schema),
-                'number' => new NumberType($schema),
-                'boolean' => new BooleanType($schema),
-                'object' => new ObjectType($schema, $className, $components),
-                'array' => new ArrayType($schema, $className, $components),
-            };
+            $payloadType = TypeFactory::build($className, $schema, $components);
 
             if ($hasModel) {
                 $addModels = function(string $rawName, Reference|Schema $schema) use (&$addModels, &$payloadModels, $bundleNamespace, $aggregateName, $className, $components) {

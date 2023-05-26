@@ -24,18 +24,15 @@ class ActionResponseHeader
         if ($schema instanceof Reference) {
             $schema = $components->schemas[$schema->getName()];
         }
+        $type = TypeFactory::build('', $schema, $components);
+        if ($type instanceof ObjectType) {
+            throw new Exception('Headers of object type are not supported.');
+        }
+        if ($type instanceof ArrayType) {
+            throw new Exception('Headers of array type are not supported.');
+        }
 
-        return new self(
-            $name,
-            match ($schema->type) {
-                'string' => new StringType($schema),
-                'integer' => new IntegerType($schema),
-                'number' => new NumberType($schema),
-                'boolean' => new BooleanType($schema),
-                'object' => throw new Exception('Headers of object type are not supported.'),
-                'array' => throw new Exception('Headers of array type are not supported.'),
-            },
-        );
+        return new self($name, $type);
     }
 
     private function __construct(

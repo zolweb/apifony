@@ -29,14 +29,7 @@ class ModelAttribute
             $rawName,
             $variableName,
             $property,
-            match ($property->type) {
-                'string' => new StringType($property),
-                'integer' => new IntegerType($property),
-                'number' => new NumberType($property),
-                'boolean' => new BooleanType($property),
-                'object' => new ObjectType($property, $className, $components),
-                'array' => new ArrayType($property, $className, $components),
-            },
+            TypeFactory::build($className, $property, $components),
         );
     }
 

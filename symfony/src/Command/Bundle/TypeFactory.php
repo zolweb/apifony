@@ -1,0 +1,45 @@
+<?php
+
+namespace App\Command\Bundle;
+
+use App\Command\OpenApi\Components;
+use App\Command\OpenApi\Schema;
+
+class TypeFactory
+{
+    /**
+     * @throws Exception
+     */
+    public static function build(string $className, Schema $schema, Components $components): Type
+    {
+        $nullable = false;
+        if (is_array($schema->type)) {
+            if (count($schema->type) === 0) {
+                throw new Exception('Schemas without type are not supported.');
+            } elseif (count($schema->type) === 1) {
+                $type = $schema->type[0];
+            } else {
+                if (count($schema->type) > 2 || !in_array('null', $schema->type, true)) {
+                    throw new Exception('Schemas with multiple types (but \'null\') are not supported.');
+                }
+                $nullable = true;
+                $type = $schema->type[(int)($schema->type[0] === 'null')];
+            }
+        } else {
+            $type = $schema->type;
+        }
+
+        if ($type === 'null') {
+            throw new Exception('Schemas with null type only are not supported.');
+        }
+
+        return match ($schema->type) {
+            'string' => new StringType($schema, $nullable),
+            'integer' => new IntegerType($schema, $nullable),
+            'number' => new NumberType($schema, $nullable),
+            'boolean' => new BooleanType($schema, $nullable),
+            'object' => new ObjectType($schema, $nullable, $className, $components),
+            'array' => new ArrayType($schema, $nullable, $className, $components),
+        };
+    }
+}

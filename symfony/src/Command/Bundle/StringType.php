@@ -9,6 +9,7 @@ class StringType implements Type
 {
     public function __construct(
         private readonly Schema $schema,
+        private readonly bool $nullable,
     ) {
     }
 
@@ -71,7 +72,7 @@ class StringType implements Type
     {
         $constraints = [];
 
-        if (!$this->schema->nullable) {
+        if (!$this->nullable) {
             $constraints[] = new Constraint('Assert\NotNull', []);
         }
 

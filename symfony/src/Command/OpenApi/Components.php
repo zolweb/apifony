@@ -22,9 +22,6 @@ class Components
                 if (!is_string($name)) {
                     throw new Exception('Component schemas array keys must be strings');
                 }
-                if (!preg_match('/^[a-zA-Z0-9.\-_]+$/', $name)) {
-                    throw new Exception('Component schemas array keys must match ^[a-zA-Z0-9.\-_]+$.');
-                }
 
                 $schemas[$name] = Schema::build($schemaData);
             }
@@ -38,9 +35,6 @@ class Components
             foreach ($data['responses'] as $name => $responseData) {
                 if (!is_string($name)) {
                     throw new Exception('Component responses array keys must be strings');
-                }
-                if (!preg_match('/^[a-zA-Z0-9.\-_]+$/', $name)) {
-                    throw new Exception('Component responses array keys must match ^[a-zA-Z0-9.\-_]+$.');
                 }
 
                 $responses[$name] = Response::build($responseData);
@@ -56,9 +50,6 @@ class Components
                 if (!is_string($name)) {
                     throw new Exception('Component parameters array keys must be strings');
                 }
-                if (!preg_match('/^[a-zA-Z0-9.\-_]+$/', $name)) {
-                    throw new Exception('Component parameters array keys must match ^[a-zA-Z0-9.\-_]+$.');
-                }
 
                 $parameters[$name] = Parameter::build($parameterData);
             }
@@ -73,9 +64,6 @@ class Components
                 if (!is_string($name)) {
                     throw new Exception('Component requestBodies array keys must be strings');
                 }
-                if (!preg_match('/^[a-zA-Z0-9.\-_]+$/', $name)) {
-                    throw new Exception('Component requestBodies array keys must match ^[a-zA-Z0-9.\-_]+$.');
-                }
 
                 $requestBodies[$name] = RequestBody::build($requestBodyData);
             }
@@ -89,9 +77,6 @@ class Components
             foreach ($data['headers'] as $name => $headerData) {
                 if (!is_string($name)) {
                     throw new Exception('Component headers array keys must be strings');
-                }
-                if (!preg_match('/^[a-zA-Z0-9.\-_]+$/', $name)) {
-                    throw new Exception('Component headers array keys must match ^[a-zA-Z0-9.\-_]+$.');
                 }
 
                 $headers[$name] = Header::build($headerData);

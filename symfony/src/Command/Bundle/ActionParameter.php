@@ -30,14 +30,7 @@ class ActionParameter
         return new self(
             $variableName,
             $parameter,
-            match ($parameter->schema->type) {
-                'string' => new StringType($parameter->schema),
-                'integer' => new IntegerType($parameter->schema),
-                'number' => new NumberType($parameter->schema),
-                'boolean' => new BooleanType($parameter->schema),
-                'object' => new ObjectType($parameter->schema, $className, $components),
-                'array' => new ArrayType($parameter->schema, $className, $components),
-            },
+            TypeFactory::build($className, $parameter->schema->type, $components),
         );
     }
 

@@ -2,14 +2,12 @@
 
 namespace App\Command\OpenApi;
 
-use RuntimeException;
-
 class Reference
 {
     /**
      * @throws Exception
      */
-    public static function build(mixed $data, ?Components $components): self
+    public static function build(mixed $data): self
     {
         if (!is_array($data)) {
             throw new Exception('Reference objects must be arrays.');
@@ -23,22 +21,6 @@ class Reference
         if (preg_match('%^#/components/(schemas|responses|parameters|requestBodies|headers)/[a-zA-Z0-9.\-_]+$%', $data['ref']) !== false) {
             // TODO Be less strict here in OpenApi package, and do the check in Bundle package ?
             throw new Exception('Reference object $ref attribute with format not matching ^#/components/(schemas|responses|parameters|requestBodies|headers)/[a-zA-Z0-9.\-_]+$ as not supported');
-        }
-        if (is_null($components)) {
-            throw new Exception('Reference object $ref attribute must point to an existing component.');
-        }
-
-        [,, $type, $name] = explode('/', $data['$ref']);
-        $typedComponents = match ($type) {
-            'schemas' => $components->schemas,
-            'responses' => $components->responses,
-            'parameters' => $components->parameters,
-            'requestBodies' => $components->requestBodies,
-            'headers' => $components->headers,
-            default => throw new RuntimeException(),
-        };
-        if (!isset($typedComponents[$name])) {
-            throw new Exception('Reference object $ref attribute must point to an existing component.');
         }
 
         return new self($data['$ref']);

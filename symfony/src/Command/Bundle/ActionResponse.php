@@ -34,15 +34,7 @@ class ActionResponse implements File
             $className = u(sprintf('%s_%s_%s', $actionName, $code, $contentType ?? 'Empty'))->camel()->title(),
             $code,
             $contentType,
-            match ($payload->type ?? 'null') {
-                'string' => new StringType($payload),
-                'integer' => new IntegerType($payload),
-                'number' => new NumberType($payload),
-                'boolean' => new BooleanType($payload),
-                'object' => new ObjectType($payload, $className, $components),
-                'array' => new ArrayType($payload, $className, $components),
-                'null' => null,
-            },
+            TypeFactory::build($className, $payload, $components),
             array_map(
                 static fn (string $name) =>
                     ActionResponseHeader::build($name, $response->headers[$name], $components),

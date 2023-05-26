@@ -11,6 +11,7 @@ class ObjectType implements Type
 {
     public function __construct(
         private readonly Schema $schema,
+        private readonly bool $nullable,
         private readonly string $name,
         private readonly Components $components,
     ) {
@@ -106,7 +107,7 @@ class ObjectType implements Type
     {
         $constraints = [new Constraint('Assert\Valid', [])];
 
-        if (!$this->schema->nullable) {
+        if (!$this->nullable) {
             $constraints[] = new Constraint('Assert\NotNull', []);
         }
 

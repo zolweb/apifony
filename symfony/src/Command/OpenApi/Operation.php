@@ -40,9 +40,6 @@ class Operation
                 $parameter = $components->parameters[$parameter->getName()];
             }
             $index = "{$parameter->in}:{$parameter->name}";
-            if (isset($indexedPathItemParameters[$index])) {
-                throw new Exception('PathItem parameters must be unique by \'in\' and \'name\'.');
-            }
             $indexedPathItemParameters[$index] = $parameter;
         }
 
@@ -56,9 +53,6 @@ class Operation
                 $parameter = $components->parameters[$parameter->getName()];
             }
             $index = "{$parameter->in}:{$parameter->name}";
-            if (isset($indexedOperationParameters[$index])) {
-                throw new Exception('PathItem parameters must be unique by \'in\' and \'name\'.');
-            }
             $indexedOperationParameters[$index] = $parameter;
         }
 

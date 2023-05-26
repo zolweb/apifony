@@ -17,6 +17,7 @@ class ArrayType implements Type
      */
     public function __construct(
         Reference|Schema $schema,
+        private readonly bool $nullable,
         string $className,
         Components $components,
     ) {
@@ -31,14 +32,7 @@ class ArrayType implements Type
         }
 
         $this->schema = $schema;
-        $this->itemType = match ($items->type) {
-            'string' => new StringType($items),
-            'integer' => new IntegerType($items),
-            'number' => new NumberType($items),
-            'boolean' => new BooleanType($items),
-            'object' => new ObjectType($items, $className, $components),
-            'array' => throw new Exception('Arrays of array are not supported.'),
-        };
+        $this->itemType = TypeFactory::build($className, $items, $components);
     }
 
     public function getMethodParameterType(): string
@@ -109,7 +103,7 @@ class ArrayType implements Type
     {
         $constraints = [];
 
-        if (!$this->schema->nullable) {
+        if (!$this->nullable) {
             $constraints[] = new Constraint('Assert\NotNull', []);
         }
 

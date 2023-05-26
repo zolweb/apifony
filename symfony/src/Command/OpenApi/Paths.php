@@ -15,9 +15,6 @@ class Paths
 
         $pathItems = [];
         foreach ($data as $route => $pathItemData) {
-            if ($route[0] !== '/') {
-                throw new Exception('Paths array keys must start with a slash.');
-            }
             $pathItems[$route] = PathItem::build($pathItemData, $components);
         }
 
