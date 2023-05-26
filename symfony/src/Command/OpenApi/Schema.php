@@ -31,14 +31,16 @@ class Schema
         if (isset($data['format']) && !is_string($data['format'])) {
             throw new Exception('Schema objects format attribute must be a string.');
         }
+        $enum = [];
         if (isset($data['enum'])) {
             if (!is_array($data['enum'])) {
                 throw new Exception('Schema objects enum attribute must be a string.');
             }
-            foreach ($data['enum'] as $enum) {
-                if (!is_string($enum) && !is_int($enum) && !is_float($enum) && !is_bool($enum)) {
+            foreach ($data['enum'] as $e) {
+                if (!is_string($e) && !is_int($e) && !is_float($e) && !is_bool($e)) {
                     throw new Exception('Schema objects enum attribute elements must be a string, an int, a float or a boolean.');
                 }
+                $enum[] = $e;
             }
         }
         if (isset($data['default']) && !is_string($data['default']) && !is_int($data['default']) && !is_float($data['default']) && !is_bool($data['default'])) {
@@ -103,7 +105,7 @@ class Schema
         return new self(
             $type,
             $data['format'] ?? null,
-            $data['enum'] ?? null,
+            $enum,
             $data['default'] ?? null,
             $data['pattern'] ?? null,
             $data['minLength'] ?? null,
@@ -127,13 +129,13 @@ class Schema
 
     /**
      * @param string|array<string> $type
-     * @param null|array<string|int|float|bool> $enum
-     * @param null|array<string, Reference|Schema> $properties
+     * @param array<string|int|float|bool> $enum
+     * @param array<string, Reference|Schema> $properties
      */
     private function __construct(
         public readonly string|array $type,
         public readonly ?string $format,
-        public readonly ?array $enum,
+        public readonly array $enum,
         public readonly null|string|int|float|bool $default,
         public readonly ?string $pattern,
         public readonly ?int $minLength,
@@ -147,7 +149,7 @@ class Schema
         public readonly ?int $minItems,
         public readonly ?int $maxItems,
         public readonly bool $uniqueItems,
-        public readonly ?array $properties,
+        public readonly array $properties,
     ) {
     }
 }
