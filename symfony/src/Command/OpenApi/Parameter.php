@@ -13,6 +13,7 @@ class Parameter
             $data['name'],
             $data['in'],
             $data['required'] ?? false,
+            // todo schema can be null
             isset($data['schema']['$ref']) ?
                 Reference::build($data['schema']) : Schema::build($data['schema']),
         );
@@ -22,7 +23,7 @@ class Parameter
         public readonly string $name,
         public readonly string $in,
         public readonly bool $required,
-        public readonly Reference|Schema $schema,
+        public readonly null|Reference|Schema $schema,
     ) {
     }
 }

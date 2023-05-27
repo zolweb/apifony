@@ -83,7 +83,7 @@ class Operation
             $data['x-priority'] ?? 0, // TODO Not stantard openapi, save all custom attributes instead
             $parameters,
             match (true) {
-                isset($data['requestBody']['$ref']) => Reference::build($data['requestBody']),
+                isset($data['requestBody']) && is_array($data['requestBody']) && isset($data['requestBody']['$ref']) => Reference::build($data['requestBody']),
                 isset($data['requestBody']) => RequestBody::build($data['requestBody']),
                 default => null,
             },
