@@ -96,18 +96,18 @@ class Bundle implements File
             }
         };
 
-        foreach ($openApi->components->schemas as $schema) {
+        foreach ($openApi->components->schemas ?? [] as $schema) {
             $addSchemaFormats($schema);
         }
-        foreach ($openApi->components->parameters as $parameter) {
+        foreach ($openApi->components->parameters ?? [] as $parameter) {
             $addSchemaFormats($parameter->schema);
         }
-        foreach ($openApi->components->requestBodies as $requestBody) {
+        foreach ($openApi->components->requestBodies ?? [] as $requestBody) {
             foreach ($requestBody->content as $mediaType) {
                 $addSchemaFormats($mediaType->schema);
             }
         }
-        foreach ($openApi->components->responses as $response) {
+        foreach ($openApi->components->responses ?? [] as $response) {
             foreach ($response->headers as $header) {
                 if ($header instanceof Header) {
                     $addSchemaFormats($header->schema);
@@ -117,7 +117,7 @@ class Bundle implements File
                 $addSchemaFormats($mediaType->schema);
             }
         }
-        foreach ($openApi->components->headers as $header) {
+        foreach ($openApi->components->headers ?? [] as $header) {
             $addSchemaFormats($header->schema);
         }
         foreach ($openApi?->paths->pathItems ?? [] as $pathItem) {
