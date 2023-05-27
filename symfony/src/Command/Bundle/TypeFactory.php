@@ -4,6 +4,7 @@ namespace App\Command\Bundle;
 
 use App\Command\OpenApi\Components;
 use App\Command\OpenApi\Schema;
+use RuntimeException;
 
 class TypeFactory
 {
@@ -40,6 +41,7 @@ class TypeFactory
             'boolean' => new BooleanType($schema, $nullable),
             'object' => new ObjectType($schema, $nullable, $className, $components),
             'array' => new ArrayType($schema, $nullable, $className, $components),
+            default => throw new RuntimeException(),
         };
     }
 }
