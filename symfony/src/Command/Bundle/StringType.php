@@ -28,10 +28,24 @@ class StringType implements Type
         return 'string';
     }
 
+    /**
+     * @throws Exception
+     */
     public function getMethodParameterDefault(): ?string
     {
-        return $this->schema->default !== null ?
-            sprintf('\'%s\'', str_replace('\'', '\\\'', $this->schema->default)) : null;
+        if ($this->schema->hasDefault) {
+            if (is_string($this->schema->default)) {
+                return sprintf('\'%s\'', str_replace('\'', '\\\'', $this->schema->default));
+            }
+            if (is_null($this->schema->default)) {
+                if (!$this->nullable) {
+                    throw new Exception('Schemas that are not nullable cannot have null default.');
+                }
+                return 'null';
+            }
+        }
+
+        return null;
     }
 
     public function getRouteRequirementPattern(): string
@@ -97,7 +111,7 @@ class StringType implements Type
             $constraints[] = new Constraint('Assert\Length', ['max' => $this->schema->maxLength]);
         }
 
-        if ($this->schema->enum !== null) {
+        if (count($this->schema->enum) > 0) {
             $constraints[] = new Constraint('Assert\Choice', ['choices' => $this->schema->enum]);
         }
 

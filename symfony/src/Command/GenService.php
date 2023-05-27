@@ -22,6 +22,7 @@ class GenService
      * @throws SyntaxError
      * @throws LoaderError
      * @throws Exception
+     * @throws Bundle\Exception
      */
     public function generate(array $data, string $bundleName, string $namespace, string $packageName): void
     {
@@ -37,63 +38,5 @@ class GenService
                 __DIR__."/../../openapi/invoicing/bundle/{$file->getFolder()}/{$file->getName()}",
                 $this->twig->render($file->getTemplate(), [$file->getParametersRootName() => $file]));
         }
-
-        // foreach ($bundle->aggregates as $aggregate) {
-        //     $files[] = [
-        //         'folder' => 'src/Controller',
-        //         'name' => 'AbstractController.php',
-        //         'template' => 'abstract-controller.php.twig',
-        //         'params' => [],
-        //     ];
-        //     foreach ($aggregate->responsex as $responsex) {
-        //         $files[] = [
-        //             'folder' => 'src/Controller',
-        //             'name' => 'AbstractController.php',
-        //             'template' => 'abstract-controller.php.twig',
-        //             'params' => [],
-        //         ];
-        //     }
-        // }
-
-        // // $files = $openApi->getFiles();
-        // $files[] = [
-        //     'folder' => 'src/Controller',
-        //     'name' => 'AbstractController.php',
-        //     'template' => 'abstract-controller.php.twig',
-        //     'params' => [],
-        // ];
-        // $files[] = [
-        //     'folder' => '',
-        //     'name' => 'composer.json',
-        //     'template' => 'composer.json.twig',
-        //     'params' => [
-        //         'packageName' => $packageName,
-        //     ],
-        // ];
-        // $files[] = [
-        //     'folder' => 'src',
-        //     'name' => "{$bundleName}Bundle.php",
-        //     'template' => 'bundle.php.twig',
-        //     'params' => [
-        //         'bundleName' => $bundleName,
-        //         'paths' => $openApi->paths,
-        //     ],
-        // ];
-        // $files[] = [
-        //     'folder' => 'config',
-        //     'name' => 'services.yaml',
-        //     'template' => 'services.yaml.twig',
-        //     'params' => [
-        //         'paths' => $openApi->paths,
-        //     ],
-        // ];
-        // $files[] = [
-        //     'folder' => 'config',
-        //     'name' => 'routes.yaml',
-        //     'template' => 'routes.yaml.twig',
-        //     'params' => [
-        //         'paths' => $openApi->paths,
-        //     ],
-        // ];
     }
 }
