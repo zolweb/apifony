@@ -15,6 +15,8 @@ class Pet
     public function __construct(
         #[Assert\NotNull]
         #[AssertInt64]
+        #[Assert\Choice(choices: [
+        ])]
         public readonly int $id,
 
         #[Assert\Valid]
@@ -26,6 +28,8 @@ class Pet
             new Assert\NotNull,
             new Assert\Length(min: 3),
             new Assert\Length(max: 10),
+            new Assert\Choice(choices: [
+            ]),
         ])]
         public readonly array $photoUrls,
 

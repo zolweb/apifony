@@ -17,6 +17,11 @@ class ObjectType implements Type
     ) {
     }
 
+    public function isNullable(): bool
+    {
+        return $this->nullable;
+    }
+
     public function getArrayProperties(): array
     {
         return array_filter(

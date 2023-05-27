@@ -13,6 +13,11 @@ class IntegerType implements Type
     ) {
     }
 
+    public function isNullable(): bool
+    {
+        return $this->nullable;
+    }
+
     public function getPhpDocParameterAnnotationType(): string
     {
         return 'int';

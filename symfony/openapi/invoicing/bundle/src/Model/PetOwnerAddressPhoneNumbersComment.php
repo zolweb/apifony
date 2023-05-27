@@ -8,9 +8,13 @@ class PetOwnerAddressPhoneNumbersComment
 {
     public function __construct(
         #[Assert\NotNull]
+        #[Assert\Choice(choices: [
+        ])]
         public readonly string $title,
 
         #[Assert\NotNull]
+        #[Assert\Choice(choices: [
+        ])]
         public readonly string $description,
     ) {
     }

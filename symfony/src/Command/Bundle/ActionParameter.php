@@ -30,7 +30,7 @@ class ActionParameter
         return new self(
             $variableName,
             $parameter,
-            TypeFactory::build($className, $parameter->schema->type, $components),
+            TypeFactory::build($className, $parameter->schema, $components),
         );
     }
 

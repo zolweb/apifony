@@ -76,7 +76,7 @@ class ModelAttribute
 
     public function isNullable(): bool
     {
-        return $this->schema->nullable;
+        return $this->type->isNullable();
     }
 
     public function getPhpType(): string

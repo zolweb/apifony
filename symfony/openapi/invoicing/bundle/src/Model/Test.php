@@ -84,6 +84,8 @@ class Test
         public readonly float $a3 = 0.1,
 
         #[Assert\NotNull]
+        #[Assert\Choice(choices: [
+        ])]
         public readonly bool $a4 = true,
     ) {
     }

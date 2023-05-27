@@ -30,11 +30,6 @@ class UserController extends AbstractController
                 $violations = [];
 
                 break;
-            case 'application/json':
-                $requestBodyPayload = $this->serializer->deserialize($request->getContent(), 'CreateUserApplicationJsonRequestBodyPayload', JsonEncoder::FORMAT);
-                $violations = $this->validator->validate($requestBodyPayload);
-
-                break;
             default:
                 return new JsonResponse(
                     [
@@ -63,25 +58,6 @@ class UserController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
-                    'application/json' =>
-                        $this->handler->CreateUserFromEmptyPayloadToApplicationJsonContent(
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
-
-                break;
-            case $requestBodyPayload instanceOf CreateUserApplicationJsonRequestBodyPayload:
-                $response = match ($responsePayloadContentType) {
-                    'application/json' =>
-                        $this->handler->CreateUserFromCreateUserApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
-                            $requestBodyPayload,
-                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -96,8 +72,6 @@ class UserController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
-            case 'application/json':
-                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -113,16 +87,6 @@ class UserController extends AbstractController
                 $violations = [];
 
                 break;
-            case 'application/json':
-                $requestBodyPayload = json_decode($request->getContent(), true)
-                $violations = $this->validator->validate($requestBodyPayload, [
-                    new Assert\NotNull                    new Assert\All(constraints: [
-                        new Assert\Valid,
-                        new Assert\NotNull,
-                    ])
-]);
-
-                break;
             default:
                 return new JsonResponse(
                     [
@@ -151,32 +115,6 @@ class UserController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->CreateUsersWithListInputFromEmptyPayloadToContent(
-                        ),
-                    'application/json' =>
-                        $this->handler->CreateUsersWithListInputFromEmptyPayloadToApplicationJsonContent(
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
-
-                break;
-            case is_array($requestBodyPayload) && $requestBodyPayload instanceOf User:
-                $response = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->CreateUsersWithListInputFromUserArrayPayloadToContent(
-                            $requestBodyPayload,
-                        ),
-                    'application/json' =>
-                        $this->handler->CreateUsersWithListInputFromUserArrayPayloadToApplicationJsonContent(
-                            $requestBodyPayload,
-                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -191,10 +129,6 @@ class UserController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
-            case null:
-                return new Response('', $response::CODE, $response->getHeaders());
-            case 'application/json':
-                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -210,6 +144,8 @@ class UserController extends AbstractController
             $qusername,
             [
                 new Assert\NotNull,
+                new Assert\Choice(choices: [
+                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -222,6 +158,8 @@ class UserController extends AbstractController
             $qpassword,
             [
                 new Assert\NotNull,
+                new Assert\Choice(choices: [
+                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -264,16 +202,6 @@ class UserController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
-                    'application/json' =>
-                        $this->handler->LoginUserFromEmptyPayloadToApplicationJsonContent(
-                            $qusername,
-                            $qpassword,
-                        ),
-                    null =>
-                        $this->handler->LoginUserFromEmptyPayloadToContent(
-                            $qusername,
-                            $qpassword,
-                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -288,10 +216,6 @@ class UserController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
-            case 'application/json':
-                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
-            case null:
-                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -335,9 +259,6 @@ class UserController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->LogoutUserFromEmptyPayloadToContent(
-                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -352,8 +273,6 @@ class UserController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
-            case null:
-                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -369,6 +288,8 @@ class UserController extends AbstractController
             $pusername,
             [
                 new Assert\NotNull,
+                new Assert\Choice(choices: [
+                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -411,14 +332,6 @@ class UserController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
-                    'application/json' =>
-                        $this->handler->GetUserByNameFromEmptyPayloadToApplicationJsonContent(
-                            $pusername,
-                        ),
-                    null =>
-                        $this->handler->GetUserByNameFromEmptyPayloadToContent(
-                            $pusername,
-                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -433,10 +346,6 @@ class UserController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
-            case 'application/json':
-                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
-            case null:
-                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -452,6 +361,8 @@ class UserController extends AbstractController
             $pusername,
             [
                 new Assert\NotNull,
+                new Assert\Choice(choices: [
+                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -464,11 +375,6 @@ class UserController extends AbstractController
             case 'unspecified':
                 $requestBodyPayload = null;
                 $violations = [];
-
-                break;
-            case 'application/json':
-                $requestBodyPayload = $this->serializer->deserialize($request->getContent(), 'UpdateUserApplicationJsonRequestBodyPayload', JsonEncoder::FORMAT);
-                $violations = $this->validator->validate($requestBodyPayload);
 
                 break;
             default:
@@ -499,27 +405,6 @@ class UserController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->UpdateUserFromEmptyPayloadToContent(
-                            $pusername,
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
-
-                break;
-            case $requestBodyPayload instanceOf UpdateUserApplicationJsonRequestBodyPayload:
-                $response = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->UpdateUserFromUpdateUserApplicationJsonRequestBodyPayloadPayloadToContent(
-                            $pusername,
-                            $requestBodyPayload,
-                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -534,8 +419,6 @@ class UserController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
-            case null:
-                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -551,6 +434,8 @@ class UserController extends AbstractController
             $pusername,
             [
                 new Assert\NotNull,
+                new Assert\Choice(choices: [
+                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -593,10 +478,6 @@ class UserController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->DeleteUserFromEmptyPayloadToContent(
-                            $pusername,
-                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -611,8 +492,6 @@ class UserController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
-            case null:
-                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }

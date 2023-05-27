@@ -59,9 +59,6 @@ class StoreController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
-                    'application/json' =>
-                        $this->handler->GetInventoryFromEmptyPayloadToApplicationJsonContent(
-                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -76,8 +73,6 @@ class StoreController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
-            case 'application/json':
-                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -91,11 +86,6 @@ class StoreController extends AbstractController
             case 'unspecified':
                 $requestBodyPayload = null;
                 $violations = [];
-
-                break;
-            case 'application/json':
-                $requestBodyPayload = $this->serializer->deserialize($request->getContent(), 'PlaceOrderApplicationJsonRequestBodyPayload', JsonEncoder::FORMAT);
-                $violations = $this->validator->validate($requestBodyPayload);
 
                 break;
             default:
@@ -126,32 +116,6 @@ class StoreController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
-                    'application/json' =>
-                        $this->handler->PlaceOrderFromEmptyPayloadToApplicationJsonContent(
-                        ),
-                    null =>
-                        $this->handler->PlaceOrderFromEmptyPayloadToContent(
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
-
-                break;
-            case $requestBodyPayload instanceOf PlaceOrderApplicationJsonRequestBodyPayload:
-                $response = match ($responsePayloadContentType) {
-                    'application/json' =>
-                        $this->handler->PlaceOrderFromPlaceOrderApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
-                            $requestBodyPayload,
-                        ),
-                    null =>
-                        $this->handler->PlaceOrderFromPlaceOrderApplicationJsonRequestBodyPayloadPayloadToContent(
-                            $requestBodyPayload,
-                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -166,10 +130,6 @@ class StoreController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
-            case 'application/json':
-                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
-            case null:
-                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -186,6 +146,8 @@ class StoreController extends AbstractController
             [
                 new Assert\NotNull,
                 new AssertInt64,
+                new Assert\Choice(choices: [
+                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -228,14 +190,6 @@ class StoreController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
-                    'application/json' =>
-                        $this->handler->GetOrderByIdFromEmptyPayloadToApplicationJsonContent(
-                            $porderId,
-                        ),
-                    null =>
-                        $this->handler->GetOrderByIdFromEmptyPayloadToContent(
-                            $porderId,
-                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -250,10 +204,6 @@ class StoreController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
-            case 'application/json':
-                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
-            case null:
-                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -270,6 +220,8 @@ class StoreController extends AbstractController
             [
                 new Assert\NotNull,
                 new AssertInt64,
+                new Assert\Choice(choices: [
+                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -312,10 +264,6 @@ class StoreController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->DeleteOrderFromEmptyPayloadToContent(
-                            $porderId,
-                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -330,8 +278,6 @@ class StoreController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
-            case null:
-                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }

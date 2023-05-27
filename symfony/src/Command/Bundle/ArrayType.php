@@ -35,6 +35,11 @@ class ArrayType implements Type
         $this->itemType = TypeFactory::build($className, $items, $components);
     }
 
+    public function isNullable(): bool
+    {
+        return $this->nullable;
+    }
+
     public function getMethodParameterType(): string
     {
         return 'array';

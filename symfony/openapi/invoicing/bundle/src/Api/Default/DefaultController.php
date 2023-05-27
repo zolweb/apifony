@@ -59,6 +59,8 @@ class DefaultController extends AbstractController
             $pclientId,
             [
                 new Assert\NotNull,
+                new Assert\Choice(choices: [
+                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -73,6 +75,8 @@ class DefaultController extends AbstractController
                 new Assert\NotNull,
                 new Assert\DivisibleBy(value: 1),
                 new Assert\LessThanOrEqual(value: 2),
+                new Assert\Choice(choices: [
+                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -85,6 +89,8 @@ class DefaultController extends AbstractController
             $pparam4,
             [
                 new Assert\NotNull,
+                new Assert\Choice(choices: [
+                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -97,6 +103,8 @@ class DefaultController extends AbstractController
             $pparam5,
             [
                 new Assert\NotNull,
+                new Assert\Choice(choices: [
+                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -109,6 +117,8 @@ class DefaultController extends AbstractController
             $hazef,
             [
                 new Assert\NotNull,
+                new Assert\Choice(choices: [
+                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -124,6 +134,8 @@ class DefaultController extends AbstractController
             $qagrez,
             [
                 new Assert\NotNull,
+                new Assert\Choice(choices: [
+                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -176,6 +188,8 @@ class DefaultController extends AbstractController
             $cazgrzeg,
             [
                 new Assert\NotNull,
+                new Assert\Choice(choices: [
+                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -188,6 +202,8 @@ class DefaultController extends AbstractController
             $hgegzer,
             [
                 new Assert\NotNull,
+                new Assert\Choice(choices: [
+                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -200,13 +216,6 @@ class DefaultController extends AbstractController
             case 'unspecified':
                 $requestBodyPayload = null;
                 $violations = [];
-
-                break;
-            case 'application/json':
-                $requestBodyPayload = json_decode($request->getContent(), true);
-                $violations = $this->validator->validate($requestBodyPayload, [
-                    new Assert\NotNull
-]);
 
                 break;
             default:
@@ -237,45 +246,6 @@ class DefaultController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
-                    'application/json' =>
-                        $this->handler->GetClientFromEmptyPayloadToApplicationJsonContent(
-                            $pclientId,
-                            $pparam3,
-                            $pparam4,
-                            $pparam5,
-                            $hazef,
-                            $qagrez,
-                            $pparam1,
-                            $pparam2,
-                            $cazgrzeg,
-                            $hgegzer,
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
-
-                break;
-            case is_int($requestBodyPayload):
-                $response = match ($responsePayloadContentType) {
-                    'application/json' =>
-                        $this->handler->GetClientFromIntegerPayloadToApplicationJsonContent(
-                            $pclientId,
-                            $pparam3,
-                            $pparam4,
-                            $pparam5,
-                            $hazef,
-                            $qagrez,
-                            $pparam1,
-                            $pparam2,
-                            $cazgrzeg,
-                            $hgegzer,
-                            $requestBodyPayload,
-                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -290,8 +260,6 @@ class DefaultController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
-            case 'application/json':
-                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -317,6 +285,8 @@ class DefaultController extends AbstractController
             $pclientId,
             [
                 new Assert\NotNull,
+                new Assert\Choice(choices: [
+                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -331,6 +301,8 @@ class DefaultController extends AbstractController
                 new Assert\NotNull,
                 new Assert\DivisibleBy(value: 1),
                 new Assert\LessThanOrEqual(value: 2),
+                new Assert\Choice(choices: [
+                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -343,6 +315,8 @@ class DefaultController extends AbstractController
             $pparam4,
             [
                 new Assert\NotNull,
+                new Assert\Choice(choices: [
+                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -355,6 +329,8 @@ class DefaultController extends AbstractController
             $pparam5,
             [
                 new Assert\NotNull,
+                new Assert\Choice(choices: [
+                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -434,15 +410,6 @@ class DefaultController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
-                    'application/json' =>
-                        $this->handler->PostClientClientIdParam1Param2Param3Param4Param5Param6FromEmptyPayloadToApplicationJsonContent(
-                            $pclientId,
-                            $pparam3,
-                            $pparam4,
-                            $pparam5,
-                            $pparam1,
-                            $pparam2,
-                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -457,8 +424,6 @@ class DefaultController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
-            case 'application/json':
-                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -735,6 +700,8 @@ class DefaultController extends AbstractController
             [
                 new Assert\NotNull,
                 new AssertF12,
+                new Assert\Choice(choices: [
+                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -823,6 +790,8 @@ class DefaultController extends AbstractController
             [
                 new Assert\NotNull,
                 new AssertF16,
+                new Assert\Choice(choices: [
+                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -838,11 +807,6 @@ class DefaultController extends AbstractController
             case 'unspecified':
                 $requestBodyPayload = null;
                 $violations = [];
-
-                break;
-            case 'application/json':
-                $requestBodyPayload = $this->serializer->deserialize($request->getContent(), 'PostTestApplicationJsonRequestBodyPayload', JsonEncoder::FORMAT);
-                $violations = $this->validator->validate($requestBodyPayload);
 
                 break;
             default:
@@ -873,57 +837,6 @@ class DefaultController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
-                    'application/json' =>
-                        $this->handler->PostTestFromEmptyPayloadToApplicationJsonContent(
-                            $pp1,
-                            $pp2,
-                            $pp3,
-                            $pp4,
-                            $hh1,
-                            $hh2,
-                            $hh3,
-                            $hh4,
-                            $qq1,
-                            $qq2,
-                            $qq3,
-                            $qq4,
-                            $cc1,
-                            $cc2,
-                            $cc3,
-                            $cc4,
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
-
-                break;
-            case $requestBodyPayload instanceOf PostTestApplicationJsonRequestBodyPayload:
-                $response = match ($responsePayloadContentType) {
-                    'application/json' =>
-                        $this->handler->PostTestFromPostTestApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
-                            $pp1,
-                            $pp2,
-                            $pp3,
-                            $pp4,
-                            $hh1,
-                            $hh2,
-                            $hh3,
-                            $hh4,
-                            $qq1,
-                            $qq2,
-                            $qq3,
-                            $qq4,
-                            $cc1,
-                            $cc2,
-                            $cc3,
-                            $cc4,
-                            $requestBodyPayload,
-                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -938,8 +851,6 @@ class DefaultController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
-            case 'application/json':
-                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }

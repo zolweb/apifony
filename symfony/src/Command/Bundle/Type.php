@@ -4,6 +4,8 @@ namespace App\Command\Bundle;
 
 interface Type
 {
+    public function isNullable(): bool;
+
     public function getPhpDocParameterAnnotationType(): string;
 
     public function getMethodParameterType(): string;
