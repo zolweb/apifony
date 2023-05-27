@@ -103,7 +103,7 @@ class Bundle implements File
             $addSchemaFormats($parameter->schema);
         }
         foreach ($openApi->components->requestBodies as $requestBody) {
-            foreach ($requestBody->mediaTypes as $mediaType) {
+            foreach ($requestBody->content as $mediaType) {
                 $addSchemaFormats($mediaType->schema);
             }
         }
@@ -133,7 +133,7 @@ class Bundle implements File
                     }
                 }
                 if ($operation->requestBody instanceof RequestBody) {
-                    foreach ($operation->requestBody->mediaTypes as $mediaType) {
+                    foreach ($operation->requestBody->content as $mediaType) {
                         $addSchemaFormats($mediaType->schema);
                     }
                 }
