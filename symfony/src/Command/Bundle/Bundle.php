@@ -82,7 +82,7 @@ class Bundle implements File
     {
         $formats = [];
 
-        $addSchemaFormats = function (Reference|Schema $schema) use (&$addSchemaFormats, &$formats, $openApi) {
+        $addSchemaFormats = function (Reference|Schema $schema) use (&$addSchemaFormats, &$formats) {
             if ($schema instanceof Schema) {
                 if ($schema->format !== null) {
                     $formats[$schema->format] = null;
