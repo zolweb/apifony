@@ -29,15 +29,13 @@ class PathItem
         $operations = [];
         $extensions = [];
         foreach ($data as $key => $elementData) {
-            if (is_string($key)) {
-                if (in_array($key, ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'], true)) {
-                    if (!is_array($elementData)) {
-                        throw new Exception('Operation object array elements must be objects.');
-                    }
-                    $operations[$key] = Operation::build($parameters, $elementData, $components);
-                } elseif (str_starts_with($key, 'x-')) {
-                    $extensions[$key] = $elementData;
+            if (in_array($key, ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'], true)) {
+                if (!is_array($elementData)) {
+                    throw new Exception('Operation object array elements must be objects.');
                 }
+                $operations[$key] = Operation::build($parameters, $elementData, $components);
+            } elseif (is_string($key) && str_starts_with($key, 'x-')) {
+                $extensions[$key] = $elementData;
             }
         }
 
