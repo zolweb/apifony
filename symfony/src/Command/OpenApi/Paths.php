@@ -12,24 +12,30 @@ class Paths
     public static function build(array $data, ?Components $components): self
     {
         $pathItems = [];
-        foreach ($data as $route => $pathItemData) {
-            if (!is_string($route)) {
-                throw new Exception('Paths object array keys must be strings.');
+        $extensions = [];
+        foreach ($data as $key => $elementData) {
+            if (is_string($key)) {
+                if (str_starts_with($key, '/')) {
+                    if (!is_array($elementData)) {
+                        throw new Exception('Paths object array elements must be objects.');
+                    }
+                    $pathItems[$key] = PathItem::build($elementData, $components);
+                } elseif (str_starts_with($key, 'x-')) {
+                    $extensions[$key] = $elementData;
+                }
             }
-            if (!is_array($pathItemData)) {
-                throw new Exception('Paths object array elements must be objects.');
-            }
-            $pathItems[$route] = PathItem::build($pathItemData, $components);
         }
 
-        return new self($pathItems);
+        return new self($pathItems, $extensions);
     }
 
     /**
      * @param array<string, PathItem> $pathItems
+     * @param array<string, mixed> $extensions
      */
     private function __construct(
         public readonly array $pathItems,
+        public readonly array $extensions,
     ) {
     }
 }

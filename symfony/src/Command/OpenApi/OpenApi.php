@@ -18,15 +18,27 @@ class OpenApi
             throw new Exception('OpenApi object paths attribute must be an array.');
         }
 
+        $extensions = [];
+        foreach ($data as $key => $extension) {
+            if (is_string($key) && str_starts_with($key, 'x-')) {
+                $extensions[$key] = $extension;
+            }
+        }
+
         return new self(
             $components = isset($data['components']) ? Components::build($data['components']) : null,
             isset($data['paths']) ? Paths::build($data['paths'], $components) : null,
+            $extensions,
         );
     }
 
+    /**
+     * @param array<string, mixed> $extensions
+     */
     private function __construct(
         public readonly ?Components $components,
         public readonly ?Paths $paths,
+        public readonly array $extensions,
     ) {
     }
 }

@@ -75,9 +75,15 @@ class Operation
             }
         }
 
+        $extensions = [];
+        foreach ($data as $key => $extension) {
+            if (is_string($key) && str_starts_with($key, 'x-')) {
+                $extensions[$key] = $extension;
+            }
+        }
+
         return new self(
             $data['operationId'],
-            $data['x-priority'] ?? 0, // TODO Not stantard openapi, save all custom attributes instead
             $parameters,
             match (true) {
                 isset($data['requestBody']) && is_array($data['requestBody']) && isset($data['requestBody']['$ref']) => Reference::build($data['requestBody']),
@@ -86,20 +92,22 @@ class Operation
             },
             isset($data['responses']) ? Responses::build($data['responses']) : null,
             array_values($data['tags'] ?? []),
+            $extensions,
         );
     }
 
     /**
      * @param array<Reference|Parameter> $parameters
      * @param array<string> $tags
+     * @param array<string, mixed> $extensions
      */
     private function __construct(
         public readonly string $operationId,
-        public readonly int $priority,
         public readonly array $parameters,
         public readonly null|Reference|RequestBody $requestBody,
         public readonly ?Responses $responses,
         public readonly array $tags,
+        public readonly array $extensions,
     ) {
     }
 }

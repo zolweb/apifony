@@ -43,16 +43,25 @@ class Response
             }
         }
 
-        return new self($headers, $content);
+        $extensions = [];
+        foreach ($data as $key => $extension) {
+            if (is_string($key) && str_starts_with($key, 'x-')) {
+                $extensions[$key] = $extension;
+            }
+        }
+
+        return new self($headers, $content, $extensions);
     }
 
     /**
      * @param array<string, Reference|Header> $headers
      * @param array<string, MediaType> $content
+     * @param array<string, mixed> $extensions
      */
     private function __construct(
         public readonly array $headers,
         public readonly array $content,
+        public readonly array $extensions,
     ) {
     }
 }

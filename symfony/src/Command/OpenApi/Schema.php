@@ -99,6 +99,13 @@ class Schema
             }
         }
 
+        $extensions = [];
+        foreach ($data as $key => $extension) {
+            if (is_string($key) && str_starts_with($key, 'x-')) {
+                $extensions[$key] = $extension;
+            }
+        }
+
         return new self(
             $type,
             $data['format'] ?? null,
@@ -121,6 +128,7 @@ class Schema
             $data['maxItems'] ?? null,
             $data['uniqueItems'] ?? false,
             $properties,
+            $extensions,
         );
     }
 
@@ -128,6 +136,7 @@ class Schema
      * @param string|array<string> $type
      * @param array<string|int|float|bool> $enum
      * @param array<string, Reference|Schema> $properties
+     * @param array<string, mixed> $extensions
      */
     private function __construct(
         public readonly string|array $type,
@@ -147,6 +156,7 @@ class Schema
         public readonly ?int $maxItems,
         public readonly bool $uniqueItems,
         public readonly array $properties,
+        public readonly array $extensions,
     ) {
     }
 }

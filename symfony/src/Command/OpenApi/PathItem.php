@@ -27,22 +27,32 @@ class PathItem
         }
 
         $operations = [];
-        foreach (['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'] as $method) {
-            if (isset($data[$method])) {
-                $operations[$method] = Operation::build($parameters, $data[$method], $components);
+        $extensions = [];
+        foreach ($data as $key => $elementData) {
+            if (is_string($key)) {
+                if (in_array($key, ['get', 'put', 'post', 'delete', 'options', 'head', 'patch', 'trace'], true)) {
+                    if (!is_array($elementData)) {
+                        throw new Exception('Operation object array elements must be objects.');
+                    }
+                    $operations[$key] = Operation::build($parameters, $elementData, $components);
+                } elseif (str_starts_with($key, 'x-')) {
+                    $extensions[$key] = $elementData;
+                }
             }
         }
 
-        return new self($parameters, $operations);
+        return new self($parameters, $operations, $extensions);
     }
 
     /**
      * @param array<Reference|Parameter> $parameters
      * @param array<string, Operation> $operations
+     * @param array<string, mixed> $extensions
      */
     private function __construct(
         public readonly array $parameters,
         public readonly array $operations,
+        public readonly array $extensions,
     ) {
     }
 }

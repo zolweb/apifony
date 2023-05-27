@@ -96,7 +96,14 @@ class Components
             }
         }
 
-        return new self($schemas, $responses, $parameters, $requestBodies, $headers);
+        $extensions = [];
+        foreach ($data as $key => $extension) {
+            if (is_string($key) && str_starts_with($key, 'x-')) {
+                $extensions[$key] = $extension;
+            }
+        }
+
+        return new self($schemas, $responses, $parameters, $requestBodies, $headers, $extensions);
     }
 
     /**
@@ -105,6 +112,7 @@ class Components
      *  @param array<string, Parameter> $parameters
      *  @param array<string, RequestBody> $requestBodies
      *  @param array<string, Header> $headers
+     *  @param array<string, mixed> $extensions
      */
     private function __construct(
         public readonly array $schemas,
@@ -112,6 +120,7 @@ class Components
         public readonly array $parameters,
         public readonly array $requestBodies,
         public readonly array $headers,
+        public readonly array $extensions,
     ) {
     }
 }

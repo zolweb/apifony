@@ -27,21 +27,35 @@ class Parameter
             throw new Exception('Parameter object required attribute must be a boolean.');
         }
 
+        $extensions = [];
+        foreach ($data as $key => $extension) {
+            if (is_string($key) && str_starts_with($key, 'x-')) {
+                $extensions[$key] = $extension;
+            }
+        }
+
         return new self(
             $data['name'],
             $data['in'],
             $data['required'] ?? false,
-            // todo schema can be null
-            isset($data['schema']['$ref']) ?
-                Reference::build($data['schema']) : Schema::build($data['schema']),
+            match (true) {
+                isset($data['schema']['$ref']) => Reference::build($data['schema']),
+                isset($data['schema']) => Schema::build($data['schema']),
+                default => null,
+            },
+            $extensions,
         );
     }
 
+    /**
+     * @param array<mixed> $extensions
+     */
     private function __construct(
         public readonly string $name,
         public readonly string $in,
         public readonly bool $required,
         public readonly null|Reference|Schema $schema,
+        public readonly array $extensions,
     ) {
     }
 }

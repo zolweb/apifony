@@ -31,15 +31,24 @@ class RequestBody
             }
         }
 
-        return new self($data['required'] ?? false, $content);
+        $extensions = [];
+        foreach ($data as $key => $extension) {
+            if (is_string($key) && str_starts_with($key, 'x-')) {
+                $extensions[$key] = $extension;
+            }
+        }
+
+        return new self($data['required'] ?? false, $content, $extensions);
     }
 
     /**
      * @param array<string, MediaType> $content
+     * @param array<string, mixed> $extensions
      */
     private function __construct(
         public readonly bool $required,
         public readonly array $content,
+        public readonly array $extensions,
     ) {
     }
 }
