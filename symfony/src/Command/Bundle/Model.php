@@ -34,9 +34,10 @@ class Model implements File
 
         usort(
             $attributes,
-            static fn (ModelAttribute $attr1, ModelAttribute $attr2) =>
-            ((int)$attr1->hasDefault() - (int)$attr2->hasDefault()) ?:
-                ($ordinals[$attr1->getRawName()] - $ordinals[$attr2->getRawName()]),
+            static function (ModelAttribute $attr1, ModelAttribute $attr2) use ($ordinals) {
+                $diff = (int)$attr1->hasDefault() - (int)$attr2->hasDefault();
+                return $diff !== 0 ? $diff : $ordinals[$attr1->getRawName()] - $ordinals[$attr2->getRawName()];
+            }
         );
 
         $usedFormatConstraintNames = [];
@@ -110,7 +111,7 @@ class Model implements File
     }
 
     /**
-     * @return array<FormatConstraint>
+     * @return array<string>
      */
     public function getUsedFormatConstraintNames(): array
     {
