@@ -5,9 +5,11 @@ namespace App\Command\OpenApi;
 class Response
 {
     /**
+     * @param array<mixed> $data
+     *
      * @throws Exception
      */
-    public static function build(mixed $data): self
+    public static function build(array $data): self
     {
         return new self(
             array_combine(
@@ -31,10 +33,12 @@ class Response
         );
     }
 
+    /**
+     * @param array<string, Reference|Header> $headers
+     * @param array<string, MediaType> $content
+     */
     private function __construct(
-        /** @var array<string, Reference|Header> */
         public readonly array $headers,
-        /** @var array<string, MediaType> */
         public readonly array $content,
     ) {
     }

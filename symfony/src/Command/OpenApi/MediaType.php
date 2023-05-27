@@ -5,12 +5,14 @@ namespace App\Command\OpenApi;
 class MediaType
 {
     /**
+     * @param array<mixed> $data
+     *
      * @throws Exception
      */
-    public static function build(mixed $data): self
+    public static function build(array $data): self
     {
         if (!is_array($data)) {
-            throw new Exception('Header object must be an array.');
+            throw new Exception('MediaType object must be an array.');
         }
 
         return new self(

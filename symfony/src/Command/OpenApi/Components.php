@@ -5,14 +5,12 @@ namespace App\Command\OpenApi;
 class Components
 {
     /**
+     * @param array<mixed> $data
+     *
      * @throws Exception
      */
-    public static function build(mixed $data): self
+    public static function build(array $data): self
     {
-        if (!is_array($data)) {
-            throw new Exception('Components object must be an array.');
-        }
-
         $schemas = [];
         if (isset($data['schemas'])) {
             if (!is_array($data['schemas'])) {

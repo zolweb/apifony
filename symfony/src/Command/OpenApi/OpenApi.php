@@ -5,9 +5,11 @@ namespace App\Command\OpenApi;
 class OpenApi
 {
     /**
+     * @param array<mixed> $data
+     *
      * @throws Exception
      */
-    public static function build(mixed $data): self
+    public static function build(array $data): self
     {
         if (!is_array($data)) {
             throw new Exception('OpenApi object must be an array.');

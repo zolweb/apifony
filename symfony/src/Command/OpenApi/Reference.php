@@ -5,9 +5,11 @@ namespace App\Command\OpenApi;
 class Reference
 {
     /**
+     * @param array<mixed> $data
+     *
      * @throws Exception
      */
-    public static function build(mixed $data): self
+    public static function build(array $data): self
     {
         if (!is_array($data)) {
             throw new Exception('Reference objects must be arrays.');

@@ -5,9 +5,11 @@ namespace App\Command\OpenApi;
 class PathItem
 {
     /**
+     * @param array<mixed> $data
+     *
      * @throws Exception
      */
-    public static function build(mixed $data, ?Components $components): self
+    public static function build(array $data, ?Components $components): self
     {
         if (!is_array($data)) {
             throw new Exception('PathItem objects must be arrays.');

@@ -5,9 +5,11 @@ namespace App\Command\OpenApi;
 class RequestBody
 {
     /**
+     * @param array<mixed> $data
+     *
      * @throws Exception
      */
-    public static function build(mixed $data): self
+    public static function build(array $data): self
     {
         return new self(
             $data['required'] ?? false,
@@ -29,9 +31,11 @@ class RequestBody
         );
     }
 
+    /**
+     * @param array<string, MediaType> $mediaTypes
+     */
     private function __construct(
         public readonly bool $required,
-        /** @var array<string, MediaType> */
         public readonly array $mediaTypes,
     ) {
     }

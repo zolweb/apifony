@@ -5,14 +5,12 @@ namespace App\Command\OpenApi;
 class Schema
 {
     /**
+     * @param array<mixed> $data
+     *
      * @throws Exception
      */
-    public static function build(mixed $data): self
+    public static function build(array $data): self
     {
-        if (!is_array($data)) {
-            throw new Exception('Schema objects must be arrays.');
-        }
-
         $type = [];
         if (isset($data['type'])) {
             if (is_array($data['type'])) {
