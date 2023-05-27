@@ -46,7 +46,7 @@ class Api
     }
 
     /**
-     * @return array<Controller>
+     * @return array<Aggregate>
      */
     public function getAggregates(): array
     {
