@@ -11,26 +11,39 @@ class Response
      */
     public static function build(array $data): self
     {
-        return new self(
-            array_combine(
-                $names = array_keys($data['headers'] ?? []),
-                array_map(
-                    fn (string $name) => isset($data['headers'][$name]['$ref']) ?
-                        Reference::build($data['headers'][$name]) : Header::build($data['headers'][$name]),
-                    $names,
-                ),
-            ),
-            array_combine(
-                $types = array_filter(
-                    array_keys($data['content'] ?? []),
-                    static fn (string $type) => in_array($type, ['application/json'], true),
-                ),
-                array_map(
-                    fn (string $type) => MediaType::build($data['content'][$type]),
-                    $types,
-                ),
-            ),
-        );
+        $headers = [];
+        if (isset($data['headers'])) {
+            if (!is_array($data['headers'])) {
+                throw new Exception('Response object headers attribute must be an array.');
+            }
+            foreach ($data['headers'] as $name => $header) {
+                if (!is_string($name)) {
+                    throw new Exception('Response object headers attribute keys must be strings.');
+                }
+                if (!is_array($header)) {
+                    throw new Exception('Response object headers attribute elements must be objects.');
+                }
+                $headers[$name] = isset($header['$ref']) ? Reference::build($header) : Header::build($header);
+            }
+        }
+
+        $contents = [];
+        if (isset($data['contents'])) {
+            if (!is_array($data['contents'])) {
+                throw new Exception('Response object contents attribute must be an array.');
+            }
+            foreach ($data['contents'] as $type => $content) {
+                if (!is_string($type)) {
+                    throw new Exception('Response object contents attribute keys must be strings.');
+                }
+                if (!is_array($content)) {
+                    throw new Exception('Response object contents attribute elements must be objects.');
+                }
+                $contents[$type] = MediaType::build($content);
+            }
+        }
+
+        return new self($headers, $contents);
     }
 
     /**
