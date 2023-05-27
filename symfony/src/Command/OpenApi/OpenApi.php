@@ -11,8 +11,11 @@ class OpenApi
      */
     public static function build(array $data): self
     {
-        if (!is_array($data)) {
-            throw new Exception('OpenApi object must be an array.');
+        if (isset($data['components']) && !is_array($data['components'])) {
+            throw new Exception('OpenApi object components attribute must be an array.');
+        }
+        if (isset($data['paths']) && !is_array($data['paths'])) {
+            throw new Exception('OpenApi object paths attribute must be an array.');
         }
 
         return new self(

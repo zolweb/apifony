@@ -88,15 +88,14 @@ class Schema
             if (!is_array($data['properties'])) {
                 throw new Exception('Schema objects properties attribute must be an array.');
             }
-            foreach ($data['properties'] as $name => $property) {
-                if (!is_array($property)) {
+            foreach ($data['properties'] as $name => $propertyData) {
+                if (!is_array($propertyData)) {
                     throw new Exception('Schema objects properties attribute elements must be arrays.');
                 }
                 if (!is_string($name)) {
                     throw new Exception('Schema objects properties attribute keys must be strings.');
                 }
-                $properties[$name] = isset($property['$ref']) ?
-                    Reference::build($property) : Schema::build($property);
+                $properties[$name] = isset($propertyData['$ref']) ? Reference::build($propertyData) : Schema::build($propertyData);
             }
         }
 

@@ -11,9 +11,6 @@ class Parameter
      */
     public static function build(array $data): self
     {
-        if (!is_array($data)) {
-            throw new Exception('Parameter object must be an array.');
-        }
         if (!isset($data['name'])) {
             throw new Exception('Parameter object name attribute is mandatory.');
         }

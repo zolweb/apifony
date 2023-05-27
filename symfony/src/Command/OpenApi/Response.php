@@ -16,34 +16,34 @@ class Response
             if (!is_array($data['headers'])) {
                 throw new Exception('Response object headers attribute must be an array.');
             }
-            foreach ($data['headers'] as $name => $header) {
+            foreach ($data['headers'] as $name => $headerData) {
                 if (!is_string($name)) {
                     throw new Exception('Response object headers attribute keys must be strings.');
                 }
-                if (!is_array($header)) {
+                if (!is_array($headerData)) {
                     throw new Exception('Response object headers attribute elements must be objects.');
                 }
-                $headers[$name] = isset($header['$ref']) ? Reference::build($header) : Header::build($header);
+                $headers[$name] = isset($headerData['$ref']) ? Reference::build($headerData) : Header::build($headerData);
             }
         }
 
-        $contents = [];
+        $content = [];
         if (isset($data['contents'])) {
             if (!is_array($data['contents'])) {
-                throw new Exception('Response object contents attribute must be an array.');
+                throw new Exception('Response object content attribute must be an array.');
             }
-            foreach ($data['contents'] as $type => $content) {
+            foreach ($data['contents'] as $type => $contentData) {
                 if (!is_string($type)) {
-                    throw new Exception('Response object contents attribute keys must be strings.');
+                    throw new Exception('Response object content attribute keys must be strings.');
                 }
-                if (!is_array($content)) {
-                    throw new Exception('Response object contents attribute elements must be objects.');
+                if (!is_array($contentData)) {
+                    throw new Exception('Response object content attribute elements must be objects.');
                 }
-                $contents[$type] = MediaType::build($content);
+                $content[$type] = MediaType::build($contentData);
             }
         }
 
-        return new self($headers, $contents);
+        return new self($headers, $content);
     }
 
     /**

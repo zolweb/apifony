@@ -11,10 +11,6 @@ class PathItem
      */
     public static function build(array $data, ?Components $components): self
     {
-        if (!is_array($data)) {
-            throw new Exception('PathItem objects must be arrays.');
-        }
-
         $parameters = [];
         if (isset($data['parameters'])) {
             if (!is_array($data['parameters'])) {

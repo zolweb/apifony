@@ -11,13 +11,13 @@ class MediaType
      */
     public static function build(array $data): self
     {
-        if (!is_array($data)) {
-            throw new Exception('MediaType object must be an array.');
+        if (isset($data['schema']) && !is_array($data['schema'])) {
+            throw new Exception('MediaType object schema attribute must be an array.');
         }
 
         return new self(
             match (true) {
-                isset($data['schema']) && is_array($data['schema']) && isset($data['schema']['$ref']) => Reference::build($data['schema']),
+                isset($data['schema']['$ref']) => Reference::build($data['schema']),
                 isset($data['schema']) => Schema::build($data['schema']),
                 default => null,
             }

@@ -11,12 +11,14 @@ class Paths
      */
     public static function build(array $data, ?Components $components): self
     {
-        if (!is_array($data)) {
-            throw new Exception('Paths object must be an array.');
-        }
-
         $pathItems = [];
         foreach ($data as $route => $pathItemData) {
+            if (!is_string($route)) {
+                throw new Exception('Paths object array keys must be strings.');
+            }
+            if (!is_array($pathItemData)) {
+                throw new Exception('Paths object array elements must be objects.');
+            }
             $pathItems[$route] = PathItem::build($pathItemData, $components);
         }
 

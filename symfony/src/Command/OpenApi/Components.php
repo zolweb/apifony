@@ -20,6 +20,9 @@ class Components
                 if (!is_string($name)) {
                     throw new Exception('Component schemas array keys must be strings');
                 }
+                if (!is_array($schemaData)) {
+                    throw new Exception('Component schemas array elements must be strings');
+                }
 
                 $schemas[$name] = Schema::build($schemaData);
             }
@@ -33,6 +36,9 @@ class Components
             foreach ($data['responses'] as $name => $responseData) {
                 if (!is_string($name)) {
                     throw new Exception('Component responses array keys must be strings');
+                }
+                if (!is_array($responseData)) {
+                    throw new Exception('Component responses array elements must be strings');
                 }
 
                 $responses[$name] = Response::build($responseData);
@@ -48,6 +54,9 @@ class Components
                 if (!is_string($name)) {
                     throw new Exception('Component parameters array keys must be strings');
                 }
+                if (!is_array($parameterData)) {
+                    throw new Exception('Component parameters array elements must be strings');
+                }
 
                 $parameters[$name] = Parameter::build($parameterData);
             }
@@ -62,6 +71,9 @@ class Components
                 if (!is_string($name)) {
                     throw new Exception('Component requestBodies array keys must be strings');
                 }
+                if (!is_array($requestBodyData)) {
+                    throw new Exception('Component requestBodies array elements must be strings');
+                }
 
                 $requestBodies[$name] = RequestBody::build($requestBodyData);
             }
@@ -75,6 +87,9 @@ class Components
             foreach ($data['headers'] as $name => $headerData) {
                 if (!is_string($name)) {
                     throw new Exception('Component headers array keys must be strings');
+                }
+                if (!is_array($headerData)) {
+                    throw new Exception('Component headers array elements must be strings');
                 }
 
                 $headers[$name] = Header::build($headerData);

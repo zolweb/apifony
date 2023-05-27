@@ -12,14 +12,14 @@ class Responses
     public static function build(array $data): self
     {
         $responses = [];
-        foreach ($data as $code => $response) {
+        foreach ($data as $code => $responseData) {
             if (!is_string($code)) {
                 throw new Exception('Responses object array keys must be strings.');
             }
-            if (!is_array($response)) {
+            if (!is_array($responseData)) {
                 throw new Exception('Responses object array elements must be objects.');
             }
-            $responses[$code] = isset($response['$ref']) ? Reference::build($response) : Response::build($response);
+            $responses[$code] = isset($responseData['$ref']) ? Reference::build($responseData) : Response::build($responseData);
         }
 
         return new self($responses);

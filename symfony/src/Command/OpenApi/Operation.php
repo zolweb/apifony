@@ -12,10 +12,6 @@ class Operation
      */
     public static function build(array $pathItemParameters, array $data, ?Components $components): self
     {
-        if (!is_array($data)) {
-            throw new Exception('Operation objects must be arrays.');
-        }
-
         $operationParameters = [];
         if (isset($data['parameters'])) {
             if (!is_array($data['parameters'])) {
