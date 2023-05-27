@@ -104,7 +104,7 @@ class NumberType implements Type
             $constraints[] = new Constraint('Assert\LessThan', ['value' => $this->schema->exclusiveMaximum]);
         }
 
-        if ($this->schema->enum !== null) {
+        if (count($this->schema->enum) > 0) {
             $constraints[] = new Constraint('Assert\Choice', ['choices' => $this->schema->enum]);
         }
 

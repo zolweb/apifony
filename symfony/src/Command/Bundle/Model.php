@@ -21,11 +21,10 @@ class Model implements File
     ): self {
         $className = u($rawName)->camel()->title();
 
-        $attributes = array_map(
-            static fn (string $rawPropertyName) =>
-            ModelAttribute::build($className, $rawPropertyName, $schema->properties[$rawPropertyName], $components),
-            array_keys($schema->properties),
-        );
+        $attributes = [];
+        foreach ($schema->properties as $rawPropertyName => $property) {
+            $attributes[$rawPropertyName] = ModelAttribute::build($className, $rawPropertyName, $property, $components);
+        }
 
         $ordinal = 0;
         $ordinals = [];

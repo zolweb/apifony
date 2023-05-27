@@ -3,6 +3,7 @@
 namespace App\Command\Bundle;
 
 use App\Command\OpenApi\Components;
+use App\Command\OpenApi\Reference;
 use App\Command\OpenApi\Schema;
 use RuntimeException;
 
@@ -11,8 +12,12 @@ class TypeFactory
     /**
      * @throws Exception
      */
-    public static function build(string $className, Schema $schema, Components $components): Type
+    public static function build(string $className, Reference|Schema $schema, Components $components): Type
     {
+        if ($schema instanceof Reference) {
+            $schema = $components->schemas[$schema->getName()];
+        }
+
         $nullable = false;
         if (is_array($schema->type)) {
             if (count($schema->type) === 0) {
@@ -39,7 +44,7 @@ class TypeFactory
             'integer' => new IntegerType($schema, $nullable),
             'number' => new NumberType($schema, $nullable),
             'boolean' => new BooleanType($schema, $nullable),
-            'object' => new ObjectType($schema, $nullable, $className, $components),
+            'object' => new ObjectType($schema, $nullable, $className),
             'array' => new ArrayType($schema, $nullable, $className, $components),
             default => throw new RuntimeException(),
         };

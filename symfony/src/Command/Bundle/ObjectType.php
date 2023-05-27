@@ -2,8 +2,6 @@
 
 namespace App\Command\Bundle;
 
-use App\Command\OpenApi\Components;
-use App\Command\OpenApi\Reference;
 use App\Command\OpenApi\Schema;
 use function Symfony\Component\String\u;
 
@@ -13,48 +11,12 @@ class ObjectType implements Type
         private readonly Schema $schema,
         private readonly bool $nullable,
         private readonly string $name,
-        private readonly Components $components,
     ) {
     }
 
     public function isNullable(): bool
     {
         return $this->nullable;
-    }
-
-    public function getArrayProperties(): array
-    {
-        return array_filter(
-            $this->schema->properties,
-            fn (Reference|Schema $property) => (
-                $property instanceof Reference ?
-                    $this->components->schemas[$property->getName()]->type :
-                    $property->type
-            ) === 'array',
-        );
-    }
-
-    public function getSortedProperties(): array
-    {
-        $propertiesWithoutDefault = array_filter(
-            $this->schema->properties,
-            fn (Reference|Schema $property) => (
-                $property instanceof Reference ?
-                    $this->components->schemas[$property->getName()]->default :
-                    $property->default
-            ) === null,
-        );
-
-        $propertiesWithDefault = array_filter(
-            $this->schema->properties,
-            fn (Reference|Schema $property) => (
-                $property instanceof Reference ?
-                    $this->components->schemas[$property->getName()]->default :
-                    $property->default
-            ) !== null,
-        );
-
-        return array_merge($propertiesWithoutDefault, $propertiesWithDefault);
     }
 
     public function getPhpDocParameterAnnotationType(): string

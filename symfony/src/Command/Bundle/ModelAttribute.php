@@ -51,7 +51,7 @@ class ModelAttribute
         return $this->schema->default !== null;
     }
 
-    public function getDefault(): string
+    public function getDefault(): ?string
     {
         return $this->type->getMethodParameterDefault();
     }
