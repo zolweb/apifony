@@ -196,50 +196,6 @@ class Bundle implements File
         return $models;
     }
 
-    // /**
-    //  * @return array<Operation>
-    //  */
-    // public function getAllSortedOperations(): array
-    // {
-    //     $operations = array_merge(
-    //         ...array_map(
-    //         static fn (PathItem $pathItem) => $pathItem->operations,
-    //         $this->pathItems,
-    //     ),
-    //     );
-
-    //     usort(
-    //         $operations,
-    //         static fn (Operation $operation1, Operation $operation2) =>
-    //         $operation2->priority - $operation1->priority ?:
-    //             strcmp($operation1->operationId, $operation2->operationId),
-    //     );
-
-    //     return $operations;
-    // }
-
-    // public function getFilters(): array
-    // {
-    //     return [
-    //         // new TwigFilter('type', [$this, 'getType']),
-    //     ];
-    // }
-
-    // public function getType(Reference|Schema $schema, string $name = ''): Type
-    // {
-    //     if ($schema instanceof Reference) {
-    //         $schema = $this->components->schemas[$name = $schema->getName()];
-    //     }
-    //     return match ($schema->type) {
-    //         'string' => new StringType($schema),
-    //         'integer' => new IntegerType($schema),
-    //         'number' => new NumberType($schema),
-    //         'boolean' => new BooleanType($schema),
-    //         'object' => new ObjectType($schema, $name, $this->components),
-    //         'array' => new ArrayType($schema, $this->components),
-    //     };
-    // }
-
     public function getClassName(): string
     {
         return "{$this->name}Bundle";

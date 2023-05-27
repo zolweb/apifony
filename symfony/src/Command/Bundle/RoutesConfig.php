@@ -6,6 +6,28 @@ use function Symfony\Component\String\u;
 
 class RoutesConfig implements File
 {
+
+    // /**
+    //  * @return array<Operation>
+    //  */
+    // public function getAllSortedOperations(): array
+    // {
+    //     $operations = array_merge(
+    //         ...array_map(
+    //         static fn (PathItem $pathItem) => $pathItem->operations,
+    //         $this->pathItems,
+    //     ),
+    //     );
+
+    //     usort(
+    //         $operations,
+    //         static fn (Operation $operation1, Operation $operation2) =>
+    //         $operation2->priority - $operation1->priority ?:
+    //             strcmp($operation1->operationId, $operation2->operationId),
+    //     );
+
+    //     return $operations;
+    // }
     public static function build(
         string $namespace,
         Api $api,
