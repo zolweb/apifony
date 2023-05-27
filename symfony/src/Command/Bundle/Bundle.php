@@ -77,6 +77,7 @@ class Bundle implements File
 
     /**
      * @return array<string, Format>
+     * @throws Exception
      */
     private static function buildFormats(string $namespace, OpenApi $openApi): array
     {
@@ -100,40 +101,64 @@ class Bundle implements File
             $addSchemaFormats($schema);
         }
         foreach ($openApi->components->parameters ?? [] as $parameter) {
+            if ($parameter->schema === null) {
+                throw new Exception('Parameter objects without schema are not supported.');
+            }
             $addSchemaFormats($parameter->schema);
         }
         foreach ($openApi->components->requestBodies ?? [] as $requestBody) {
             foreach ($requestBody->content as $mediaType) {
+                if ($mediaType->schema === null) {
+                    throw new Exception('Mediatype objects without schema are not supported.');
+                }
                 $addSchemaFormats($mediaType->schema);
             }
         }
         foreach ($openApi->components->responses ?? [] as $response) {
             foreach ($response->headers as $header) {
                 if ($header instanceof Header) {
+                    if ($header->schema === null) {
+                        throw new Exception('Header objects without schema are not supported.');
+                    }
                     $addSchemaFormats($header->schema);
                 }
             }
             foreach ($response->content as $mediaType) {
+                if ($mediaType->schema === null) {
+                    throw new Exception('MediaType objects without schema are not supported.');
+                }
                 $addSchemaFormats($mediaType->schema);
             }
         }
         foreach ($openApi->components->headers ?? [] as $header) {
+            if ($header->schema === null) {
+                throw new Exception('Header objects without schema are not supported.');
+            }
             $addSchemaFormats($header->schema);
         }
         foreach ($openApi?->paths->pathItems ?? [] as $pathItem) {
             foreach ($pathItem->parameters as $parameter) {
                 if ($parameter instanceof Parameter) {
+                    if ($parameter->schema === null) {
+                        throw new Exception('Parameter objects without schema are not supported.');
+                    }
                     $addSchemaFormats($parameter->schema);
                 }
             }
             foreach ($pathItem->operations as $operation) {
                 foreach ($operation->parameters as $parameter) {
                     if ($parameter instanceof Parameter) {
+                        if ($parameter->schema === null) {
+                            throw new Exception('Parameter objects without schema are not supported.');
+                        }
                         $addSchemaFormats($parameter->schema);
                     }
                 }
                 if ($operation->requestBody instanceof RequestBody) {
                     foreach ($operation->requestBody->content as $mediaType) {
+                        if ($mediaType->schema === null) {
+                            throw new Exception('MediaType objects without schema are not supported.');
+                        }
                         $addSchemaFormats($mediaType->schema);
                     }
                 }
@@ -141,10 +166,16 @@ class Bundle implements File
                     if ($response instanceof Response) {
                         foreach ($response->headers as $header) {
                             if ($header instanceof Header) {
+                                if ($header->schema === null) {
+                                    throw new Exception('Header objects without schema are not supported.');
+                                }
                                 $addSchemaFormats($header->schema);
                             }
                         }
                         foreach ($response->content as $mediaType) {
+                            if ($mediaType->schema === null) {
+                                throw new Exception('Mediatype objects without schema are not supported.');
+                            }
                             $addSchemaFormats($mediaType->schema);
                         }
                     }
