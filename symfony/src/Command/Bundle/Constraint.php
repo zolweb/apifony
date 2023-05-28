@@ -6,6 +6,9 @@ use function Symfony\Component\String\u;
 
 class Constraint
 {
+    /**
+     * @param array<string, string|int|float|bool|array<string|int|float|bool|self>> $parameters
+     */
     public function __construct(
         private readonly string $name,
         private readonly array $parameters,
