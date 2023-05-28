@@ -12,9 +12,12 @@ class TypeFactory
     /**
      * @throws Exception
      */
-    public static function build(string $className, Reference|Schema $schema, Components $components): Type
+    public static function build(string $className, Reference|Schema $schema, ?Components $components): Type
     {
         if ($schema instanceof Reference) {
+            if ($components === null || !isset($components->schemas[$schema->getName()])) {
+                throw new Exception('Reference not found in schemas components.');
+            }
             $schema = $components->schemas[$schema->getName()];
         }
 

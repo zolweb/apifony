@@ -2,6 +2,7 @@
 
 namespace App\Command\Bundle;
 
+use App\Command\OpenApi\Components;
 use App\Command\OpenApi\Header;
 use App\Command\OpenApi\OpenApi;
 use App\Command\OpenApi\Parameter;
@@ -25,7 +26,7 @@ class Bundle implements File
             u($rawName)->camel()->title(),
             $namespace,
             self::buildFormats($namespace, $openApi),
-            self::buildModels($namespace, $openApi),
+            self::buildModels($namespace, $openApi->components),
             $api = Api::build($namespace, $openApi),
             RoutesConfig::build($namespace, $api),
             ServicesConfig::build($namespace, $api),
@@ -81,12 +82,12 @@ class Bundle implements File
      */
     private static function buildFormats(string $namespace, OpenApi $openApi): array
     {
-        $formats = [];
+        $rawFormatNames = [];
 
-        $addSchemaFormats = function (Reference|Schema $schema) use (&$addSchemaFormats, &$formats) {
+        $addSchemaFormats = function (Reference|Schema $schema) use (&$addSchemaFormats, &$rawFormatNames) {
             if ($schema instanceof Schema) {
                 if ($schema->format !== null) {
-                    $formats[$schema->format] = null;
+                    $rawFormatNames[$schema->format] = null;
                 }
                 foreach ($schema->properties ?? [] as $property) {
                     $addSchemaFormats($property);
@@ -183,8 +184,9 @@ class Bundle implements File
             }
         }
 
-        foreach ($formats as $rawName => &$format) {
-            $format = Format::build($namespace, $rawName);
+        $formats = [];
+        foreach ($rawFormatNames as $rawFormatName => $_) {
+            $formats[$rawFormatName] = Format::build($namespace, $rawFormatName);
         }
 
         return $formats;
@@ -195,32 +197,42 @@ class Bundle implements File
      *
      * @throws Exception
      */
-    private static function buildModels(string $namespace, OpenApi $openApi): array
+    private static function buildModels(string $namespace, ?Components $components): array
     {
-        $addModels = function(string $rawName, Reference|Schema $schema) use (&$addModels, &$models, $namespace, $openApi) {
+        /**
+         * @throws Exception
+         */
+        $addModels = function(string $rawName, Reference|Schema $schema) use (&$addModels, &$models, $namespace, $components) {
             if ($schema instanceof Reference) {
-                $schema = $openApi->components->schemas[$rawName = $schema->getName()];
+                if ($components === null || !isset($components->schemas[$schema->getName()])) {
+                    throw new Exception('Reference not found in schemas components.');
+                }
+                $schema = $components->schemas[$rawName = $schema->getName()];
             }
             if (!isset($models[$rawName])) {
-                if ($schema->type === 'object') {
+                $type = TypeFactory::build('', $schema, $components);
+                if ($type instanceof ObjectType) {
                     $models[$rawName] = Model::build(
                         $namespace,
                         "{$namespace}\Model",
                         "src/Model",
                         $rawName,
                         $schema,
-                        $openApi->components,
+                        $components,
                     );
                     foreach ($schema->properties as $propertyName => $property) {
                         $addModels("{$rawName}_{$propertyName}", $property);
                     }
-                } elseif ($schema->type === 'array') {
+                } elseif ($type instanceof ArrayType) {
+                    if ($schema->items === null) {
+                        throw new Exception('Schema objects of array type without items attribute are not supported.');
+                    }
                     $addModels($rawName, $schema->items);
                 }
             }
         };
 
-        foreach ($openApi->components->schemas as $rawName => $schema) {
+        foreach ($components->schemas ?? [] as $rawName => $schema) {
             $addModels($rawName, $schema);
         }
 

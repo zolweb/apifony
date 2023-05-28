@@ -16,11 +16,14 @@ class ModelAttribute
         string $modelClassName,
         string $rawName,
         Reference|Schema $property,
-        Components $components,
+        ?Components $components,
     ): self {
         $variableName = u($rawName)->camel();
         $className = "{$modelClassName}_{$variableName}";
         if ($property instanceof Reference) {
+            if ($components === null || !isset($components->schemas[$property->getName()])) {
+                throw new Exception('Reference not found in schemas components.');
+            }
             $property = $components->schemas[$className = $property->getName()];
         }
         $className = u($className)->camel()->title();

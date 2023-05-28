@@ -19,14 +19,23 @@ class ArrayType implements Type
         Reference|Schema $schema,
         private readonly bool $nullable,
         string $className,
-        Components $components,
+        ?Components $components,
     ) {
         if ($schema instanceof Reference) {
+            if ($components === null || !isset($components->schemas[$schema->getName()])) {
+                throw new Exception('Reference not found in schemas components.');
+            }
             $schema = $components->schemas[$schema->getName()];
         }
 
         $items = $schema->items;
+        if ($items === null) {
+            throw new Exception('Schema objects of array type without items attribute are not supported.');
+        }
         if ($items instanceof Reference) {
+            if ($components === null || !isset($components->schemas[$items->getName()])) {
+                throw new Exception('Reference not found in schemas components.');
+            }
             $items = $components->schemas[$className = $items->getName()];
             $className = u($className)->camel()->title();
         }
@@ -120,7 +129,7 @@ class ArrayType implements Type
             $constraints[] = new Constraint('Assert\Count', ['min' => $this->schema->minItems]);
         }
 
-        if ($this->schema->maxItems) {
+        if ($this->schema->maxItems !== null) {
             $constraints[] = new Constraint('Assert\Count', ['max' => $this->schema->maxItems]);
         }
 

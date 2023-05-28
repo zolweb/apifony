@@ -84,7 +84,7 @@ class BooleanType implements Type
             $constraints[] = new Constraint(sprintf('Assert%s', u($this->schema->format)->camel()->title()), [], $this->schema->format);
         }
 
-        if ($this->schema->enum !== null) {
+        if (count($this->schema->enum) > 0) {
             $constraints[] = new Constraint('Assert\Choice', ['choices' => $this->schema->enum]);
         }
 

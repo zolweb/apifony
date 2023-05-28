@@ -19,7 +19,7 @@ class Action
         string $route,
         string $method,
         Operation $operation,
-        Components $components,
+        ?Components $components,
     ): self {
         return new self(
             $className = u($operation->operationId)->camel(),

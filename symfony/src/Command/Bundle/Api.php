@@ -13,10 +13,10 @@ class Api
         string $bundleNamespace,
         OpenApi $openApi,
     ): self {
-        $aggregates = [];
-        foreach ($openApi->paths?->pathItems ?? [] as $route => $pathItem) {
+        $aggregatesData = [];
+        foreach ($openApi->paths->pathItems ?? [] as $route => $pathItem) {
             foreach ($pathItem->operations as $method => $operation) {
-                $aggregates[$operation->tags[0] ?? 'default'][] = [
+                $aggregatesData[$operation->tags[0] ?? 'default'][] = [
                     'route' => $route,
                     'method' => $method,
                     'operation' => $operation,
@@ -24,17 +24,19 @@ class Api
             }
         }
 
+        $aggregates = [];
+        foreach ($aggregatesData as $tag => $aggregateData) {
+            $aggregates[] = Aggregate::build(
+                $bundleNamespace,
+                $tag,
+                $aggregateData,
+                $openApi->components,
+            );
+        }
+
         return new self(
             AbstractController::build($bundleNamespace),
-            array_map(
-                static fn (string $tag) => Aggregate::build(
-                    $bundleNamespace,
-                    $tag,
-                    $aggregates[$tag],
-                    $openApi->components,
-                ),
-                array_keys($aggregates),
-            ),
+            $aggregates,
         );
     }
 

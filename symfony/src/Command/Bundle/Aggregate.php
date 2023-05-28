@@ -17,34 +17,26 @@ class Aggregate
         string $bundleNamespace,
         string $tag,
         array $operations,
-        Components $components,
+        ?Components $components,
     ): self {
         $name = u($tag)->camel()->title();
 
+        $actions = [];
+        foreach ($operations as $operation) {
+            $actions[] = Action::build(
+                $bundleNamespace,
+                $name,
+                $operation['route'],
+                $operation['method'],
+                $operation['operation'],
+                $components,
+            );
+        }
+
         return new self(
             $name,
-            $handler = Handler::build(
-                $bundleNamespace,
-                $name,
-                $actions = array_map(
-                    static fn (array $operation) =>
-                        Action::build(
-                            $bundleNamespace,
-                            $name,
-                            $operation['route'],
-                            $operation['method'],
-                            $operation['operation'],
-                            $components,
-                        ),
-                    $operations,
-                ),
-            ),
-            Controller::build(
-                $bundleNamespace,
-                $name,
-                $actions,
-                $handler,
-            ),
+            $handler = Handler::build($bundleNamespace, $name, $actions),
+            Controller::build($bundleNamespace, $name, $actions, $handler),
         );
     }
 

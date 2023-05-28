@@ -17,7 +17,7 @@ class Model implements File
         string $folder,
         string $rawName,
         Schema $schema,
-        Components $components,
+        ?Components $components,
     ): self {
         $className = u($rawName)->camel()->title();
 
