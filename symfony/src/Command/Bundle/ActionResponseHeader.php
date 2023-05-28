@@ -21,6 +21,9 @@ class ActionResponseHeader
             $header = $components->parameters[$header->getName()];
         }
         $schema = $header->schema;
+        if ($schema === null) {
+            throw new Exception('Header objets without schema attribute are not supported.');
+        }
         if ($schema instanceof Reference) {
             $schema = $components->schemas[$schema->getName()];
         }

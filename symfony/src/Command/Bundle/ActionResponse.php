@@ -34,7 +34,7 @@ class ActionResponse implements File
             $className = u(sprintf('%s_%s_%s', $actionName, $code, $contentType ?? 'Empty'))->camel()->title(),
             $code,
             $contentType,
-            TypeFactory::build($className, $payload, $components),
+            $payload !== null ? TypeFactory::build($className, $payload, $components) : null,
             array_map(
                 static fn (string $name) =>
                     ActionResponseHeader::build($name, $response->headers[$name], $components),
@@ -69,7 +69,7 @@ class ActionResponse implements File
 
     public function getPayloadPhpType(): ?string
     {
-        return $this->payloadType->getMethodParameterType();
+        return $this->payloadType?->getMethodParameterType();
     }
 
     /**
