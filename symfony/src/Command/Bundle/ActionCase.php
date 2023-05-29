@@ -25,7 +25,7 @@ class ActionCase
         Components $components,
     ): self {
         $responses = [];
-        foreach ($operation->responses->responses as $code => $response) {
+        foreach ($operation->responses->responses ?? [] as $code => $response) {
             if ($response instanceof Reference) {
                 $response = $components->responses[$response->getName()];
             }
@@ -71,6 +71,10 @@ class ActionCase
         );
     }
 
+    /**
+     * @param array<ActionParameter> $parameters
+     * @param array<ActionResponse> $responses
+     */
     private function __construct(
         private readonly ?Type $requestBodyPayloadType,
         private readonly ?string $responseContentType,
@@ -103,9 +107,9 @@ class ActionCase
         return $this->requestBodyPayloadType;
     }
 
-    public function getRequestBodyPayloadParameterPhpType(): string
+    public function getRequestBodyPayloadParameterPhpType(): ?string
     {
-        return $this->requestBodyPayloadType->getPhpDocParameterAnnotationType();
+        return $this->requestBodyPayloadType?->getPhpDocParameterAnnotationType();
     }
 
     public function getResponseContentType(): ?string
