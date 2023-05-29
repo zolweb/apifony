@@ -10,18 +10,12 @@ class ApiResponse
     public function __construct(
         #[Assert\NotNull]
         #[AssertInt32]
-        #[Assert\Choice(choices: [
-        ])]
         public readonly int $code,
 
         #[Assert\NotNull]
-        #[Assert\Choice(choices: [
-        ])]
         public readonly string $type,
 
         #[Assert\NotNull]
-        #[Assert\Choice(choices: [
-        ])]
         public readonly string $message,
     ) {
     }

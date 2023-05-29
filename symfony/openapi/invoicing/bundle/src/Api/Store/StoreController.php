@@ -146,8 +146,6 @@ class StoreController extends AbstractController
             [
                 new Assert\NotNull,
                 new AssertInt64,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -220,8 +218,6 @@ class StoreController extends AbstractController
             [
                 new Assert\NotNull,
                 new AssertInt64,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {

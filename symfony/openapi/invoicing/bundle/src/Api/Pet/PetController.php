@@ -155,8 +155,6 @@ class PetController extends AbstractController
             $qtags,
             [
                 new Assert\NotNull,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -229,8 +227,6 @@ class PetController extends AbstractController
             [
                 new Assert\NotNull,
                 new AssertInt64,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -305,8 +301,6 @@ class PetController extends AbstractController
             [
                 new Assert\NotNull,
                 new AssertInt64,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -319,8 +313,6 @@ class PetController extends AbstractController
             $qname,
             [
                 new Assert\NotNull,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -333,8 +325,6 @@ class PetController extends AbstractController
             $qstatus,
             [
                 new Assert\NotNull,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -407,8 +397,6 @@ class PetController extends AbstractController
             $hapiKey,
             [
                 new Assert\NotNull,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -422,8 +410,6 @@ class PetController extends AbstractController
             [
                 new Assert\NotNull,
                 new AssertInt64,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -497,8 +483,6 @@ class PetController extends AbstractController
             [
                 new Assert\NotNull,
                 new AssertInt64,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -511,8 +495,6 @@ class PetController extends AbstractController
             $qadditionalMetadata,
             [
                 new Assert\NotNull,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {

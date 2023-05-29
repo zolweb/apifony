@@ -59,8 +59,6 @@ class DefaultController extends AbstractController
             $pclientId,
             [
                 new Assert\NotNull,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -75,8 +73,6 @@ class DefaultController extends AbstractController
                 new Assert\NotNull,
                 new Assert\DivisibleBy(value: 1),
                 new Assert\LessThanOrEqual(value: 2),
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -89,8 +85,6 @@ class DefaultController extends AbstractController
             $pparam4,
             [
                 new Assert\NotNull,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -103,8 +97,6 @@ class DefaultController extends AbstractController
             $pparam5,
             [
                 new Assert\NotNull,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -117,8 +109,6 @@ class DefaultController extends AbstractController
             $hazef,
             [
                 new Assert\NotNull,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -134,8 +124,6 @@ class DefaultController extends AbstractController
             $qagrez,
             [
                 new Assert\NotNull,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -188,8 +176,6 @@ class DefaultController extends AbstractController
             $cazgrzeg,
             [
                 new Assert\NotNull,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -202,8 +188,6 @@ class DefaultController extends AbstractController
             $hgegzer,
             [
                 new Assert\NotNull,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -285,8 +269,6 @@ class DefaultController extends AbstractController
             $pclientId,
             [
                 new Assert\NotNull,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -301,8 +283,6 @@ class DefaultController extends AbstractController
                 new Assert\NotNull,
                 new Assert\DivisibleBy(value: 1),
                 new Assert\LessThanOrEqual(value: 2),
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -315,8 +295,6 @@ class DefaultController extends AbstractController
             $pparam4,
             [
                 new Assert\NotNull,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -329,8 +307,6 @@ class DefaultController extends AbstractController
             $pparam5,
             [
                 new Assert\NotNull,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -700,8 +676,6 @@ class DefaultController extends AbstractController
             [
                 new Assert\NotNull,
                 new AssertF12,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -790,8 +764,6 @@ class DefaultController extends AbstractController
             [
                 new Assert\NotNull,
                 new AssertF16,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {

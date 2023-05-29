@@ -8,13 +8,9 @@ class PetOwner
 {
     public function __construct(
         #[Assert\NotNull]
-        #[Assert\Choice(choices: [
-        ])]
         public readonly string $firstname,
 
         #[Assert\NotNull]
-        #[Assert\Choice(choices: [
-        ])]
         public readonly string $lastname,
 
         #[Assert\Valid]

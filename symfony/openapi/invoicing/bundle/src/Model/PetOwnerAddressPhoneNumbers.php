@@ -8,8 +8,6 @@ class PetOwnerAddressPhoneNumbers
 {
     public function __construct(
         #[Assert\NotNull]
-        #[Assert\Choice(choices: [
-        ])]
         public readonly string $number,
 
         #[Assert\Valid]

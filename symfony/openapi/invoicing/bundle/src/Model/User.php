@@ -11,44 +11,28 @@ class User
     public function __construct(
         #[Assert\NotNull]
         #[AssertInt64]
-        #[Assert\Choice(choices: [
-        ])]
         public readonly int $id,
 
         #[Assert\NotNull]
-        #[Assert\Choice(choices: [
-        ])]
         public readonly string $username,
 
         #[Assert\NotNull]
-        #[Assert\Choice(choices: [
-        ])]
         public readonly string $firstName,
 
         #[Assert\NotNull]
-        #[Assert\Choice(choices: [
-        ])]
         public readonly string $lastName,
 
         #[Assert\NotNull]
-        #[Assert\Choice(choices: [
-        ])]
         public readonly string $email,
 
         #[Assert\NotNull]
-        #[Assert\Choice(choices: [
-        ])]
         public readonly string $password,
 
         #[Assert\NotNull]
-        #[Assert\Choice(choices: [
-        ])]
         public readonly string $phone,
 
         #[Assert\NotNull]
         #[AssertInt32]
-        #[Assert\Choice(choices: [
-        ])]
         public readonly int $userStatus,
     ) {
     }

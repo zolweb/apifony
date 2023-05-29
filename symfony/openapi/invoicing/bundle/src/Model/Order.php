@@ -12,27 +12,19 @@ class Order
     public function __construct(
         #[Assert\NotNull]
         #[AssertInt64]
-        #[Assert\Choice(choices: [
-        ])]
         public readonly int $id,
 
         #[Assert\NotNull]
         #[AssertInt64]
-        #[Assert\Choice(choices: [
-        ])]
         public readonly int $petId,
 
         #[Assert\NotNull]
         #[AssertInt32]
         #[Assert\GreaterThan(value: 5)]
-        #[Assert\Choice(choices: [
-        ])]
         public readonly int $quantity,
 
         #[Assert\NotNull]
         #[AssertDateTime]
-        #[Assert\Choice(choices: [
-        ])]
         public readonly string $shipDate,
 
         #[Assert\NotNull]
@@ -44,8 +36,6 @@ class Order
         public readonly string $status,
 
         #[Assert\NotNull]
-        #[Assert\Choice(choices: [
-        ])]
         public readonly bool $complete,
     ) {
     }

@@ -11,13 +11,9 @@ class PetOwnerAddress
      */
     public function __construct(
         #[Assert\NotNull]
-        #[Assert\Choice(choices: [
-        ])]
         public readonly string $street,
 
         #[Assert\NotNull]
-        #[Assert\Choice(choices: [
-        ])]
         public readonly string $country,
 
         #[Assert\NotNull]

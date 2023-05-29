@@ -144,8 +144,6 @@ class UserController extends AbstractController
             $qusername,
             [
                 new Assert\NotNull,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -158,8 +156,6 @@ class UserController extends AbstractController
             $qpassword,
             [
                 new Assert\NotNull,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -288,8 +284,6 @@ class UserController extends AbstractController
             $pusername,
             [
                 new Assert\NotNull,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -361,8 +355,6 @@ class UserController extends AbstractController
             $pusername,
             [
                 new Assert\NotNull,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
@@ -434,8 +426,6 @@ class UserController extends AbstractController
             $pusername,
             [
                 new Assert\NotNull,
-                new Assert\Choice(choices: [
-                ]),
             ]
         );
         if (count($violations) > 0) {
