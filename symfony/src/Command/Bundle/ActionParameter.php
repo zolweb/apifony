@@ -20,11 +20,11 @@ class ActionParameter
         if ($parameter instanceof Reference) {
             $parameter = $components->parameters[$parameter->getName()];
         }
+        if ($parameter->schema === null) {
+            throw new Exception('Parameter objects without schema attribute are not supported.');
+        }
         $variableName = sprintf('%s%s', $parameter->in[0], u($parameter->name)->camel());
         $className = "{$actionClassName}_{$parameter->name}";
-        if ($parameter->schema instanceof Reference) {
-            $parameter = $components->schemas[$className = $parameter->schema->getName()];
-        }
         $className = u($className)->camel()->title();
 
         return new self(
@@ -48,15 +48,15 @@ class ActionParameter
 
     public function isArray(): bool
     {
-        return $this->parameter->schema->type === 'array';
+        return $this->type instanceof ArrayType;
     }
 
     public function hasDefault(): bool
     {
-        return $this->parameter->schema->default !== null;
+        return $this->type->getMethodParameterDefault() !== null;
     }
 
-    public function getDefault(): string
+    public function getDefault(): ?string
     {
         return $this->type->getMethodParameterDefault();
     }
@@ -81,7 +81,7 @@ class ActionParameter
 
     public function isNullable(): bool
     {
-        return $this->parameter->schema->nullable;
+        return $this->type->isNullable();
     }
 
     public function getPhpType(): string
