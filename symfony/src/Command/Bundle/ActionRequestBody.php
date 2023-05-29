@@ -40,7 +40,8 @@ class ActionRequestBody
             if ($hasModel) {
                 $addModels = function(string $rawName, Reference|Schema $schema) use (&$addModels, &$payloadModels, $bundleNamespace, $aggregateName, $className, $components) {
                     if (!$schema instanceof Reference) {
-                        if ($schema->type === 'object') {
+                        $type = TypeFactory::build('', $schema, $components);
+                        if ($type instanceof ObjectType) {
                             $payloadModels[$rawName] = Model::build(
                                 $bundleNamespace,
                                 "{$bundleNamespace}\Api\\{$aggregateName}",
@@ -52,7 +53,10 @@ class ActionRequestBody
                             foreach ($schema->properties as $propertyName => $property) {
                                 $addModels("{$rawName}_{$propertyName}", $property);
                             }
-                        } elseif ($schema->type === 'array') {
+                        } elseif ($type instanceof ArrayType) {
+                            if ($schema->items === null) {
+                                throw new Exception('Schema objects of array type without items attribute are not supported.');
+                            }
                             $addModels($rawName, $schema->items);
                         }
                     }
@@ -94,19 +98,19 @@ class ActionRequestBody
         return $this->payloadType?->getNormalizedType() ?? 'Empty';
     }
 
-    public function getPayloadPhpType(): string
+    public function getPayloadPhpType(): ?string
     {
-        return $this->payloadType->getPhpDocParameterAnnotationType();
+        return $this->payloadType?->getPhpDocParameterAnnotationType();
     }
 
-    public function initializationFromRequest(): string
+    public function initializationFromRequest(): ?string
     {
-        return $this->payloadType->getRequestBodyPayloadInitializationFromRequest();
+        return $this->payloadType?->getRequestBodyPayloadInitializationFromRequest();
     }
 
-    public function validationViolationsInitialization(): string
+    public function validationViolationsInitialization(): ?string
     {
-        return $this->payloadType->getRequestBodyPayloadValidationViolationsInitialization();
+        return $this->payloadType?->getRequestBodyPayloadValidationViolationsInitialization();
     }
 
     /**
