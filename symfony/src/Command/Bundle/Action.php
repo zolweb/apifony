@@ -82,6 +82,8 @@ class Action
     }
 
     /**
+     * @param array<string> $in
+     *
      * @return array<ActionParameter>
      */
     public function getParameters(array $in = ['path', 'query', 'header', 'cookie']): array
@@ -164,25 +166,28 @@ class Action
     private static function buildParameters(
         string $actionClassName,
         Operation $operation,
-        Components $components,
+        ?Components $components,
     ): array {
-        $parameters = array_map(
-            static fn (Parameter $parameter) =>
-            ActionParameter::build($actionClassName, $parameter, $components),
-            $operation->parameters,
-        );
-
         $ordinal = 0;
         $ordinals = [];
+        $parameters = [];
         foreach ($operation->parameters as $parameter) {
+            if ($parameter instanceof Reference) {
+                if ($components === null || !isset($components->parameters[$parameter->getName()])) {
+                    throw new Exception('Reference not found in parameters components.');
+                }
+                $parameter = $components->parameters[$parameter->getName()];
+            }
             $ordinals[$parameter->name] = ++$ordinal;
+            $parameters[] = ActionParameter::build($actionClassName, $parameter, $components);
         }
 
         usort(
             $parameters,
-            static fn (ActionParameter $param1, ActionParameter $param2) =>
-            ((int)$param1->hasDefault() - (int)$param2->hasDefault()) ?:
-                ($ordinals[$param1->getRawName()] - $ordinals[$param2->getRawName()]),
+            static function (ActionParameter $param1, ActionParameter $param2) use ($ordinals) {
+                $diff = (int)$param1->hasDefault() - (int)$param2->hasDefault();
+                return $diff !== 0 ? $diff : $ordinals[$param1->getRawName()] - $ordinals[$param2->getRawName()];
+            }
         );
 
         return $parameters;
@@ -198,12 +203,15 @@ class Action
         string $aggregateName,
         string $actionClassName,
         Operation $operation,
-        Components $components,
+        ?Components $components,
     ): array {
         $requestBodies = [];
 
         $requestBody = $operation->requestBody;
         if ($requestBody instanceof Reference) {
+            if ($components === null || !isset($components->requestBodies[$requestBody->getName()])) {
+                throw new Exception('Reference not found in requestBodies components.');
+            }
             $requestBody = $components->requestBodies[$requestBody->getName()];
         }
 
@@ -218,7 +226,7 @@ class Action
             );
         }
 
-        foreach ($operation->requestBody?->mediaTypes ?? [] as $mimeType => $mediaType) {
+        foreach ($requestBody->content ?? [] as $mimeType => $mediaType) {
             if ($mediaType->schema === null) {
                 throw new Exception('MediaTypes without schema are not supported.');
             }
@@ -253,15 +261,20 @@ class Action
 
     /**
      * @return array<?string>
+     *
+     * @throws Exception
      */
     private static function buildResponseContentTypes(
         Operation $operation,
-        Components $components,
+    ?Components $components,
     ): array {
         $responseContentTypes = [];
 
-        foreach ($operation->responses->responses as $response) {
+        foreach ($operation->responses->responses ?? [] as $response) {
             if ($response instanceof Reference) {
+                if ($components === null || !isset($components->responses[$response->getName()])) {
+                    throw new Exception('Reference not found in responses components.');
+                }
                 $response = $components->responses[$response->getName()];
             }
             if (count($response->content) === 0) {
@@ -289,7 +302,7 @@ class Action
         string $aggregateName,
         string $actionClassName,
         Operation $operation,
-        Components $components,
+        ?Components $components,
         array $parameters,
         array $requestBodyPayloadTypes,
         array $responseContentTypes,

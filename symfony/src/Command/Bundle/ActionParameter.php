@@ -15,9 +15,12 @@ class ActionParameter
     public static function build(
         string $actionClassName,
         Reference|Parameter $parameter,
-        Components $components,
+        ?Components $components,
     ): self {
         if ($parameter instanceof Reference) {
+            if ($components === null || !isset($components->parameters[$parameter->getName()])) {
+                throw new Exception('Reference not found in parameters components.');
+            }
             $parameter = $components->parameters[$parameter->getName()];
         }
         if ($parameter->schema === null) {

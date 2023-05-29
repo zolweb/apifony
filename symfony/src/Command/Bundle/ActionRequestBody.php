@@ -19,7 +19,7 @@ class ActionRequestBody
         string $actionName,
         ?string $mimeType,
         ?MediaType $mediaType,
-        Components $components,
+        ?Components $components,
     ): self {
         $className = u(sprintf('%s_%s_RequestBodyPayload', $actionName, $mimeType ?? 'empty'))->camel()->title();
 
@@ -32,6 +32,9 @@ class ActionRequestBody
             $schema = $mediaType->schema;
             $hasModel = true;
             if ($schema instanceof Reference) {
+                if ($components === null || !isset($components->schemas[$schema->getName()])) {
+                    throw new Exception('Reference not found in schemas components.');
+                }
                 $schema = $components->schemas[$schema->getName()];
                 $hasModel = false;
             }

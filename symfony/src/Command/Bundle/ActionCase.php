@@ -22,11 +22,14 @@ class ActionCase
         ?string $responseContentType,
         array $parameters,
         Operation $operation,
-        Components $components,
+        ?Components $components,
     ): self {
         $responses = [];
         foreach ($operation->responses->responses ?? [] as $code => $response) {
             if ($response instanceof Reference) {
+                if ($components === null || !isset($components->responses[$response->getName()])) {
+                    throw new Exception('Reference not found in responses components.');
+                }
                 $response = $components->responses[$response->getName()];
             }
             if ($responseContentType === null && count($response->content) === 0) {

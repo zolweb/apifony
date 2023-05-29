@@ -3,7 +3,6 @@
 namespace App\Command\Bundle;
 
 use App\Command\OpenApi\Components;
-use App\Command\OpenApi\Header;
 use App\Command\OpenApi\Reference;
 use App\Command\OpenApi\Response;
 use App\Command\OpenApi\Schema;
@@ -22,9 +21,12 @@ class ActionResponse implements File
         Response $response,
         ?string $contentType,
         null|Reference|Schema $payload,
-        Components $components,
+        ?Components $components,
     ): self {
         if ($payload instanceof Reference) {
+            if ($components === null || !isset($components->schemas[$payload->getName()])) {
+                throw new Exception('Reference not found in schemas components.');
+            }
             $payload = $components->schemas[$payload->getName()];
         }
 

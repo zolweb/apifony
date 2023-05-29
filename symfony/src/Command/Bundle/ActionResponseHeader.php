@@ -15,16 +15,22 @@ class ActionResponseHeader
     public static function build(
         string $name,
         Reference|Header $header,
-        Components $components,
+        ?Components $components,
     ): self {
         if ($header instanceof Reference) {
-            $header = $components->parameters[$header->getName()];
+            if ($components === null || !isset($components->headers[$header->getName()])) {
+                throw new Exception('Reference not found in headers components.');
+            }
+            $header = $components->headers[$header->getName()];
         }
         $schema = $header->schema;
         if ($schema === null) {
             throw new Exception('Header objets without schema attribute are not supported.');
         }
         if ($schema instanceof Reference) {
+            if ($components === null || !isset($components->schemas[$schema->getName()])) {
+                throw new Exception('Reference not found in schemas components.');
+            }
             $schema = $components->schemas[$schema->getName()];
         }
         $type = TypeFactory::build('', $schema, $components);
