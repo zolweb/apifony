@@ -33,7 +33,7 @@ class ActionResponse implements File
         return new self(
             $bundleNamespace,
             $aggregateName,
-            $className = u(sprintf('%s_%s_%s', $actionName, $code, $contentType ?? 'Empty'))->camel()->title(),
+            $className = u(sprintf('%s_%s_%s_Response', $actionName, $code, $contentType ?? 'Empty'))->camel()->title(),
             $code,
             $contentType,
             $payload !== null ? TypeFactory::build($className, $payload, $components) : null,

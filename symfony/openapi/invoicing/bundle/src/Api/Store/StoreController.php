@@ -59,6 +59,9 @@ class StoreController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
+                    null =>
+                        $this->handler->GetInventoryFromEmptyPayloadToContent(
+                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -73,6 +76,8 @@ class StoreController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
+            case null:
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -116,6 +121,9 @@ class StoreController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
+                    null =>
+                        $this->handler->PlaceOrderFromEmptyPayloadToContent(
+                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -130,6 +138,8 @@ class StoreController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
+            case null:
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -188,6 +198,10 @@ class StoreController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
+                    null =>
+                        $this->handler->GetOrderByIdFromEmptyPayloadToContent(
+                            $porderId,
+                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -202,6 +216,8 @@ class StoreController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
+            case null:
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -260,6 +276,10 @@ class StoreController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
+                    null =>
+                        $this->handler->DeleteOrderFromEmptyPayloadToContent(
+                            $porderId,
+                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -274,6 +294,8 @@ class StoreController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
+            case null:
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }

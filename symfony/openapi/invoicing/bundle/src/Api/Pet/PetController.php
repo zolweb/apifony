@@ -41,6 +41,8 @@ class PetController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
+            case null:
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -66,6 +68,8 @@ class PetController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
+            case null:
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -127,6 +131,10 @@ class PetController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
+                    null =>
+                        $this->handler->FindPetsByStatusFromEmptyPayloadToContent(
+                            $qstatus,
+                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -141,6 +149,8 @@ class PetController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
+            case null:
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -197,6 +207,10 @@ class PetController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
+                    null =>
+                        $this->handler->FindPetsByTagsFromEmptyPayloadToContent(
+                            $qtags,
+                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -211,6 +225,8 @@ class PetController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
+            case null:
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -269,6 +285,10 @@ class PetController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
+                    null =>
+                        $this->handler->GetPetByIdFromEmptyPayloadToContent(
+                            $ppetId,
+                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -283,6 +303,8 @@ class PetController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
+            case null:
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -367,6 +389,12 @@ class PetController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
+                    null =>
+                        $this->handler->UpdatePetWithFormFromEmptyPayloadToContent(
+                            $ppetId,
+                            $qname,
+                            $qstatus,
+                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -381,6 +409,8 @@ class PetController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
+            case null:
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -452,6 +482,11 @@ class PetController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
+                    null =>
+                        $this->handler->DeletePetFromEmptyPayloadToContent(
+                            $hapiKey,
+                            $ppetId,
+                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -466,6 +501,8 @@ class PetController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
+            case null:
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -537,6 +574,11 @@ class PetController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
+                    null =>
+                        $this->handler->UploadFileFromEmptyPayloadToContent(
+                            $ppetId,
+                            $qadditionalMetadata,
+                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -551,6 +593,8 @@ class PetController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
+            case null:
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }

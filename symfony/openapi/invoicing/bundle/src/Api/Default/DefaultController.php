@@ -230,6 +230,19 @@ class DefaultController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
+                    null =>
+                        $this->handler->GetClientFromEmptyPayloadToContent(
+                            $pclientId,
+                            $pparam3,
+                            $pparam4,
+                            $pparam5,
+                            $hazef,
+                            $qagrez,
+                            $pparam1,
+                            $pparam2,
+                            $cazgrzeg,
+                            $hgegzer,
+                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -244,6 +257,8 @@ class DefaultController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
+            case null:
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -386,6 +401,15 @@ class DefaultController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
+                    null =>
+                        $this->handler->PostClientClientIdParam1Param2Param3Param4Param5Param6FromEmptyPayloadToContent(
+                            $pclientId,
+                            $pparam3,
+                            $pparam4,
+                            $pparam5,
+                            $pparam1,
+                            $pparam2,
+                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -400,6 +424,8 @@ class DefaultController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
+            case null:
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
@@ -809,6 +835,25 @@ class DefaultController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 $response = match ($responsePayloadContentType) {
+                    null =>
+                        $this->handler->PostTestFromEmptyPayloadToContent(
+                            $pp1,
+                            $pp2,
+                            $pp3,
+                            $pp4,
+                            $hh1,
+                            $hh2,
+                            $hh3,
+                            $hh4,
+                            $qq1,
+                            $qq2,
+                            $qq3,
+                            $qq4,
+                            $cc1,
+                            $cc2,
+                            $cc3,
+                            $cc4,
+                        ),
                     default => (object) [
                         'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         'content' => [
@@ -823,6 +868,8 @@ class DefaultController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
+            case null:
+                return new Response('', $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }
