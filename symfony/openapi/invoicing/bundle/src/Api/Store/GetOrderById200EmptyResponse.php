@@ -12,7 +12,7 @@ class GetOrderById200EmptyResponse
     }
 
     /**
-     * @return array<string, string>
+     * @return array<string, ?string>
      */
     public function getHeaders(): array
     {
