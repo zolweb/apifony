@@ -12,7 +12,7 @@ class UpdatePetWithForm204EmptyResponse
     }
 
     /**
-     * @array<string, string>
+     * @return array<string, string>
      */
     public function getHeaders(): array
     {

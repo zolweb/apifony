@@ -12,7 +12,7 @@ class DeletePet200EmptyResponse
     }
 
     /**
-     * @array<string, string>
+     * @return array<string, string>
      */
     public function getHeaders(): array
     {

@@ -12,7 +12,7 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6201EmptyResponse
     }
 
     /**
-     * @array<string, string>
+     * @return array<string, string>
      */
     public function getHeaders(): array
     {

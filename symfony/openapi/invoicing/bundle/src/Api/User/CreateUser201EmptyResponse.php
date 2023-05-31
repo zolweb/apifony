@@ -12,7 +12,7 @@ class CreateUser201EmptyResponse
     }
 
     /**
-     * @array<string, string>
+     * @return array<string, string>
      */
     public function getHeaders(): array
     {
