@@ -54,7 +54,7 @@ class UserController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
+        $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
@@ -119,7 +119,7 @@ class UserController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
+        $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
@@ -210,7 +210,7 @@ class UserController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
+        $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
@@ -277,7 +277,7 @@ class UserController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
+        $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
@@ -356,7 +356,7 @@ class UserController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
+        $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
@@ -436,7 +436,7 @@ class UserController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
+        $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
@@ -516,7 +516,7 @@ class UserController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
-        $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
+        $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
