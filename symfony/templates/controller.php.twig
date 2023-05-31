@@ -102,27 +102,30 @@ class {{ controller.className }} extends AbstractController
         switch (true) {
 {%~ for requestBodyPayloadType in action.requestBodyPayloadTypes %}
             case {{ requestBodyPayloadType is null ? 'is_null($requestBodyPayload)' : requestBodyPayloadType.requestBodyPayloadTypeChecking }}:
-                $response = match ($responsePayloadContentType) {
+                switch($responsePayloadContentType) {
     {%~ for responseContentType in action.responseContentTypes %}
         {%~ set case = action.getCase(requestBodyPayloadType, responseContentType) %}
-                    {{ case.responseContentType is null ? 'null' : '\'' ~ case.responseContentType ~ '\'' }} =>
-                        $this->handler->{{ case.name }}(
+                    case {{ case.responseContentType is null ? 'null' : '\'' ~ case.responseContentType ~ '\'' }}:
+                        $response = $this->handler->{{ case.name }}(
         {%~ for param in case.parameters %}
                             ${{ param.variableName }},
         {%~ endfor %}
         {%~ if case.requestBodyPayloadParameter %}
                             $requestBodyPayload,
         {%~ endif %}
-                        ),
+                        );
+
+                        break;
     {%~ endfor %}
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
+                    default:
+                        return new JsonResponse(
+                            [
+                                'code' => 'unsupported_response_type',
+                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                            ],
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        );
+                }
 
                 break;
 {%~ endfor %}

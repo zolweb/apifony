@@ -130,19 +130,22 @@ class PetController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $response = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->FindPetsByStatusFromEmptyPayloadToContent(
+                switch($responsePayloadContentType) {
+                    case null:
+                        $response = $this->handler->FindPetsByStatusFromEmptyPayloadToContent(
                             $qstatus,
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
+                        );
+
+                        break;
+                    default:
+                        return new JsonResponse(
+                            [
+                                'code' => 'unsupported_response_type',
+                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                            ],
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        );
+                }
 
                 break;
             default:
@@ -206,19 +209,22 @@ class PetController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $response = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->FindPetsByTagsFromEmptyPayloadToContent(
+                switch($responsePayloadContentType) {
+                    case null:
+                        $response = $this->handler->FindPetsByTagsFromEmptyPayloadToContent(
                             $qtags,
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
+                        );
+
+                        break;
+                    default:
+                        return new JsonResponse(
+                            [
+                                'code' => 'unsupported_response_type',
+                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                            ],
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        );
+                }
 
                 break;
             default:
@@ -284,19 +290,22 @@ class PetController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $response = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->GetPetByIdFromEmptyPayloadToContent(
+                switch($responsePayloadContentType) {
+                    case null:
+                        $response = $this->handler->GetPetByIdFromEmptyPayloadToContent(
                             $ppetId,
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
+                        );
+
+                        break;
+                    default:
+                        return new JsonResponse(
+                            [
+                                'code' => 'unsupported_response_type',
+                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                            ],
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        );
+                }
 
                 break;
             default:
@@ -388,21 +397,24 @@ class PetController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $response = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->UpdatePetWithFormFromEmptyPayloadToContent(
+                switch($responsePayloadContentType) {
+                    case null:
+                        $response = $this->handler->UpdatePetWithFormFromEmptyPayloadToContent(
                             $ppetId,
                             $qname,
                             $qstatus,
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
+                        );
+
+                        break;
+                    default:
+                        return new JsonResponse(
+                            [
+                                'code' => 'unsupported_response_type',
+                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                            ],
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        );
+                }
 
                 break;
             default:
@@ -481,20 +493,23 @@ class PetController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $response = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->DeletePetFromEmptyPayloadToContent(
+                switch($responsePayloadContentType) {
+                    case null:
+                        $response = $this->handler->DeletePetFromEmptyPayloadToContent(
                             $hapiKey,
                             $ppetId,
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
+                        );
+
+                        break;
+                    default:
+                        return new JsonResponse(
+                            [
+                                'code' => 'unsupported_response_type',
+                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                            ],
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        );
+                }
 
                 break;
             default:
@@ -573,20 +588,23 @@ class PetController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $response = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->UploadFileFromEmptyPayloadToContent(
+                switch($responsePayloadContentType) {
+                    case null:
+                        $response = $this->handler->UploadFileFromEmptyPayloadToContent(
                             $ppetId,
                             $qadditionalMetadata,
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
+                        );
+
+                        break;
+                    default:
+                        return new JsonResponse(
+                            [
+                                'code' => 'unsupported_response_type',
+                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                            ],
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        );
+                }
 
                 break;
             default:

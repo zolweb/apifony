@@ -229,9 +229,9 @@ class DefaultController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $response = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->GetClientFromEmptyPayloadToContent(
+                switch($responsePayloadContentType) {
+                    case null:
+                        $response = $this->handler->GetClientFromEmptyPayloadToContent(
                             $pclientId,
                             $pparam3,
                             $pparam4,
@@ -242,15 +242,18 @@ class DefaultController extends AbstractController
                             $pparam2,
                             $cazgrzeg,
                             $hgegzer,
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
+                        );
+
+                        break;
+                    default:
+                        return new JsonResponse(
+                            [
+                                'code' => 'unsupported_response_type',
+                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                            ],
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        );
+                }
 
                 break;
             default:
@@ -400,24 +403,27 @@ class DefaultController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $response = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->PostClientClientIdParam1Param2Param3Param4Param5Param6FromEmptyPayloadToContent(
+                switch($responsePayloadContentType) {
+                    case null:
+                        $response = $this->handler->PostClientClientIdParam1Param2Param3Param4Param5Param6FromEmptyPayloadToContent(
                             $pclientId,
                             $pparam3,
                             $pparam4,
                             $pparam5,
                             $pparam1,
                             $pparam2,
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
+                        );
+
+                        break;
+                    default:
+                        return new JsonResponse(
+                            [
+                                'code' => 'unsupported_response_type',
+                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                            ],
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        );
+                }
 
                 break;
             default:
@@ -834,9 +840,9 @@ class DefaultController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $response = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->PostTestFromEmptyPayloadToContent(
+                switch($responsePayloadContentType) {
+                    case null:
+                        $response = $this->handler->PostTestFromEmptyPayloadToContent(
                             $pp1,
                             $pp2,
                             $pp3,
@@ -853,15 +859,18 @@ class DefaultController extends AbstractController
                             $cc2,
                             $cc3,
                             $cc4,
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
+                        );
+
+                        break;
+                    default:
+                        return new JsonResponse(
+                            [
+                                'code' => 'unsupported_response_type',
+                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                            ],
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        );
+                }
 
                 break;
             default:

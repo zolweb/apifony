@@ -58,18 +58,21 @@ class StoreController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $response = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->GetInventoryFromEmptyPayloadToContent(
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
+                switch($responsePayloadContentType) {
+                    case null:
+                        $response = $this->handler->GetInventoryFromEmptyPayloadToContent(
+                        );
+
+                        break;
+                    default:
+                        return new JsonResponse(
+                            [
+                                'code' => 'unsupported_response_type',
+                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                            ],
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        );
+                }
 
                 break;
             default:
@@ -120,18 +123,21 @@ class StoreController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $response = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->PlaceOrderFromEmptyPayloadToContent(
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
+                switch($responsePayloadContentType) {
+                    case null:
+                        $response = $this->handler->PlaceOrderFromEmptyPayloadToContent(
+                        );
+
+                        break;
+                    default:
+                        return new JsonResponse(
+                            [
+                                'code' => 'unsupported_response_type',
+                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                            ],
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        );
+                }
 
                 break;
             default:
@@ -197,19 +203,22 @@ class StoreController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $response = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->GetOrderByIdFromEmptyPayloadToContent(
+                switch($responsePayloadContentType) {
+                    case null:
+                        $response = $this->handler->GetOrderByIdFromEmptyPayloadToContent(
                             $porderId,
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
+                        );
+
+                        break;
+                    default:
+                        return new JsonResponse(
+                            [
+                                'code' => 'unsupported_response_type',
+                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                            ],
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        );
+                }
 
                 break;
             default:
@@ -275,19 +284,22 @@ class StoreController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'unspecified');
         switch (true) {
             case is_null($requestBodyPayload):
-                $response = match ($responsePayloadContentType) {
-                    null =>
-                        $this->handler->DeleteOrderFromEmptyPayloadToContent(
+                switch($responsePayloadContentType) {
+                    case null:
+                        $response = $this->handler->DeleteOrderFromEmptyPayloadToContent(
                             $porderId,
-                        ),
-                    default => (object) [
-                        'code' => Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        'content' => [
-                            'code' => 'unsupported_response_type',
-                            'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                        ],
-                    ],
-                };
+                        );
+
+                        break;
+                    default:
+                        return new JsonResponse(
+                            [
+                                'code' => 'unsupported_response_type',
+                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                            ],
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        );
+                }
 
                 break;
             default:
