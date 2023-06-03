@@ -86,12 +86,12 @@ class {{ controller.className }} extends AbstractController
                 break;
     {%~ endfor %}
             default:
-                return new jsonresponse(
+                return new JsonResponse(
                     [
                         'code' => 'unsupported_request_type',
-                        'message' => "the value '$requestbodypayloadcontenttype' received in content-type header is not a supported format.",
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
                     ],
-                    response::http_unsupported_media_type,
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 );
         }
         if (count($violations) > 0) {
@@ -101,20 +101,20 @@ class {{ controller.className }} extends AbstractController
         }
 {%~ endif %}
         if (count($errors) > 0) {
-            return new jsonresponse(
+            return new JsonResponse(
                 [
                     'code' => 'validation_failed',
-                    'message' => 'validation has failed.',
+                    'message' => 'Validation has failed.',
                     'errors' => $errors,
                 ],
-                response::http_bad_request,
+                Response::HTTP_BAD_REQUEST,
             );
         }
-        $responsepayloadcontenttype = $request->headers->get('accept');
+        $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
 {%~ for requestbodypayloadtype in action.requestbodypayloadtypes %}
             case {{ requestbodypayloadtype is null ? 'is_null($requestbodypayload)' : requestbodypayloadtype.requestbodypayloadtypechecking }}:
-                switch($responsepayloadcontenttype) {
+                switch($responsePayloadContentType) {
     {%~ for responsecontenttype in action.responsecontenttypes %}
         {%~ set case = action.getcase(requestbodypayloadtype, responsecontenttype) %}
                     case {{ case.responsecontenttype is null ? 'null' : '\'' ~ case.responsecontenttype ~ '\'' }}:
@@ -123,26 +123,26 @@ class {{ controller.className }} extends AbstractController
                             ${{ param.variablename }},
         {%~ endfor %}
         {%~ if case.requestbodypayloadparameter %}
-                            $requestbodypayload,
+                            $requestBodyPayload,
         {%~ endif %}
                         );
 
                         break;
     {%~ endfor %}
                     default:
-                        return new jsonresponse(
+                        return new JsonResponse(
                             [
                                 'code' => 'unsupported_response_type',
-                                'message' => "the value '$responsepayloadcontenttype' received in accept header is not a supported format.",
+                                'message' => "The value '$responsepayloadcontenttype' received in accept header is not a supported format.",
                             ],
-                            response::http_unsupported_media_type,
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         );
                 }
 
                 break;
 {%~ endfor %}
             default:
-                throw new runtimeException();
+                throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
 {%~ for responseContentType in action.responseContentTypes %}

@@ -32,12 +32,12 @@ class UserController extends AbstractController
 
                 break;
             default:
-                return new jsonresponse(
+                return new JsonResponse(
                     [
                         'code' => 'unsupported_request_type',
-                        'message' => "the value '$requestbodypayloadcontenttype' received in content-type header is not a supported format.",
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
                     ],
-                    response::http_unsupported_media_type,
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 );
         }
         if (count($violations) > 0) {
@@ -46,37 +46,37 @@ class UserController extends AbstractController
             }
         }
         if (count($errors) > 0) {
-            return new jsonresponse(
+            return new JsonResponse(
                 [
                     'code' => 'validation_failed',
-                    'message' => 'validation has failed.',
+                    'message' => 'Validation has failed.',
                     'errors' => $errors,
                 ],
-                response::http_bad_request,
+                Response::HTTP_BAD_REQUEST,
             );
         }
-        $responsepayloadcontenttype = $request->headers->get('accept');
+        $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
             case is_null($requestbodypayload):
-                switch($responsepayloadcontenttype) {
+                switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->CreateUserFromEmptyPayloadToContent(
                         );
 
                         break;
                     default:
-                        return new jsonresponse(
+                        return new JsonResponse(
                             [
                                 'code' => 'unsupported_response_type',
-                                'message' => "the value '$responsepayloadcontenttype' received in accept header is not a supported format.",
+                                'message' => "The value '$responsepayloadcontenttype' received in accept header is not a supported format.",
                             ],
-                            response::http_unsupported_media_type,
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         );
                 }
 
                 break;
             default:
-                throw new runtimeException();
+                throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
             case null:
@@ -97,12 +97,12 @@ class UserController extends AbstractController
 
                 break;
             default:
-                return new jsonresponse(
+                return new JsonResponse(
                     [
                         'code' => 'unsupported_request_type',
-                        'message' => "the value '$requestbodypayloadcontenttype' received in content-type header is not a supported format.",
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
                     ],
-                    response::http_unsupported_media_type,
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 );
         }
         if (count($violations) > 0) {
@@ -111,37 +111,37 @@ class UserController extends AbstractController
             }
         }
         if (count($errors) > 0) {
-            return new jsonresponse(
+            return new JsonResponse(
                 [
                     'code' => 'validation_failed',
-                    'message' => 'validation has failed.',
+                    'message' => 'Validation has failed.',
                     'errors' => $errors,
                 ],
-                response::http_bad_request,
+                Response::HTTP_BAD_REQUEST,
             );
         }
-        $responsepayloadcontenttype = $request->headers->get('accept');
+        $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
             case is_null($requestbodypayload):
-                switch($responsepayloadcontenttype) {
+                switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->CreateUsersWithListInputFromEmptyPayloadToContent(
                         );
 
                         break;
                     default:
-                        return new jsonresponse(
+                        return new JsonResponse(
                             [
                                 'code' => 'unsupported_response_type',
-                                'message' => "the value '$responsepayloadcontenttype' received in accept header is not a supported format.",
+                                'message' => "The value '$responsepayloadcontenttype' received in accept header is not a supported format.",
                             ],
-                            response::http_unsupported_media_type,
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         );
                 }
 
                 break;
             default:
-                throw new runtimeException();
+                throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
             case null:
@@ -196,12 +196,12 @@ class UserController extends AbstractController
 
                 break;
             default:
-                return new jsonresponse(
+                return new JsonResponse(
                     [
                         'code' => 'unsupported_request_type',
-                        'message' => "the value '$requestbodypayloadcontenttype' received in content-type header is not a supported format.",
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
                     ],
-                    response::http_unsupported_media_type,
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 );
         }
         if (count($violations) > 0) {
@@ -210,19 +210,19 @@ class UserController extends AbstractController
             }
         }
         if (count($errors) > 0) {
-            return new jsonresponse(
+            return new JsonResponse(
                 [
                     'code' => 'validation_failed',
-                    'message' => 'validation has failed.',
+                    'message' => 'Validation has failed.',
                     'errors' => $errors,
                 ],
-                response::http_bad_request,
+                Response::HTTP_BAD_REQUEST,
             );
         }
-        $responsepayloadcontenttype = $request->headers->get('accept');
+        $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
             case is_null($requestbodypayload):
-                switch($responsepayloadcontenttype) {
+                switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->LoginUserFromEmptyPayloadToContent(
                             $qusername,
@@ -231,18 +231,18 @@ class UserController extends AbstractController
 
                         break;
                     default:
-                        return new jsonresponse(
+                        return new JsonResponse(
                             [
                                 'code' => 'unsupported_response_type',
-                                'message' => "the value '$responsepayloadcontenttype' received in accept header is not a supported format.",
+                                'message' => "The value '$responsepayloadcontenttype' received in accept header is not a supported format.",
                             ],
-                            response::http_unsupported_media_type,
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         );
                 }
 
                 break;
             default:
-                throw new runtimeException();
+                throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
             case null:
@@ -263,12 +263,12 @@ class UserController extends AbstractController
 
                 break;
             default:
-                return new jsonresponse(
+                return new JsonResponse(
                     [
                         'code' => 'unsupported_request_type',
-                        'message' => "the value '$requestbodypayloadcontenttype' received in content-type header is not a supported format.",
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
                     ],
-                    response::http_unsupported_media_type,
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 );
         }
         if (count($violations) > 0) {
@@ -277,37 +277,37 @@ class UserController extends AbstractController
             }
         }
         if (count($errors) > 0) {
-            return new jsonresponse(
+            return new JsonResponse(
                 [
                     'code' => 'validation_failed',
-                    'message' => 'validation has failed.',
+                    'message' => 'Validation has failed.',
                     'errors' => $errors,
                 ],
-                response::http_bad_request,
+                Response::HTTP_BAD_REQUEST,
             );
         }
-        $responsepayloadcontenttype = $request->headers->get('accept');
+        $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
             case is_null($requestbodypayload):
-                switch($responsepayloadcontenttype) {
+                switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->LogoutUserFromEmptyPayloadToContent(
                         );
 
                         break;
                     default:
-                        return new jsonresponse(
+                        return new JsonResponse(
                             [
                                 'code' => 'unsupported_response_type',
-                                'message' => "the value '$responsepayloadcontenttype' received in accept header is not a supported format.",
+                                'message' => "The value '$responsepayloadcontenttype' received in accept header is not a supported format.",
                             ],
-                            response::http_unsupported_media_type,
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         );
                 }
 
                 break;
             default:
-                throw new runtimeException();
+                throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
             case null:
@@ -342,12 +342,12 @@ class UserController extends AbstractController
 
                 break;
             default:
-                return new jsonresponse(
+                return new JsonResponse(
                     [
                         'code' => 'unsupported_request_type',
-                        'message' => "the value '$requestbodypayloadcontenttype' received in content-type header is not a supported format.",
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
                     ],
-                    response::http_unsupported_media_type,
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 );
         }
         if (count($violations) > 0) {
@@ -356,19 +356,19 @@ class UserController extends AbstractController
             }
         }
         if (count($errors) > 0) {
-            return new jsonresponse(
+            return new JsonResponse(
                 [
                     'code' => 'validation_failed',
-                    'message' => 'validation has failed.',
+                    'message' => 'Validation has failed.',
                     'errors' => $errors,
                 ],
-                response::http_bad_request,
+                Response::HTTP_BAD_REQUEST,
             );
         }
-        $responsepayloadcontenttype = $request->headers->get('accept');
+        $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
             case is_null($requestbodypayload):
-                switch($responsepayloadcontenttype) {
+                switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->GetUserByNameFromEmptyPayloadToContent(
                             $pusername,
@@ -376,18 +376,18 @@ class UserController extends AbstractController
 
                         break;
                     default:
-                        return new jsonresponse(
+                        return new JsonResponse(
                             [
                                 'code' => 'unsupported_response_type',
-                                'message' => "the value '$responsepayloadcontenttype' received in accept header is not a supported format.",
+                                'message' => "The value '$responsepayloadcontenttype' received in accept header is not a supported format.",
                             ],
-                            response::http_unsupported_media_type,
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         );
                 }
 
                 break;
             default:
-                throw new runtimeException();
+                throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
             case null:
@@ -422,12 +422,12 @@ class UserController extends AbstractController
 
                 break;
             default:
-                return new jsonresponse(
+                return new JsonResponse(
                     [
                         'code' => 'unsupported_request_type',
-                        'message' => "the value '$requestbodypayloadcontenttype' received in content-type header is not a supported format.",
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
                     ],
-                    response::http_unsupported_media_type,
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 );
         }
         if (count($violations) > 0) {
@@ -436,19 +436,19 @@ class UserController extends AbstractController
             }
         }
         if (count($errors) > 0) {
-            return new jsonresponse(
+            return new JsonResponse(
                 [
                     'code' => 'validation_failed',
-                    'message' => 'validation has failed.',
+                    'message' => 'Validation has failed.',
                     'errors' => $errors,
                 ],
-                response::http_bad_request,
+                Response::HTTP_BAD_REQUEST,
             );
         }
-        $responsepayloadcontenttype = $request->headers->get('accept');
+        $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
             case is_null($requestbodypayload):
-                switch($responsepayloadcontenttype) {
+                switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->UpdateUserFromEmptyPayloadToContent(
                             $pusername,
@@ -456,18 +456,18 @@ class UserController extends AbstractController
 
                         break;
                     default:
-                        return new jsonresponse(
+                        return new JsonResponse(
                             [
                                 'code' => 'unsupported_response_type',
-                                'message' => "the value '$responsepayloadcontenttype' received in accept header is not a supported format.",
+                                'message' => "The value '$responsepayloadcontenttype' received in accept header is not a supported format.",
                             ],
-                            response::http_unsupported_media_type,
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         );
                 }
 
                 break;
             default:
-                throw new runtimeException();
+                throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
             case null:
@@ -502,12 +502,12 @@ class UserController extends AbstractController
 
                 break;
             default:
-                return new jsonresponse(
+                return new JsonResponse(
                     [
                         'code' => 'unsupported_request_type',
-                        'message' => "the value '$requestbodypayloadcontenttype' received in content-type header is not a supported format.",
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
                     ],
-                    response::http_unsupported_media_type,
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 );
         }
         if (count($violations) > 0) {
@@ -516,19 +516,19 @@ class UserController extends AbstractController
             }
         }
         if (count($errors) > 0) {
-            return new jsonresponse(
+            return new JsonResponse(
                 [
                     'code' => 'validation_failed',
-                    'message' => 'validation has failed.',
+                    'message' => 'Validation has failed.',
                     'errors' => $errors,
                 ],
-                response::http_bad_request,
+                Response::HTTP_BAD_REQUEST,
             );
         }
-        $responsepayloadcontenttype = $request->headers->get('accept');
+        $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
             case is_null($requestbodypayload):
-                switch($responsepayloadcontenttype) {
+                switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->DeleteUserFromEmptyPayloadToContent(
                             $pusername,
@@ -536,18 +536,18 @@ class UserController extends AbstractController
 
                         break;
                     default:
-                        return new jsonresponse(
+                        return new JsonResponse(
                             [
                                 'code' => 'unsupported_response_type',
-                                'message' => "the value '$responsepayloadcontenttype' received in accept header is not a supported format.",
+                                'message' => "The value '$responsepayloadcontenttype' received in accept header is not a supported format.",
                             ],
-                            response::http_unsupported_media_type,
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         );
                 }
 
                 break;
             default:
-                throw new runtimeException();
+                throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
             case null:
