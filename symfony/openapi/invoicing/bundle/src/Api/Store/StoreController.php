@@ -167,7 +167,7 @@ class StoreController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['orderId'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -248,7 +248,7 @@ class StoreController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['orderId'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }

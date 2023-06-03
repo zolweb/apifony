@@ -45,7 +45,7 @@ class {{ controller.className }} extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['{{ param.in }}']['{{ param.rawname }}'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -63,7 +63,7 @@ class {{ controller.className }} extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['{{ param.in }}']['{{ param.rawname }}'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }

@@ -55,7 +55,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['clientId'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -70,7 +70,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['param3'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -83,7 +83,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['param4'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -96,7 +96,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['param5'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -114,7 +114,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['param1'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -135,7 +135,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['param2'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -149,7 +149,7 @@ class DefaultController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['header']['azef'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
@@ -166,7 +166,7 @@ class DefaultController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['query']['agrez'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
@@ -183,7 +183,7 @@ class DefaultController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['cookie']['azgrzeg'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
@@ -200,7 +200,7 @@ class DefaultController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['header']['gegzer'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
@@ -297,7 +297,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['clientId'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -312,7 +312,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['param3'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -325,7 +325,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['param4'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -338,7 +338,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['param5'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -356,7 +356,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['param1'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -377,7 +377,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['param2'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -474,7 +474,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['p1'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -496,7 +496,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['p2'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -519,7 +519,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['p3'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -536,7 +536,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['p4'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -559,7 +559,7 @@ class DefaultController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['header']['h1'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
@@ -585,7 +585,7 @@ class DefaultController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['header']['h2'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
@@ -611,7 +611,7 @@ class DefaultController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['header']['h3'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
@@ -631,7 +631,7 @@ class DefaultController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['header']['h4'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
@@ -657,7 +657,7 @@ class DefaultController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['query']['q1'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
@@ -683,7 +683,7 @@ class DefaultController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['query']['q2'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
@@ -709,7 +709,7 @@ class DefaultController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['query']['q3'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
@@ -727,7 +727,7 @@ class DefaultController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['query']['q4'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
@@ -753,7 +753,7 @@ class DefaultController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['cookie']['c1'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
@@ -779,7 +779,7 @@ class DefaultController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['cookie']['c2'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
@@ -805,7 +805,7 @@ class DefaultController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['cookie']['c3'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
@@ -823,7 +823,7 @@ class DefaultController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['cookie']['c4'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }

@@ -165,7 +165,7 @@ class UserController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['query']['username'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
@@ -182,7 +182,7 @@ class UserController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['query']['password'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
@@ -331,7 +331,7 @@ class UserController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['username'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -411,7 +411,7 @@ class UserController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['username'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -491,7 +491,7 @@ class UserController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['username'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }

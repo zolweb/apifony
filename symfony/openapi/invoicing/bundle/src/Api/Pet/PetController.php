@@ -95,7 +95,7 @@ class PetController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['query']['status'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
@@ -178,7 +178,7 @@ class PetController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['query']['tags'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
@@ -262,7 +262,7 @@ class PetController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['petId'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -343,7 +343,7 @@ class PetController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['petId'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -357,7 +357,7 @@ class PetController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['query']['name'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
@@ -374,7 +374,7 @@ class PetController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['query']['status'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
@@ -460,7 +460,7 @@ class PetController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['petId'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -474,7 +474,7 @@ class PetController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['header']['api_key'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
@@ -559,7 +559,7 @@ class PetController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['petId'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
         }
@@ -573,7 +573,7 @@ class PetController extends AbstractController
             );
             if (count($violations) > 0) {
                 $errors['query']['additionalMetadata'] = array_map(
-                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                     iterator_to_array($violations),
                 );
             }
