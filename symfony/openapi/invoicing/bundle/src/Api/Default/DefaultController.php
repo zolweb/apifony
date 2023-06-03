@@ -257,7 +257,7 @@ class DefaultController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }}
+    }
 
     public function postClientClientIdParam1Param2Param3Param4Param5Param6(
         Request $request,
@@ -416,7 +416,7 @@ class DefaultController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }}
+    }
 
     public function postTest(
         Request $request,
@@ -844,5 +844,5 @@ class DefaultController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }}
+    }
 }

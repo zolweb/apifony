@@ -48,7 +48,7 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }}
+    }
 
     public function addPet(
         Request $request,
@@ -76,7 +76,7 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }}
+    }
 
     public function findPetsByStatus(
         Request $request,
@@ -163,7 +163,7 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }}
+    }
 
     public function findPetsByTags(
         Request $request,
@@ -245,7 +245,7 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }}
+    }
 
     public function getPetById(
         Request $request,
@@ -325,7 +325,7 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }}
+    }
 
     public function updatePetWithForm(
         Request $request,
@@ -437,7 +437,7 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }}
+    }
 
     public function deletePet(
         Request $request,
@@ -533,7 +533,7 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }}
+    }
 
     public function uploadFile(
         Request $request,
@@ -629,5 +629,5 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }}
+    }
 }

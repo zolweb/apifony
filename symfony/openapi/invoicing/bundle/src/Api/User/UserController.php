@@ -85,7 +85,7 @@ class UserController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }}
+    }
 
     public function createUsersWithListInput(
         Request $request,
@@ -151,7 +151,7 @@ class UserController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }}
+    }
 
     public function loginUser(
         Request $request,
@@ -249,7 +249,7 @@ class UserController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }}
+    }
 
     public function logoutUser(
         Request $request,
@@ -315,7 +315,7 @@ class UserController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }}
+    }
 
     public function getUserByName(
         Request $request,
@@ -394,7 +394,7 @@ class UserController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }}
+    }
 
     public function updateUser(
         Request $request,
@@ -473,7 +473,7 @@ class UserController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }}
+    }
 
     public function deleteUser(
         Request $request,
@@ -552,5 +552,5 @@ class UserController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }}
+    }
 }
