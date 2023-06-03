@@ -2,6 +2,7 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api;
 
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -15,7 +16,7 @@ abstract class AbstractController
     }
 
     /**
-     * @throws \Exception
+     * @throws DenormalizationException
      */
     public function getStringParameter(
         Request $request,
@@ -28,7 +29,7 @@ abstract class AbstractController
             'query' => $request->query,
             'header' => $request->headers,
             'cookie' => $request->cookies,
-            default => throw new \Exception(),
+            default => throw new RuntimeException('Invalid parameter location.'),
         };
 
         $isset = $bag->has($name);
@@ -36,21 +37,21 @@ abstract class AbstractController
 
         if (!$isset) {
             if ($required) {
-                throw new \Exception();
+                throw new DenormalizationException("Parameter '$name' in '$in' is required.");
             }
 
             $value = $default;
         }
 
         if ($value === null) {
-            throw new \Exception();
+            throw new DenormalizationException("Parameter '$name' in '$in' must not be null.");
         }
 
         return $value;
     }
 
     /**
-     * @throws \Exception
+     * @throws DenormalizationException
      */
     public function getStringOrNullParameter(
         Request $request,
@@ -63,7 +64,7 @@ abstract class AbstractController
             'query' => $request->query,
             'header' => $request->headers,
             'cookie' => $request->cookies,
-            default => throw new \Exception(),
+            default => throw new RuntimeException('Invalid parameter location.'),
         };
 
         $isset = $bag->has($name);
@@ -71,7 +72,7 @@ abstract class AbstractController
 
         if (!$isset) {
             if ($required) {
-                throw new \Exception();
+                throw new DenormalizationException("Parameter '$name' in '$in' is required.");
             }
 
             $value = $default;
@@ -85,7 +86,7 @@ abstract class AbstractController
     }
 
     /**
-     * @throws \Exception
+     * @throws DenormalizationException
      */
     public function getIntParameter(
         Request $request,
@@ -98,7 +99,7 @@ abstract class AbstractController
             'query' => $request->query,
             'header' => $request->headers,
             'cookie' => $request->cookies,
-            default => throw new \Exception(),
+            default => throw new RuntimeException('Invalid parameter location.'),
         };
 
         $isset = $bag->has($name);
@@ -106,25 +107,25 @@ abstract class AbstractController
 
         if (!$isset) {
             if ($required) {
-                throw new \Exception();
+                throw new DenormalizationException("Parameter '$name' in '$in' is required.");
             }
 
             $value = $default;
         }
 
         if ($value === null) {
-            throw new \Exception();
+            throw new DenormalizationException("Parameter '$name' in '$in' must not be null.");
         }
 
         if (!ctype_digit($value)) {
-            throw new \RuntimeException();
+            throw new DenormalizationException("Parameter '$name' in '$in' must be an integer.");
         }
 
         return intval($value);
     }
 
     /**
-     * @throws \Exception
+     * @throws DenormalizationException
      */
     public function getIntOrNullParameter(
         Request $request,
@@ -137,7 +138,7 @@ abstract class AbstractController
             'query' => $request->query,
             'header' => $request->headers,
             'cookie' => $request->cookies,
-            default => throw new \Exception(),
+            default => throw new RuntimeException('Invalid parameter location.'),
         };
 
         $isset = $bag->has($name);
@@ -145,7 +146,7 @@ abstract class AbstractController
 
         if (!$isset) {
             if ($required) {
-                throw new \Exception();
+                throw new DenormalizationException("Parameter '$name' in '$in' is required.");
             }
 
             $value = $default;
@@ -156,14 +157,14 @@ abstract class AbstractController
         }
 
         if (!ctype_digit($value)) {
-            throw new \RuntimeException();
+            throw new DenormalizationException("Parameter '$name' in '$in' must be an integer.");
         }
 
         return intval($value);
     }
 
     /**
-     * @throws \Exception
+     * @throws DenormalizationException
      */
     public function getFloatParameter(
         Request $request,
@@ -176,7 +177,7 @@ abstract class AbstractController
             'query' => $request->query,
             'header' => $request->headers,
             'cookie' => $request->cookies,
-            default => throw new \Exception(),
+            default => throw new RuntimeException('Invalid parameter location.'),
         };
 
         $isset = $bag->has($name);
@@ -184,25 +185,25 @@ abstract class AbstractController
 
         if (!$isset) {
             if ($required) {
-                throw new \Exception();
+                throw new DenormalizationException("Parameter '$name' in '$in' is required.");
             }
 
             $value = $default;
         }
 
         if ($value === null) {
-            throw new \Exception();
+            throw new DenormalizationException("Parameter '$name' in '$in' must not be null.");
         }
 
         if (!is_numeric($value)) {
-            throw new \RuntimeException();
+            throw new DenormalizationException("Parameter '$name' in '$in' must be a numeric.");
         }
 
         return floatval($value);
     }
 
     /**
-     * @throws \Exception
+     * @throws DenormalizationException
      */
     public function getFloatOrNullParameter(
         Request $request,
@@ -215,7 +216,7 @@ abstract class AbstractController
             'query' => $request->query,
             'header' => $request->headers,
             'cookie' => $request->cookies,
-            default => throw new \Exception(),
+            default => throw new RuntimeException('Invalid parameter location.'),
         };
 
         $isset = $bag->has($name);
@@ -223,7 +224,7 @@ abstract class AbstractController
 
         if (!$isset) {
             if ($required) {
-                throw new \Exception();
+                throw new DenormalizationException("Parameter '$name' in '$in' is required.");
             }
 
             $value = $default;
@@ -234,14 +235,14 @@ abstract class AbstractController
         }
 
         if (!is_numeric($value)) {
-            throw new \RuntimeException();
+            throw new DenormalizationException("Parameter '$name' in '$in' must be a numeric.");
         }
 
         return floatval($value);
     }
 
     /**
-     * @throws \Exception
+     * @throws DenormalizationException
      */
     public function getBoolParameter(
         Request $request,
@@ -254,7 +255,7 @@ abstract class AbstractController
             'query' => $request->query,
             'header' => $request->headers,
             'cookie' => $request->cookies,
-            default => throw new \Exception(),
+            default => throw new RuntimeException('Invalid parameter location.'),
         };
 
         $isset = $bag->has($name);
@@ -262,25 +263,25 @@ abstract class AbstractController
 
         if (!$isset) {
             if ($required) {
-                throw new \Exception();
+                throw new DenormalizationException("Parameter '$name' in '$in' is required.");
             }
 
             $value = $default;
         }
 
         if ($value === null) {
-            throw new \Exception();
+            throw new DenormalizationException("Parameter '$name' in '$in' must not be null.");
         }
 
         if (!in_array($value, ['true', 'false'], true)) {
-            throw new \RuntimeException();
+            throw new DenormalizationException("Parameter '$name' in '$in' must be a boolean.");
         }
 
         return ['true' => true, 'false' => false][$value];
     }
 
     /**
-     * @throws \Exception
+     * @throws DenormalizationException
      */
     public function getBoolOrNullParameter(
         Request $request,
@@ -293,7 +294,7 @@ abstract class AbstractController
             'query' => $request->query,
             'header' => $request->headers,
             'cookie' => $request->cookies,
-            default => throw new \Exception(),
+            default => throw new RuntimeException('Invalid parameter location.'),
         };
 
         $isset = $bag->has($name);
@@ -301,7 +302,7 @@ abstract class AbstractController
 
         if (!$isset) {
             if ($required) {
-                throw new \Exception();
+                throw new DenormalizationException("Parameter '$name' in '$in' is required.");
             }
 
             $value = $default;
@@ -312,7 +313,7 @@ abstract class AbstractController
         }
 
         if (!in_array($value, ['true', 'false'], true)) {
-            throw new \RuntimeException();
+            throw new DenormalizationException("Parameter '$name' in '$in' must be a boolean.");
         }
 
         return ['true' => true, 'false' => false][$value];

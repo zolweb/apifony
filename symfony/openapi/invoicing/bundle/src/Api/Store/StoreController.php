@@ -84,7 +84,7 @@ class StoreController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }}
+    }
 
     public function placeOrder(
         Request $request,
@@ -149,7 +149,7 @@ class StoreController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }}
+    }
 
     public function getOrderById(
         Request $request,
@@ -230,7 +230,7 @@ class StoreController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }}
+    }
 
     public function deleteOrder(
         Request $request,
@@ -311,5 +311,5 @@ class StoreController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }}
+    }
 }

@@ -37,6 +37,7 @@ class Api
         return new self(
             AbstractController::build($bundleNamespace),
             $aggregates,
+            new DenormalizationException($bundleNamespace),
         );
     }
 
@@ -44,6 +45,7 @@ class Api
         private readonly AbstractController $abstractController,
         /** @var array<Aggregate> */
         private readonly array $aggregates,
+        private readonly DenormalizationException $denormalizationException,
     ) {
     }
 
@@ -60,7 +62,10 @@ class Api
      */
     public function getFiles(): array
     {
-        $files = [$this->abstractController];
+        $files = [
+            $this->abstractController,
+            $this->denormalizationException,
+        ];
 
         foreach ($this->aggregates as $aggregate) {
             foreach ($aggregate->getFiles() as $file) {

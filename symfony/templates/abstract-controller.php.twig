@@ -3,6 +3,7 @@
 
 namespace {{ abstractController.namespace }};
 
+use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
@@ -18,7 +19,7 @@ abstract class AbstractController
 {%~ for type in ['string', 'int', 'float', 'bool'] %}
     {%~ for nullable in [false, true] %}
     /**
-     * @throws \Exception
+     * @throws DenormalizationException
      */
     public function get{{ type|capitalize }}{{ nullable ? 'OrNull' : '' }}Parameter(
         Request $request,
@@ -31,7 +32,7 @@ abstract class AbstractController
             'query' => $request->query,
             'header' => $request->headers,
             'cookie' => $request->cookies,
-            default => throw new \Exception(),
+            default => throw new RuntimeException('Invalid parameter location.'),
         };
 
         $isset = $bag->has($name);
@@ -39,7 +40,7 @@ abstract class AbstractController
 
         if (!$isset) {
             if ($required) {
-                throw new \Exception();
+                throw new DenormalizationException("Parameter '$name' in '$in' is required.");
             }
 
             $value = $default;
@@ -49,7 +50,7 @@ abstract class AbstractController
         {%~ if nullable %}
             return null;
         {%~ else %}
-            throw new \Exception();
+            throw new DenormalizationException("Parameter '$name' in '$in' must not be null.");
         {%~ endif %}
         }
 
@@ -57,19 +58,19 @@ abstract class AbstractController
         return $value;
         {%~ elseif type is same as 'int' %}
         if (!ctype_digit($value)) {
-            throw new \RuntimeException();
+            throw new DenormalizationException("Parameter '$name' in '$in' must be an integer.");
         }
 
         return intval($value);
         {%~ elseif type is same as 'float' %}
         if (!is_numeric($value)) {
-            throw new \RuntimeException();
+            throw new DenormalizationException("Parameter '$name' in '$in' must be a numeric.");
         }
 
         return floatval($value);
         {%~ elseif type is same as 'bool' %}
         if (!in_array($value, ['true', 'false'], true)) {
-            throw new \RuntimeException();
+            throw new DenormalizationException("Parameter '$name' in '$in' must be a boolean.");
         }
 
         return ['true' => true, 'false' => false][$value];
