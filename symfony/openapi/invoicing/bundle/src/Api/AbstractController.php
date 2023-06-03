@@ -5,6 +5,8 @@ namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Serializer\SerializerInterface;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 
 abstract class AbstractController
@@ -319,14 +321,18 @@ abstract class AbstractController
         return ['true' => true, 'false' => false][$value];
     }
 
+    /**
+     * @param array<Constraint> $constraints
+     * @param array<string, array<string, array<string>>> $errors
+     */
     public function validateParameter(
         string $name,
         string $in,
         mixed $value,
-        array $constaints,
+        array $constraints,
         array& $errors,
     ): void {
-        $violations = $this->validator->validate($value, $contraints);
+        $violations = $this->validator->validate($value, $constraints);
 
         if (count($violations) > 0) {
             $errors[$in][$name] = array_map(
