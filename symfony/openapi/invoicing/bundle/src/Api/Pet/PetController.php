@@ -2,6 +2,7 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Pet;
 
+use App\Zol\Invoicing\Presentation\Api\Bundle\Api\DenormalizationException;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -78,24 +79,28 @@ class PetController extends AbstractController
     public function findPetsByStatus(
         Request $request,
     ): Response {
-        $qstatus = $this->getStringParameter($request, 'status', 'query', false, 'available');
         $errors = [];
-        $violations = $this->validator->validate(
-            $qstatus,
-            [
+        try {
+            $qstatus = $this->getStringParameter($request, 'status', 'query', false, 'available');
+            $violations = $this->validator->validate(
+                $qstatus,
+                [
                 new Assert\NotNull,
                 new Assert\Choice(choices: [
                     'available',
                     'pending',
                     'sold',
                 ]),
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['query']['status'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
+                ]
             );
+            if (count($violations) > 0) {
+                $errors['query']['status'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['query']['status'] = $e->getMessage();
         }
         switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
@@ -162,19 +167,23 @@ class PetController extends AbstractController
     public function findPetsByTags(
         Request $request,
     ): Response {
-        $qtags = $this->getStringParameter($request, 'tags', 'query', false);
         $errors = [];
-        $violations = $this->validator->validate(
-            $qtags,
-            [
+        try {
+            $qtags = $this->getStringParameter($request, 'tags', 'query', false);
+            $violations = $this->validator->validate(
+                $qtags,
+                [
                 new Assert\NotNull,
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['query']['tags'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
+                ]
             );
+            if (count($violations) > 0) {
+                $errors['query']['tags'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['query']['tags'] = $e->getMessage();
         }
         switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
@@ -242,8 +251,8 @@ class PetController extends AbstractController
         Request $request,
         int $petId,
     ): Response {
-        $ppetId = $petId;
         $errors = [];
+        $ppetId = $petId;
         $violations = $this->validator->validate(
             $ppetId,
             [
@@ -323,10 +332,8 @@ class PetController extends AbstractController
         Request $request,
         int $petId,
     ): Response {
-        $ppetId = $petId;
-        $qname = $this->getStringParameter($request, 'name', 'query', false);
-        $qstatus = $this->getStringParameter($request, 'status', 'query', false);
         $errors = [];
+        $ppetId = $petId;
         $violations = $this->validator->validate(
             $ppetId,
             [
@@ -340,29 +347,39 @@ class PetController extends AbstractController
                 iterator_to_array($violations),
             );
         }
-        $violations = $this->validator->validate(
-            $qname,
-            [
+        try {
+            $qname = $this->getStringParameter($request, 'name', 'query', false);
+            $violations = $this->validator->validate(
+                $qname,
+                [
                 new Assert\NotNull,
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['query']['name'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
+                ]
             );
+            if (count($violations) > 0) {
+                $errors['query']['name'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['query']['name'] = $e->getMessage();
         }
-        $violations = $this->validator->validate(
-            $qstatus,
-            [
+        try {
+            $qstatus = $this->getStringParameter($request, 'status', 'query', false);
+            $violations = $this->validator->validate(
+                $qstatus,
+                [
                 new Assert\NotNull,
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['query']['status'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
+                ]
             );
+            if (count($violations) > 0) {
+                $errors['query']['status'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['query']['status'] = $e->getMessage();
         }
         switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
@@ -432,21 +449,8 @@ class PetController extends AbstractController
         Request $request,
         int $petId,
     ): Response {
-        $ppetId = $petId;
-        $hapiKey = $this->getStringParameter($request, 'api_key', 'header', false);
         $errors = [];
-        $violations = $this->validator->validate(
-            $hapiKey,
-            [
-                new Assert\NotNull,
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['header']['api_key'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
-            );
-        }
+        $ppetId = $petId;
         $violations = $this->validator->validate(
             $ppetId,
             [
@@ -459,6 +463,23 @@ class PetController extends AbstractController
                 fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
+        }
+        try {
+            $hapiKey = $this->getStringParameter($request, 'api_key', 'header', false);
+            $violations = $this->validator->validate(
+                $hapiKey,
+                [
+                new Assert\NotNull,
+                ]
+            );
+            if (count($violations) > 0) {
+                $errors['header']['api_key'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['header']['api_key'] = $e->getMessage();
         }
         switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
@@ -527,9 +548,8 @@ class PetController extends AbstractController
         Request $request,
         int $petId,
     ): Response {
-        $ppetId = $petId;
-        $qadditionalMetadata = $this->getStringParameter($request, 'additionalMetadata', 'query', false);
         $errors = [];
+        $ppetId = $petId;
         $violations = $this->validator->validate(
             $ppetId,
             [
@@ -543,17 +563,22 @@ class PetController extends AbstractController
                 iterator_to_array($violations),
             );
         }
-        $violations = $this->validator->validate(
-            $qadditionalMetadata,
-            [
+        try {
+            $qadditionalMetadata = $this->getStringParameter($request, 'additionalMetadata', 'query', false);
+            $violations = $this->validator->validate(
+                $qadditionalMetadata,
+                [
                 new Assert\NotNull,
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['query']['additionalMetadata'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
+                ]
             );
+            if (count($violations) > 0) {
+                $errors['query']['additionalMetadata'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['query']['additionalMetadata'] = $e->getMessage();
         }
         switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':

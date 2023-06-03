@@ -2,6 +2,7 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Store;
 
+use App\Zol\Invoicing\Presentation\Api\Bundle\Api\DenormalizationException;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -155,8 +156,8 @@ class StoreController extends AbstractController
         Request $request,
         int $orderId,
     ): Response {
-        $porderId = $orderId;
         $errors = [];
+        $porderId = $orderId;
         $violations = $this->validator->validate(
             $porderId,
             [
@@ -236,8 +237,8 @@ class StoreController extends AbstractController
         Request $request,
         int $orderId,
     ): Response {
-        $porderId = $orderId;
         $errors = [];
+        $porderId = $orderId;
         $violations = $this->validator->validate(
             $porderId,
             [

@@ -2,6 +2,7 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Default;
 
+use App\Zol\Invoicing\Presentation\Api\Bundle\Api\DenormalizationException;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -44,17 +45,8 @@ class DefaultController extends AbstractController
         string $param1,
         string $param2,
     ): Response {
-        $pclientId = $clientId;
-        $pparam3 = $param3;
-        $pparam4 = $param4;
-        $pparam5 = $param5;
-        $pparam1 = $param1;
-        $pparam2 = $param2;
-        $hazef = $this->getStringParameter($request, 'azef', 'header', true);
-        $qagrez = $this->getFloatParameter($request, 'agrez', 'query', true);
-        $cazgrzeg = $this->getIntParameter($request, 'azgrzeg', 'cookie', false, 10);
-        $hgegzer = $this->getBoolParameter($request, 'gegzer', 'header', false, true);
         $errors = [];
+        $pclientId = $clientId;
         $violations = $this->validator->validate(
             $pclientId,
             [
@@ -67,6 +59,7 @@ class DefaultController extends AbstractController
                 iterator_to_array($violations),
             );
         }
+        $pparam3 = $param3;
         $violations = $this->validator->validate(
             $pparam3,
             [
@@ -81,6 +74,7 @@ class DefaultController extends AbstractController
                 iterator_to_array($violations),
             );
         }
+        $pparam4 = $param4;
         $violations = $this->validator->validate(
             $pparam4,
             [
@@ -93,6 +87,7 @@ class DefaultController extends AbstractController
                 iterator_to_array($violations),
             );
         }
+        $pparam5 = $param5;
         $violations = $this->validator->validate(
             $pparam5,
             [
@@ -105,36 +100,7 @@ class DefaultController extends AbstractController
                 iterator_to_array($violations),
             );
         }
-        $violations = $this->validator->validate(
-            $hazef,
-            [
-                new Assert\NotNull,
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['header']['azef'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
-            );
-        }
-        if (!$request->headers->has('azef')) {
-            $errors['header']['azef'][] = 'parameter azef in header is required.';
-        }
-        $violations = $this->validator->validate(
-            $qagrez,
-            [
-                new Assert\NotNull,
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['query']['agrez'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
-            );
-        }
-        if (!$request->query->has('agrez')) {
-            $errors['query']['agrez'][] = 'parameter agrez in query is required.';
-        }
+        $pparam1 = $param1;
         $violations = $this->validator->validate(
             $pparam1,
             [
@@ -152,6 +118,7 @@ class DefaultController extends AbstractController
                 iterator_to_array($violations),
             );
         }
+        $pparam2 = $param2;
         $violations = $this->validator->validate(
             $pparam2,
             [
@@ -172,29 +139,73 @@ class DefaultController extends AbstractController
                 iterator_to_array($violations),
             );
         }
-        $violations = $this->validator->validate(
-            $cazgrzeg,
-            [
+        try {
+            $hazef = $this->getStringParameter($request, 'azef', 'header', true);
+            $violations = $this->validator->validate(
+                $hazef,
+                [
                 new Assert\NotNull,
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['cookie']['azgrzeg'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
+                ]
             );
+            if (count($violations) > 0) {
+                $errors['header']['azef'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['header']['azef'] = $e->getMessage();
         }
-        $violations = $this->validator->validate(
-            $hgegzer,
-            [
+        try {
+            $qagrez = $this->getFloatParameter($request, 'agrez', 'query', true);
+            $violations = $this->validator->validate(
+                $qagrez,
+                [
                 new Assert\NotNull,
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['header']['gegzer'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
+                ]
             );
+            if (count($violations) > 0) {
+                $errors['query']['agrez'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['query']['agrez'] = $e->getMessage();
+        }
+        try {
+            $cazgrzeg = $this->getIntParameter($request, 'azgrzeg', 'cookie', false, 10);
+            $violations = $this->validator->validate(
+                $cazgrzeg,
+                [
+                new Assert\NotNull,
+                ]
+            );
+            if (count($violations) > 0) {
+                $errors['cookie']['azgrzeg'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['cookie']['azgrzeg'] = $e->getMessage();
+        }
+        try {
+            $hgegzer = $this->getBoolParameter($request, 'gegzer', 'header', false, true);
+            $violations = $this->validator->validate(
+                $hgegzer,
+                [
+                new Assert\NotNull,
+                ]
+            );
+            if (count($violations) > 0) {
+                $errors['header']['gegzer'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['header']['gegzer'] = $e->getMessage();
         }
         switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
@@ -276,13 +287,8 @@ class DefaultController extends AbstractController
         string $param1,
         string $param2,
     ): Response {
-        $pclientId = $clientId;
-        $pparam3 = $param3;
-        $pparam4 = $param4;
-        $pparam5 = $param5;
-        $pparam1 = $param1;
-        $pparam2 = $param2;
         $errors = [];
+        $pclientId = $clientId;
         $violations = $this->validator->validate(
             $pclientId,
             [
@@ -295,6 +301,7 @@ class DefaultController extends AbstractController
                 iterator_to_array($violations),
             );
         }
+        $pparam3 = $param3;
         $violations = $this->validator->validate(
             $pparam3,
             [
@@ -309,6 +316,7 @@ class DefaultController extends AbstractController
                 iterator_to_array($violations),
             );
         }
+        $pparam4 = $param4;
         $violations = $this->validator->validate(
             $pparam4,
             [
@@ -321,6 +329,7 @@ class DefaultController extends AbstractController
                 iterator_to_array($violations),
             );
         }
+        $pparam5 = $param5;
         $violations = $this->validator->validate(
             $pparam5,
             [
@@ -333,6 +342,7 @@ class DefaultController extends AbstractController
                 iterator_to_array($violations),
             );
         }
+        $pparam1 = $param1;
         $violations = $this->validator->validate(
             $pparam1,
             [
@@ -350,6 +360,7 @@ class DefaultController extends AbstractController
                 iterator_to_array($violations),
             );
         }
+        $pparam2 = $param2;
         $violations = $this->validator->validate(
             $pparam2,
             [
@@ -444,23 +455,8 @@ class DefaultController extends AbstractController
         float $p3,
         bool $p4,
     ): Response {
-        $pp1 = $p1;
-        $pp2 = $p2;
-        $pp3 = $p3;
-        $pp4 = $p4;
-        $hh1 = $this->getStringParameter($request, 'h1', 'header', true, 'abc');
-        $hh2 = $this->getIntParameter($request, 'h2', 'header', true, 1);
-        $hh3 = $this->getFloatParameter($request, 'h3', 'header', true, 0.1);
-        $hh4 = $this->getBoolParameter($request, 'h4', 'header', true, true);
-        $qq1 = $this->getStringParameter($request, 'q1', 'query', true, 'abc');
-        $qq2 = $this->getIntParameter($request, 'q2', 'query', true, 1);
-        $qq3 = $this->getFloatParameter($request, 'q3', 'query', true, 0.1);
-        $qq4 = $this->getBoolParameter($request, 'q4', 'query', true, true);
-        $cc1 = $this->getStringParameter($request, 'c1', 'cookie', true, 'abc');
-        $cc2 = $this->getIntParameter($request, 'c2', 'cookie', true, 1);
-        $cc3 = $this->getFloatParameter($request, 'c3', 'cookie', true, 0.1);
-        $cc4 = $this->getBoolParameter($request, 'c4', 'cookie', true, true);
         $errors = [];
+        $pp1 = $p1;
         $violations = $this->validator->validate(
             $pp1,
             [
@@ -482,6 +478,7 @@ class DefaultController extends AbstractController
                 iterator_to_array($violations),
             );
         }
+        $pp2 = $p2;
         $violations = $this->validator->validate(
             $pp2,
             [
@@ -503,6 +500,7 @@ class DefaultController extends AbstractController
                 iterator_to_array($violations),
             );
         }
+        $pp3 = $p3;
         $violations = $this->validator->validate(
             $pp3,
             [
@@ -525,6 +523,7 @@ class DefaultController extends AbstractController
                 iterator_to_array($violations),
             );
         }
+        $pp4 = $p4;
         $violations = $this->validator->validate(
             $pp4,
             [
@@ -541,9 +540,11 @@ class DefaultController extends AbstractController
                 iterator_to_array($violations),
             );
         }
-        $violations = $this->validator->validate(
-            $hh1,
-            [
+        try {
+            $hh1 = $this->getStringParameter($request, 'h1', 'header', true, 'abc');
+            $violations = $this->validator->validate(
+                $hh1,
+                [
                 new Assert\NotNull,
                 new AssertF5,
                 new Assert\Regex(pattern: '[a-z]{3}'),
@@ -554,20 +555,22 @@ class DefaultController extends AbstractController
                     'def',
                     'ghi',
                 ]),
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['header']['h1'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
+                ]
             );
+            if (count($violations) > 0) {
+                $errors['header']['h1'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['header']['h1'] = $e->getMessage();
         }
-        if (!$request->headers->has('h1')) {
-            $errors['header']['h1'][] = 'parameter h1 in header is required.';
-        }
-        $violations = $this->validator->validate(
-            $hh2,
-            [
+        try {
+            $hh2 = $this->getIntParameter($request, 'h2', 'header', true, 1);
+            $violations = $this->validator->validate(
+                $hh2,
+                [
                 new Assert\NotNull,
                 new AssertF6,
                 new Assert\DivisibleBy(value: 1),
@@ -578,20 +581,22 @@ class DefaultController extends AbstractController
                     2,
                     3,
                 ]),
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['header']['h2'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
+                ]
             );
+            if (count($violations) > 0) {
+                $errors['header']['h2'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['header']['h2'] = $e->getMessage();
         }
-        if (!$request->headers->has('h2')) {
-            $errors['header']['h2'][] = 'parameter h2 in header is required.';
-        }
-        $violations = $this->validator->validate(
-            $hh3,
-            [
+        try {
+            $hh3 = $this->getFloatParameter($request, 'h3', 'header', true, 0.1);
+            $violations = $this->validator->validate(
+                $hh3,
+                [
                 new Assert\NotNull,
                 new AssertF7,
                 new Assert\DivisibleBy(value: 0.1),
@@ -602,38 +607,42 @@ class DefaultController extends AbstractController
                     0.2,
                     0.3,
                 ]),
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['header']['h3'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
+                ]
             );
+            if (count($violations) > 0) {
+                $errors['header']['h3'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['header']['h3'] = $e->getMessage();
         }
-        if (!$request->headers->has('h3')) {
-            $errors['header']['h3'][] = 'parameter h3 in header is required.';
-        }
-        $violations = $this->validator->validate(
-            $hh4,
-            [
+        try {
+            $hh4 = $this->getBoolParameter($request, 'h4', 'header', true, true);
+            $violations = $this->validator->validate(
+                $hh4,
+                [
                 new Assert\NotNull,
                 new Assert\Choice(choices: [
                     true,
                 ]),
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['header']['h4'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
+                ]
             );
+            if (count($violations) > 0) {
+                $errors['header']['h4'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['header']['h4'] = $e->getMessage();
         }
-        if (!$request->headers->has('h4')) {
-            $errors['header']['h4'][] = 'parameter h4 in header is required.';
-        }
-        $violations = $this->validator->validate(
-            $qq1,
-            [
+        try {
+            $qq1 = $this->getStringParameter($request, 'q1', 'query', true, 'abc');
+            $violations = $this->validator->validate(
+                $qq1,
+                [
                 new Assert\NotNull,
                 new AssertF9,
                 new Assert\Regex(pattern: '[a-z]{3}'),
@@ -644,20 +653,22 @@ class DefaultController extends AbstractController
                     'def',
                     'ghi',
                 ]),
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['query']['q1'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
+                ]
             );
+            if (count($violations) > 0) {
+                $errors['query']['q1'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['query']['q1'] = $e->getMessage();
         }
-        if (!$request->query->has('q1')) {
-            $errors['query']['q1'][] = 'parameter q1 in query is required.';
-        }
-        $violations = $this->validator->validate(
-            $qq2,
-            [
+        try {
+            $qq2 = $this->getIntParameter($request, 'q2', 'query', true, 1);
+            $violations = $this->validator->validate(
+                $qq2,
+                [
                 new Assert\NotNull,
                 new AssertF10,
                 new Assert\DivisibleBy(value: 1),
@@ -668,20 +679,22 @@ class DefaultController extends AbstractController
                     2,
                     3,
                 ]),
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['query']['q2'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
+                ]
             );
+            if (count($violations) > 0) {
+                $errors['query']['q2'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['query']['q2'] = $e->getMessage();
         }
-        if (!$request->query->has('q2')) {
-            $errors['query']['q2'][] = 'parameter q2 in query is required.';
-        }
-        $violations = $this->validator->validate(
-            $qq3,
-            [
+        try {
+            $qq3 = $this->getFloatParameter($request, 'q3', 'query', true, 0.1);
+            $violations = $this->validator->validate(
+                $qq3,
+                [
                 new Assert\NotNull,
                 new AssertF13,
                 new Assert\DivisibleBy(value: 0.1),
@@ -692,36 +705,40 @@ class DefaultController extends AbstractController
                     0.2,
                     0.3,
                 ]),
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['query']['q3'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
+                ]
             );
+            if (count($violations) > 0) {
+                $errors['query']['q3'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['query']['q3'] = $e->getMessage();
         }
-        if (!$request->query->has('q3')) {
-            $errors['query']['q3'][] = 'parameter q3 in query is required.';
-        }
-        $violations = $this->validator->validate(
-            $qq4,
-            [
+        try {
+            $qq4 = $this->getBoolParameter($request, 'q4', 'query', true, true);
+            $violations = $this->validator->validate(
+                $qq4,
+                [
                 new Assert\NotNull,
                 new AssertF12,
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['query']['q4'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
+                ]
             );
+            if (count($violations) > 0) {
+                $errors['query']['q4'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['query']['q4'] = $e->getMessage();
         }
-        if (!$request->query->has('q4')) {
-            $errors['query']['q4'][] = 'parameter q4 in query is required.';
-        }
-        $violations = $this->validator->validate(
-            $cc1,
-            [
+        try {
+            $cc1 = $this->getStringParameter($request, 'c1', 'cookie', true, 'abc');
+            $violations = $this->validator->validate(
+                $cc1,
+                [
                 new Assert\NotNull,
                 new AssertF13,
                 new Assert\Regex(pattern: '[a-z]{3}'),
@@ -732,20 +749,22 @@ class DefaultController extends AbstractController
                     'def',
                     'ghi',
                 ]),
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['cookie']['c1'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
+                ]
             );
+            if (count($violations) > 0) {
+                $errors['cookie']['c1'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['cookie']['c1'] = $e->getMessage();
         }
-        if (!$request->cookies->has('c1')) {
-            $errors['cookie']['c1'][] = 'parameter c1 in cookie is required.';
-        }
-        $violations = $this->validator->validate(
-            $cc2,
-            [
+        try {
+            $cc2 = $this->getIntParameter($request, 'c2', 'cookie', true, 1);
+            $violations = $this->validator->validate(
+                $cc2,
+                [
                 new Assert\NotNull,
                 new AssertF14,
                 new Assert\DivisibleBy(value: 1),
@@ -756,20 +775,22 @@ class DefaultController extends AbstractController
                     2,
                     3,
                 ]),
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['cookie']['c2'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
+                ]
             );
+            if (count($violations) > 0) {
+                $errors['cookie']['c2'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['cookie']['c2'] = $e->getMessage();
         }
-        if (!$request->cookies->has('c2')) {
-            $errors['cookie']['c2'][] = 'parameter c2 in cookie is required.';
-        }
-        $violations = $this->validator->validate(
-            $cc3,
-            [
+        try {
+            $cc3 = $this->getFloatParameter($request, 'c3', 'cookie', true, 0.1);
+            $violations = $this->validator->validate(
+                $cc3,
+                [
                 new Assert\NotNull,
                 new AssertF15,
                 new Assert\DivisibleBy(value: 0.1),
@@ -780,32 +801,34 @@ class DefaultController extends AbstractController
                     0.2,
                     0.3,
                 ]),
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['cookie']['c3'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
+                ]
             );
+            if (count($violations) > 0) {
+                $errors['cookie']['c3'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['cookie']['c3'] = $e->getMessage();
         }
-        if (!$request->cookies->has('c3')) {
-            $errors['cookie']['c3'][] = 'parameter c3 in cookie is required.';
-        }
-        $violations = $this->validator->validate(
-            $cc4,
-            [
+        try {
+            $cc4 = $this->getBoolParameter($request, 'c4', 'cookie', true, true);
+            $violations = $this->validator->validate(
+                $cc4,
+                [
                 new Assert\NotNull,
                 new AssertF16,
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['cookie']['c4'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
+                ]
             );
-        }
-        if (!$request->cookies->has('c4')) {
-            $errors['cookie']['c4'][] = 'parameter c4 in cookie is required.';
+            if (count($violations) > 0) {
+                $errors['cookie']['c4'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['cookie']['c4'] = $e->getMessage();
         }
         switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':

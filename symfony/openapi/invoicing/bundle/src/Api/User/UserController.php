@@ -2,6 +2,7 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\User;
 
+use App\Zol\Invoicing\Presentation\Api\Bundle\Api\DenormalizationException;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -153,32 +154,40 @@ class UserController extends AbstractController
     public function loginUser(
         Request $request,
     ): Response {
-        $qusername = $this->getStringParameter($request, 'username', 'query', false);
-        $qpassword = $this->getStringParameter($request, 'password', 'query', false);
         $errors = [];
-        $violations = $this->validator->validate(
-            $qusername,
-            [
+        try {
+            $qusername = $this->getStringParameter($request, 'username', 'query', false);
+            $violations = $this->validator->validate(
+                $qusername,
+                [
                 new Assert\NotNull,
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['query']['username'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
+                ]
             );
+            if (count($violations) > 0) {
+                $errors['query']['username'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['query']['username'] = $e->getMessage();
         }
-        $violations = $this->validator->validate(
-            $qpassword,
-            [
+        try {
+            $qpassword = $this->getStringParameter($request, 'password', 'query', false);
+            $violations = $this->validator->validate(
+                $qpassword,
+                [
                 new Assert\NotNull,
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['query']['password'] = array_map(
-                fn (constraintviolationinterface $violation) => $violation->getmessage(),
-                iterator_to_array($violations),
+                ]
             );
+            if (count($violations) > 0) {
+                $errors['query']['password'] = array_map(
+                    fn (constraintviolationinterface $violation) => $violation->getmessage(),
+                    iterator_to_array($violations),
+                );
+            }
+        } catch (DenormalizationException $e) {
+            $errors['query']['password'] = $e->getMessage();
         }
         switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
@@ -312,8 +321,8 @@ class UserController extends AbstractController
         Request $request,
         string $username,
     ): Response {
-        $pusername = $username;
         $errors = [];
+        $pusername = $username;
         $violations = $this->validator->validate(
             $pusername,
             [
@@ -392,8 +401,8 @@ class UserController extends AbstractController
         Request $request,
         string $username,
     ): Response {
-        $pusername = $username;
         $errors = [];
+        $pusername = $username;
         $violations = $this->validator->validate(
             $pusername,
             [
@@ -472,8 +481,8 @@ class UserController extends AbstractController
         Request $request,
         string $username,
     ): Response {
-        $pusername = $username;
         $errors = [];
+        $pusername = $username;
         $violations = $this->validator->validate(
             $pusername,
             [
