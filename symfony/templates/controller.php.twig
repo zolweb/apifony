@@ -72,15 +72,15 @@ class {{ controller.className }} extends AbstractController
         }
 {%~ endfor %}
 {%~ if action.requestbodies %}
-        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
     {%~ for requestbody in action.requestbodies %}
-            case '{{ requestbody.mimetype ?? 'unspecified' }}':
+            case '{{ requestBody.mimetype ?? 'unspecified' }}':
         {%~ if requestbody.mimetype is null %}
-                $requestbodypayload = null;
+                $requestBodyPayload = null;
                 $violations = [];
         {%~ elseif requestbody.mimetype is same as ('application/json') %}
-                {{ requestbody.initializationfromrequest }}
-                {{ requestbody.validationviolationsinitialization }}
+                {{ requestBody.initializationFromRequest }}
+                {{ requestBody.validationViolationsInitialization }}
         {%~ endif %}
 
                 break;

@@ -26,9 +26,9 @@ class StoreController extends AbstractController
         Request $request,
     ): Response {
         $errors = [];
-        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestbodypayload = null;
+                $requestBodyPayload = null;
                 $violations = [];
 
                 break;
@@ -91,9 +91,9 @@ class StoreController extends AbstractController
         Request $request,
     ): Response {
         $errors = [];
-        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestbodypayload = null;
+                $requestBodyPayload = null;
                 $violations = [];
 
                 break;
@@ -171,9 +171,9 @@ class StoreController extends AbstractController
                 iterator_to_array($violations),
             );
         }
-        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestbodypayload = null;
+                $requestBodyPayload = null;
                 $violations = [];
 
                 break;
@@ -252,9 +252,9 @@ class StoreController extends AbstractController
                 iterator_to_array($violations),
             );
         }
-        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestbodypayload = null;
+                $requestBodyPayload = null;
                 $violations = [];
 
                 break;

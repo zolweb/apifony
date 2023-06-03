@@ -25,9 +25,9 @@ class UserController extends AbstractController
         Request $request,
     ): Response {
         $errors = [];
-        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestbodypayload = null;
+                $requestBodyPayload = null;
                 $violations = [];
 
                 break;
@@ -90,9 +90,9 @@ class UserController extends AbstractController
         Request $request,
     ): Response {
         $errors = [];
-        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestbodypayload = null;
+                $requestBodyPayload = null;
                 $violations = [];
 
                 break;
@@ -189,9 +189,9 @@ class UserController extends AbstractController
         } catch (DenormalizationException $e) {
             $errors['query']['password'] = $e->getMessage();
         }
-        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestbodypayload = null;
+                $requestBodyPayload = null;
                 $violations = [];
 
                 break;
@@ -256,9 +256,9 @@ class UserController extends AbstractController
         Request $request,
     ): Response {
         $errors = [];
-        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestbodypayload = null;
+                $requestBodyPayload = null;
                 $violations = [];
 
                 break;
@@ -335,9 +335,9 @@ class UserController extends AbstractController
                 iterator_to_array($violations),
             );
         }
-        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestbodypayload = null;
+                $requestBodyPayload = null;
                 $violations = [];
 
                 break;
@@ -415,9 +415,9 @@ class UserController extends AbstractController
                 iterator_to_array($violations),
             );
         }
-        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestbodypayload = null;
+                $requestBodyPayload = null;
                 $violations = [];
 
                 break;
@@ -495,9 +495,9 @@ class UserController extends AbstractController
                 iterator_to_array($violations),
             );
         }
-        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestbodypayload = null;
+                $requestBodyPayload = null;
                 $violations = [];
 
                 break;

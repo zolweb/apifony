@@ -207,9 +207,9 @@ class DefaultController extends AbstractController
         } catch (DenormalizationException $e) {
             $errors['header']['gegzer'] = $e->getMessage();
         }
-        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestbodypayload = null;
+                $requestBodyPayload = null;
                 $violations = [];
 
                 break;
@@ -381,9 +381,9 @@ class DefaultController extends AbstractController
                 iterator_to_array($violations),
             );
         }
-        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestbodypayload = null;
+                $requestBodyPayload = null;
                 $violations = [];
 
                 break;
@@ -830,9 +830,9 @@ class DefaultController extends AbstractController
         } catch (DenormalizationException $e) {
             $errors['cookie']['c4'] = $e->getMessage();
         }
-        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestbodypayload = null;
+                $requestBodyPayload = null;
                 $violations = [];
 
                 break;

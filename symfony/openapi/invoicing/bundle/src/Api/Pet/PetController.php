@@ -102,9 +102,9 @@ class PetController extends AbstractController
         } catch (DenormalizationException $e) {
             $errors['query']['status'] = $e->getMessage();
         }
-        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestbodypayload = null;
+                $requestBodyPayload = null;
                 $violations = [];
 
                 break;
@@ -185,9 +185,9 @@ class PetController extends AbstractController
         } catch (DenormalizationException $e) {
             $errors['query']['tags'] = $e->getMessage();
         }
-        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestbodypayload = null;
+                $requestBodyPayload = null;
                 $violations = [];
 
                 break;
@@ -266,9 +266,9 @@ class PetController extends AbstractController
                 iterator_to_array($violations),
             );
         }
-        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestbodypayload = null;
+                $requestBodyPayload = null;
                 $violations = [];
 
                 break;
@@ -381,9 +381,9 @@ class PetController extends AbstractController
         } catch (DenormalizationException $e) {
             $errors['query']['status'] = $e->getMessage();
         }
-        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestbodypayload = null;
+                $requestBodyPayload = null;
                 $violations = [];
 
                 break;
@@ -481,9 +481,9 @@ class PetController extends AbstractController
         } catch (DenormalizationException $e) {
             $errors['header']['api_key'] = $e->getMessage();
         }
-        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestbodypayload = null;
+                $requestBodyPayload = null;
                 $violations = [];
 
                 break;
@@ -580,9 +580,9 @@ class PetController extends AbstractController
         } catch (DenormalizationException $e) {
             $errors['query']['additionalMetadata'] = $e->getMessage();
         }
-        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestbodypayload = null;
+                $requestBodyPayload = null;
                 $violations = [];
 
                 break;
