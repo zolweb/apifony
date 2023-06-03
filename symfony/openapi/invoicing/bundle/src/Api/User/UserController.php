@@ -25,6 +25,7 @@ class UserController extends AbstractController
         Request $request,
     ): Response {
         $errors = [];
+
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
                 $requestBodyPayload = null;
@@ -84,12 +85,13 @@ class UserController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
 
     public function createUsersWithListInput(
         Request $request,
     ): Response {
         $errors = [];
+
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
                 $requestBodyPayload = null;
@@ -149,46 +151,43 @@ class UserController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
 
     public function loginUser(
         Request $request,
     ): Response {
         $errors = [];
+
         try {
             $qusername = $this->getStringParameter($request, 'username', 'query', false);
-            $violations = $this->validator->validate(
+            $this->validateParameter(
+                'username',
+                'query',
                 $qusername,
                 [
                 new Assert\NotNull,
-                ]
+                ],
+                $errors,
             );
-            if (count($violations) > 0) {
-                $errors['query']['username'] = array_map(
-                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                    iterator_to_array($violations),
-                );
-            }
         } catch (DenormalizationException $e) {
             $errors['query']['username'] = $e->getMessage();
         }
+
         try {
             $qpassword = $this->getStringParameter($request, 'password', 'query', false);
-            $violations = $this->validator->validate(
+            $this->validateParameter(
+                'password',
+                'query',
                 $qpassword,
                 [
                 new Assert\NotNull,
-                ]
+                ],
+                $errors,
             );
-            if (count($violations) > 0) {
-                $errors['query']['password'] = array_map(
-                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                    iterator_to_array($violations),
-                );
-            }
         } catch (DenormalizationException $e) {
             $errors['query']['password'] = $e->getMessage();
         }
+
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
                 $requestBodyPayload = null;
@@ -250,12 +249,13 @@ class UserController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
 
     public function logoutUser(
         Request $request,
     ): Response {
         $errors = [];
+
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
                 $requestBodyPayload = null;
@@ -315,26 +315,25 @@ class UserController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
 
     public function getUserByName(
         Request $request,
         string $username,
     ): Response {
         $errors = [];
+
         $pusername = $username;
-        $violations = $this->validator->validate(
+        $this->validateParameter(
+            'username',
+            'path',
             $pusername,
             [
                 new Assert\NotNull,
-            ]
+            ],
+            $errors,
         );
-        if (count($violations) > 0) {
-            $errors['path']['username'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
+
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
                 $requestBodyPayload = null;
@@ -395,26 +394,25 @@ class UserController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
 
     public function updateUser(
         Request $request,
         string $username,
     ): Response {
         $errors = [];
+
         $pusername = $username;
-        $violations = $this->validator->validate(
+        $this->validateParameter(
+            'username',
+            'path',
             $pusername,
             [
                 new Assert\NotNull,
-            ]
+            ],
+            $errors,
         );
-        if (count($violations) > 0) {
-            $errors['path']['username'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
+
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
                 $requestBodyPayload = null;
@@ -475,26 +473,25 @@ class UserController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
 
     public function deleteUser(
         Request $request,
         string $username,
     ): Response {
         $errors = [];
+
         $pusername = $username;
-        $violations = $this->validator->validate(
+        $this->validateParameter(
+            'username',
+            'path',
             $pusername,
             [
                 new Assert\NotNull,
-            ]
+            ],
+            $errors,
         );
-        if (count($violations) > 0) {
-            $errors['path']['username'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
+
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
                 $requestBodyPayload = null;
@@ -555,5 +552,5 @@ class UserController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
 }

@@ -319,4 +319,20 @@ abstract class AbstractController
         return ['true' => true, 'false' => false][$value];
     }
 
+    public function validateParameter(
+        string $name,
+        string $in,
+        mixed $value,
+        array $constaints,
+        array& $errors,
+    ): void {
+        $violations = $this->validator->validate($value, $contraints);
+
+        if (count($violations) > 0) {
+            $errors[$in][$name] = array_map(
+                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                iterator_to_array($violations),
+            );
+        }
+    }
 }

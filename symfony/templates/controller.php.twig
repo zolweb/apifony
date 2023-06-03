@@ -33,43 +33,40 @@ class {{ controller.className }} extends AbstractController
 {%~ endfor %}
     ): Response {
         $errors = [];
-    {%~ for param in action.parameters(['path']) %}
+
+{%~ for param in action.parameters(['path']) %}
         ${{ param.variableName }} = ${{ param.rawName }};
-        $violations = $this->validator->validate(
-            ${{ param.variablename }},
+        $this->validateParameter(
+            '{{ param.rawName }}',
+            '{{ param.in }}',
+            ${{ param.variableName }},
             [
-            {%~ for constraint in param.constraints %}
+    {%~ for constraint in param.constraints %}
                 {{~ constraint.instantiation(4) }},
-            {%~ endfor %}
-            ]
-        );
-        if (count($violations) > 0) {
-            $errors['{{ param.in }}']['{{ param.rawname }}'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
     {%~ endfor %}
+            ],
+            $errors,
+        );
+
+{%~ endfor %}
 {%~ for param in action.parameters(['query', 'header', 'cookie']) %}
         try {
             ${{ param.variableName }} = $this->get{{ param.phpType|capitalize }}{{ param.nullable ? 'OrNull' : '' }}Parameter($request, '{{ param.rawname }}', '{{ param.in }}', {{ param.required ? 'true' : 'false' }}{{ param.hasDefault ? ', ' ~ param.default : ''}});
-            $violations = $this->validator->validate(
-                ${{ param.variablename }},
+            $this->validateParameter(
+                '{{ param.rawName }}',
+                '{{ param.in }}',
+                ${{ param.variableName }},
                 [
-                    {%~ for constraint in param.constraints %}
-                        {{~ constraint.instantiation(4) }},
-                    {%~ endfor %}
-                ]
+    {%~ for constraint in param.constraints %}
+                    {{~ constraint.instantiation(4) }},
+    {%~ endfor %}
+                ],
+                $errors,
             );
-            if (count($violations) > 0) {
-                $errors['{{ param.in }}']['{{ param.rawname }}'] = array_map(
-                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                    iterator_to_array($violations),
-                );
-            }
         } catch (DenormalizationException $e) {
             $errors['{{ param.in }}']['{{ param.rawname }}'] = $e->getMessage();
         }
+
 {%~ endfor %}
 {%~ if action.requestbodies %}
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
@@ -156,7 +153,7 @@ class {{ controller.className }} extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
     {%~ if not loop.last %}
 
     {%~ endif %}

@@ -26,6 +26,7 @@ class PetController extends AbstractController
         Request $request,
     ): Response {
         $errors = [];
+
         if (count($errors) > 0) {
             return new JsonResponse(
                 [
@@ -47,12 +48,13 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
 
     public function addPet(
         Request $request,
     ): Response {
         $errors = [];
+
         if (count($errors) > 0) {
             return new JsonResponse(
                 [
@@ -74,15 +76,18 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
 
     public function findPetsByStatus(
         Request $request,
     ): Response {
         $errors = [];
+
         try {
             $qstatus = $this->getStringParameter($request, 'status', 'query', false, 'available');
-            $violations = $this->validator->validate(
+            $this->validateParameter(
+                'status',
+                'query',
                 $qstatus,
                 [
                 new Assert\NotNull,
@@ -91,17 +96,13 @@ class PetController extends AbstractController
                     'pending',
                     'sold',
                 ]),
-                ]
+                ],
+                $errors,
             );
-            if (count($violations) > 0) {
-                $errors['query']['status'] = array_map(
-                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                    iterator_to_array($violations),
-                );
-            }
         } catch (DenormalizationException $e) {
             $errors['query']['status'] = $e->getMessage();
         }
+
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
                 $requestBodyPayload = null;
@@ -162,29 +163,28 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
 
     public function findPetsByTags(
         Request $request,
     ): Response {
         $errors = [];
+
         try {
             $qtags = $this->getStringParameter($request, 'tags', 'query', false);
-            $violations = $this->validator->validate(
+            $this->validateParameter(
+                'tags',
+                'query',
                 $qtags,
                 [
                 new Assert\NotNull,
-                ]
+                ],
+                $errors,
             );
-            if (count($violations) > 0) {
-                $errors['query']['tags'] = array_map(
-                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                    iterator_to_array($violations),
-                );
-            }
         } catch (DenormalizationException $e) {
             $errors['query']['tags'] = $e->getMessage();
         }
+
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
                 $requestBodyPayload = null;
@@ -245,27 +245,26 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
 
     public function getPetById(
         Request $request,
         int $petId,
     ): Response {
         $errors = [];
+
         $ppetId = $petId;
-        $violations = $this->validator->validate(
+        $this->validateParameter(
+            'petId',
+            'path',
             $ppetId,
             [
                 new Assert\NotNull,
                 new AssertInt64,
-            ]
+            ],
+            $errors,
         );
-        if (count($violations) > 0) {
-            $errors['path']['petId'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
+
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
                 $requestBodyPayload = null;
@@ -326,61 +325,56 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
 
     public function updatePetWithForm(
         Request $request,
         int $petId,
     ): Response {
         $errors = [];
+
         $ppetId = $petId;
-        $violations = $this->validator->validate(
+        $this->validateParameter(
+            'petId',
+            'path',
             $ppetId,
             [
                 new Assert\NotNull,
                 new AssertInt64,
-            ]
+            ],
+            $errors,
         );
-        if (count($violations) > 0) {
-            $errors['path']['petId'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
+
         try {
             $qname = $this->getStringParameter($request, 'name', 'query', false);
-            $violations = $this->validator->validate(
+            $this->validateParameter(
+                'name',
+                'query',
                 $qname,
                 [
                 new Assert\NotNull,
-                ]
+                ],
+                $errors,
             );
-            if (count($violations) > 0) {
-                $errors['query']['name'] = array_map(
-                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                    iterator_to_array($violations),
-                );
-            }
         } catch (DenormalizationException $e) {
             $errors['query']['name'] = $e->getMessage();
         }
+
         try {
             $qstatus = $this->getStringParameter($request, 'status', 'query', false);
-            $violations = $this->validator->validate(
+            $this->validateParameter(
+                'status',
+                'query',
                 $qstatus,
                 [
                 new Assert\NotNull,
-                ]
+                ],
+                $errors,
             );
-            if (count($violations) > 0) {
-                $errors['query']['status'] = array_map(
-                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                    iterator_to_array($violations),
-                );
-            }
         } catch (DenormalizationException $e) {
             $errors['query']['status'] = $e->getMessage();
         }
+
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
                 $requestBodyPayload = null;
@@ -443,44 +437,41 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
 
     public function deletePet(
         Request $request,
         int $petId,
     ): Response {
         $errors = [];
+
         $ppetId = $petId;
-        $violations = $this->validator->validate(
+        $this->validateParameter(
+            'petId',
+            'path',
             $ppetId,
             [
                 new Assert\NotNull,
                 new AssertInt64,
-            ]
+            ],
+            $errors,
         );
-        if (count($violations) > 0) {
-            $errors['path']['petId'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
+
         try {
             $hapiKey = $this->getStringParameter($request, 'api_key', 'header', false);
-            $violations = $this->validator->validate(
+            $this->validateParameter(
+                'api_key',
+                'header',
                 $hapiKey,
                 [
                 new Assert\NotNull,
-                ]
+                ],
+                $errors,
             );
-            if (count($violations) > 0) {
-                $errors['header']['api_key'] = array_map(
-                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                    iterator_to_array($violations),
-                );
-            }
         } catch (DenormalizationException $e) {
             $errors['header']['api_key'] = $e->getMessage();
         }
+
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
                 $requestBodyPayload = null;
@@ -542,44 +533,41 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
 
     public function uploadFile(
         Request $request,
         int $petId,
     ): Response {
         $errors = [];
+
         $ppetId = $petId;
-        $violations = $this->validator->validate(
+        $this->validateParameter(
+            'petId',
+            'path',
             $ppetId,
             [
                 new Assert\NotNull,
                 new AssertInt64,
-            ]
+            ],
+            $errors,
         );
-        if (count($violations) > 0) {
-            $errors['path']['petId'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
+
         try {
             $qadditionalMetadata = $this->getStringParameter($request, 'additionalMetadata', 'query', false);
-            $violations = $this->validator->validate(
+            $this->validateParameter(
+                'additionalMetadata',
+                'query',
                 $qadditionalMetadata,
                 [
                 new Assert\NotNull,
-                ]
+                ],
+                $errors,
             );
-            if (count($violations) > 0) {
-                $errors['query']['additionalMetadata'] = array_map(
-                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                    iterator_to_array($violations),
-                );
-            }
         } catch (DenormalizationException $e) {
             $errors['query']['additionalMetadata'] = $e->getMessage();
         }
+
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
                 $requestBodyPayload = null;
@@ -641,5 +629,5 @@ class PetController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
 }

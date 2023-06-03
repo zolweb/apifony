@@ -26,6 +26,7 @@ class StoreController extends AbstractController
         Request $request,
     ): Response {
         $errors = [];
+
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
                 $requestBodyPayload = null;
@@ -85,12 +86,13 @@ class StoreController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
 
     public function placeOrder(
         Request $request,
     ): Response {
         $errors = [];
+
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
                 $requestBodyPayload = null;
@@ -150,27 +152,26 @@ class StoreController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
 
     public function getOrderById(
         Request $request,
         int $orderId,
     ): Response {
         $errors = [];
+
         $porderId = $orderId;
-        $violations = $this->validator->validate(
+        $this->validateParameter(
+            'orderId',
+            'path',
             $porderId,
             [
                 new Assert\NotNull,
                 new AssertInt64,
-            ]
+            ],
+            $errors,
         );
-        if (count($violations) > 0) {
-            $errors['path']['orderId'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
+
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
                 $requestBodyPayload = null;
@@ -231,27 +232,26 @@ class StoreController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
 
     public function deleteOrder(
         Request $request,
         int $orderId,
     ): Response {
         $errors = [];
+
         $porderId = $orderId;
-        $violations = $this->validator->validate(
+        $this->validateParameter(
+            'orderId',
+            'path',
             $porderId,
             [
                 new Assert\NotNull,
                 new AssertInt64,
-            ]
+            ],
+            $errors,
         );
-        if (count($violations) > 0) {
-            $errors['path']['orderId'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
-            );
-        }
+
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
                 $requestBodyPayload = null;
@@ -312,5 +312,5 @@ class StoreController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
 }
