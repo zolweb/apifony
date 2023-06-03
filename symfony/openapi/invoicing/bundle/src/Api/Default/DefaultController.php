@@ -50,10 +50,10 @@ class DefaultController extends AbstractController
         $pparam5 = $param5;
         $pparam1 = $param1;
         $pparam2 = $param2;
-        $hazef = strval($request->headers->get('azef'));
-        $qagrez = floatval($request->query->get('agrez'));
-        $cazgrzeg = intval($request->cookies->get('azgrzeg', 10));
-        $hgegzer = boolval($request->headers->get('gegzer', true));
+        $hazef = $this->getStringParameter($request, 'azef', 'header', true);
+        $qagrez = $this->getFloatParameter($request, 'agrez', 'query', true);
+        $cazgrzeg = $this->getIntParameter($request, 'azgrzeg', 'cookie', false, 10);
+        $hgegzer = $this->getBoolParameter($request, 'gegzer', 'header', false, true);
         $errors = [];
         $violations = $this->validator->validate(
             $pclientId,
@@ -63,7 +63,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['clientId'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
@@ -77,7 +77,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['param3'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
@@ -89,7 +89,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['param4'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
@@ -101,7 +101,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['param5'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
@@ -113,12 +113,12 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['header']['azef'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
         if (!$request->headers->has('azef')) {
-            $errors['header']['azef'][] = 'Parameter azef in header is required.';
+            $errors['header']['azef'][] = 'parameter azef in header is required.';
         }
         $violations = $this->validator->validate(
             $qagrez,
@@ -128,12 +128,12 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['query']['agrez'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
         if (!$request->query->has('agrez')) {
-            $errors['query']['agrez'][] = 'Parameter agrez in query is required.';
+            $errors['query']['agrez'][] = 'parameter agrez in query is required.';
         }
         $violations = $this->validator->validate(
             $pparam1,
@@ -148,7 +148,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['param1'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
@@ -168,7 +168,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['param2'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
@@ -180,7 +180,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['cookie']['azgrzeg'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
@@ -192,44 +192,44 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['header']['gegzer'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
-        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestBodyPayload = null;
+                $requestbodypayload = null;
                 $violations = [];
 
                 break;
             default:
-                return new JsonResponse(
+                return new jsonresponse(
                     [
                         'code' => 'unsupported_request_type',
-                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
+                        'message' => "the value '$requestbodypayloadcontenttype' received in content-type header is not a supported format.",
                     ],
-                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                    response::http_unsupported_media_type,
                 );
         }
         if (count($violations) > 0) {
             foreach ($violations as $violation) {
-                $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+                $errors['body'][$violation->getpropertypath()][] = $violation->getmessage();
             }
         }
         if (count($errors) > 0) {
-            return new JsonResponse(
+            return new jsonresponse(
                 [
                     'code' => 'validation_failed',
-                    'message' => 'Validation has failed.',
+                    'message' => 'validation has failed.',
                     'errors' => $errors,
                 ],
-                Response::HTTP_BAD_REQUEST,
+                response::http_bad_request,
             );
         }
-        $responsePayloadContentType = $request->headers->get('accept');
+        $responsepayloadcontenttype = $request->headers->get('accept');
         switch (true) {
-            case is_null($requestBodyPayload):
-                switch($responsePayloadContentType) {
+            case is_null($requestbodypayload):
+                switch($responsepayloadcontenttype) {
                     case null:
                         $response = $this->handler->GetClientFromEmptyPayloadToContent(
                             $pclientId,
@@ -246,18 +246,18 @@ class DefaultController extends AbstractController
 
                         break;
                     default:
-                        return new JsonResponse(
+                        return new jsonresponse(
                             [
                                 'code' => 'unsupported_response_type',
-                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                                'message' => "the value '$responsepayloadcontenttype' received in accept header is not a supported format.",
                             ],
-                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                            response::http_unsupported_media_type,
                         );
                 }
 
                 break;
             default:
-                throw new RuntimeException();
+                throw new runtimeException();
         }
         switch ($response::CONTENT_TYPE) {
             case null:
@@ -265,7 +265,7 @@ class DefaultController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
 
     public function postClientClientIdParam1Param2Param3Param4Param5Param6(
         Request $request,
@@ -291,7 +291,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['clientId'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
@@ -305,7 +305,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['param3'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
@@ -317,7 +317,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['param4'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
@@ -329,7 +329,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['param5'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
@@ -346,7 +346,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['param1'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
@@ -366,44 +366,44 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['param2'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
-        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestBodyPayload = null;
+                $requestbodypayload = null;
                 $violations = [];
 
                 break;
             default:
-                return new JsonResponse(
+                return new jsonresponse(
                     [
                         'code' => 'unsupported_request_type',
-                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
+                        'message' => "the value '$requestbodypayloadcontenttype' received in content-type header is not a supported format.",
                     ],
-                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                    response::http_unsupported_media_type,
                 );
         }
         if (count($violations) > 0) {
             foreach ($violations as $violation) {
-                $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+                $errors['body'][$violation->getpropertypath()][] = $violation->getmessage();
             }
         }
         if (count($errors) > 0) {
-            return new JsonResponse(
+            return new jsonresponse(
                 [
                     'code' => 'validation_failed',
-                    'message' => 'Validation has failed.',
+                    'message' => 'validation has failed.',
                     'errors' => $errors,
                 ],
-                Response::HTTP_BAD_REQUEST,
+                response::http_bad_request,
             );
         }
-        $responsePayloadContentType = $request->headers->get('accept');
+        $responsepayloadcontenttype = $request->headers->get('accept');
         switch (true) {
-            case is_null($requestBodyPayload):
-                switch($responsePayloadContentType) {
+            case is_null($requestbodypayload):
+                switch($responsepayloadcontenttype) {
                     case null:
                         $response = $this->handler->PostClientClientIdParam1Param2Param3Param4Param5Param6FromEmptyPayloadToContent(
                             $pclientId,
@@ -416,18 +416,18 @@ class DefaultController extends AbstractController
 
                         break;
                     default:
-                        return new JsonResponse(
+                        return new jsonresponse(
                             [
                                 'code' => 'unsupported_response_type',
-                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                                'message' => "the value '$responsepayloadcontenttype' received in accept header is not a supported format.",
                             ],
-                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                            response::http_unsupported_media_type,
                         );
                 }
 
                 break;
             default:
-                throw new RuntimeException();
+                throw new runtimeException();
         }
         switch ($response::CONTENT_TYPE) {
             case null:
@@ -435,7 +435,7 @@ class DefaultController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
 
     public function postTest(
         Request $request,
@@ -448,18 +448,18 @@ class DefaultController extends AbstractController
         $pp2 = $p2;
         $pp3 = $p3;
         $pp4 = $p4;
-        $hh1 = strval($request->headers->get('h1', 'abc'));
-        $hh2 = intval($request->headers->get('h2', 1));
-        $hh3 = floatval($request->headers->get('h3', 0.1));
-        $hh4 = boolval($request->headers->get('h4', true));
-        $qq1 = strval($request->query->get('q1', 'abc'));
-        $qq2 = intval($request->query->get('q2', 1));
-        $qq3 = floatval($request->query->get('q3', 0.1));
-        $qq4 = boolval($request->query->get('q4', true));
-        $cc1 = strval($request->cookies->get('c1', 'abc'));
-        $cc2 = intval($request->cookies->get('c2', 1));
-        $cc3 = floatval($request->cookies->get('c3', 0.1));
-        $cc4 = boolval($request->cookies->get('c4', true));
+        $hh1 = $this->getStringParameter($request, 'h1', 'header', true, 'abc');
+        $hh2 = $this->getIntParameter($request, 'h2', 'header', true, 1);
+        $hh3 = $this->getFloatParameter($request, 'h3', 'header', true, 0.1);
+        $hh4 = $this->getBoolParameter($request, 'h4', 'header', true, true);
+        $qq1 = $this->getStringParameter($request, 'q1', 'query', true, 'abc');
+        $qq2 = $this->getIntParameter($request, 'q2', 'query', true, 1);
+        $qq3 = $this->getFloatParameter($request, 'q3', 'query', true, 0.1);
+        $qq4 = $this->getBoolParameter($request, 'q4', 'query', true, true);
+        $cc1 = $this->getStringParameter($request, 'c1', 'cookie', true, 'abc');
+        $cc2 = $this->getIntParameter($request, 'c2', 'cookie', true, 1);
+        $cc3 = $this->getFloatParameter($request, 'c3', 'cookie', true, 0.1);
+        $cc4 = $this->getBoolParameter($request, 'c4', 'cookie', true, true);
         $errors = [];
         $violations = $this->validator->validate(
             $pp1,
@@ -478,7 +478,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['p1'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
@@ -499,7 +499,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['p2'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
@@ -521,7 +521,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['p3'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
@@ -537,7 +537,7 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['path']['p4'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
@@ -558,12 +558,12 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['header']['h1'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
         if (!$request->headers->has('h1')) {
-            $errors['header']['h1'][] = 'Parameter h1 in header is required.';
+            $errors['header']['h1'][] = 'parameter h1 in header is required.';
         }
         $violations = $this->validator->validate(
             $hh2,
@@ -582,12 +582,12 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['header']['h2'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
         if (!$request->headers->has('h2')) {
-            $errors['header']['h2'][] = 'Parameter h2 in header is required.';
+            $errors['header']['h2'][] = 'parameter h2 in header is required.';
         }
         $violations = $this->validator->validate(
             $hh3,
@@ -606,12 +606,12 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['header']['h3'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
         if (!$request->headers->has('h3')) {
-            $errors['header']['h3'][] = 'Parameter h3 in header is required.';
+            $errors['header']['h3'][] = 'parameter h3 in header is required.';
         }
         $violations = $this->validator->validate(
             $hh4,
@@ -624,12 +624,12 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['header']['h4'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
         if (!$request->headers->has('h4')) {
-            $errors['header']['h4'][] = 'Parameter h4 in header is required.';
+            $errors['header']['h4'][] = 'parameter h4 in header is required.';
         }
         $violations = $this->validator->validate(
             $qq1,
@@ -648,12 +648,12 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['query']['q1'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
         if (!$request->query->has('q1')) {
-            $errors['query']['q1'][] = 'Parameter q1 in query is required.';
+            $errors['query']['q1'][] = 'parameter q1 in query is required.';
         }
         $violations = $this->validator->validate(
             $qq2,
@@ -672,12 +672,12 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['query']['q2'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
         if (!$request->query->has('q2')) {
-            $errors['query']['q2'][] = 'Parameter q2 in query is required.';
+            $errors['query']['q2'][] = 'parameter q2 in query is required.';
         }
         $violations = $this->validator->validate(
             $qq3,
@@ -696,12 +696,12 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['query']['q3'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
         if (!$request->query->has('q3')) {
-            $errors['query']['q3'][] = 'Parameter q3 in query is required.';
+            $errors['query']['q3'][] = 'parameter q3 in query is required.';
         }
         $violations = $this->validator->validate(
             $qq4,
@@ -712,12 +712,12 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['query']['q4'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
         if (!$request->query->has('q4')) {
-            $errors['query']['q4'][] = 'Parameter q4 in query is required.';
+            $errors['query']['q4'][] = 'parameter q4 in query is required.';
         }
         $violations = $this->validator->validate(
             $cc1,
@@ -736,12 +736,12 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['cookie']['c1'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
         if (!$request->cookies->has('c1')) {
-            $errors['cookie']['c1'][] = 'Parameter c1 in cookie is required.';
+            $errors['cookie']['c1'][] = 'parameter c1 in cookie is required.';
         }
         $violations = $this->validator->validate(
             $cc2,
@@ -760,12 +760,12 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['cookie']['c2'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
         if (!$request->cookies->has('c2')) {
-            $errors['cookie']['c2'][] = 'Parameter c2 in cookie is required.';
+            $errors['cookie']['c2'][] = 'parameter c2 in cookie is required.';
         }
         $violations = $this->validator->validate(
             $cc3,
@@ -784,12 +784,12 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['cookie']['c3'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
         if (!$request->cookies->has('c3')) {
-            $errors['cookie']['c3'][] = 'Parameter c3 in cookie is required.';
+            $errors['cookie']['c3'][] = 'parameter c3 in cookie is required.';
         }
         $violations = $this->validator->validate(
             $cc4,
@@ -800,47 +800,47 @@ class DefaultController extends AbstractController
         );
         if (count($violations) > 0) {
             $errors['cookie']['c4'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
         if (!$request->cookies->has('c4')) {
-            $errors['cookie']['c4'][] = 'Parameter c4 in cookie is required.';
+            $errors['cookie']['c4'][] = 'parameter c4 in cookie is required.';
         }
-        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestBodyPayload = null;
+                $requestbodypayload = null;
                 $violations = [];
 
                 break;
             default:
-                return new JsonResponse(
+                return new jsonresponse(
                     [
                         'code' => 'unsupported_request_type',
-                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
+                        'message' => "the value '$requestbodypayloadcontenttype' received in content-type header is not a supported format.",
                     ],
-                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                    response::http_unsupported_media_type,
                 );
         }
         if (count($violations) > 0) {
             foreach ($violations as $violation) {
-                $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+                $errors['body'][$violation->getpropertypath()][] = $violation->getmessage();
             }
         }
         if (count($errors) > 0) {
-            return new JsonResponse(
+            return new jsonresponse(
                 [
                     'code' => 'validation_failed',
-                    'message' => 'Validation has failed.',
+                    'message' => 'validation has failed.',
                     'errors' => $errors,
                 ],
-                Response::HTTP_BAD_REQUEST,
+                response::http_bad_request,
             );
         }
-        $responsePayloadContentType = $request->headers->get('accept');
+        $responsepayloadcontenttype = $request->headers->get('accept');
         switch (true) {
-            case is_null($requestBodyPayload):
-                switch($responsePayloadContentType) {
+            case is_null($requestbodypayload):
+                switch($responsepayloadcontenttype) {
                     case null:
                         $response = $this->handler->PostTestFromEmptyPayloadToContent(
                             $pp1,
@@ -863,18 +863,18 @@ class DefaultController extends AbstractController
 
                         break;
                     default:
-                        return new JsonResponse(
+                        return new jsonresponse(
                             [
                                 'code' => 'unsupported_response_type',
-                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                                'message' => "the value '$responsepayloadcontenttype' received in accept header is not a supported format.",
                             ],
-                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                            response::http_unsupported_media_type,
                         );
                 }
 
                 break;
             default:
-                throw new RuntimeException();
+                throw new runtimeException();
         }
         switch ($response::CONTENT_TYPE) {
             case null:
@@ -882,5 +882,5 @@ class DefaultController extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
 }

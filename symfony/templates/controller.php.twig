@@ -35,12 +35,12 @@ class {{ controller.className }} extends AbstractController
         ${{ param.variableName }} = ${{ param.rawName }};
     {%~ endfor %}
 {%~ for param in action.parameters(['query', 'header', 'cookie']) %}
-        ${{ param.variableName }} = {{ param.castFunction }}($request->{{ param.requestCollection }}->get('{{ param.rawName }}'{{ param.hasDefault ? ', ' ~ param.default : ''}}));
+        ${{ param.variableName }} = $this->get{{ param.phpType|capitalize }}{{ param.nullable ? 'OrNull' : '' }}Parameter($request, '{{ param.rawname }}', '{{ param.in }}', {{ param.required ? 'true' : 'false' }}{{ param.hasDefault ? ', ' ~ param.default : ''}});
 {%~ endfor %}
         $errors = [];
 {%~ for param in action.parameters %}
         $violations = $this->validator->validate(
-            ${{ param.variableName }},
+            ${{ param.variablename }},
             [
         {%~ for constraint in param.constraints %}
                 {{~ constraint.instantiation(4) }},
@@ -48,89 +48,89 @@ class {{ controller.className }} extends AbstractController
             ]
         );
         if (count($violations) > 0) {
-            $errors['{{ param.in }}']['{{ param.rawName }}'] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+            $errors['{{ param.in }}']['{{ param.rawname }}'] = array_map(
+                fn (constraintviolationinterface $violation) => $violation->getmessage(),
                 iterator_to_array($violations),
             );
         }
     {%~ if param.required and param.in in ['query', 'header', 'cookie'] %}
-        if (!$request->{{ param.requestCollection }}->has('{{ param.rawName }}')) {
-            $errors['{{ param.in }}']['{{ param.rawName }}'][] = 'Parameter {{ param.rawName }} in {{ param.in }} is required.';
+        if (!$request->{{ param.requestcollection }}->has('{{ param.rawname }}')) {
+            $errors['{{ param.in }}']['{{ param.rawname }}'][] = 'parameter {{ param.rawname }} in {{ param.in }} is required.';
         }
     {%~ endif %}
 {%~ endfor %}
-{%~ if action.requestBodies %}
-        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
-    {%~ for requestBody in action.requestBodies %}
-            case '{{ requestBody.mimeType ?? 'unspecified' }}':
-        {%~ if requestBody.mimeType is null %}
-                $requestBodyPayload = null;
+{%~ if action.requestbodies %}
+        switch ($requestbodypayloadcontenttype = $request->headers->get('content-type', 'unspecified')) {
+    {%~ for requestbody in action.requestbodies %}
+            case '{{ requestbody.mimetype ?? 'unspecified' }}':
+        {%~ if requestbody.mimetype is null %}
+                $requestbodypayload = null;
                 $violations = [];
-        {%~ elseif requestBody.mimeType is same as ('application/json') %}
-                {{ requestBody.initializationFromRequest }}
-                {{ requestBody.validationViolationsInitialization }}
+        {%~ elseif requestbody.mimetype is same as ('application/json') %}
+                {{ requestbody.initializationfromrequest }}
+                {{ requestbody.validationviolationsinitialization }}
         {%~ endif %}
 
                 break;
     {%~ endfor %}
             default:
-                return new JsonResponse(
+                return new jsonresponse(
                     [
                         'code' => 'unsupported_request_type',
-                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
+                        'message' => "the value '$requestbodypayloadcontenttype' received in content-type header is not a supported format.",
                     ],
-                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                    response::http_unsupported_media_type,
                 );
         }
         if (count($violations) > 0) {
             foreach ($violations as $violation) {
-                $errors['body'][$violation->getPropertyPath()][] = $violation->getMessage();
+                $errors['body'][$violation->getpropertypath()][] = $violation->getmessage();
             }
         }
 {%~ endif %}
         if (count($errors) > 0) {
-            return new JsonResponse(
+            return new jsonresponse(
                 [
                     'code' => 'validation_failed',
-                    'message' => 'Validation has failed.',
+                    'message' => 'validation has failed.',
                     'errors' => $errors,
                 ],
-                Response::HTTP_BAD_REQUEST,
+                response::http_bad_request,
             );
         }
-        $responsePayloadContentType = $request->headers->get('accept');
+        $responsepayloadcontenttype = $request->headers->get('accept');
         switch (true) {
-{%~ for requestBodyPayloadType in action.requestBodyPayloadTypes %}
-            case {{ requestBodyPayloadType is null ? 'is_null($requestBodyPayload)' : requestBodyPayloadType.requestBodyPayloadTypeChecking }}:
-                switch($responsePayloadContentType) {
-    {%~ for responseContentType in action.responseContentTypes %}
-        {%~ set case = action.getCase(requestBodyPayloadType, responseContentType) %}
-                    case {{ case.responseContentType is null ? 'null' : '\'' ~ case.responseContentType ~ '\'' }}:
+{%~ for requestbodypayloadtype in action.requestbodypayloadtypes %}
+            case {{ requestbodypayloadtype is null ? 'is_null($requestbodypayload)' : requestbodypayloadtype.requestbodypayloadtypechecking }}:
+                switch($responsepayloadcontenttype) {
+    {%~ for responsecontenttype in action.responsecontenttypes %}
+        {%~ set case = action.getcase(requestbodypayloadtype, responsecontenttype) %}
+                    case {{ case.responsecontenttype is null ? 'null' : '\'' ~ case.responsecontenttype ~ '\'' }}:
                         $response = $this->handler->{{ case.name }}(
         {%~ for param in case.parameters %}
-                            ${{ param.variableName }},
+                            ${{ param.variablename }},
         {%~ endfor %}
-        {%~ if case.requestBodyPayloadParameter %}
-                            $requestBodyPayload,
+        {%~ if case.requestbodypayloadparameter %}
+                            $requestbodypayload,
         {%~ endif %}
                         );
 
                         break;
     {%~ endfor %}
                     default:
-                        return new JsonResponse(
+                        return new jsonresponse(
                             [
                                 'code' => 'unsupported_response_type',
-                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                                'message' => "the value '$responsepayloadcontenttype' received in accept header is not a supported format.",
                             ],
-                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                            response::http_unsupported_media_type,
                         );
                 }
 
                 break;
 {%~ endfor %}
             default:
-                throw new RuntimeException();
+                throw new runtimeException();
         }
         switch ($response::CONTENT_TYPE) {
 {%~ for responseContentType in action.responseContentTypes %}
@@ -144,7 +144,7 @@ class {{ controller.className }} extends AbstractController
             default:
                 throw new RuntimeException();
         }
-    }
+    }}
     {%~ if not loop.last %}
 
     {%~ endif %}
