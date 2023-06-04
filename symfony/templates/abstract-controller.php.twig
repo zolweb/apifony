@@ -45,7 +45,13 @@ abstract class AbstractController
                 throw new DenormalizationException("Parameter '$name' in '$in' is required.");
             }
 
-            $value = $default;
+        {%~ if not nullable %}
+            if ($default === null) {
+                throw new DenormalizationException("Parameter '$name' in '$in' must not be null.");
+            }
+
+        {%~ endif %}
+            return $default;
         }
 
         if ($value === null) {
@@ -76,6 +82,70 @@ abstract class AbstractController
         }
 
         return ['true' => true, 'false' => false][$value];
+        {%~ endif %}
+    }
+
+    {%~ endfor %}
+{%~ endfor %}
+
+{%~ for type in ['string', 'int', 'float', 'bool'] %}
+    {%~ for nullable in [false, true] %}
+    /**
+     * @throws DenormalizationException
+     */
+    public function get{{ type|capitalize }}{{ nullable ? 'OrNull' : '' }}JsonRequestBody(
+        Request $request,
+        bool $required,
+        ?{{ type }} $default = null,
+    ): {{ nullable ? '?' : '' }}{{ type }} {
+        $value = $request->getContent();
+
+        if ($value === '') {
+            if ($required) {
+                throw new DenormalizationException('Request body is required.');
+            }
+
+    {%~ if not nullable %}
+            if ($default === null) {
+                throw new DenormalizationException('Request body must not be null.');
+            }
+
+    {%~ endif %}
+            return $default;
+        }
+
+        $value = json_decode($value, true);
+
+        {%~ if nullable and type is not same as 'string' %}
+        if ($value === null) {
+            return null;
+        }
+
+        {%~ endif %}
+        {%~ if type is same as 'string' %}
+        if (!is_string($value)) {
+            throw new DenormalizationException('Request body must be a string.');
+        }
+
+        return $value;
+        {%~ elseif type is same as 'int' %}
+        if (!is_int($value)) {
+            throw new DenormalizationException('Request body must be an integer.');
+        }
+
+        return $value;
+        {%~ elseif type is same as 'float' %}
+        if (!is_int($value) && !is_float($value)) {
+            throw new DenormalizationException('Request body must be a numeric.');
+        }
+
+        return floatval($value);
+        {%~ elseif type is same as 'bool' %}
+        if (!is_bool($value)) {
+            throw new DenormalizationException('Request body must be a boolean.');
+        }
+
+        return $value;
         {%~ endif %}
     }
 

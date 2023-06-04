@@ -42,7 +42,11 @@ abstract class AbstractController
                 throw new DenormalizationException("Parameter '$name' in '$in' is required.");
             }
 
-            $value = $default;
+            if ($default === null) {
+                throw new DenormalizationException("Parameter '$name' in '$in' must not be null.");
+            }
+
+            return $default;
         }
 
         if ($value === null) {
@@ -77,7 +81,7 @@ abstract class AbstractController
                 throw new DenormalizationException("Parameter '$name' in '$in' is required.");
             }
 
-            $value = $default;
+            return $default;
         }
 
         if ($value === null) {
@@ -112,7 +116,11 @@ abstract class AbstractController
                 throw new DenormalizationException("Parameter '$name' in '$in' is required.");
             }
 
-            $value = $default;
+            if ($default === null) {
+                throw new DenormalizationException("Parameter '$name' in '$in' must not be null.");
+            }
+
+            return $default;
         }
 
         if ($value === null) {
@@ -151,7 +159,7 @@ abstract class AbstractController
                 throw new DenormalizationException("Parameter '$name' in '$in' is required.");
             }
 
-            $value = $default;
+            return $default;
         }
 
         if ($value === null) {
@@ -190,7 +198,11 @@ abstract class AbstractController
                 throw new DenormalizationException("Parameter '$name' in '$in' is required.");
             }
 
-            $value = $default;
+            if ($default === null) {
+                throw new DenormalizationException("Parameter '$name' in '$in' must not be null.");
+            }
+
+            return $default;
         }
 
         if ($value === null) {
@@ -229,7 +241,7 @@ abstract class AbstractController
                 throw new DenormalizationException("Parameter '$name' in '$in' is required.");
             }
 
-            $value = $default;
+            return $default;
         }
 
         if ($value === null) {
@@ -268,7 +280,11 @@ abstract class AbstractController
                 throw new DenormalizationException("Parameter '$name' in '$in' is required.");
             }
 
-            $value = $default;
+            if ($default === null) {
+                throw new DenormalizationException("Parameter '$name' in '$in' must not be null.");
+            }
+
+            return $default;
         }
 
         if ($value === null) {
@@ -307,7 +323,7 @@ abstract class AbstractController
                 throw new DenormalizationException("Parameter '$name' in '$in' is required.");
             }
 
-            $value = $default;
+            return $default;
         }
 
         if ($value === null) {
@@ -319,6 +335,251 @@ abstract class AbstractController
         }
 
         return ['true' => true, 'false' => false][$value];
+    }
+
+
+    /**
+     * @throws DenormalizationException
+     */
+    public function getStringJsonRequestBody(
+        Request $request,
+        bool $required,
+        ?string $default = null,
+    ): string {
+        $value = $request->getContent();
+
+        if ($value === '') {
+            if ($required) {
+                throw new DenormalizationException('Request body is required.');
+            }
+
+            if ($default === null) {
+                throw new DenormalizationException('Request body must not be null.');
+            }
+
+            return $default;
+        }
+
+        $value = json_decode($value, true);
+
+        if (!is_string($value)) {
+            throw new DenormalizationException('Request body must be a string.');
+        }
+
+        return $value;
+    }
+
+    /**
+     * @throws DenormalizationException
+     */
+    public function getStringOrNullJsonRequestBody(
+        Request $request,
+        bool $required,
+        ?string $default = null,
+    ): ?string {
+        $value = $request->getContent();
+
+        if ($value === '') {
+            if ($required) {
+                throw new DenormalizationException('Request body is required.');
+            }
+
+            return $default;
+        }
+
+        $value = json_decode($value, true);
+
+        if (!is_string($value)) {
+            throw new DenormalizationException('Request body must be a string.');
+        }
+
+        return $value;
+    }
+
+    /**
+     * @throws DenormalizationException
+     */
+    public function getIntJsonRequestBody(
+        Request $request,
+        bool $required,
+        ?int $default = null,
+    ): int {
+        $value = $request->getContent();
+
+        if ($value === '') {
+            if ($required) {
+                throw new DenormalizationException('Request body is required.');
+            }
+
+            if ($default === null) {
+                throw new DenormalizationException('Request body must not be null.');
+            }
+
+            return $default;
+        }
+
+        $value = json_decode($value, true);
+
+        if (!is_int($value)) {
+            throw new DenormalizationException('Request body must be an integer.');
+        }
+
+        return $value;
+    }
+
+    /**
+     * @throws DenormalizationException
+     */
+    public function getIntOrNullJsonRequestBody(
+        Request $request,
+        bool $required,
+        ?int $default = null,
+    ): ?int {
+        $value = $request->getContent();
+
+        if ($value === '') {
+            if ($required) {
+                throw new DenormalizationException('Request body is required.');
+            }
+
+            return $default;
+        }
+
+        $value = json_decode($value, true);
+
+        if ($value === null) {
+            return null;
+        }
+
+        if (!is_int($value)) {
+            throw new DenormalizationException('Request body must be an integer.');
+        }
+
+        return $value;
+    }
+
+    /**
+     * @throws DenormalizationException
+     */
+    public function getFloatJsonRequestBody(
+        Request $request,
+        bool $required,
+        ?float $default = null,
+    ): float {
+        $value = $request->getContent();
+
+        if ($value === '') {
+            if ($required) {
+                throw new DenormalizationException('Request body is required.');
+            }
+
+            if ($default === null) {
+                throw new DenormalizationException('Request body must not be null.');
+            }
+
+            return $default;
+        }
+
+        $value = json_decode($value, true);
+
+        if (!is_int($value) && !is_float($value)) {
+            throw new DenormalizationException('Request body must be a numeric.');
+        }
+
+        return floatval($value);
+    }
+
+    /**
+     * @throws DenormalizationException
+     */
+    public function getFloatOrNullJsonRequestBody(
+        Request $request,
+        bool $required,
+        ?float $default = null,
+    ): ?float {
+        $value = $request->getContent();
+
+        if ($value === '') {
+            if ($required) {
+                throw new DenormalizationException('Request body is required.');
+            }
+
+            return $default;
+        }
+
+        $value = json_decode($value, true);
+
+        if ($value === null) {
+            return null;
+        }
+
+        if (!is_int($value) && !is_float($value)) {
+            throw new DenormalizationException('Request body must be a numeric.');
+        }
+
+        return floatval($value);
+    }
+
+    /**
+     * @throws DenormalizationException
+     */
+    public function getBoolJsonRequestBody(
+        Request $request,
+        bool $required,
+        ?bool $default = null,
+    ): bool {
+        $value = $request->getContent();
+
+        if ($value === '') {
+            if ($required) {
+                throw new DenormalizationException('Request body is required.');
+            }
+
+            if ($default === null) {
+                throw new DenormalizationException('Request body must not be null.');
+            }
+
+            return $default;
+        }
+
+        $value = json_decode($value, true);
+
+        if (!is_bool($value)) {
+            throw new DenormalizationException('Request body must be a boolean.');
+        }
+
+        return $value;
+    }
+
+    /**
+     * @throws DenormalizationException
+     */
+    public function getBoolOrNullJsonRequestBody(
+        Request $request,
+        bool $required,
+        ?bool $default = null,
+    ): ?bool {
+        $value = $request->getContent();
+
+        if ($value === '') {
+            if ($required) {
+                throw new DenormalizationException('Request body is required.');
+            }
+
+            return $default;
+        }
+
+        $value = json_decode($value, true);
+
+        if ($value === null) {
+            return null;
+        }
+
+        if (!is_bool($value)) {
+            throw new DenormalizationException('Request body must be a boolean.');
+        }
+
+        return $value;
     }
 
     /**
