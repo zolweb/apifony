@@ -14,14 +14,14 @@ interface StoreHandler
         PlaceOrder405EmptyResponse;
 
     public function GetOrderByIdFromEmptyPayloadToContent(
-        int $porderId,
+        int $pOrderId,
     ):
         GetOrderById200EmptyResponse |
         GetOrderById400EmptyResponse |
         GetOrderById404EmptyResponse;
 
     public function DeleteOrderFromEmptyPayloadToContent(
-        int $porderId,
+        int $pOrderId,
     ):
         DeleteOrder200EmptyResponse |
         DeleteOrder400EmptyResponse |

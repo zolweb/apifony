@@ -160,11 +160,11 @@ class StoreController extends AbstractController
     ): Response {
         $errors = [];
 
-        $porderId = $orderId;
+        $pOrderId = $orderId;
         $this->validateParameter(
             'orderId',
             'path',
-            $porderId,
+            $pOrderId,
             [
                 new Assert\NotNull,
                 new AssertInt64,
@@ -208,7 +208,7 @@ class StoreController extends AbstractController
                 switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->GetOrderByIdFromEmptyPayloadToContent(
-                            $porderId,
+                            $pOrderId,
                         );
 
                         break;
@@ -240,11 +240,11 @@ class StoreController extends AbstractController
     ): Response {
         $errors = [];
 
-        $porderId = $orderId;
+        $pOrderId = $orderId;
         $this->validateParameter(
             'orderId',
             'path',
-            $porderId,
+            $pOrderId,
             [
                 new Assert\NotNull,
                 new AssertInt64,
@@ -288,7 +288,7 @@ class StoreController extends AbstractController
                 switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->DeleteOrderFromEmptyPayloadToContent(
-                            $porderId,
+                            $pOrderId,
                         );
 
                         break;

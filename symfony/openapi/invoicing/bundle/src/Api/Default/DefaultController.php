@@ -47,22 +47,22 @@ class DefaultController extends AbstractController
     ): Response {
         $errors = [];
 
-        $pclientId = $clientId;
+        $pClientId = $clientId;
         $this->validateParameter(
             'clientId',
             'path',
-            $pclientId,
+            $pClientId,
             [
                 new Assert\NotNull,
             ],
             $errors,
         );
 
-        $pparam3 = $param3;
+        $pParam3 = $param3;
         $this->validateParameter(
             'param3',
             'path',
-            $pparam3,
+            $pParam3,
             [
                 new Assert\NotNull,
                 new Assert\DivisibleBy(value: 1),
@@ -71,33 +71,33 @@ class DefaultController extends AbstractController
             $errors,
         );
 
-        $pparam4 = $param4;
+        $pParam4 = $param4;
         $this->validateParameter(
             'param4',
             'path',
-            $pparam4,
+            $pParam4,
             [
                 new Assert\NotNull,
             ],
             $errors,
         );
 
-        $pparam5 = $param5;
+        $pParam5 = $param5;
         $this->validateParameter(
             'param5',
             'path',
-            $pparam5,
+            $pParam5,
             [
                 new Assert\NotNull,
             ],
             $errors,
         );
 
-        $pparam1 = $param1;
+        $pParam1 = $param1;
         $this->validateParameter(
             'param1',
             'path',
-            $pparam1,
+            $pParam1,
             [
                 new Assert\NotNull,
                 new AssertFormat,
@@ -109,11 +109,11 @@ class DefaultController extends AbstractController
             $errors,
         );
 
-        $pparam2 = $param2;
+        $pParam2 = $param2;
         $this->validateParameter(
             'param2',
             'path',
-            $pparam2,
+            $pParam2,
             [
                 new Assert\NotNull,
                 new AssertFormat,
@@ -129,11 +129,11 @@ class DefaultController extends AbstractController
         );
 
         try {
-            $hazef = $this->getStringParameter($request, 'azef', 'header', true);
+            $hAzef = $this->getStringParameter($request, 'azef', 'header', true);
             $this->validateParameter(
                 'azef',
                 'header',
-                $hazef,
+                $hAzef,
                 [
                 new Assert\NotNull,
                 ],
@@ -144,11 +144,11 @@ class DefaultController extends AbstractController
         }
 
         try {
-            $qagrez = $this->getFloatParameter($request, 'agrez', 'query', true);
+            $qAgrez = $this->getFloatParameter($request, 'agrez', 'query', true);
             $this->validateParameter(
                 'agrez',
                 'query',
-                $qagrez,
+                $qAgrez,
                 [
                 new Assert\NotNull,
                 ],
@@ -159,11 +159,11 @@ class DefaultController extends AbstractController
         }
 
         try {
-            $cazgrzeg = $this->getIntParameter($request, 'azgrzeg', 'cookie', false, 10);
+            $cAzgrzeg = $this->getIntParameter($request, 'azgrzeg', 'cookie', false, 10);
             $this->validateParameter(
                 'azgrzeg',
                 'cookie',
-                $cazgrzeg,
+                $cAzgrzeg,
                 [
                 new Assert\NotNull,
                 ],
@@ -174,11 +174,11 @@ class DefaultController extends AbstractController
         }
 
         try {
-            $hgegzer = $this->getBoolParameter($request, 'gegzer', 'header', false, true);
+            $hGegzer = $this->getBoolParameter($request, 'gegzer', 'header', false, true);
             $this->validateParameter(
                 'gegzer',
                 'header',
-                $hgegzer,
+                $hGegzer,
                 [
                 new Assert\NotNull,
                 ],
@@ -224,16 +224,16 @@ class DefaultController extends AbstractController
                 switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->GetClientFromEmptyPayloadToContent(
-                            $pclientId,
-                            $pparam3,
-                            $pparam4,
-                            $pparam5,
-                            $hazef,
-                            $qagrez,
-                            $pparam1,
-                            $pparam2,
-                            $cazgrzeg,
-                            $hgegzer,
+                            $pClientId,
+                            $pParam3,
+                            $pParam4,
+                            $pParam5,
+                            $hAzef,
+                            $qAgrez,
+                            $pParam1,
+                            $pParam2,
+                            $cAzgrzeg,
+                            $hGegzer,
                         );
 
                         break;
@@ -270,22 +270,22 @@ class DefaultController extends AbstractController
     ): Response {
         $errors = [];
 
-        $pclientId = $clientId;
+        $pClientId = $clientId;
         $this->validateParameter(
             'clientId',
             'path',
-            $pclientId,
+            $pClientId,
             [
                 new Assert\NotNull,
             ],
             $errors,
         );
 
-        $pparam3 = $param3;
+        $pParam3 = $param3;
         $this->validateParameter(
             'param3',
             'path',
-            $pparam3,
+            $pParam3,
             [
                 new Assert\NotNull,
                 new Assert\DivisibleBy(value: 1),
@@ -294,33 +294,33 @@ class DefaultController extends AbstractController
             $errors,
         );
 
-        $pparam4 = $param4;
+        $pParam4 = $param4;
         $this->validateParameter(
             'param4',
             'path',
-            $pparam4,
+            $pParam4,
             [
                 new Assert\NotNull,
             ],
             $errors,
         );
 
-        $pparam5 = $param5;
+        $pParam5 = $param5;
         $this->validateParameter(
             'param5',
             'path',
-            $pparam5,
+            $pParam5,
             [
                 new Assert\NotNull,
             ],
             $errors,
         );
 
-        $pparam1 = $param1;
+        $pParam1 = $param1;
         $this->validateParameter(
             'param1',
             'path',
-            $pparam1,
+            $pParam1,
             [
                 new Assert\NotNull,
                 new AssertFormat,
@@ -332,11 +332,11 @@ class DefaultController extends AbstractController
             $errors,
         );
 
-        $pparam2 = $param2;
+        $pParam2 = $param2;
         $this->validateParameter(
             'param2',
             'path',
-            $pparam2,
+            $pParam2,
             [
                 new Assert\NotNull,
                 new AssertFormat,
@@ -387,12 +387,12 @@ class DefaultController extends AbstractController
                 switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->PostClientClientIdParam1Param2Param3Param4Param5Param6FromEmptyPayloadToContent(
-                            $pclientId,
-                            $pparam3,
-                            $pparam4,
-                            $pparam5,
-                            $pparam1,
-                            $pparam2,
+                            $pClientId,
+                            $pParam3,
+                            $pParam4,
+                            $pParam5,
+                            $pParam1,
+                            $pParam2,
                         );
 
                         break;
@@ -427,11 +427,11 @@ class DefaultController extends AbstractController
     ): Response {
         $errors = [];
 
-        $pp1 = $p1;
+        $pP1 = $p1;
         $this->validateParameter(
             'p1',
             'path',
-            $pp1,
+            $pP1,
             [
                 new Assert\NotNull,
                 new AssertF1,
@@ -447,11 +447,11 @@ class DefaultController extends AbstractController
             $errors,
         );
 
-        $pp2 = $p2;
+        $pP2 = $p2;
         $this->validateParameter(
             'p2',
             'path',
-            $pp2,
+            $pP2,
             [
                 new Assert\NotNull,
                 new AssertF2,
@@ -467,11 +467,11 @@ class DefaultController extends AbstractController
             $errors,
         );
 
-        $pp3 = $p3;
+        $pP3 = $p3;
         $this->validateParameter(
             'p3',
             'path',
-            $pp3,
+            $pP3,
             [
                 new Assert\NotNull,
                 new AssertF3,
@@ -488,11 +488,11 @@ class DefaultController extends AbstractController
             $errors,
         );
 
-        $pp4 = $p4;
+        $pP4 = $p4;
         $this->validateParameter(
             'p4',
             'path',
-            $pp4,
+            $pP4,
             [
                 new Assert\NotNull,
                 new AssertF4,
@@ -504,11 +504,11 @@ class DefaultController extends AbstractController
         );
 
         try {
-            $hh1 = $this->getStringParameter($request, 'h1', 'header', true, 'abc');
+            $hH1 = $this->getStringParameter($request, 'h1', 'header', true, 'abc');
             $this->validateParameter(
                 'h1',
                 'header',
-                $hh1,
+                $hH1,
                 [
                 new Assert\NotNull,
                 new AssertF5,
@@ -528,11 +528,11 @@ class DefaultController extends AbstractController
         }
 
         try {
-            $hh2 = $this->getIntParameter($request, 'h2', 'header', true, 1);
+            $hH2 = $this->getIntParameter($request, 'h2', 'header', true, 1);
             $this->validateParameter(
                 'h2',
                 'header',
-                $hh2,
+                $hH2,
                 [
                 new Assert\NotNull,
                 new AssertF6,
@@ -552,11 +552,11 @@ class DefaultController extends AbstractController
         }
 
         try {
-            $hh3 = $this->getFloatParameter($request, 'h3', 'header', true, 0.1);
+            $hH3 = $this->getFloatParameter($request, 'h3', 'header', true, 0.1);
             $this->validateParameter(
                 'h3',
                 'header',
-                $hh3,
+                $hH3,
                 [
                 new Assert\NotNull,
                 new AssertF7,
@@ -576,11 +576,11 @@ class DefaultController extends AbstractController
         }
 
         try {
-            $hh4 = $this->getBoolParameter($request, 'h4', 'header', true, true);
+            $hH4 = $this->getBoolParameter($request, 'h4', 'header', true, true);
             $this->validateParameter(
                 'h4',
                 'header',
-                $hh4,
+                $hH4,
                 [
                 new Assert\NotNull,
                 new Assert\Choice(choices: [
@@ -594,11 +594,11 @@ class DefaultController extends AbstractController
         }
 
         try {
-            $qq1 = $this->getStringParameter($request, 'q1', 'query', true, 'abc');
+            $qQ1 = $this->getStringParameter($request, 'q1', 'query', true, 'abc');
             $this->validateParameter(
                 'q1',
                 'query',
-                $qq1,
+                $qQ1,
                 [
                 new Assert\NotNull,
                 new AssertF9,
@@ -618,11 +618,11 @@ class DefaultController extends AbstractController
         }
 
         try {
-            $qq2 = $this->getIntParameter($request, 'q2', 'query', true, 1);
+            $qQ2 = $this->getIntParameter($request, 'q2', 'query', true, 1);
             $this->validateParameter(
                 'q2',
                 'query',
-                $qq2,
+                $qQ2,
                 [
                 new Assert\NotNull,
                 new AssertF10,
@@ -642,11 +642,11 @@ class DefaultController extends AbstractController
         }
 
         try {
-            $qq3 = $this->getFloatParameter($request, 'q3', 'query', true, 0.1);
+            $qQ3 = $this->getFloatParameter($request, 'q3', 'query', true, 0.1);
             $this->validateParameter(
                 'q3',
                 'query',
-                $qq3,
+                $qQ3,
                 [
                 new Assert\NotNull,
                 new AssertF13,
@@ -666,11 +666,11 @@ class DefaultController extends AbstractController
         }
 
         try {
-            $qq4 = $this->getBoolParameter($request, 'q4', 'query', true, true);
+            $qQ4 = $this->getBoolParameter($request, 'q4', 'query', true, true);
             $this->validateParameter(
                 'q4',
                 'query',
-                $qq4,
+                $qQ4,
                 [
                 new Assert\NotNull,
                 new AssertF12,
@@ -682,11 +682,11 @@ class DefaultController extends AbstractController
         }
 
         try {
-            $cc1 = $this->getStringParameter($request, 'c1', 'cookie', true, 'abc');
+            $cC1 = $this->getStringParameter($request, 'c1', 'cookie', true, 'abc');
             $this->validateParameter(
                 'c1',
                 'cookie',
-                $cc1,
+                $cC1,
                 [
                 new Assert\NotNull,
                 new AssertF13,
@@ -706,11 +706,11 @@ class DefaultController extends AbstractController
         }
 
         try {
-            $cc2 = $this->getIntParameter($request, 'c2', 'cookie', true, 1);
+            $cC2 = $this->getIntParameter($request, 'c2', 'cookie', true, 1);
             $this->validateParameter(
                 'c2',
                 'cookie',
-                $cc2,
+                $cC2,
                 [
                 new Assert\NotNull,
                 new AssertF14,
@@ -730,11 +730,11 @@ class DefaultController extends AbstractController
         }
 
         try {
-            $cc3 = $this->getFloatParameter($request, 'c3', 'cookie', true, 0.1);
+            $cC3 = $this->getFloatParameter($request, 'c3', 'cookie', true, 0.1);
             $this->validateParameter(
                 'c3',
                 'cookie',
-                $cc3,
+                $cC3,
                 [
                 new Assert\NotNull,
                 new AssertF15,
@@ -754,11 +754,11 @@ class DefaultController extends AbstractController
         }
 
         try {
-            $cc4 = $this->getBoolParameter($request, 'c4', 'cookie', true, true);
+            $cC4 = $this->getBoolParameter($request, 'c4', 'cookie', true, true);
             $this->validateParameter(
                 'c4',
                 'cookie',
-                $cc4,
+                $cC4,
                 [
                 new Assert\NotNull,
                 new AssertF16,
@@ -805,22 +805,22 @@ class DefaultController extends AbstractController
                 switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->PostTestFromEmptyPayloadToContent(
-                            $pp1,
-                            $pp2,
-                            $pp3,
-                            $pp4,
-                            $hh1,
-                            $hh2,
-                            $hh3,
-                            $hh4,
-                            $qq1,
-                            $qq2,
-                            $qq3,
-                            $qq4,
-                            $cc1,
-                            $cc2,
-                            $cc3,
-                            $cc4,
+                            $pP1,
+                            $pP2,
+                            $pP3,
+                            $pP4,
+                            $hH1,
+                            $hH2,
+                            $hH3,
+                            $hH4,
+                            $qQ1,
+                            $qQ2,
+                            $qQ3,
+                            $qQ4,
+                            $cC1,
+                            $cC2,
+                            $cC3,
+                            $cC4,
                         );
 
                         break;

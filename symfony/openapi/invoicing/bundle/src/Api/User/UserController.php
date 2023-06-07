@@ -159,11 +159,11 @@ class UserController extends AbstractController
         $errors = [];
 
         try {
-            $qusername = $this->getStringParameter($request, 'username', 'query', false);
+            $qUsername = $this->getStringParameter($request, 'username', 'query', false);
             $this->validateParameter(
                 'username',
                 'query',
-                $qusername,
+                $qUsername,
                 [
                 new Assert\NotNull,
                 ],
@@ -174,11 +174,11 @@ class UserController extends AbstractController
         }
 
         try {
-            $qpassword = $this->getStringParameter($request, 'password', 'query', false);
+            $qPassword = $this->getStringParameter($request, 'password', 'query', false);
             $this->validateParameter(
                 'password',
                 'query',
-                $qpassword,
+                $qPassword,
                 [
                 new Assert\NotNull,
                 ],
@@ -224,8 +224,8 @@ class UserController extends AbstractController
                 switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->LoginUserFromEmptyPayloadToContent(
-                            $qusername,
-                            $qpassword,
+                            $qUsername,
+                            $qPassword,
                         );
 
                         break;
@@ -323,11 +323,11 @@ class UserController extends AbstractController
     ): Response {
         $errors = [];
 
-        $pusername = $username;
+        $pUsername = $username;
         $this->validateParameter(
             'username',
             'path',
-            $pusername,
+            $pUsername,
             [
                 new Assert\NotNull,
             ],
@@ -370,7 +370,7 @@ class UserController extends AbstractController
                 switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->GetUserByNameFromEmptyPayloadToContent(
-                            $pusername,
+                            $pUsername,
                         );
 
                         break;
@@ -402,11 +402,11 @@ class UserController extends AbstractController
     ): Response {
         $errors = [];
 
-        $pusername = $username;
+        $pUsername = $username;
         $this->validateParameter(
             'username',
             'path',
-            $pusername,
+            $pUsername,
             [
                 new Assert\NotNull,
             ],
@@ -449,7 +449,7 @@ class UserController extends AbstractController
                 switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->UpdateUserFromEmptyPayloadToContent(
-                            $pusername,
+                            $pUsername,
                         );
 
                         break;
@@ -481,11 +481,11 @@ class UserController extends AbstractController
     ): Response {
         $errors = [];
 
-        $pusername = $username;
+        $pUsername = $username;
         $this->validateParameter(
             'username',
             'path',
-            $pusername,
+            $pUsername,
             [
                 new Assert\NotNull,
             ],
@@ -528,7 +528,7 @@ class UserController extends AbstractController
                 switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->DeleteUserFromEmptyPayloadToContent(
-                            $pusername,
+                            $pUsername,
                         );
 
                         break;

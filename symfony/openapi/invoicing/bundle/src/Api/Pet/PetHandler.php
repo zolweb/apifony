@@ -7,42 +7,42 @@ interface PetHandler
 
 
     public function FindPetsByStatusFromEmptyPayloadToContent(
-        string $qstatus,
+        string $qStatus,
     ):
         FindPetsByStatus200EmptyResponse |
         FindPetsByStatus400EmptyResponse;
 
     public function FindPetsByTagsFromEmptyPayloadToContent(
-        string $qtags,
+        string $qTags,
     ):
         FindPetsByTags200EmptyResponse |
         FindPetsByTags400EmptyResponse;
 
     public function GetPetByIdFromEmptyPayloadToContent(
-        int $ppetId,
+        int $pPetId,
     ):
         GetPetById200EmptyResponse |
         GetPetById400EmptyResponse |
         GetPetById404EmptyResponse;
 
     public function UpdatePetWithFormFromEmptyPayloadToContent(
-        int $ppetId,
-        string $qname,
-        string $qstatus,
+        int $pPetId,
+        string $qName,
+        string $qStatus,
     ):
         UpdatePetWithForm204EmptyResponse |
         UpdatePetWithForm405EmptyResponse;
 
     public function DeletePetFromEmptyPayloadToContent(
-        string $hapiKey,
-        int $ppetId,
+        string $hApi_key,
+        int $pPetId,
     ):
         DeletePet200EmptyResponse |
         DeletePet400EmptyResponse;
 
     public function UploadFileFromEmptyPayloadToContent(
-        int $ppetId,
-        string $qadditionalMetadata,
+        int $pPetId,
+        string $qAdditionalMetadata,
     ):
         UploadFile200EmptyResponse;
 }

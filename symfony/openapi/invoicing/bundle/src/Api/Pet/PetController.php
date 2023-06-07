@@ -84,11 +84,11 @@ class PetController extends AbstractController
         $errors = [];
 
         try {
-            $qstatus = $this->getStringParameter($request, 'status', 'query', false, 'available');
+            $qStatus = $this->getStringParameter($request, 'status', 'query', false, 'available');
             $this->validateParameter(
                 'status',
                 'query',
-                $qstatus,
+                $qStatus,
                 [
                 new Assert\NotNull,
                 new Assert\Choice(choices: [
@@ -139,7 +139,7 @@ class PetController extends AbstractController
                 switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->FindPetsByStatusFromEmptyPayloadToContent(
-                            $qstatus,
+                            $qStatus,
                         );
 
                         break;
@@ -171,11 +171,11 @@ class PetController extends AbstractController
         $errors = [];
 
         try {
-            $qtags = $this->getStringParameter($request, 'tags', 'query', false);
+            $qTags = $this->getStringParameter($request, 'tags', 'query', false);
             $this->validateParameter(
                 'tags',
                 'query',
-                $qtags,
+                $qTags,
                 [
                 new Assert\NotNull,
                 ],
@@ -221,7 +221,7 @@ class PetController extends AbstractController
                 switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->FindPetsByTagsFromEmptyPayloadToContent(
-                            $qtags,
+                            $qTags,
                         );
 
                         break;
@@ -253,11 +253,11 @@ class PetController extends AbstractController
     ): Response {
         $errors = [];
 
-        $ppetId = $petId;
+        $pPetId = $petId;
         $this->validateParameter(
             'petId',
             'path',
-            $ppetId,
+            $pPetId,
             [
                 new Assert\NotNull,
                 new AssertInt64,
@@ -301,7 +301,7 @@ class PetController extends AbstractController
                 switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->GetPetByIdFromEmptyPayloadToContent(
-                            $ppetId,
+                            $pPetId,
                         );
 
                         break;
@@ -333,11 +333,11 @@ class PetController extends AbstractController
     ): Response {
         $errors = [];
 
-        $ppetId = $petId;
+        $pPetId = $petId;
         $this->validateParameter(
             'petId',
             'path',
-            $ppetId,
+            $pPetId,
             [
                 new Assert\NotNull,
                 new AssertInt64,
@@ -346,11 +346,11 @@ class PetController extends AbstractController
         );
 
         try {
-            $qname = $this->getStringParameter($request, 'name', 'query', false);
+            $qName = $this->getStringParameter($request, 'name', 'query', false);
             $this->validateParameter(
                 'name',
                 'query',
-                $qname,
+                $qName,
                 [
                 new Assert\NotNull,
                 ],
@@ -361,11 +361,11 @@ class PetController extends AbstractController
         }
 
         try {
-            $qstatus = $this->getStringParameter($request, 'status', 'query', false);
+            $qStatus = $this->getStringParameter($request, 'status', 'query', false);
             $this->validateParameter(
                 'status',
                 'query',
-                $qstatus,
+                $qStatus,
                 [
                 new Assert\NotNull,
                 ],
@@ -411,9 +411,9 @@ class PetController extends AbstractController
                 switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->UpdatePetWithFormFromEmptyPayloadToContent(
-                            $ppetId,
-                            $qname,
-                            $qstatus,
+                            $pPetId,
+                            $qName,
+                            $qStatus,
                         );
 
                         break;
@@ -445,11 +445,11 @@ class PetController extends AbstractController
     ): Response {
         $errors = [];
 
-        $ppetId = $petId;
+        $pPetId = $petId;
         $this->validateParameter(
             'petId',
             'path',
-            $ppetId,
+            $pPetId,
             [
                 new Assert\NotNull,
                 new AssertInt64,
@@ -458,11 +458,11 @@ class PetController extends AbstractController
         );
 
         try {
-            $hapiKey = $this->getStringParameter($request, 'api_key', 'header', false);
+            $hApi_key = $this->getStringParameter($request, 'api_key', 'header', false);
             $this->validateParameter(
                 'api_key',
                 'header',
-                $hapiKey,
+                $hApi_key,
                 [
                 new Assert\NotNull,
                 ],
@@ -508,8 +508,8 @@ class PetController extends AbstractController
                 switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->DeletePetFromEmptyPayloadToContent(
-                            $hapiKey,
-                            $ppetId,
+                            $hApi_key,
+                            $pPetId,
                         );
 
                         break;
@@ -541,11 +541,11 @@ class PetController extends AbstractController
     ): Response {
         $errors = [];
 
-        $ppetId = $petId;
+        $pPetId = $petId;
         $this->validateParameter(
             'petId',
             'path',
-            $ppetId,
+            $pPetId,
             [
                 new Assert\NotNull,
                 new AssertInt64,
@@ -554,11 +554,11 @@ class PetController extends AbstractController
         );
 
         try {
-            $qadditionalMetadata = $this->getStringParameter($request, 'additionalMetadata', 'query', false);
+            $qAdditionalMetadata = $this->getStringParameter($request, 'additionalMetadata', 'query', false);
             $this->validateParameter(
                 'additionalMetadata',
                 'query',
-                $qadditionalMetadata,
+                $qAdditionalMetadata,
                 [
                 new Assert\NotNull,
                 ],
@@ -604,8 +604,8 @@ class PetController extends AbstractController
                 switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->UploadFileFromEmptyPayloadToContent(
-                            $ppetId,
-                            $qadditionalMetadata,
+                            $pPetId,
+                            $qAdditionalMetadata,
                         );
 
                         break;
