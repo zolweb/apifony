@@ -4,12 +4,13 @@
 namespace {{ controller.namespace }};
 
 use {{ controller.bundleNamespace }}\Api\DenormalizationException;
+use {{ controller.bundleNamespace }}\Api\ParameterValidationException;
+use {{ controller.bundleNamespace }}\Api\RequestBodyValidationException;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\ConstraintViolationInterface;
 use {{ controller.bundleNamespace }}\Api\AbstractController;
 {% for constraintName in controller.usedFormatConstraintNames %}
 use {{ controller.bundleNamespace }}\Format\{{ constraintName }} as Assert{{ constraintName }};
@@ -35,17 +36,21 @@ class {{ controller.className }} extends AbstractController
 
 {%~ for param in action.parameters(['path']) %}
         ${{ param.variableName }} = ${{ param.rawName }};
-        $this->validateParameter(
-            '{{ param.rawName }}',
-            '{{ param.in }}',
-            ${{ param.variableName }},
-            [
-    {%~ for constraint in param.constraints %}
-                {{~ constraint.instantiation(4) }},
-    {%~ endfor %}
-            ],
-            $errors,
-        );
+        try {
+            $this->validateParameter(
+                '{{ param.rawName }}',
+                '{{ param.in }}',
+                ${{ param.variableName }},
+                [
+        {%~ for constraint in param.constraints %}
+                    {{~ constraint.instantiation(4) }},
+        {%~ endfor %}
+                ],
+                $errors,
+            );
+        } catch (ParameterValidationException $e) {
+            $errors['{{ param.in }}']['{{ param.rawname }}'] = $e->messages;
+        }
 
 {%~ endfor %}
 {%~ for param in action.parameters(['query', 'header', 'cookie']) %}
@@ -63,7 +68,9 @@ class {{ controller.className }} extends AbstractController
                 $errors,
             );
         } catch (DenormalizationException $e) {
-            $errors['{{ param.in }}']['{{ param.rawname }}'] = $e->getMessage();
+            $errors['{{ param.in }}']['{{ param.rawname }}'] = [$e->getMessage()];
+        } catch (ParameterValidationException $e) {
+            $errors['{{ param.in }}']['{{ param.rawname }}'] = $e->messages;
         }
 
 {%~ endfor %}
@@ -74,8 +81,14 @@ class {{ controller.className }} extends AbstractController
         {%~ if requestBody.mimeType is null %}
                 $requestBodyPayload = null;
         {%~ elseif requestBody.mimeType is same as ('application/json') %}
-                $requestBodyPayload = $this->get{{ param.phpType|capitalize }}{{ param.nullable ? 'OrNull' : '' }}JsonRequestBody($request, {{ requestBody.required }}, {{ param.hasDefault ? ', ' ~ param.default : '' }});
-                $this->validateRequestBody($requestBodyPayload, $errors);
+                try {
+                    $requestBodyPayload = $this->get{{ param.phpType|capitalize }}{{ param.nullable ? 'OrNull' : '' }}JsonRequestBody($request, {{ requestBody.required }}, {{ param.hasDefault ? ', ' ~ param.default : '' }});
+                    $this->validateRequestBody($requestBodyPayload, $errors);
+                } catch (DenormalizationException $e) {
+                    $errors['requestBody'] = [$e->getMessage()];
+                } catch (ParameterValidationException $e) {
+                    $errors['requestBody'] = $e->messages;
+                }
         {%~ endif %}
 
                 break;
@@ -102,6 +115,16 @@ class {{ controller.className }} extends AbstractController
             );
         }
 
+{%~ if action.parameters(['query', 'header', 'cookie']) %}
+        if (!isset(
+{%~ for param in action.parameters(['query', 'header', 'cookie']) %}
+            ${{ param.variableName }},
+{%~ endfor %}
+        )) {
+            throw new RuntimeException('All parameter variables should be initialized at the time.');
+        }
+
+{%~ endif %}
         $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
 {%~ for requestBodyPayloadType in action.requestBodyPayloadTypes %}

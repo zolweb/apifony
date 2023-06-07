@@ -3,12 +3,13 @@
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Store;
 
 use App\Zol\Invoicing\Presentation\Api\Bundle\Api\DenormalizationException;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Api\ParameterValidationException;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Api\RequestBodyValidationException;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\ConstraintViolationInterface;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Api\AbstractController;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Format\Int64 as AssertInt64;
 
@@ -152,16 +153,20 @@ class StoreController extends AbstractController
         $errors = [];
 
         $pOrderId = $orderId;
-        $this->validateParameter(
-            'orderId',
-            'path',
-            $pOrderId,
-            [
+        try {
+            $this->validateParameter(
+                'orderId',
+                'path',
+                $pOrderId,
+                [
                 new Assert\NotNull,
                 new AssertInt64,
-            ],
-            $errors,
-        );
+                ],
+                $errors,
+            );
+        } catch (ParameterValidationException $e) {
+            $errors['path']['orderId'] = $e->messages;
+        }
 
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
@@ -228,16 +233,20 @@ class StoreController extends AbstractController
         $errors = [];
 
         $pOrderId = $orderId;
-        $this->validateParameter(
-            'orderId',
-            'path',
-            $pOrderId,
-            [
+        try {
+            $this->validateParameter(
+                'orderId',
+                'path',
+                $pOrderId,
+                [
                 new Assert\NotNull,
                 new AssertInt64,
-            ],
-            $errors,
-        );
+                ],
+                $errors,
+            );
+        } catch (ParameterValidationException $e) {
+            $errors['path']['orderId'] = $e->messages;
+        }
 
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':

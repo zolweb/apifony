@@ -1,0 +1,36 @@
+<?php
+
+namespace App\Command\Bundle;
+
+class ParameterValidationException implements File
+{
+    public function __construct(
+        private readonly string $bundleNamespace,
+    ) {
+    }
+
+    public function getNamespace(): string
+    {
+        return "{$this->bundleNamespace}\Api";
+    }
+
+    public function getFolder(): string
+    {
+        return 'src/Api';
+    }
+
+    public function getName(): string
+    {
+        return 'ParameterValidationException.php';
+    }
+
+    public function getTemplate(): string
+    {
+        return 'parameter-validation-exception.php.twig';
+    }
+
+    public function getParametersRootName(): string
+    {
+        return 'exception';
+    }
+}

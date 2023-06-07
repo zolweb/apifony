@@ -639,6 +639,8 @@ abstract class AbstractController
     /**
      * @param array<Constraint> $constraints
      * @param array<string, array<string, array<string>>> $errors
+     *
+     * @throws ParameterValidationException
      */
     public function validateParameter(
         string $name,
@@ -650,9 +652,11 @@ abstract class AbstractController
         $violations = $this->validator->validate($value, $constraints);
 
         if (count($violations) > 0) {
-            $errors[$in][$name] = array_map(
-                fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
-                iterator_to_array($violations),
+            throw new ParameterValidationException(
+                array_map(
+                    fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
+                    iterator_to_array($violations),
+                ),
             );
         }
     }
@@ -660,6 +664,8 @@ abstract class AbstractController
     /**
      * @param array<Constraint> $constraints
      * @param array<string, array<string, array<string>>> $errors
+     *
+     * @throws RequestBodyValidationException
      */
     public function validateRequestBody(
         mixed $value,
@@ -669,9 +675,17 @@ abstract class AbstractController
         $violations = $this->validator->validate($value, $constraints);
 
         if (count($violations) > 0) {
+            $errors = [];
             foreach ($violations as $violation) {
-                $errors['requestBody'][$violation->getPropertyPath()][] = $violation->getMessage();
+                $path = $violation->getPropertyPath();
+                if (!isset($errors[$path])) {
+                    $errors[$path] = [];
+                }
+
+                $errors[$path][] = (string) $violation->getMessage();
             }
+
+            throw new RequestBodyValidationException($errors);
         }
     }
 }

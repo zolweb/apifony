@@ -3,12 +3,13 @@
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\User;
 
 use App\Zol\Invoicing\Presentation\Api\Bundle\Api\DenormalizationException;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Api\ParameterValidationException;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Api\RequestBodyValidationException;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
-use Symfony\Component\Validator\ConstraintViolationInterface;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Api\AbstractController;
 
 class UserController extends AbstractController
@@ -161,7 +162,9 @@ class UserController extends AbstractController
                 $errors,
             );
         } catch (DenormalizationException $e) {
-            $errors['query']['username'] = $e->getMessage();
+            $errors['query']['username'] = [$e->getMessage()];
+        } catch (ParameterValidationException $e) {
+            $errors['query']['username'] = $e->messages;
         }
 
         try {
@@ -176,7 +179,9 @@ class UserController extends AbstractController
                 $errors,
             );
         } catch (DenormalizationException $e) {
-            $errors['query']['password'] = $e->getMessage();
+            $errors['query']['password'] = [$e->getMessage()];
+        } catch (ParameterValidationException $e) {
+            $errors['query']['password'] = $e->messages;
         }
 
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
@@ -203,6 +208,13 @@ class UserController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
+        }
+
+        if (!isset(
+            $qUsername,
+            $qPassword,
+        )) {
+            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');
@@ -307,15 +319,19 @@ class UserController extends AbstractController
         $errors = [];
 
         $pUsername = $username;
-        $this->validateParameter(
-            'username',
-            'path',
-            $pUsername,
-            [
+        try {
+            $this->validateParameter(
+                'username',
+                'path',
+                $pUsername,
+                [
                 new Assert\NotNull,
-            ],
-            $errors,
-        );
+                ],
+                $errors,
+            );
+        } catch (ParameterValidationException $e) {
+            $errors['path']['username'] = $e->messages;
+        }
 
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
@@ -382,15 +398,19 @@ class UserController extends AbstractController
         $errors = [];
 
         $pUsername = $username;
-        $this->validateParameter(
-            'username',
-            'path',
-            $pUsername,
-            [
+        try {
+            $this->validateParameter(
+                'username',
+                'path',
+                $pUsername,
+                [
                 new Assert\NotNull,
-            ],
-            $errors,
-        );
+                ],
+                $errors,
+            );
+        } catch (ParameterValidationException $e) {
+            $errors['path']['username'] = $e->messages;
+        }
 
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
@@ -457,15 +477,19 @@ class UserController extends AbstractController
         $errors = [];
 
         $pUsername = $username;
-        $this->validateParameter(
-            'username',
-            'path',
-            $pUsername,
-            [
+        try {
+            $this->validateParameter(
+                'username',
+                'path',
+                $pUsername,
+                [
                 new Assert\NotNull,
-            ],
-            $errors,
-        );
+                ],
+                $errors,
+            );
+        } catch (ParameterValidationException $e) {
+            $errors['path']['username'] = $e->messages;
+        }
 
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
