@@ -4,6 +4,7 @@ namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api;
 
 use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -583,6 +584,59 @@ abstract class AbstractController
     }
 
     /**
+     * @throws DenormalizationException
+     */
+    public function getObjectJsonRequestBody(
+        Request $request,
+        string $class,
+        bool $required,
+        ?object $default = null,
+    ): object {
+        $value = $request->getContent();
+
+        if ($value === '') {
+            if ($required) {
+                throw new DenormalizationException('Request body is required.');
+            }
+
+            if ($default === null) {
+                throw new DenormalizationException('Request body must not be null.');
+            }
+
+            return $default;
+        }
+
+        return $this->serializer->deserialize($value, $class, JsonEncoder::FORMAT);
+    }
+
+    /**
+     * @throws DenormalizationException
+     */
+    public function getObjectOrNullJsonRequestBody(
+        Request $request,
+        string $class,
+        bool $required,
+        ?object $default = null,
+    ): ?object {
+        $value = $request->getContent();
+
+        if ($value === '') {
+            if ($required) {
+                throw new DenormalizationException('Request body is required.');
+            }
+
+            return $default;
+        }
+
+        if ($value === 'null') {
+            return null;
+        }
+
+        return $this->serializer->deserialize($value, $class, JsonEncoder::FORMAT);
+    }
+
+
+    /**
      * @param array<Constraint> $constraints
      * @param array<string, array<string, array<string>>> $errors
      */
@@ -600,6 +654,24 @@ abstract class AbstractController
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
+        }
+    }
+
+    /**
+     * @param array<Constraint> $constraints
+     * @param array<string, array<string, array<string>>> $errors
+     */
+    public function validateRequestBody(
+        mixed $value,
+        array $constraints,
+        array& $errors,
+    ): void {
+        $violations = $this->validator->validate($value, $constraints);
+
+        if (count($violations) > 0) {
+            foreach ($violations as $violation) {
+                $errors['requestBody'][$violation->getPropertyPath()][] = $violation->getMessage();
+            }
         }
     }
 }

@@ -8,7 +8,6 @@ use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use {{ controller.bundleNamespace }}\Api\AbstractController;
@@ -68,16 +67,15 @@ class {{ controller.className }} extends AbstractController
         }
 
 {%~ endfor %}
-{%~ if action.requestbodies %}
+{%~ if action.requestBodies %}
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
-    {%~ for requestbody in action.requestbodies %}
-            case '{{ requestBody.mimetype ?? 'unspecified' }}':
-        {%~ if requestbody.mimetype is null %}
+    {%~ for requestBody in action.requestBodies %}
+            case '{{ requestBody.mimeType ?? 'unspecified' }}':
+        {%~ if requestBody.mimeType is null %}
                 $requestBodyPayload = null;
-                $violations = [];
-        {%~ elseif requestbody.mimetype is same as ('application/json') %}
-                {{ requestBody.initializationFromRequest }}
-                {{ requestBody.validationViolationsInitialization }}
+        {%~ elseif requestBody.mimeType is same as ('application/json') %}
+                $requestBodyPayload = $this->get{{ param.phpType|capitalize }}{{ param.nullable ? 'OrNull' : '' }}JsonRequestBody($request, {{ requestBody.required }}, {{ param.hasDefault ? ', ' ~ param.default : '' }});
+                $this->validateRequestBody($requestBodyPayload, $errors);
         {%~ endif %}
 
                 break;
@@ -91,11 +89,7 @@ class {{ controller.className }} extends AbstractController
                     Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 );
         }
-        if (count($violations) > 0) {
-            foreach ($violations as $violation) {
-                $errors['body'][$violation->getpropertypath()][] = $violation->getmessage();
-            }
-        }
+
 {%~ endif %}
         if (count($errors) > 0) {
             return new JsonResponse(
@@ -107,19 +101,20 @@ class {{ controller.className }} extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
+
         $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
-{%~ for requestbodypayloadtype in action.requestbodypayloadtypes %}
-            case {{ requestbodypayloadtype is null ? 'is_null($requestbodypayload)' : requestbodypayloadtype.requestbodypayloadtypechecking }}:
+{%~ for requestBodyPayloadType in action.requestBodyPayloadTypes %}
+            case {{ requestBodyPayloadType is null ? 'is_null($requestBodyPayload)' : requestBodyPayloadType.requestBodyPayloadTypeChecking }}:
                 switch($responsePayloadContentType) {
-    {%~ for responsecontenttype in action.responsecontenttypes %}
-        {%~ set case = action.getcase(requestbodypayloadtype, responsecontenttype) %}
-                    case {{ case.responsecontenttype is null ? 'null' : '\'' ~ case.responsecontenttype ~ '\'' }}:
+    {%~ for responseContentType in action.responseContentTypes %}
+        {%~ set case = action.getCase(requestBodyPayloadType, responseContentType) %}
+                    case {{ case.responseContentType is null ? 'null' : '\'' ~ case.responseContentType ~ '\'' }}:
                         $response = $this->handler->{{ case.name }}(
         {%~ for param in case.parameters %}
-                            ${{ param.variablename }},
+                            ${{ param.variableName }},
         {%~ endfor %}
-        {%~ if case.requestbodypayloadparameter %}
+        {%~ if case.requestBodyPayloadParameter %}
                             $requestBodyPayload,
         {%~ endif %}
                         );
@@ -130,7 +125,7 @@ class {{ controller.className }} extends AbstractController
                         return new JsonResponse(
                             [
                                 'code' => 'unsupported_response_type',
-                                'message' => "The value '$responsepayloadcontenttype' received in accept header is not a supported format.",
+                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
                             ],
                             Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         );

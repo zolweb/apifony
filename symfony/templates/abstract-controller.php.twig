@@ -5,6 +5,7 @@ namespace {{ abstractController.namespace }};
 
 use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintViolationInterface;
@@ -151,6 +152,43 @@ abstract class AbstractController
 
     {%~ endfor %}
 {%~ endfor %}
+{%~ for nullable in [false, true] %}
+    /**
+     * @throws DenormalizationException
+     */
+    public function getObject{{ nullable ? 'OrNull' : '' }}JsonRequestBody(
+        Request $request,
+        string $class,
+        bool $required,
+        ?object $default = null,
+    ): {{ nullable ? '?' : '' }}object {
+        $value = $request->getContent();
+
+        if ($value === '') {
+            if ($required) {
+                throw new DenormalizationException('Request body is required.');
+            }
+
+    {%~ if not nullable %}
+            if ($default === null) {
+                throw new DenormalizationException('Request body must not be null.');
+            }
+
+    {%~ endif %}
+            return $default;
+        }
+
+    {%~ if nullable %}
+        if ($value === 'null') {
+            return null;
+        }
+
+    {%~ endif %}
+        return $this->serializer->deserialize($value, $class, JsonEncoder::FORMAT);
+    }
+
+{%~ endfor %}
+
     /**
      * @param array<Constraint> $constraints
      * @param array<string, array<string, array<string>>> $errors
@@ -169,6 +207,24 @@ abstract class AbstractController
                 fn (ConstraintViolationInterface $violation) => $violation->getMessage(),
                 iterator_to_array($violations),
             );
+        }
+    }
+
+    /**
+     * @param array<Constraint> $constraints
+     * @param array<string, array<string, array<string>>> $errors
+     */
+    public function validateRequestBody(
+        mixed $value,
+        array $constraints,
+        array& $errors,
+    ): void {
+        $violations = $this->validator->validate($value, $constraints);
+
+        if (count($violations) > 0) {
+            foreach ($violations as $violation) {
+                $errors['requestBody'][$violation->getPropertyPath()][] = $violation->getMessage();
+            }
         }
     }
 }

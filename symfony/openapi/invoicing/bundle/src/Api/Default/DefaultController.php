@@ -7,7 +7,6 @@ use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Api\AbstractController;
@@ -191,7 +190,6 @@ class DefaultController extends AbstractController
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
                 $requestBodyPayload = null;
-                $violations = [];
 
                 break;
             default:
@@ -203,11 +201,7 @@ class DefaultController extends AbstractController
                     Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 );
         }
-        if (count($violations) > 0) {
-            foreach ($violations as $violation) {
-                $errors['body'][$violation->getpropertypath()][] = $violation->getmessage();
-            }
-        }
+
         if (count($errors) > 0) {
             return new JsonResponse(
                 [
@@ -218,9 +212,10 @@ class DefaultController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
+
         $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
-            case is_null($requestbodypayload):
+            case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->GetClientFromEmptyPayloadToContent(
@@ -241,7 +236,7 @@ class DefaultController extends AbstractController
                         return new JsonResponse(
                             [
                                 'code' => 'unsupported_response_type',
-                                'message' => "The value '$responsepayloadcontenttype' received in accept header is not a supported format.",
+                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
                             ],
                             Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         );
@@ -354,7 +349,6 @@ class DefaultController extends AbstractController
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
                 $requestBodyPayload = null;
-                $violations = [];
 
                 break;
             default:
@@ -366,11 +360,7 @@ class DefaultController extends AbstractController
                     Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 );
         }
-        if (count($violations) > 0) {
-            foreach ($violations as $violation) {
-                $errors['body'][$violation->getpropertypath()][] = $violation->getmessage();
-            }
-        }
+
         if (count($errors) > 0) {
             return new JsonResponse(
                 [
@@ -381,9 +371,10 @@ class DefaultController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
+
         $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
-            case is_null($requestbodypayload):
+            case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->PostClientClientIdParam1Param2Param3Param4Param5Param6FromEmptyPayloadToContent(
@@ -400,7 +391,7 @@ class DefaultController extends AbstractController
                         return new JsonResponse(
                             [
                                 'code' => 'unsupported_response_type',
-                                'message' => "The value '$responsepayloadcontenttype' received in accept header is not a supported format.",
+                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
                             ],
                             Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         );
@@ -772,7 +763,6 @@ class DefaultController extends AbstractController
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
                 $requestBodyPayload = null;
-                $violations = [];
 
                 break;
             default:
@@ -784,11 +774,7 @@ class DefaultController extends AbstractController
                     Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                 );
         }
-        if (count($violations) > 0) {
-            foreach ($violations as $violation) {
-                $errors['body'][$violation->getpropertypath()][] = $violation->getmessage();
-            }
-        }
+
         if (count($errors) > 0) {
             return new JsonResponse(
                 [
@@ -799,9 +785,10 @@ class DefaultController extends AbstractController
                 Response::HTTP_BAD_REQUEST,
             );
         }
+
         $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
-            case is_null($requestbodypayload):
+            case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->PostTestFromEmptyPayloadToContent(
@@ -828,7 +815,7 @@ class DefaultController extends AbstractController
                         return new JsonResponse(
                             [
                                 'code' => 'unsupported_response_type',
-                                'message' => "The value '$responsepayloadcontenttype' received in accept header is not a supported format.",
+                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
                             ],
                             Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
                         );
