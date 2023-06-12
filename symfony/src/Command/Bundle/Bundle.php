@@ -19,6 +19,7 @@ class Bundle implements File
      */
     public static function build(
         string $rawName,
+        string $packageName,
         string $namespace,
         OpenApi $openApi,
     ): self {
@@ -30,6 +31,7 @@ class Bundle implements File
             $api = Api::build($namespace, $openApi),
             RoutesConfig::build($namespace, $api),
             ServicesConfig::build($namespace, $api),
+            new ComposerJson($packageName, $namespace),
         );
     }
 
@@ -45,6 +47,7 @@ class Bundle implements File
         private readonly Api $api,
         private readonly RoutesConfig $routesConfig,
         private readonly ServicesConfig $servicesConfig,
+        private readonly ComposerJson $composerJson,
     ) {
     }
 
@@ -57,6 +60,7 @@ class Bundle implements File
             $this,
             $this->routesConfig,
             $this->servicesConfig,
+            $this->composerJson,
         ];
 
         foreach ($this->formats as $format) {
