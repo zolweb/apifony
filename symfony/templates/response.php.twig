@@ -25,7 +25,7 @@ class {{ response.getClassName }}
     {
         return [
 {%~ for header in response.headers %}
-            '{{ header.name }}' => $this->{{ header.variableName }},
+            '{{ header.name }}' => strval($this->{{ header.variableName }}),
 {%~ endfor %}
             'content-type' => self::CONTENT_TYPE,
         ];

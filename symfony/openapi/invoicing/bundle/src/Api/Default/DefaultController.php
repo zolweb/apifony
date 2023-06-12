@@ -50,13 +50,10 @@ class DefaultController extends AbstractController
         $pClientId = $clientId;
         try {
             $this->validateParameter(
-                'clientId',
-                'path',
                 $pClientId,
                 [
                 new Assert\NotNull,
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['clientId'] = $e->messages;
@@ -65,15 +62,12 @@ class DefaultController extends AbstractController
         $pParam3 = $param3;
         try {
             $this->validateParameter(
-                'param3',
-                'path',
                 $pParam3,
                 [
                 new Assert\NotNull,
                 new Assert\DivisibleBy(value: 1),
                 new Assert\LessThanOrEqual(value: 2),
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['param3'] = $e->messages;
@@ -82,13 +76,10 @@ class DefaultController extends AbstractController
         $pParam4 = $param4;
         try {
             $this->validateParameter(
-                'param4',
-                'path',
                 $pParam4,
                 [
                 new Assert\NotNull,
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['param4'] = $e->messages;
@@ -97,13 +88,10 @@ class DefaultController extends AbstractController
         $pParam5 = $param5;
         try {
             $this->validateParameter(
-                'param5',
-                'path',
                 $pParam5,
                 [
                 new Assert\NotNull,
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['param5'] = $e->messages;
@@ -112,8 +100,6 @@ class DefaultController extends AbstractController
         $pParam1 = $param1;
         try {
             $this->validateParameter(
-                'param1',
-                'path',
                 $pParam1,
                 [
                 new Assert\NotNull,
@@ -123,7 +109,6 @@ class DefaultController extends AbstractController
                     'item2',
                 ]),
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['param1'] = $e->messages;
@@ -132,8 +117,6 @@ class DefaultController extends AbstractController
         $pParam2 = $param2;
         try {
             $this->validateParameter(
-                'param2',
-                'path',
                 $pParam2,
                 [
                 new Assert\NotNull,
@@ -146,7 +129,6 @@ class DefaultController extends AbstractController
                     'item1',
                 ]),
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['param2'] = $e->messages;
@@ -155,13 +137,10 @@ class DefaultController extends AbstractController
         try {
             $hAzef = $this->getStringParameter($request, 'azef', 'header', true);
             $this->validateParameter(
-                'azef',
-                'header',
                 $hAzef,
                 [
                 new Assert\NotNull,
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['header']['azef'] = [$e->getMessage()];
@@ -172,13 +151,10 @@ class DefaultController extends AbstractController
         try {
             $qAgrez = $this->getFloatParameter($request, 'agrez', 'query', true);
             $this->validateParameter(
-                'agrez',
-                'query',
                 $qAgrez,
                 [
                 new Assert\NotNull,
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['query']['agrez'] = [$e->getMessage()];
@@ -189,13 +165,10 @@ class DefaultController extends AbstractController
         try {
             $cAzgrzeg = $this->getIntParameter($request, 'azgrzeg', 'cookie', false, 10);
             $this->validateParameter(
-                'azgrzeg',
-                'cookie',
                 $cAzgrzeg,
                 [
                 new Assert\NotNull,
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['cookie']['azgrzeg'] = [$e->getMessage()];
@@ -206,13 +179,10 @@ class DefaultController extends AbstractController
         try {
             $hGegzer = $this->getBoolParameter($request, 'gegzer', 'header', false, true);
             $this->validateParameter(
-                'gegzer',
-                'header',
                 $hGegzer,
                 [
                 new Assert\NotNull,
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['header']['gegzer'] = [$e->getMessage()];
@@ -310,13 +280,10 @@ class DefaultController extends AbstractController
         $pClientId = $clientId;
         try {
             $this->validateParameter(
-                'clientId',
-                'path',
                 $pClientId,
                 [
                 new Assert\NotNull,
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['clientId'] = $e->messages;
@@ -325,15 +292,12 @@ class DefaultController extends AbstractController
         $pParam3 = $param3;
         try {
             $this->validateParameter(
-                'param3',
-                'path',
                 $pParam3,
                 [
                 new Assert\NotNull,
                 new Assert\DivisibleBy(value: 1),
                 new Assert\LessThanOrEqual(value: 2),
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['param3'] = $e->messages;
@@ -342,13 +306,10 @@ class DefaultController extends AbstractController
         $pParam4 = $param4;
         try {
             $this->validateParameter(
-                'param4',
-                'path',
                 $pParam4,
                 [
                 new Assert\NotNull,
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['param4'] = $e->messages;
@@ -357,13 +318,10 @@ class DefaultController extends AbstractController
         $pParam5 = $param5;
         try {
             $this->validateParameter(
-                'param5',
-                'path',
                 $pParam5,
                 [
                 new Assert\NotNull,
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['param5'] = $e->messages;
@@ -372,8 +330,6 @@ class DefaultController extends AbstractController
         $pParam1 = $param1;
         try {
             $this->validateParameter(
-                'param1',
-                'path',
                 $pParam1,
                 [
                 new Assert\NotNull,
@@ -383,7 +339,6 @@ class DefaultController extends AbstractController
                     'item2',
                 ]),
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['param1'] = $e->messages;
@@ -392,8 +347,6 @@ class DefaultController extends AbstractController
         $pParam2 = $param2;
         try {
             $this->validateParameter(
-                'param2',
-                'path',
                 $pParam2,
                 [
                 new Assert\NotNull,
@@ -406,7 +359,6 @@ class DefaultController extends AbstractController
                     'item1',
                 ]),
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['param2'] = $e->messages;
@@ -487,8 +439,6 @@ class DefaultController extends AbstractController
         $pP1 = $p1;
         try {
             $this->validateParameter(
-                'p1',
-                'path',
                 $pP1,
                 [
                 new Assert\NotNull,
@@ -502,7 +452,6 @@ class DefaultController extends AbstractController
                     'ghi',
                 ]),
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['p1'] = $e->messages;
@@ -511,8 +460,6 @@ class DefaultController extends AbstractController
         $pP2 = $p2;
         try {
             $this->validateParameter(
-                'p2',
-                'path',
                 $pP2,
                 [
                 new Assert\NotNull,
@@ -526,7 +473,6 @@ class DefaultController extends AbstractController
                     3,
                 ]),
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['p2'] = $e->messages;
@@ -535,8 +481,6 @@ class DefaultController extends AbstractController
         $pP3 = $p3;
         try {
             $this->validateParameter(
-                'p3',
-                'path',
                 $pP3,
                 [
                 new Assert\NotNull,
@@ -551,7 +495,6 @@ class DefaultController extends AbstractController
                     0.1,
                 ]),
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['p3'] = $e->messages;
@@ -560,8 +503,6 @@ class DefaultController extends AbstractController
         $pP4 = $p4;
         try {
             $this->validateParameter(
-                'p4',
-                'path',
                 $pP4,
                 [
                 new Assert\NotNull,
@@ -570,7 +511,6 @@ class DefaultController extends AbstractController
                     true,
                 ]),
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['p4'] = $e->messages;
@@ -579,8 +519,6 @@ class DefaultController extends AbstractController
         try {
             $hH1 = $this->getStringParameter($request, 'h1', 'header', true, 'abc');
             $this->validateParameter(
-                'h1',
-                'header',
                 $hH1,
                 [
                 new Assert\NotNull,
@@ -594,7 +532,6 @@ class DefaultController extends AbstractController
                     'ghi',
                 ]),
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['header']['h1'] = [$e->getMessage()];
@@ -605,8 +542,6 @@ class DefaultController extends AbstractController
         try {
             $hH2 = $this->getIntParameter($request, 'h2', 'header', true, 1);
             $this->validateParameter(
-                'h2',
-                'header',
                 $hH2,
                 [
                 new Assert\NotNull,
@@ -620,7 +555,6 @@ class DefaultController extends AbstractController
                     3,
                 ]),
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['header']['h2'] = [$e->getMessage()];
@@ -631,8 +565,6 @@ class DefaultController extends AbstractController
         try {
             $hH3 = $this->getFloatParameter($request, 'h3', 'header', true, 0.1);
             $this->validateParameter(
-                'h3',
-                'header',
                 $hH3,
                 [
                 new Assert\NotNull,
@@ -646,7 +578,6 @@ class DefaultController extends AbstractController
                     0.3,
                 ]),
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['header']['h3'] = [$e->getMessage()];
@@ -657,8 +588,6 @@ class DefaultController extends AbstractController
         try {
             $hH4 = $this->getBoolParameter($request, 'h4', 'header', true, true);
             $this->validateParameter(
-                'h4',
-                'header',
                 $hH4,
                 [
                 new Assert\NotNull,
@@ -666,7 +595,6 @@ class DefaultController extends AbstractController
                     true,
                 ]),
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['header']['h4'] = [$e->getMessage()];
@@ -677,8 +605,6 @@ class DefaultController extends AbstractController
         try {
             $qQ1 = $this->getStringParameter($request, 'q1', 'query', true, 'abc');
             $this->validateParameter(
-                'q1',
-                'query',
                 $qQ1,
                 [
                 new Assert\NotNull,
@@ -692,7 +618,6 @@ class DefaultController extends AbstractController
                     'ghi',
                 ]),
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['query']['q1'] = [$e->getMessage()];
@@ -703,8 +628,6 @@ class DefaultController extends AbstractController
         try {
             $qQ2 = $this->getIntParameter($request, 'q2', 'query', true, 1);
             $this->validateParameter(
-                'q2',
-                'query',
                 $qQ2,
                 [
                 new Assert\NotNull,
@@ -718,7 +641,6 @@ class DefaultController extends AbstractController
                     3,
                 ]),
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['query']['q2'] = [$e->getMessage()];
@@ -729,8 +651,6 @@ class DefaultController extends AbstractController
         try {
             $qQ3 = $this->getFloatParameter($request, 'q3', 'query', true, 0.1);
             $this->validateParameter(
-                'q3',
-                'query',
                 $qQ3,
                 [
                 new Assert\NotNull,
@@ -744,7 +664,6 @@ class DefaultController extends AbstractController
                     0.3,
                 ]),
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['query']['q3'] = [$e->getMessage()];
@@ -755,14 +674,11 @@ class DefaultController extends AbstractController
         try {
             $qQ4 = $this->getBoolParameter($request, 'q4', 'query', true, true);
             $this->validateParameter(
-                'q4',
-                'query',
                 $qQ4,
                 [
                 new Assert\NotNull,
                 new AssertF12,
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['query']['q4'] = [$e->getMessage()];
@@ -773,8 +689,6 @@ class DefaultController extends AbstractController
         try {
             $cC1 = $this->getStringParameter($request, 'c1', 'cookie', true, 'abc');
             $this->validateParameter(
-                'c1',
-                'cookie',
                 $cC1,
                 [
                 new Assert\NotNull,
@@ -788,7 +702,6 @@ class DefaultController extends AbstractController
                     'ghi',
                 ]),
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['cookie']['c1'] = [$e->getMessage()];
@@ -799,8 +712,6 @@ class DefaultController extends AbstractController
         try {
             $cC2 = $this->getIntParameter($request, 'c2', 'cookie', true, 1);
             $this->validateParameter(
-                'c2',
-                'cookie',
                 $cC2,
                 [
                 new Assert\NotNull,
@@ -814,7 +725,6 @@ class DefaultController extends AbstractController
                     3,
                 ]),
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['cookie']['c2'] = [$e->getMessage()];
@@ -825,8 +735,6 @@ class DefaultController extends AbstractController
         try {
             $cC3 = $this->getFloatParameter($request, 'c3', 'cookie', true, 0.1);
             $this->validateParameter(
-                'c3',
-                'cookie',
                 $cC3,
                 [
                 new Assert\NotNull,
@@ -840,7 +748,6 @@ class DefaultController extends AbstractController
                     0.3,
                 ]),
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['cookie']['c3'] = [$e->getMessage()];
@@ -851,14 +758,11 @@ class DefaultController extends AbstractController
         try {
             $cC4 = $this->getBoolParameter($request, 'c4', 'cookie', true, true);
             $this->validateParameter(
-                'c4',
-                'cookie',
                 $cC4,
                 [
                 new Assert\NotNull,
                 new AssertF16,
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['cookie']['c4'] = [$e->getMessage()];

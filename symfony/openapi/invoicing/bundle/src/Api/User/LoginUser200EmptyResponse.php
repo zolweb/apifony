@@ -19,8 +19,8 @@ class LoginUser200EmptyResponse
     public function getHeaders(): array
     {
         return [
-            'X-Rate-Limit' => $this->XRateLimit,
-            'X-Expires-After' => $this->XExpiresAfter,
+            'X-Rate-Limit' => strval($this->XRateLimit),
+            'X-Expires-After' => strval($this->XExpiresAfter),
             'content-type' => self::CONTENT_TYPE,
         ];
     }

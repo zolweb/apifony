@@ -12,5 +12,6 @@ class RequestBodyValidationException extends Exception
     public function __construct(
         public readonly array $messages,
     ) {
+        parent::__construct();
     }
 }

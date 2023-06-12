@@ -88,8 +88,6 @@ class PetController extends AbstractController
         try {
             $qStatus = $this->getStringParameter($request, 'status', 'query', false, 'available');
             $this->validateParameter(
-                'status',
-                'query',
                 $qStatus,
                 [
                 new Assert\NotNull,
@@ -99,7 +97,6 @@ class PetController extends AbstractController
                     'sold',
                 ]),
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['query']['status'] = [$e->getMessage()];
@@ -179,13 +176,10 @@ class PetController extends AbstractController
         try {
             $qTags = $this->getStringParameter($request, 'tags', 'query', false);
             $this->validateParameter(
-                'tags',
-                'query',
                 $qTags,
                 [
                 new Assert\NotNull,
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['query']['tags'] = [$e->getMessage()];
@@ -266,14 +260,11 @@ class PetController extends AbstractController
         $pPetId = $petId;
         try {
             $this->validateParameter(
-                'petId',
-                'path',
                 $pPetId,
                 [
                 new Assert\NotNull,
                 new AssertInt64,
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['petId'] = $e->messages;
@@ -346,14 +337,11 @@ class PetController extends AbstractController
         $pPetId = $petId;
         try {
             $this->validateParameter(
-                'petId',
-                'path',
                 $pPetId,
                 [
                 new Assert\NotNull,
                 new AssertInt64,
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['petId'] = $e->messages;
@@ -362,13 +350,10 @@ class PetController extends AbstractController
         try {
             $qName = $this->getStringParameter($request, 'name', 'query', false);
             $this->validateParameter(
-                'name',
-                'query',
                 $qName,
                 [
                 new Assert\NotNull,
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['query']['name'] = [$e->getMessage()];
@@ -379,13 +364,10 @@ class PetController extends AbstractController
         try {
             $qStatus = $this->getStringParameter($request, 'status', 'query', false);
             $this->validateParameter(
-                'status',
-                'query',
                 $qStatus,
                 [
                 new Assert\NotNull,
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['query']['status'] = [$e->getMessage()];
@@ -469,14 +451,11 @@ class PetController extends AbstractController
         $pPetId = $petId;
         try {
             $this->validateParameter(
-                'petId',
-                'path',
                 $pPetId,
                 [
                 new Assert\NotNull,
                 new AssertInt64,
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['petId'] = $e->messages;
@@ -485,13 +464,10 @@ class PetController extends AbstractController
         try {
             $hApi_key = $this->getStringParameter($request, 'api_key', 'header', false);
             $this->validateParameter(
-                'api_key',
-                'header',
                 $hApi_key,
                 [
                 new Assert\NotNull,
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['header']['api_key'] = [$e->getMessage()];
@@ -573,14 +549,11 @@ class PetController extends AbstractController
         $pPetId = $petId;
         try {
             $this->validateParameter(
-                'petId',
-                'path',
                 $pPetId,
                 [
                 new Assert\NotNull,
                 new AssertInt64,
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['petId'] = $e->messages;
@@ -589,13 +562,10 @@ class PetController extends AbstractController
         try {
             $qAdditionalMetadata = $this->getStringParameter($request, 'additionalMetadata', 'query', false);
             $this->validateParameter(
-                'additionalMetadata',
-                'query',
                 $qAdditionalMetadata,
                 [
                 new Assert\NotNull,
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['query']['additionalMetadata'] = [$e->getMessage()];

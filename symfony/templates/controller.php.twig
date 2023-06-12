@@ -38,15 +38,12 @@ class {{ controller.className }} extends AbstractController
         ${{ param.variableName }} = ${{ param.rawName }};
         try {
             $this->validateParameter(
-                '{{ param.rawName }}',
-                '{{ param.in }}',
                 ${{ param.variableName }},
                 [
         {%~ for constraint in param.constraints %}
                     {{~ constraint.instantiation(4) }},
         {%~ endfor %}
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['{{ param.in }}']['{{ param.rawname }}'] = $e->messages;
@@ -57,15 +54,12 @@ class {{ controller.className }} extends AbstractController
         try {
             ${{ param.variableName }} = $this->get{{ param.phpType|capitalize }}{{ param.nullable ? 'OrNull' : '' }}Parameter($request, '{{ param.rawname }}', '{{ param.in }}', {{ param.required ? 'true' : 'false' }}{{ param.hasDefault ? ', ' ~ param.default : ''}});
             $this->validateParameter(
-                '{{ param.rawName }}',
-                '{{ param.in }}',
                 ${{ param.variableName }},
                 [
     {%~ for constraint in param.constraints %}
                     {{~ constraint.instantiation(4) }},
     {%~ endfor %}
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['{{ param.in }}']['{{ param.rawname }}'] = [$e->getMessage()];
@@ -83,7 +77,7 @@ class {{ controller.className }} extends AbstractController
         {%~ elseif requestBody.mimeType is same as ('application/json') %}
                 try {
                     $requestBodyPayload = $this->get{{ param.phpType|capitalize }}{{ param.nullable ? 'OrNull' : '' }}JsonRequestBody($request, {{ requestBody.required }}, {{ param.hasDefault ? ', ' ~ param.default : '' }});
-                    $this->validateRequestBody($requestBodyPayload, $errors);
+                    $this->validateRequestBody($requestBodyPayload);
                 } catch (DenormalizationException $e) {
                     $errors['requestBody'] = [$e->getMessage()];
                 } catch (ParameterValidationException $e) {

@@ -638,16 +638,12 @@ abstract class AbstractController
 
     /**
      * @param array<Constraint> $constraints
-     * @param array<string, array<string, array<string>>> $errors
      *
      * @throws ParameterValidationException
      */
     public function validateParameter(
-        string $name,
-        string $in,
         mixed $value,
         array $constraints,
-        array& $errors,
     ): void {
         $violations = $this->validator->validate($value, $constraints);
 
@@ -663,14 +659,12 @@ abstract class AbstractController
 
     /**
      * @param array<Constraint> $constraints
-     * @param array<string, array<string, array<string>>> $errors
      *
      * @throws RequestBodyValidationException
      */
     public function validateRequestBody(
         mixed $value,
         array $constraints,
-        array& $errors,
     ): void {
         $violations = $this->validator->validate($value, $constraints);
 

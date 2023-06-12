@@ -155,14 +155,11 @@ class StoreController extends AbstractController
         $pOrderId = $orderId;
         try {
             $this->validateParameter(
-                'orderId',
-                'path',
                 $pOrderId,
                 [
                 new Assert\NotNull,
                 new AssertInt64,
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['orderId'] = $e->messages;
@@ -235,14 +232,11 @@ class StoreController extends AbstractController
         $pOrderId = $orderId;
         try {
             $this->validateParameter(
-                'orderId',
-                'path',
                 $pOrderId,
                 [
                 new Assert\NotNull,
                 new AssertInt64,
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['orderId'] = $e->messages;

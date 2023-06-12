@@ -153,13 +153,10 @@ class UserController extends AbstractController
         try {
             $qUsername = $this->getStringParameter($request, 'username', 'query', false);
             $this->validateParameter(
-                'username',
-                'query',
                 $qUsername,
                 [
                 new Assert\NotNull,
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['query']['username'] = [$e->getMessage()];
@@ -170,13 +167,10 @@ class UserController extends AbstractController
         try {
             $qPassword = $this->getStringParameter($request, 'password', 'query', false);
             $this->validateParameter(
-                'password',
-                'query',
                 $qPassword,
                 [
                 new Assert\NotNull,
                 ],
-                $errors,
             );
         } catch (DenormalizationException $e) {
             $errors['query']['password'] = [$e->getMessage()];
@@ -321,13 +315,10 @@ class UserController extends AbstractController
         $pUsername = $username;
         try {
             $this->validateParameter(
-                'username',
-                'path',
                 $pUsername,
                 [
                 new Assert\NotNull,
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['username'] = $e->messages;
@@ -400,13 +391,10 @@ class UserController extends AbstractController
         $pUsername = $username;
         try {
             $this->validateParameter(
-                'username',
-                'path',
                 $pUsername,
                 [
                 new Assert\NotNull,
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['username'] = $e->messages;
@@ -479,13 +467,10 @@ class UserController extends AbstractController
         $pUsername = $username;
         try {
             $this->validateParameter(
-                'username',
-                'path',
                 $pUsername,
                 [
                 new Assert\NotNull,
                 ],
-                $errors,
             );
         } catch (ParameterValidationException $e) {
             $errors['path']['username'] = $e->messages;

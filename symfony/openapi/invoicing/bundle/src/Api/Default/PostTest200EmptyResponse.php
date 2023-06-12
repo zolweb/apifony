@@ -21,10 +21,10 @@ class PostTest200EmptyResponse
     public function getHeaders(): array
     {
         return [
-            'h1' => $this->H1,
-            'h2' => $this->H2,
-            'h3' => $this->H3,
-            'h4' => $this->H4,
+            'h1' => strval($this->H1),
+            'h2' => strval($this->H2),
+            'h3' => strval($this->H3),
+            'h4' => strval($this->H4),
             'content-type' => self::CONTENT_TYPE,
         ];
     }
