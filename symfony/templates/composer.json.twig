@@ -1,10 +1,10 @@
 {
-    "name": "{{ packageName }}",
+    "name": "{{ composer.packageName }}",
     "require": {
     },
     "autoload": {
         "psr-4": {
-            "{{ namespace|e('jsonString') }}\\" : "src/"
+            "{{ composer.namespace }}\\" : "src/"
         }
     }
 }
