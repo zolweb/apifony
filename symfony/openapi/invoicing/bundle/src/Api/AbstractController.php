@@ -9,6 +9,7 @@ use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
 
 abstract class AbstractController
 {
@@ -561,7 +562,11 @@ abstract class AbstractController
             return $default;
         }
 
-        return $this->serializer->deserialize($value, $class, JsonEncoder::FORMAT);
+        try {
+            return $this->serializer->deserialize($value, $class, JsonEncoder::FORMAT);
+        } catch (ExceptionInterface $e) {
+            throw new DenormalizationException("Request body could not be deserialized: {$e->getMessage()}");
+        }
     }
 
     /**
@@ -582,7 +587,11 @@ abstract class AbstractController
             return null;
         }
 
-        return $this->serializer->deserialize($value, $class, JsonEncoder::FORMAT);
+        try {
+            return $this->serializer->deserialize($value, $class, JsonEncoder::FORMAT);
+        } catch (ExceptionInterface $e) {
+            throw new DenormalizationException("Request body could not be deserialized: {$e->getMessage()}");
+        }
     }
 
 
