@@ -82,11 +82,4 @@ interface PetHandler
         string $qAdditionalMetadata,
     ):
         UploadFile200ApplicationJsonResponse;
-
-    public function UploadFileFromStringPayloadToApplicationJsonContent(
-        int $pPetId,
-        string $qAdditionalMetadata,
-        string $requestBodyPayload,
-    ):
-        UploadFile200ApplicationJsonResponse;
 }

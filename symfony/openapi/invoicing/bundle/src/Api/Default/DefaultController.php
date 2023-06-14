@@ -211,9 +211,6 @@ class DefaultController extends AbstractController
                 }
 
                 break;
-            case 'application/xml':
-
-                break;
             default:
                 return new JsonResponse(
                     [
@@ -278,35 +275,6 @@ class DefaultController extends AbstractController
                 switch($responsePayloadContentType) {
                     case 'application/json':
                         $response = $this->handler->GetClientFromIntegerPayloadToApplicationJsonContent(
-                            $pClientId,
-                            $pParam3,
-                            $pParam4,
-                            $pParam5,
-                            $hAzef,
-                            $qAgrez,
-                            $pParam1,
-                            $pParam2,
-                            $cAzgrzeg,
-                            $hGegzer,
-                            $requestBodyPayload,
-                        );
-
-                        break;
-                    default:
-                        return new JsonResponse(
-                            [
-                                'code' => 'unsupported_response_type',
-                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                            ],
-                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        );
-                }
-
-                break;
-            case $requestBodyPayload instanceOf GetClientApplicationXmlRequestBodyPayload:
-                switch($responsePayloadContentType) {
-                    case 'application/json':
-                        $response = $this->handler->GetClientFromGetClientApplicationXmlRequestBodyPayloadPayloadToApplicationJsonContent(
                             $pClientId,
                             $pParam3,
                             $pParam4,
@@ -543,7 +511,7 @@ class DefaultController extends AbstractController
                     new AssertF2,
                     new Assert\DivisibleBy(value: 1),
                     new Assert\GreaterThanOrEqual(value: 1),
-                    new Assert\LessThan(value: 4),
+                    new Assert\LessThanOrEqual(value: 3),
                     new Assert\Choice(choices: [
                         1,
                         2,
@@ -854,7 +822,7 @@ class DefaultController extends AbstractController
                 break;
             case 'application/json':
                 try {
-                    $requestBodyPayload = $this->getObjectJsonRequestBody($request);
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request, PostTestApplicationJsonRequestBodyPayload::class);
                     $this->validateRequestBody(
                         $requestBodyPayload,
                         [
@@ -867,12 +835,6 @@ class DefaultController extends AbstractController
                 } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
-
-                break;
-            case 'application/xml':
-
-                break;
-            case 'multipart/form-data':
 
                 break;
             default:
@@ -996,120 +958,6 @@ class DefaultController extends AbstractController
                         break;
                     case 'application/xml':
                         $response = $this->handler->PostTestFromPostTestApplicationJsonRequestBodyPayloadPayloadToApplicationXmlContent(
-                            $pP1,
-                            $pP2,
-                            $pP3,
-                            $pP4,
-                            $hH1,
-                            $hH2,
-                            $hH3,
-                            $hH4,
-                            $qQ1,
-                            $qQ2,
-                            $qQ3,
-                            $qQ4,
-                            $cC1,
-                            $cC2,
-                            $cC3,
-                            $cC4,
-                            $requestBodyPayload,
-                        );
-
-                        break;
-                    default:
-                        return new JsonResponse(
-                            [
-                                'code' => 'unsupported_response_type',
-                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                            ],
-                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        );
-                }
-
-                break;
-            case $requestBodyPayload instanceOf PostTestApplicationXmlRequestBodyPayload:
-                switch($responsePayloadContentType) {
-                    case 'application/json':
-                        $response = $this->handler->PostTestFromPostTestApplicationXmlRequestBodyPayloadPayloadToApplicationJsonContent(
-                            $pP1,
-                            $pP2,
-                            $pP3,
-                            $pP4,
-                            $hH1,
-                            $hH2,
-                            $hH3,
-                            $hH4,
-                            $qQ1,
-                            $qQ2,
-                            $qQ3,
-                            $qQ4,
-                            $cC1,
-                            $cC2,
-                            $cC3,
-                            $cC4,
-                            $requestBodyPayload,
-                        );
-
-                        break;
-                    case 'application/xml':
-                        $response = $this->handler->PostTestFromPostTestApplicationXmlRequestBodyPayloadPayloadToApplicationXmlContent(
-                            $pP1,
-                            $pP2,
-                            $pP3,
-                            $pP4,
-                            $hH1,
-                            $hH2,
-                            $hH3,
-                            $hH4,
-                            $qQ1,
-                            $qQ2,
-                            $qQ3,
-                            $qQ4,
-                            $cC1,
-                            $cC2,
-                            $cC3,
-                            $cC4,
-                            $requestBodyPayload,
-                        );
-
-                        break;
-                    default:
-                        return new JsonResponse(
-                            [
-                                'code' => 'unsupported_response_type',
-                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                            ],
-                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        );
-                }
-
-                break;
-            case $requestBodyPayload instanceOf PostTestMultipartFormDataRequestBodyPayload:
-                switch($responsePayloadContentType) {
-                    case 'application/json':
-                        $response = $this->handler->PostTestFromPostTestMultipartFormDataRequestBodyPayloadPayloadToApplicationJsonContent(
-                            $pP1,
-                            $pP2,
-                            $pP3,
-                            $pP4,
-                            $hH1,
-                            $hH2,
-                            $hH3,
-                            $hH4,
-                            $qQ1,
-                            $qQ2,
-                            $qQ3,
-                            $qQ4,
-                            $cC1,
-                            $cC2,
-                            $cC3,
-                            $cC4,
-                            $requestBodyPayload,
-                        );
-
-                        break;
-                    case 'application/xml':
-                        $response = $this->handler->PostTestFromPostTestMultipartFormDataRequestBodyPayloadPayloadToApplicationXmlContent(
                             $pP1,
                             $pP2,
                             $pP3,

@@ -33,7 +33,7 @@ class UserController extends AbstractController
                 break;
             case 'application/json':
                 try {
-                    $requestBodyPayload = $this->getObjectJsonRequestBody($request);
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request, CreateUserApplicationJsonRequestBodyPayload::class);
                     $this->validateRequestBody(
                         $requestBodyPayload,
                         [
@@ -519,7 +519,7 @@ class UserController extends AbstractController
                 break;
             case 'application/json':
                 try {
-                    $requestBodyPayload = $this->getObjectJsonRequestBody($request);
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request, UpdateUserApplicationJsonRequestBodyPayload::class);
                     $this->validateRequestBody(
                         $requestBodyPayload,
                         [
@@ -532,12 +532,6 @@ class UserController extends AbstractController
                 } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
-
-                break;
-            case 'application/xml':
-
-                break;
-            case 'application/x-www-form-urlencoded':
 
                 break;
             default:
@@ -586,46 +580,6 @@ class UserController extends AbstractController
                 switch($responsePayloadContentType) {
                     case null:
                         $response = $this->handler->UpdateUserFromUpdateUserApplicationJsonRequestBodyPayloadPayloadToContent(
-                            $pUsername,
-                            $requestBodyPayload,
-                        );
-
-                        break;
-                    default:
-                        return new JsonResponse(
-                            [
-                                'code' => 'unsupported_response_type',
-                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                            ],
-                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        );
-                }
-
-                break;
-            case $requestBodyPayload instanceOf UpdateUserApplicationXmlRequestBodyPayload:
-                switch($responsePayloadContentType) {
-                    case null:
-                        $response = $this->handler->UpdateUserFromUpdateUserApplicationXmlRequestBodyPayloadPayloadToContent(
-                            $pUsername,
-                            $requestBodyPayload,
-                        );
-
-                        break;
-                    default:
-                        return new JsonResponse(
-                            [
-                                'code' => 'unsupported_response_type',
-                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                            ],
-                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        );
-                }
-
-                break;
-            case $requestBodyPayload instanceOf UpdateUserApplicationXWwwFormUrlencodedRequestBodyPayload:
-                switch($responsePayloadContentType) {
-                    case null:
-                        $response = $this->handler->UpdateUserFromUpdateUserApplicationXWwwFormUrlencodedRequestBodyPayloadPayloadToContent(
                             $pUsername,
                             $requestBodyPayload,
                         );

@@ -110,13 +110,6 @@ class InvoicingOpenApiServerBundle extends AbstractBundle
 
                                 break;
 
-                                case 'binary':
-                                    $container
-                                        ->findDefinition('App\Zol\Invoicing\Presentation\Api\Bundle\Format\BinaryValidator')
-                                        ->addMethodCall('setFormatDefinition', [new Reference($id)]);
-
-                                break;
-
                                 case 'f1':
                                     $container
                                         ->findDefinition('App\Zol\Invoicing\Presentation\Api\Bundle\Format\F1Validator')

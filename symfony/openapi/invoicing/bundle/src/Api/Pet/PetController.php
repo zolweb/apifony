@@ -30,7 +30,7 @@ class PetController extends AbstractController
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'application/json':
                 try {
-                    $requestBodyPayload = $this->getObjectJsonRequestBody($request);
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request, UpdatePetApplicationJsonRequestBodyPayload::class);
                     $this->validateRequestBody(
                         $requestBodyPayload,
                         [
@@ -121,7 +121,7 @@ class PetController extends AbstractController
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'application/json':
                 try {
-                    $requestBodyPayload = $this->getObjectJsonRequestBody($request);
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request, AddPetApplicationJsonRequestBodyPayload::class);
                     $this->validateRequestBody(
                         $requestBodyPayload,
                         [
@@ -719,9 +719,6 @@ class PetController extends AbstractController
                 $requestBodyPayload = null;
 
                 break;
-            case 'application/octet-stream':
-
-                break;
             default:
                 return new JsonResponse(
                     [
@@ -757,27 +754,6 @@ class PetController extends AbstractController
                         $response = $this->handler->UploadFileFromEmptyPayloadToApplicationJsonContent(
                             $pPetId,
                             $qAdditionalMetadata,
-                        );
-
-                        break;
-                    default:
-                        return new JsonResponse(
-                            [
-                                'code' => 'unsupported_response_type',
-                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                            ],
-                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        );
-                }
-
-                break;
-            case is_string($requestBodyPayload):
-                switch($responsePayloadContentType) {
-                    case 'application/json':
-                        $response = $this->handler->UploadFileFromStringPayloadToApplicationJsonContent(
-                            $pPetId,
-                            $qAdditionalMetadata,
-                            $requestBodyPayload,
                         );
 
                         break;

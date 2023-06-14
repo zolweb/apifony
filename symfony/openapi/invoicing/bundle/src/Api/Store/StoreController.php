@@ -96,7 +96,7 @@ class StoreController extends AbstractController
                 break;
             case 'application/json':
                 try {
-                    $requestBodyPayload = $this->getObjectJsonRequestBody($request);
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request, PlaceOrderApplicationJsonRequestBodyPayload::class);
                     $this->validateRequestBody(
                         $requestBodyPayload,
                         [

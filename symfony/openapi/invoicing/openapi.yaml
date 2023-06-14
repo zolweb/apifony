@@ -64,10 +64,6 @@ paths:
           application/json:
             schema:
               type: integer
-          application/xml:
-            schema:
-              type: object
-              properties: {}
       x-priority: 1
       parameters:
         - schema:
@@ -415,12 +411,6 @@ paths:
           required: false
           schema:
             type: string
-      requestBody:
-        content:
-          application/octet-stream:
-            schema:
-              type: string
-              format: binary
       responses:
         '200':
           description: successful operation
@@ -667,12 +657,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/User'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/User'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/User'
       responses:
         '201':
           description: successful operation
@@ -705,7 +689,7 @@ paths:
             - abc
             - def
             - ghi
-          default: def
+          default: abc
           pattern: '[a-z]{3}'
           minLength: 3
           maxLength: 3
@@ -722,8 +706,8 @@ paths:
             - 2
             - 3
           minimum: 1
-          exclusiveMaximum: 4
           multipleOf: 1
+          maximum: 3
         name: p2
         in: path
         required: true
@@ -981,12 +965,6 @@ paths:
       requestBody:
         content:
           application/json:
-            schema:
-              $ref: '#/components/schemas/Test'
-          application/xml:
-            schema:
-              $ref: '#/components/schemas/Test'
-          multipart/form-data:
             schema:
               $ref: '#/components/schemas/Test'
         description: desc
@@ -1271,7 +1249,7 @@ components:
           type: array
           x-stoplight:
             id: fg9j3uaf6qspc
-          minItems: 0
+          minItems: 1
           maxItems: 3
           uniqueItems: true
           items:

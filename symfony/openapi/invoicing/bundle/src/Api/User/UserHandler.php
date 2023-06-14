@@ -75,18 +75,6 @@ interface UserHandler
     ):
         UpdateUser201EmptyResponse;
 
-    public function UpdateUserFromUpdateUserApplicationXmlRequestBodyPayloadPayloadToContent(
-        string $pUsername,
-        UpdateUserApplicationXmlRequestBodyPayload $requestBodyPayload,
-    ):
-        UpdateUser201EmptyResponse;
-
-    public function UpdateUserFromUpdateUserApplicationXWwwFormUrlencodedRequestBodyPayloadPayloadToContent(
-        string $pUsername,
-        UpdateUserApplicationXWwwFormUrlencodedRequestBodyPayload $requestBodyPayload,
-    ):
-        UpdateUser201EmptyResponse;
-
     public function DeleteUserFromEmptyPayloadToContent(
         string $pUsername,
     ):

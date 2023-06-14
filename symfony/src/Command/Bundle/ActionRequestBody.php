@@ -21,6 +21,10 @@ class ActionRequestBody
         ?MediaType $mediaType,
         ?Components $components,
     ): self {
+        if (!in_array($mimeType, [null, 'application/json'], true)) {
+            throw new Exception('Request bodies with mime types other than \'application/json\' are not supported.');
+        }
+
         $className = u(sprintf('%s_%s_RequestBodyPayload', $actionName, $mimeType ?? 'empty'))->camel()->title();
 
         $payloadModels = [];

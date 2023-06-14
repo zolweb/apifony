@@ -76,7 +76,7 @@ class {{ controller.className }} extends AbstractController
                 $requestBodyPayload = null;
         {%~ elseif requestBody.mimeType is same as ('application/json') %}
                 try {
-                    $requestBodyPayload = $this->get{{ requestBody.payloadBuiltInPhpType|capitalize }}{{ param.nullable ? 'OrNull' : '' }}JsonRequestBody($request{{ param.hasDefault ? ', ' ~ param.default : '' }});
+                    $requestBodyPayload = $this->get{{ requestBody.payloadBuiltInPhpType|capitalize }}{{ requestBody.nullable ? 'OrNull' : '' }}JsonRequestBody($request{{ requestBody.payloadBuiltInPhpType is same as 'object' ? ', ' ~ requestBody.payloadPhpType ~ '::class' : '' }}{{ requestBody.hasDefault ? ', ' ~ requestBody.default : '' }});
                     $this->validateRequestBody(
                         $requestBodyPayload,
                         [

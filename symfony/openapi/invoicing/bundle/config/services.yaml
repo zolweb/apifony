@@ -72,11 +72,6 @@ services:
         public: true
         tags: ['validator.constraint_validator']
 
-    App\Zol\Invoicing\Presentation\Api\Bundle\Format\BinaryValidator:
-        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\BinaryValidator
-        public: true
-        tags: ['validator.constraint_validator']
-
     App\Zol\Invoicing\Presentation\Api\Bundle\Format\F1Validator:
         class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F1Validator
         public: true

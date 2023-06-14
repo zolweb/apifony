@@ -38,7 +38,7 @@ class Test
         public readonly array $a6,
 
         #[Assert\NotNull]
-        #[Assert\Count(min: 0)]
+        #[Assert\Count(min: 1)]
         #[Assert\Count(max: 3)]
         #[Assert\Unique]
         #[Assert\All(constraints: [
