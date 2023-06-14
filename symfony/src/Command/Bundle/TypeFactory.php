@@ -42,14 +42,16 @@ class TypeFactory
             throw new Exception('Schemas with null type only are not supported.');
         }
 
-        return match ($schema->type) {
+        $a = match ($type) {
             'string' => new StringType($schema, $nullable),
             'integer' => new IntegerType($schema, $nullable),
             'number' => new NumberType($schema, $nullable),
             'boolean' => new BooleanType($schema, $nullable),
             'object' => new ObjectType($schema, $nullable, $className),
             'array' => new ArrayType($schema, $nullable, $className, $components),
-            default => throw new RuntimeException(),
+            default => 'lol',
         };
+
+        return $a;
     }
 }

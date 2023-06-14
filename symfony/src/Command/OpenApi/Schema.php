@@ -18,9 +18,9 @@ class Schema
                     if (!is_string($t)) {
                         throw new Exception('Schema objects type attribute must be a string or an array of strings.');
                     }
-                    $type[] = $type;
+                    $type[] = $t;
                 }
-            } if (is_string($data['type'])) {
+            } elseif (is_string($data['type'])) {
                 $type = $data['type'];
             } else {
                 throw new Exception('Schema objects type attribute must be a string or an array of strings.');

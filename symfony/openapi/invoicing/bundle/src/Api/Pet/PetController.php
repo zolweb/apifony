@@ -27,6 +27,28 @@ class PetController extends AbstractController
     ): Response {
         $errors = [];
 
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
+            case 'application/json':
+                try {
+                    $requestBodyPayload = $this->getJsonRequestBody($request, , );
+                    $this->validateRequestBody($requestBodyPayload);
+                } catch (DenormalizationException $e) {
+                    $errors['requestBody'] = [$e->getMessage()];
+                } catch (ParameterValidationException $e) {
+                    $errors['requestBody'] = $e->messages;
+                }
+
+                break;
+            default:
+                return new JsonResponse(
+                    [
+                        'code' => 'unsupported_request_type',
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
+                    ],
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                );
+        }
+
         if (count($errors) > 0) {
             return new JsonResponse(
                 [
@@ -40,10 +62,44 @@ class PetController extends AbstractController
 
         $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
+            case $requestBodyPayload instanceOf UpdatePetApplicationJsonRequestBodyPayload:
+                switch($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->UpdatePetFromUpdatePetApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
+                            $requestBodyPayload,
+                        );
+
+                        break;
+                    case 'application/xml':
+                        $response = $this->handler->UpdatePetFromUpdatePetApplicationJsonRequestBodyPayloadPayloadToApplicationXmlContent(
+                            $requestBodyPayload,
+                        );
+
+                        break;
+                    case null:
+                        $response = $this->handler->UpdatePetFromUpdatePetApplicationJsonRequestBodyPayloadPayloadToContent(
+                            $requestBodyPayload,
+                        );
+
+                        break;
+                    default:
+                        return new JsonResponse(
+                            [
+                                'code' => 'unsupported_response_type',
+                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                            ],
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        );
+                }
+
+                break;
             default:
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
+            case 'application/json':
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
+            case 'application/xml':
             case null:
                 return new Response('', $response::CODE, $response->getHeaders());
             default:
@@ -56,6 +112,28 @@ class PetController extends AbstractController
     ): Response {
         $errors = [];
 
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
+            case 'application/json':
+                try {
+                    $requestBodyPayload = $this->getJsonRequestBody($request, , );
+                    $this->validateRequestBody($requestBodyPayload);
+                } catch (DenormalizationException $e) {
+                    $errors['requestBody'] = [$e->getMessage()];
+                } catch (ParameterValidationException $e) {
+                    $errors['requestBody'] = $e->messages;
+                }
+
+                break;
+            default:
+                return new JsonResponse(
+                    [
+                        'code' => 'unsupported_request_type',
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
+                    ],
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                );
+        }
+
         if (count($errors) > 0) {
             return new JsonResponse(
                 [
@@ -69,10 +147,37 @@ class PetController extends AbstractController
 
         $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
+            case $requestBodyPayload instanceOf AddPetApplicationJsonRequestBodyPayload:
+                switch($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->AddPetFromAddPetApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
+                            $requestBodyPayload,
+                        );
+
+                        break;
+                    case null:
+                        $response = $this->handler->AddPetFromAddPetApplicationJsonRequestBodyPayloadPayloadToContent(
+                            $requestBodyPayload,
+                        );
+
+                        break;
+                    default:
+                        return new JsonResponse(
+                            [
+                                'code' => 'unsupported_response_type',
+                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                            ],
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        );
+                }
+
+                break;
             default:
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
+            case 'application/json':
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             case null:
                 return new Response('', $response::CODE, $response->getHeaders());
             default:
@@ -140,6 +245,12 @@ class PetController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->FindPetsByStatusFromEmptyPayloadToApplicationJsonContent(
+                            $qStatus,
+                        );
+
+                        break;
                     case null:
                         $response = $this->handler->FindPetsByStatusFromEmptyPayloadToContent(
                             $qStatus,
@@ -161,6 +272,8 @@ class PetController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
+            case 'application/json':
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             case null:
                 return new Response('', $response::CODE, $response->getHeaders());
             default:
@@ -223,6 +336,12 @@ class PetController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->FindPetsByTagsFromEmptyPayloadToApplicationJsonContent(
+                            $qTags,
+                        );
+
+                        break;
                     case null:
                         $response = $this->handler->FindPetsByTagsFromEmptyPayloadToContent(
                             $qTags,
@@ -244,6 +363,8 @@ class PetController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
+            case 'application/json':
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             case null:
                 return new Response('', $response::CODE, $response->getHeaders());
             default:
@@ -300,6 +421,12 @@ class PetController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->GetPetByIdFromEmptyPayloadToApplicationJsonContent(
+                            $pPetId,
+                        );
+
+                        break;
                     case null:
                         $response = $this->handler->GetPetByIdFromEmptyPayloadToContent(
                             $pPetId,
@@ -321,6 +448,8 @@ class PetController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
+            case 'application/json':
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             case null:
                 return new Response('', $response::CODE, $response->getHeaders());
             default:
@@ -578,6 +707,9 @@ class PetController extends AbstractController
                 $requestBodyPayload = null;
 
                 break;
+            case 'application/octet-stream':
+
+                break;
             default:
                 return new JsonResponse(
                     [
@@ -609,10 +741,31 @@ class PetController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
-                    case null:
-                        $response = $this->handler->UploadFileFromEmptyPayloadToContent(
+                    case 'application/json':
+                        $response = $this->handler->UploadFileFromEmptyPayloadToApplicationJsonContent(
                             $pPetId,
                             $qAdditionalMetadata,
+                        );
+
+                        break;
+                    default:
+                        return new JsonResponse(
+                            [
+                                'code' => 'unsupported_response_type',
+                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                            ],
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        );
+                }
+
+                break;
+            case is_string($requestBodyPayload):
+                switch($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->UploadFileFromStringPayloadToApplicationJsonContent(
+                            $pPetId,
+                            $qAdditionalMetadata,
+                            $requestBodyPayload,
                         );
 
                         break;
@@ -631,8 +784,8 @@ class PetController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
-            case null:
-                return new Response('', $response::CODE, $response->getHeaders());
+            case 'application/json':
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             default:
                 throw new RuntimeException();
         }

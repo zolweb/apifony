@@ -4,19 +4,36 @@ namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Store;
 
 interface StoreHandler
 {
-    public function GetInventoryFromEmptyPayloadToContent(
+    public function GetInventoryFromEmptyPayloadToApplicationJsonContent(
     ):
-        GetInventory200EmptyResponse;
+        GetInventory200ApplicationJsonResponse;
+
+    public function PlaceOrderFromEmptyPayloadToApplicationJsonContent(
+    ):
+        PlaceOrder200ApplicationJsonResponse;
 
     public function PlaceOrderFromEmptyPayloadToContent(
     ):
-        PlaceOrder200EmptyResponse |
         PlaceOrder405EmptyResponse;
+
+    public function PlaceOrderFromPlaceOrderApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
+        PlaceOrderApplicationJsonRequestBodyPayload $requestBodyPayload,
+    ):
+        PlaceOrder200ApplicationJsonResponse;
+
+    public function PlaceOrderFromPlaceOrderApplicationJsonRequestBodyPayloadPayloadToContent(
+        PlaceOrderApplicationJsonRequestBodyPayload $requestBodyPayload,
+    ):
+        PlaceOrder405EmptyResponse;
+
+    public function GetOrderByIdFromEmptyPayloadToApplicationJsonContent(
+        int $pOrderId,
+    ):
+        GetOrderById200ApplicationJsonResponse;
 
     public function GetOrderByIdFromEmptyPayloadToContent(
         int $pOrderId,
     ):
-        GetOrderById200EmptyResponse |
         GetOrderById400EmptyResponse |
         GetOrderById404EmptyResponse;
 

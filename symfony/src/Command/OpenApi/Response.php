@@ -28,11 +28,11 @@ class Response
         }
 
         $content = [];
-        if (isset($data['contents'])) {
-            if (!is_array($data['contents'])) {
+        if (isset($data['content'])) {
+            if (!is_array($data['content'])) {
                 throw new Exception('Response object content attribute must be an array.');
             }
-            foreach ($data['contents'] as $type => $contentData) {
+            foreach ($data['content'] as $type => $contentData) {
                 if (!is_string($type)) {
                     throw new Exception('Response object content attribute keys must be strings.');
                 }
