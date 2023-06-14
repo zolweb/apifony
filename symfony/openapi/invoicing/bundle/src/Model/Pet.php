@@ -41,7 +41,7 @@ class Pet
 
         #[Assert\NotNull]
         #[AssertDateTime]
-        #[Assert\Regex(pattern: 'A-z')]
+        #[Assert\Regex(pattern: '/A-z/')]
         #[Assert\Choice(choices: [
             'available',
             'pending',

@@ -53,5 +53,5 @@ build-aws: clean-app build composer-install composer-dump yarn-install webpack-b
 gen:
 	# rm -rf symfony/openapi/invoicing/bundle/*
 	# wget -O symfony/openapi/invoicing/openapi.yaml https://stoplight.io/api/v1/projects/bfav-zol/zol-skeleton/nodes/zol-invoicing.yaml
-	@$(RUNNER_DOCKER_EXEC) '$(symfony_console_path) gen -vvv'
+	@$(RUNNER_DOCKER_EXEC) 'php bin/ogen'
 	make cc

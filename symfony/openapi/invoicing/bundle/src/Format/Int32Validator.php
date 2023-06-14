@@ -7,9 +7,11 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class Int32Validator extends ConstraintValidator
 {
-    public function __construct(
-        private readonly Int32Definition $formatDefinition,
-    ) {
+    private Int32Definition $formatDefinition;
+
+    public function setFormatDefinition(Int32Definition $formatDefinition): void
+    {
+        $this->formatDefinition = $formatDefinition;
     }
 
     public function validate(mixed $value, Constraint $constraint): void

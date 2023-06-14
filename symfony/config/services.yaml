@@ -23,45 +23,112 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
-    ### Serializer ###
+    App\Validator\F1Definition:
+        class: App\Validator\F1Definition
+        tags:
+            - { name: "invoicing_open_api_server.format_definition", format: "f1" }
 
-    Symfony\Component\Serializer\Encoder\JsonEncoder: ~
+    App\Validator\F2Definition:
+        class: App\Validator\F2Definition
+        tags:
+            - { name: "invoicing_open_api_server.format_definition", format: "f2" }
 
-    Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor: ~
+    App\Validator\F3Definition:
+        class: App\Validator\F3Definition
+        tags:
+            - { name: "invoicing_open_api_server.format_definition", format: "f3" }
 
-    Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor: ~
+    App\Validator\F4Definition:
+        class: App\Validator\F4Definition
+        tags:
+            - { name: "invoicing_open_api_server.format_definition", format: "f4" }
 
-    Symfony\Component\PropertyInfo\PropertyInfoExtractor:
-        arguments:
-            $typeExtractors:
-                - '@Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor'
-                - '@Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor'
+    App\Validator\F5Definition:
+        class: App\Validator\F5Definition
+        tags:
+            - { name: "invoicing_open_api_server.format_definition", format: "f5" }
 
-    Doctrine\Common\Annotations\AnnotationReader: ~
+    App\Validator\F6Definition:
+        class: App\Validator\F6Definition
+        tags:
+            - { name: "invoicing_open_api_server.format_definition", format: "f6" }
 
-    Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader:
-        arguments:
-            $reader: '@Doctrine\Common\Annotations\AnnotationReader'
+    App\Validator\F8Definition:
+        class: App\Validator\F8Definition
+        tags:
+            - { name: "invoicing_open_api_server.format_definition", format: "f8" }
 
-    Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory:
-        arguments:
-            $loader: '@Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader'
+    App\Validator\F9Definition:
+        class: App\Validator\F9Definition
+        tags:
+            - { name: "invoicing_open_api_server.format_definition", format: "f9" }
 
-    Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter: ~
+    App\Validator\F10Definition:
+        class: App\Validator\F10Definition
+        tags:
+            - { name: "invoicing_open_api_server.format_definition", format: "f10" }
 
-    Symfony\Component\Serializer\Normalizer\ObjectNormalizer:
-        arguments:
-            $propertyTypeExtractor: '@Symfony\Component\PropertyInfo\PropertyInfoExtractor'
-            $classMetadataFactory: '@Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory'
-            $nameConverter: '@Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter'
+    App\Validator\F12Definition:
+        class: App\Validator\F12Definition
+        tags:
+            - { name: "invoicing_open_api_server.format_definition", format: "f12" }
 
-    Symfony\Component\Serializer\Normalizer\ArrayDenormalizer: ~
+    App\Validator\F13Definition:
+        class: App\Validator\F13Definition
+        tags:
+            - { name: "invoicing_open_api_server.format_definition", format: "f13" }
 
-    Symfony\Component\Serializer\SerializerInterface:
-        class: 'Symfony\Component\Serializer\Serializer'
-        arguments:
-            $encoders:
-                - '@Symfony\Component\Serializer\Encoder\JsonEncoder'
-            $normalizers:
-                - '@Symfony\Component\Serializer\Normalizer\ObjectNormalizer'
-                - '@Symfony\Component\Serializer\Normalizer\ArrayDenormalizer'
+    App\Validator\F14Definition:
+        class: App\Validator\F14Definition
+        tags:
+            - { name: "invoicing_open_api_server.format_definition", format: "f14" }
+
+    App\Validator\F15Definition:
+        class: App\Validator\F15Definition
+        tags:
+            - { name: "invoicing_open_api_server.format_definition", format: "f15" }
+
+    App\Validator\F16Definition:
+        class: App\Validator\F16Definition
+        tags:
+            - { name: "invoicing_open_api_server.format_definition", format: "f16" }
+
+    App\Validator\F17Definition:
+        class: App\Validator\F17Definition
+        tags:
+            - { name: "invoicing_open_api_server.format_definition", format: "f17" }
+
+    App\Validator\F18Definition:
+        class: App\Validator\F18Definition
+        tags:
+            - { name: "invoicing_open_api_server.format_definition", format: "f18" }
+
+    App\Validator\F19Definition:
+        class: App\Validator\F19Definition
+        tags:
+            - { name: "invoicing_open_api_server.format_definition", format: "f19" }
+
+    App\Validator\F20Definition:
+        class: App\Validator\F20Definition
+        tags:
+            - { name: "invoicing_open_api_server.format_definition", format: "f20" }
+
+    App\Validator\F21Definition:
+        class: App\Validator\F21Definition
+        tags:
+            - { name: "invoicing_open_api_server.format_definition", format: "f21" }
+
+    App\Validator\F22Definition:
+        class: App\Validator\F22Definition
+        tags:
+            - { name: "invoicing_open_api_server.format_definition", format: "f22" }
+
+    App\Validator\F23Definition:
+        class: App\Validator\F23Definition
+        tags:
+            - { name: "invoicing_open_api_server.format_definition", format: "f23" }
+
+    App\Validator\F25Definition:
+        class: App\Validator\F25Definition
+        tags:
+            - { name: "invoicing_open_api_server.format_definition", format: "f25" }

@@ -30,6 +30,138 @@ services:
             $validator: '@validator'
         public: true
 
+    ### Format validators ###
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\Int64Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\Int64Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\Int32Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\Int32Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\DateTimeValidator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\DateTimeValidator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\F21Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F21Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\F22Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F22Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\F23Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F23Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\F25Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F25Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\FormatValidator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\FormatValidator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\F1Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F1Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\F2Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F2Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\F3Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F3Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\F4Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F4Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\F5Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F5Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\F6Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F6Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\F7Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F7Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\F9Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F9Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\F10Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F10Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\F13Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F13Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\F12Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F12Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\F14Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F14Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\F15Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F15Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\F16Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F16Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\F17Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F17Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\F18Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F18Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\F19Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F19Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
+    App\Zol\Invoicing\Presentation\Api\Bundle\Format\F20Validator:
+        class: App\Zol\Invoicing\Presentation\Api\Bundle\Format\F20Validator
+        public: true
+        tags: ['validator.constraint_validator']
+
     ### Serializer ###
 
     app_zol_invoicing_presentation_api_bundle.json_encoder:

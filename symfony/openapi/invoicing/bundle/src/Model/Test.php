@@ -26,7 +26,7 @@ class Test
         #[Assert\All(constraints: [
             new Assert\NotNull,
             new AssertF25,
-            new Assert\Regex(pattern: '[a-z]{3}'),
+            new Assert\Regex(pattern: '/[a-z]{3}/'),
             new Assert\Length(min: 3),
             new Assert\Length(max: 3),
             new Assert\Choice(choices: [
@@ -49,7 +49,7 @@ class Test
 
         #[Assert\NotNull]
         #[AssertF21]
-        #[Assert\Regex(pattern: '[a-z]{3}')]
+        #[Assert\Regex(pattern: '/[a-z]{3}/')]
         #[Assert\Length(min: 3)]
         #[Assert\Length(max: 3)]
         #[Assert\Choice(choices: [

@@ -262,8 +262,8 @@ class PetController extends AbstractController
             $this->validateParameter(
                 $pPetId,
                 [
-                new Assert\NotNull,
-                new AssertInt64,
+                    new Assert\NotNull,
+                    new AssertInt64,
                 ],
             );
         } catch (ParameterValidationException $e) {
@@ -339,8 +339,8 @@ class PetController extends AbstractController
             $this->validateParameter(
                 $pPetId,
                 [
-                new Assert\NotNull,
-                new AssertInt64,
+                    new Assert\NotNull,
+                    new AssertInt64,
                 ],
             );
         } catch (ParameterValidationException $e) {
@@ -453,8 +453,8 @@ class PetController extends AbstractController
             $this->validateParameter(
                 $pPetId,
                 [
-                new Assert\NotNull,
-                new AssertInt64,
+                    new Assert\NotNull,
+                    new AssertInt64,
                 ],
             );
         } catch (ParameterValidationException $e) {
@@ -551,8 +551,8 @@ class PetController extends AbstractController
             $this->validateParameter(
                 $pPetId,
                 [
-                new Assert\NotNull,
-                new AssertInt64,
+                    new Assert\NotNull,
+                    new AssertInt64,
                 ],
             );
         } catch (ParameterValidationException $e) {

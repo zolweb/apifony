@@ -317,7 +317,7 @@ class UserController extends AbstractController
             $this->validateParameter(
                 $pUsername,
                 [
-                new Assert\NotNull,
+                    new Assert\NotNull,
                 ],
             );
         } catch (ParameterValidationException $e) {
@@ -393,7 +393,7 @@ class UserController extends AbstractController
             $this->validateParameter(
                 $pUsername,
                 [
-                new Assert\NotNull,
+                    new Assert\NotNull,
                 ],
             );
         } catch (ParameterValidationException $e) {
@@ -469,7 +469,7 @@ class UserController extends AbstractController
             $this->validateParameter(
                 $pUsername,
                 [
-                new Assert\NotNull,
+                    new Assert\NotNull,
                 ],
             );
         } catch (ParameterValidationException $e) {

@@ -14,6 +14,18 @@ services:
     {%~ endif %}
 {% endfor %}
 
+    ### Format validators ###
+
+{% for formatValidator in services.formatValidators %}
+    {{ formatValidator.namespace }}\{{ formatValidator.className }}:
+        class: {{ formatValidator.namespace }}\{{ formatValidator.className }}
+        public: true
+        tags: ['validator.constraint_validator']
+    {%~ if not loop.last %}
+
+    {%~ endif %}
+{% endfor %}
+
     ### Serializer ###
 
     {{ services.serviceNamespace }}.json_encoder:

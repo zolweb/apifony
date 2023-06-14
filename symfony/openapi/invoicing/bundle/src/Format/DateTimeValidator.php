@@ -7,9 +7,11 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class DateTimeValidator extends ConstraintValidator
 {
-    public function __construct(
-        private readonly DateTimeDefinition $formatDefinition,
-    ) {
+    private DateTimeDefinition $formatDefinition;
+
+    public function setFormatDefinition(DateTimeDefinition $formatDefinition): void
+    {
+        $this->formatDefinition = $formatDefinition;
     }
 
     public function validate(mixed $value, Constraint $constraint): void

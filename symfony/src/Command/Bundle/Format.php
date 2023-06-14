@@ -31,6 +31,11 @@ class Format
         return $this->constraint;
     }
 
+    public function getValidator(): FormatValidator
+    {
+        return $this->validator;
+    }
+
     /**
      * @return array<File>
      */

@@ -157,8 +157,8 @@ class StoreController extends AbstractController
             $this->validateParameter(
                 $pOrderId,
                 [
-                new Assert\NotNull,
-                new AssertInt64,
+                    new Assert\NotNull,
+                    new AssertInt64,
                 ],
             );
         } catch (ParameterValidationException $e) {
@@ -234,8 +234,8 @@ class StoreController extends AbstractController
             $this->validateParameter(
                 $pOrderId,
                 [
-                new Assert\NotNull,
-                new AssertInt64,
+                    new Assert\NotNull,
+                    new AssertInt64,
                 ],
             );
         } catch (ParameterValidationException $e) {

@@ -1,0 +1,32 @@
+#!/usr/bin/env php
+<?php
+
+error_reporting(-1);
+ini_set('display_errors', 1);
+
+use App\Command\Bundle\Exception as BundleException;
+use App\Command\GenService;
+use App\Command\OpenApi\Exception as OpenApiException;
+use Symfony\Component\Yaml\Yaml;
+
+require __DIR__.'/../vendor/autoload.php';
+
+function main(): int
+{
+    $spec = Yaml::parseFile(__DIR__.'/../openapi/invoicing/openapi.yaml');
+
+    try {
+        (new GenService())->generate(
+            $spec,
+            'InvoicingOpenApiServer',
+            'App\\Zol\\Invoicing\\Presentation\\Api\\Bundle',
+            'zol/invoicing-api',
+        );
+    } catch (BundleException|OpenApiException $e) {
+        throw new RuntimeException($e->getMessage(), 0, $e);
+    }
+
+    return 0;
+}
+
+return main();

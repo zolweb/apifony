@@ -78,7 +78,7 @@ class Constraint
                             match (true) {
                                 is_string($this->parameters[$name]) =>
                                     sprintf(
-                                        '\'%s\'',
+                                        $this->name === 'Assert\Regex' && $name === 'pattern' ? '\'/%s/\'' : '\'%s\'',
                                         str_replace('\'', '\\\'', $this->parameters[$name]),
                                     ),
                                 is_int($this->parameters[$name]) || is_float($this->parameters[$name]) =>

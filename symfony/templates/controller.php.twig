@@ -41,7 +41,7 @@ class {{ controller.className }} extends AbstractController
                 ${{ param.variableName }},
                 [
         {%~ for constraint in param.constraints %}
-                    {{~ constraint.instantiation(4) }},
+                    {{~ constraint.instantiation(5) }},
         {%~ endfor %}
                 ],
             );

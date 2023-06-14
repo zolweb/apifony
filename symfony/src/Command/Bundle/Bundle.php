@@ -26,11 +26,11 @@ class Bundle implements File
         return new self(
             u($rawName)->camel()->title(),
             $namespace,
-            self::buildFormats($namespace, $openApi),
+            $formats = self::buildFormats($namespace, $openApi),
             self::buildModels($namespace, $openApi->components),
             $api = Api::build($namespace, $openApi),
             RoutesConfig::build($namespace, $api),
-            ServicesConfig::build($namespace, $api),
+            ServicesConfig::build($namespace, $api, $formats),
             new ComposerJson($packageName, $namespace),
         );
     }
@@ -264,6 +264,14 @@ class Bundle implements File
     public function getAggregates(): array
     {
         return $this->api->getAggregates();
+    }
+
+    /**
+     * @return array<string, Format>
+     */
+    public function getFormats(): array
+    {
+        return $this->formats;
     }
 
     public function getFolder(): string

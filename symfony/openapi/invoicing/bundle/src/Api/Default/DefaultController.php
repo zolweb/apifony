@@ -52,7 +52,7 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $pClientId,
                 [
-                new Assert\NotNull,
+                    new Assert\NotNull,
                 ],
             );
         } catch (ParameterValidationException $e) {
@@ -64,9 +64,9 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $pParam3,
                 [
-                new Assert\NotNull,
-                new Assert\DivisibleBy(value: 1),
-                new Assert\LessThanOrEqual(value: 2),
+                    new Assert\NotNull,
+                    new Assert\DivisibleBy(value: 1),
+                    new Assert\LessThanOrEqual(value: 2),
                 ],
             );
         } catch (ParameterValidationException $e) {
@@ -78,7 +78,7 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $pParam4,
                 [
-                new Assert\NotNull,
+                    new Assert\NotNull,
                 ],
             );
         } catch (ParameterValidationException $e) {
@@ -90,7 +90,7 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $pParam5,
                 [
-                new Assert\NotNull,
+                    new Assert\NotNull,
                 ],
             );
         } catch (ParameterValidationException $e) {
@@ -102,12 +102,12 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $pParam1,
                 [
-                new Assert\NotNull,
-                new AssertFormat,
-                new Assert\Choice(choices: [
-                    'item',
-                    'item2',
-                ]),
+                    new Assert\NotNull,
+                    new AssertFormat,
+                    new Assert\Choice(choices: [
+                        'item',
+                        'item2',
+                    ]),
                 ],
             );
         } catch (ParameterValidationException $e) {
@@ -119,15 +119,15 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $pParam2,
                 [
-                new Assert\NotNull,
-                new AssertFormat,
-                new Assert\Regex(pattern: 'item'),
-                new Assert\Length(min: 1),
-                new Assert\Length(max: 10),
-                new Assert\Choice(choices: [
-                    'item',
-                    'item1',
-                ]),
+                    new Assert\NotNull,
+                    new AssertFormat,
+                    new Assert\Regex(pattern: '/item/'),
+                    new Assert\Length(min: 1),
+                    new Assert\Length(max: 10),
+                    new Assert\Choice(choices: [
+                        'item',
+                        'item1',
+                    ]),
                 ],
             );
         } catch (ParameterValidationException $e) {
@@ -282,7 +282,7 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $pClientId,
                 [
-                new Assert\NotNull,
+                    new Assert\NotNull,
                 ],
             );
         } catch (ParameterValidationException $e) {
@@ -294,9 +294,9 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $pParam3,
                 [
-                new Assert\NotNull,
-                new Assert\DivisibleBy(value: 1),
-                new Assert\LessThanOrEqual(value: 2),
+                    new Assert\NotNull,
+                    new Assert\DivisibleBy(value: 1),
+                    new Assert\LessThanOrEqual(value: 2),
                 ],
             );
         } catch (ParameterValidationException $e) {
@@ -308,7 +308,7 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $pParam4,
                 [
-                new Assert\NotNull,
+                    new Assert\NotNull,
                 ],
             );
         } catch (ParameterValidationException $e) {
@@ -320,7 +320,7 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $pParam5,
                 [
-                new Assert\NotNull,
+                    new Assert\NotNull,
                 ],
             );
         } catch (ParameterValidationException $e) {
@@ -332,12 +332,12 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $pParam1,
                 [
-                new Assert\NotNull,
-                new AssertFormat,
-                new Assert\Choice(choices: [
-                    'item',
-                    'item2',
-                ]),
+                    new Assert\NotNull,
+                    new AssertFormat,
+                    new Assert\Choice(choices: [
+                        'item',
+                        'item2',
+                    ]),
                 ],
             );
         } catch (ParameterValidationException $e) {
@@ -349,15 +349,15 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $pParam2,
                 [
-                new Assert\NotNull,
-                new AssertFormat,
-                new Assert\Regex(pattern: 'item'),
-                new Assert\Length(min: 1),
-                new Assert\Length(max: 10),
-                new Assert\Choice(choices: [
-                    'item',
-                    'item1',
-                ]),
+                    new Assert\NotNull,
+                    new AssertFormat,
+                    new Assert\Regex(pattern: '/item/'),
+                    new Assert\Length(min: 1),
+                    new Assert\Length(max: 10),
+                    new Assert\Choice(choices: [
+                        'item',
+                        'item1',
+                    ]),
                 ],
             );
         } catch (ParameterValidationException $e) {
@@ -441,16 +441,16 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $pP1,
                 [
-                new Assert\NotNull,
-                new AssertF1,
-                new Assert\Regex(pattern: '[a-z]{3}'),
-                new Assert\Length(min: 3),
-                new Assert\Length(max: 3),
-                new Assert\Choice(choices: [
-                    'abc',
-                    'def',
-                    'ghi',
-                ]),
+                    new Assert\NotNull,
+                    new AssertF1,
+                    new Assert\Regex(pattern: '/[a-z]{3}/'),
+                    new Assert\Length(min: 3),
+                    new Assert\Length(max: 3),
+                    new Assert\Choice(choices: [
+                        'abc',
+                        'def',
+                        'ghi',
+                    ]),
                 ],
             );
         } catch (ParameterValidationException $e) {
@@ -462,16 +462,16 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $pP2,
                 [
-                new Assert\NotNull,
-                new AssertF2,
-                new Assert\DivisibleBy(value: 1),
-                new Assert\GreaterThanOrEqual(value: 1),
-                new Assert\LessThan(value: 4),
-                new Assert\Choice(choices: [
-                    1,
-                    2,
-                    3,
-                ]),
+                    new Assert\NotNull,
+                    new AssertF2,
+                    new Assert\DivisibleBy(value: 1),
+                    new Assert\GreaterThanOrEqual(value: 1),
+                    new Assert\LessThan(value: 4),
+                    new Assert\Choice(choices: [
+                        1,
+                        2,
+                        3,
+                    ]),
                 ],
             );
         } catch (ParameterValidationException $e) {
@@ -483,17 +483,17 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $pP3,
                 [
-                new Assert\NotNull,
-                new AssertF3,
-                new Assert\DivisibleBy(value: 0.1),
-                new Assert\GreaterThanOrEqual(value: 0),
-                new Assert\LessThanOrEqual(value: 1),
-                new Assert\GreaterThan(value: -1),
-                new Assert\Choice(choices: [
-                    0.2,
-                    0.3,
-                    0.1,
-                ]),
+                    new Assert\NotNull,
+                    new AssertF3,
+                    new Assert\DivisibleBy(value: 0.1),
+                    new Assert\GreaterThanOrEqual(value: 0),
+                    new Assert\LessThanOrEqual(value: 1),
+                    new Assert\GreaterThan(value: -1),
+                    new Assert\Choice(choices: [
+                        0.2,
+                        0.3,
+                        0.1,
+                    ]),
                 ],
             );
         } catch (ParameterValidationException $e) {
@@ -505,11 +505,11 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $pP4,
                 [
-                new Assert\NotNull,
-                new AssertF4,
-                new Assert\Choice(choices: [
-                    true,
-                ]),
+                    new Assert\NotNull,
+                    new AssertF4,
+                    new Assert\Choice(choices: [
+                        true,
+                    ]),
                 ],
             );
         } catch (ParameterValidationException $e) {
@@ -523,7 +523,7 @@ class DefaultController extends AbstractController
                 [
                 new Assert\NotNull,
                 new AssertF5,
-                new Assert\Regex(pattern: '[a-z]{3}'),
+                new Assert\Regex(pattern: '/[a-z]{3}/'),
                 new Assert\Length(min: 3),
                 new Assert\Length(max: 3),
                 new Assert\Choice(choices: [
@@ -609,7 +609,7 @@ class DefaultController extends AbstractController
                 [
                 new Assert\NotNull,
                 new AssertF9,
-                new Assert\Regex(pattern: '[a-z]{3}'),
+                new Assert\Regex(pattern: '/[a-z]{3}/'),
                 new Assert\Length(min: 3),
                 new Assert\Length(max: 3),
                 new Assert\Choice(choices: [
@@ -693,7 +693,7 @@ class DefaultController extends AbstractController
                 [
                 new Assert\NotNull,
                 new AssertF13,
-                new Assert\Regex(pattern: '[a-z]{3}'),
+                new Assert\Regex(pattern: '/[a-z]{3}/'),
                 new Assert\Length(min: 3),
                 new Assert\Length(max: 3),
                 new Assert\Choice(choices: [

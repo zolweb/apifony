@@ -34,6 +34,24 @@ class {{ bundle.className }} extends AbstractBundle
                             }
                         }
                     }
+
+                    foreach ($container->findTaggedServiceIds('{{ bundle.serviceName }}.format_definition') as $id => $tags) {
+                        foreach ($tags as $tag) {
+                            switch ($tag['format']) {
+{% for formatName, format in bundle.formats %}
+                                case '{{ formatName }}':
+                                    $container
+                                        ->findDefinition('{{ format.validator.namespace }}\{{ format.validator.className }}')
+                                        ->addMethodCall('setFormatDefinition', [new Reference($id)]);
+
+                                break;
+    {%~ if not loop.last %}
+
+    {%~ endif %}
+{% endfor %}
+                            }
+                        }
+                    }
                 }
             }
         );

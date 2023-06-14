@@ -7,9 +7,11 @@ use Symfony\Component\Validator\ConstraintValidator;
 
 class F19Validator extends ConstraintValidator
 {
-    public function __construct(
-        private readonly F19Definition $formatDefinition,
-    ) {
+    private F19Definition $formatDefinition;
+
+    public function setFormatDefinition(F19Definition $formatDefinition): void
+    {
+        $this->formatDefinition = $formatDefinition;
     }
 
     public function validate(mixed $value, Constraint $constraint): void
