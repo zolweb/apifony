@@ -43,6 +43,7 @@ class Controller implements File
     /**
      * @param array<Action> $actions
      * @param array<string> $usedFormatConstraintNames
+     * @param array<string> $usedModelNames
      */
     private function __construct(
         public readonly Handler $handler,
