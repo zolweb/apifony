@@ -15,10 +15,6 @@ class Test
      * @param array<Test> $a7
      */
     public function __construct(
-        #[Assert\Valid]
-        #[Assert\NotNull]
-        public readonly Test $a5,
-
         #[Assert\NotNull]
         #[Assert\Count(min: 1)]
         #[Assert\Count(max: 3)]

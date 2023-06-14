@@ -2,7 +2,7 @@
 
 namespace App\Validator;
 
-class F8Definition implements \App\Zol\Invoicing\Presentation\Api\Bundle\Format\F8Definition
+class F7Definition implements \App\Zol\Invoicing\Presentation\Api\Bundle\Format\F7Definition
 {
     public function validate(mixed $value): array
     {

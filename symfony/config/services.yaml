@@ -53,10 +53,10 @@ services:
         tags:
             - { name: "invoicing_open_api_server.format_definition", format: "f6" }
 
-    App\Validator\F8Definition:
-        class: App\Validator\F8Definition
+    App\Validator\F7Definition:
+        class: App\Validator\F7Definition
         tags:
-            - { name: "invoicing_open_api_server.format_definition", format: "f8" }
+            - { name: "invoicing_open_api_server.format_definition", format: "f7" }
 
     App\Validator\F9Definition:
         class: App\Validator\F9Definition

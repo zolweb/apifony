@@ -1204,10 +1204,6 @@ components:
           x-stoplight:
             id: qy8f1nwi7zhhf
           default: true
-        a5:
-          $ref: '#/components/schemas/Test'
-          x-stoplight:
-            id: 96rzgo1jyv47p
         a6:
           type: array
           x-stoplight:
