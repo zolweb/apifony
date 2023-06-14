@@ -3,7 +3,6 @@ parameters:
     paths:
         - openapi/invoicing/bundle/src
         - src/Command
-        - templates
     exceptions:
         check:
             missingCheckedExceptionInThrows: true
