@@ -15,6 +15,9 @@ use {{ controller.bundleNamespace }}\Api\AbstractController;
 {% for constraintName in controller.usedFormatConstraintNames %}
 use {{ controller.bundleNamespace }}\Format\{{ constraintName }} as Assert{{ constraintName }};
 {% endfor %}
+{% for modelName in controller.usedModelNames %}
+use {{ controller.bundleNamespace }}\Model\{{ modelName }};
+{% endfor %}
 
 class {{ controller.className }} extends AbstractController
 {

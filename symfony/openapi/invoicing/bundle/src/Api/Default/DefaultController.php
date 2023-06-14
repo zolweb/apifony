@@ -26,6 +26,7 @@ use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F12 as AssertF12;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F14 as AssertF14;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F15 as AssertF15;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F16 as AssertF16;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Model\Test;
 
 class DefaultController extends AbstractController
 {

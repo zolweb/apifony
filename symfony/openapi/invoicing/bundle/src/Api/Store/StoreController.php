@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Api\AbstractController;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Format\Int64 as AssertInt64;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Model\Order;
 
 class StoreController extends AbstractController
 {

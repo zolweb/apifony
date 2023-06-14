@@ -13,6 +13,7 @@ class Controller implements File
         array $actions,
         Handler $handler,
     ): self {
+        $usedModelNames = [];
         $usedFormatConstraintNames = [];
         foreach ($actions as $action) {
             foreach ($action->getParameters() as $parameter) {
@@ -20,6 +21,11 @@ class Controller implements File
                     foreach ($constraint->getFormatConstraintClassNames() as $constraintName) {
                         $usedFormatConstraintNames[$constraintName] = true;
                     }
+                }
+            }
+            foreach ($action->getRequestBodies() as $requestBody) {
+                if ($requestBody->getUsedModelName() !== null) {
+                    $usedModelNames[$requestBody->getUsedModelName()] = true;
                 }
             }
         }
@@ -30,6 +36,7 @@ class Controller implements File
             $bundleNamespace,
             $aggregateName,
             array_keys($usedFormatConstraintNames),
+            array_keys($usedModelNames),
         );
     }
 
@@ -43,6 +50,7 @@ class Controller implements File
         private readonly string $bundleNamespace,
         private readonly string $aggregateName,
         private readonly array $usedFormatConstraintNames,
+        private readonly array $usedModelNames,
     ) {
     }
 
@@ -65,6 +73,14 @@ class Controller implements File
     public function getUsedFormatConstraintNames(): array
     {
         return $this->usedFormatConstraintNames;
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function getUsedModelNames(): array
+    {
+        return $this->usedModelNames;
     }
 
     public function getNamespace(): string

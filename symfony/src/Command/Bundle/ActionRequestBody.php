@@ -29,6 +29,7 @@ class ActionRequestBody
 
         $payloadModels = [];
         $payloadType = null;
+        $usedModelName = null;
         if ($mediaType !== null) {
             if ($mediaType->schema === null) {
                 throw new Exception('Mediatypes without schema are not supported.');
@@ -39,7 +40,7 @@ class ActionRequestBody
                 if ($components === null || !isset($components->schemas[$schema->getName()])) {
                     throw new Exception('Reference not found in schemas components.');
                 }
-                $schema = $components->schemas[$className = $schema->getName()];
+                $schema = $components->schemas[$className = $usedModelName = $schema->getName()];
                 $hasModel = false;
             }
             $payloadType = TypeFactory::build($className, $schema, $components);
@@ -77,6 +78,7 @@ class ActionRequestBody
             $mimeType,
             $payloadType,
             $payloadModels,
+            $usedModelName,
         );
     }
 
@@ -87,7 +89,13 @@ class ActionRequestBody
         private readonly ?string $mimeType,
         private readonly ?Type $payloadType,
         private readonly array $payloadModels,
+        private readonly ?string $usedModelName,
     ) {
+    }
+
+    public function getUsedModelName(): ?string
+    {
+        return $this->usedModelName;
     }
 
     public function getMimeType(): ?string
