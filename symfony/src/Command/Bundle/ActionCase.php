@@ -112,7 +112,7 @@ class ActionCase
 
     public function getRequestBodyPayloadParameterPhpType(): ?string
     {
-        return $this->requestBodyPayloadType?->getPhpDocParameterAnnotationType();
+        return $this->requestBodyPayloadType?->getMethodParameterType();
     }
 
     public function getResponseContentType(): ?string

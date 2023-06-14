@@ -22,12 +22,12 @@ interface UserHandler
         CreateUsersWithListInput200ApplicationJsonResponse;
 
     public function CreateUsersWithListInputFromUserArrayPayloadToContent(
-        array<User> $requestBodyPayload,
+        array $requestBodyPayload,
     ):
         CreateUsersWithListInput100EmptyResponse;
 
     public function CreateUsersWithListInputFromUserArrayPayloadToApplicationJsonContent(
-        array<User> $requestBodyPayload,
+        array $requestBodyPayload,
     ):
         CreateUsersWithListInput200ApplicationJsonResponse;
 
