@@ -96,7 +96,7 @@ class StoreController extends AbstractController
                 break;
             case 'application/json':
                 try {
-                    $requestBodyPayload = $this->getObjectJsonRequestBody($request, PlaceOrderApplicationJsonRequestBodyPayload::class);
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request, Order::class);
                     $this->validateRequestBody(
                         $requestBodyPayload,
                         [
@@ -157,16 +157,16 @@ class StoreController extends AbstractController
                 }
 
                 break;
-            case $requestBodyPayload instanceOf PlaceOrderApplicationJsonRequestBodyPayload:
+            case $requestBodyPayload instanceOf Order:
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->PlaceOrderFromPlaceOrderApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
+                        $response = $this->handler->PlaceOrderFromOrderPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         );
 
                         break;
                     case null:
-                        $response = $this->handler->PlaceOrderFromPlaceOrderApplicationJsonRequestBodyPayloadPayloadToContent(
+                        $response = $this->handler->PlaceOrderFromOrderPayloadToContent(
                             $requestBodyPayload,
                         );
 

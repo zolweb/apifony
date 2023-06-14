@@ -87,7 +87,7 @@ interface DefaultHandler
     ):
         PostTest200ApplicationXmlResponse;
 
-    public function PostTestFromPostTestApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
+    public function PostTestFromTestPayloadToApplicationJsonContent(
         string $pP1,
         int $pP2,
         float $pP3,
@@ -104,12 +104,12 @@ interface DefaultHandler
         int $cC2,
         float $cC3,
         bool $cC4,
-        PostTestApplicationJsonRequestBodyPayload $requestBodyPayload,
+        Test $requestBodyPayload,
     ):
         PostTest200ApplicationJsonResponse |
         PostTest201ApplicationJsonResponse;
 
-    public function PostTestFromPostTestApplicationJsonRequestBodyPayloadPayloadToApplicationXmlContent(
+    public function PostTestFromTestPayloadToApplicationXmlContent(
         string $pP1,
         int $pP2,
         float $pP3,
@@ -126,7 +126,7 @@ interface DefaultHandler
         int $cC2,
         float $cC3,
         bool $cC4,
-        PostTestApplicationJsonRequestBodyPayload $requestBodyPayload,
+        Test $requestBodyPayload,
     ):
         PostTest200ApplicationXmlResponse;
 }

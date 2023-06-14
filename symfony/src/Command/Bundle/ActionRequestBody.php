@@ -39,7 +39,7 @@ class ActionRequestBody
                 if ($components === null || !isset($components->schemas[$schema->getName()])) {
                     throw new Exception('Reference not found in schemas components.');
                 }
-                $schema = $components->schemas[$schema->getName()];
+                $schema = $components->schemas[$className = $schema->getName()];
                 $hasModel = false;
             }
             $payloadType = TypeFactory::build($className, $schema, $components);

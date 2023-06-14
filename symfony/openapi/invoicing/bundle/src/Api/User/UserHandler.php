@@ -8,8 +8,8 @@ interface UserHandler
     ):
         CreateUser201ApplicationJsonResponse;
 
-    public function CreateUserFromCreateUserApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
-        CreateUserApplicationJsonRequestBodyPayload $requestBodyPayload,
+    public function CreateUserFromUserPayloadToApplicationJsonContent(
+        User $requestBodyPayload,
     ):
         CreateUser201ApplicationJsonResponse;
 
@@ -69,9 +69,9 @@ interface UserHandler
     ):
         UpdateUser201EmptyResponse;
 
-    public function UpdateUserFromUpdateUserApplicationJsonRequestBodyPayloadPayloadToContent(
+    public function UpdateUserFromUserPayloadToContent(
         string $pUsername,
-        UpdateUserApplicationJsonRequestBodyPayload $requestBodyPayload,
+        User $requestBodyPayload,
     ):
         UpdateUser201EmptyResponse;
 

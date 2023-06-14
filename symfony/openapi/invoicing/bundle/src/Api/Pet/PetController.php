@@ -121,7 +121,7 @@ class PetController extends AbstractController
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'application/json':
                 try {
-                    $requestBodyPayload = $this->getObjectJsonRequestBody($request, AddPetApplicationJsonRequestBodyPayload::class);
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request, Pet::class);
                     $this->validateRequestBody(
                         $requestBodyPayload,
                         [
@@ -159,16 +159,16 @@ class PetController extends AbstractController
 
         $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
-            case $requestBodyPayload instanceOf AddPetApplicationJsonRequestBodyPayload:
+            case $requestBodyPayload instanceOf Pet:
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->AddPetFromAddPetApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
+                        $response = $this->handler->AddPetFromPetPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         );
 
                         break;
                     case null:
-                        $response = $this->handler->AddPetFromAddPetApplicationJsonRequestBodyPayloadPayloadToContent(
+                        $response = $this->handler->AddPetFromPetPayloadToContent(
                             $requestBodyPayload,
                         );
 

@@ -16,13 +16,13 @@ interface StoreHandler
     ):
         PlaceOrder405EmptyResponse;
 
-    public function PlaceOrderFromPlaceOrderApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
-        PlaceOrderApplicationJsonRequestBodyPayload $requestBodyPayload,
+    public function PlaceOrderFromOrderPayloadToApplicationJsonContent(
+        Order $requestBodyPayload,
     ):
         PlaceOrder200ApplicationJsonResponse;
 
-    public function PlaceOrderFromPlaceOrderApplicationJsonRequestBodyPayloadPayloadToContent(
-        PlaceOrderApplicationJsonRequestBodyPayload $requestBodyPayload,
+    public function PlaceOrderFromOrderPayloadToContent(
+        Order $requestBodyPayload,
     ):
         PlaceOrder405EmptyResponse;
 

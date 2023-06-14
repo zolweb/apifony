@@ -21,13 +21,13 @@ interface PetHandler
         UpdatePet404EmptyResponse |
         UpdatePet405EmptyResponse;
 
-    public function AddPetFromAddPetApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
-        AddPetApplicationJsonRequestBodyPayload $requestBodyPayload,
+    public function AddPetFromPetPayloadToApplicationJsonContent(
+        Pet $requestBodyPayload,
     ):
         AddPet200ApplicationJsonResponse;
 
-    public function AddPetFromAddPetApplicationJsonRequestBodyPayloadPayloadToContent(
-        AddPetApplicationJsonRequestBodyPayload $requestBodyPayload,
+    public function AddPetFromPetPayloadToContent(
+        Pet $requestBodyPayload,
     ):
         AddPet405EmptyResponse;
 

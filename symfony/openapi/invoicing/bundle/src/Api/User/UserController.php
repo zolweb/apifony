@@ -33,7 +33,7 @@ class UserController extends AbstractController
                 break;
             case 'application/json':
                 try {
-                    $requestBodyPayload = $this->getObjectJsonRequestBody($request, CreateUserApplicationJsonRequestBodyPayload::class);
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request, User::class);
                     $this->validateRequestBody(
                         $requestBodyPayload,
                         [
@@ -89,10 +89,10 @@ class UserController extends AbstractController
                 }
 
                 break;
-            case $requestBodyPayload instanceOf CreateUserApplicationJsonRequestBodyPayload:
+            case $requestBodyPayload instanceOf User:
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->CreateUserFromCreateUserApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
+                        $response = $this->handler->CreateUserFromUserPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         );
 
@@ -519,7 +519,7 @@ class UserController extends AbstractController
                 break;
             case 'application/json':
                 try {
-                    $requestBodyPayload = $this->getObjectJsonRequestBody($request, UpdateUserApplicationJsonRequestBodyPayload::class);
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request, User::class);
                     $this->validateRequestBody(
                         $requestBodyPayload,
                         [
@@ -576,10 +576,10 @@ class UserController extends AbstractController
                 }
 
                 break;
-            case $requestBodyPayload instanceOf UpdateUserApplicationJsonRequestBodyPayload:
+            case $requestBodyPayload instanceOf User:
                 switch($responsePayloadContentType) {
                     case null:
-                        $response = $this->handler->UpdateUserFromUpdateUserApplicationJsonRequestBodyPayloadPayloadToContent(
+                        $response = $this->handler->UpdateUserFromUserPayloadToContent(
                             $pUsername,
                             $requestBodyPayload,
                         );

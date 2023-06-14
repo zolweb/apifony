@@ -822,7 +822,7 @@ class DefaultController extends AbstractController
                 break;
             case 'application/json':
                 try {
-                    $requestBodyPayload = $this->getObjectJsonRequestBody($request, PostTestApplicationJsonRequestBodyPayload::class);
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request, Test::class);
                     $this->validateRequestBody(
                         $requestBodyPayload,
                         [
@@ -932,10 +932,10 @@ class DefaultController extends AbstractController
                 }
 
                 break;
-            case $requestBodyPayload instanceOf PostTestApplicationJsonRequestBodyPayload:
+            case $requestBodyPayload instanceOf Test:
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->PostTestFromPostTestApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
+                        $response = $this->handler->PostTestFromTestPayloadToApplicationJsonContent(
                             $pP1,
                             $pP2,
                             $pP3,
@@ -957,7 +957,7 @@ class DefaultController extends AbstractController
 
                         break;
                     case 'application/xml':
-                        $response = $this->handler->PostTestFromPostTestApplicationJsonRequestBodyPayloadPayloadToApplicationXmlContent(
+                        $response = $this->handler->PostTestFromTestPayloadToApplicationXmlContent(
                             $pP1,
                             $pP2,
                             $pP3,
