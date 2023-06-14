@@ -143,4 +143,9 @@ class ArrayType implements Type
 
         return $constraints;
     }
+
+    public function getBuiltInPhpType(): string
+    {
+        return 'array';
+    }
 }

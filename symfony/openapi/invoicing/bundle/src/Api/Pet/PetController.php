@@ -30,11 +30,17 @@ class PetController extends AbstractController
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'application/json':
                 try {
-                    $requestBodyPayload = $this->getJsonRequestBody($request, , );
-                    $this->validateRequestBody($requestBodyPayload);
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request);
+                    $this->validateRequestBody(
+                        $requestBodyPayload,
+                        [
+                            new Assert\Valid,
+                            new Assert\NotNull,
+                        ],
+                    );
                 } catch (DenormalizationException $e) {
                     $errors['requestBody'] = [$e->getMessage()];
-                } catch (ParameterValidationException $e) {
+                } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
 
@@ -115,11 +121,17 @@ class PetController extends AbstractController
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'application/json':
                 try {
-                    $requestBodyPayload = $this->getJsonRequestBody($request, , );
-                    $this->validateRequestBody($requestBodyPayload);
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request);
+                    $this->validateRequestBody(
+                        $requestBodyPayload,
+                        [
+                            new Assert\Valid,
+                            new Assert\NotNull,
+                        ],
+                    );
                 } catch (DenormalizationException $e) {
                     $errors['requestBody'] = [$e->getMessage()];
-                } catch (ParameterValidationException $e) {
+                } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
 
@@ -195,12 +207,12 @@ class PetController extends AbstractController
             $this->validateParameter(
                 $qStatus,
                 [
-                new Assert\NotNull,
-                new Assert\Choice(choices: [
-                    'available',
-                    'pending',
-                    'sold',
-                ]),
+                    new Assert\NotNull,
+                    new Assert\Choice(choices: [
+                        'available',
+                        'pending',
+                        'sold',
+                    ]),
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -291,7 +303,7 @@ class PetController extends AbstractController
             $this->validateParameter(
                 $qTags,
                 [
-                new Assert\NotNull,
+                    new Assert\NotNull,
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -481,7 +493,7 @@ class PetController extends AbstractController
             $this->validateParameter(
                 $qName,
                 [
-                new Assert\NotNull,
+                    new Assert\NotNull,
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -495,7 +507,7 @@ class PetController extends AbstractController
             $this->validateParameter(
                 $qStatus,
                 [
-                new Assert\NotNull,
+                    new Assert\NotNull,
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -595,7 +607,7 @@ class PetController extends AbstractController
             $this->validateParameter(
                 $hApi_key,
                 [
-                new Assert\NotNull,
+                    new Assert\NotNull,
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -693,7 +705,7 @@ class PetController extends AbstractController
             $this->validateParameter(
                 $qAdditionalMetadata,
                 [
-                new Assert\NotNull,
+                    new Assert\NotNull,
                 ],
             );
         } catch (DenormalizationException $e) {

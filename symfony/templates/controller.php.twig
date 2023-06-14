@@ -57,7 +57,7 @@ class {{ controller.className }} extends AbstractController
                 ${{ param.variableName }},
                 [
     {%~ for constraint in param.constraints %}
-                    {{~ constraint.instantiation(4) }},
+                    {{~ constraint.instantiation(5) }},
     {%~ endfor %}
                 ],
             );
@@ -76,11 +76,18 @@ class {{ controller.className }} extends AbstractController
                 $requestBodyPayload = null;
         {%~ elseif requestBody.mimeType is same as ('application/json') %}
                 try {
-                    $requestBodyPayload = $this->get{{ param.phpType|capitalize }}{{ param.nullable ? 'OrNull' : '' }}JsonRequestBody($request, {{ requestBody.required }}, {{ param.hasDefault ? ', ' ~ param.default : '' }});
-                    $this->validateRequestBody($requestBodyPayload);
+                    $requestBodyPayload = $this->get{{ requestBody.payloadBuiltInPhpType|capitalize }}{{ param.nullable ? 'OrNull' : '' }}JsonRequestBody($request{{ param.hasDefault ? ', ' ~ param.default : '' }});
+                    $this->validateRequestBody(
+                        $requestBodyPayload,
+                        [
+            {%~ for constraint in requestBody.constraints %}
+                            {{~ constraint.instantiation(7) }},
+            {%~ endfor %}
+                        ],
+                    );
                 } catch (DenormalizationException $e) {
                     $errors['requestBody'] = [$e->getMessage()];
-                } catch (ParameterValidationException $e) {
+                } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
         {%~ endif %}

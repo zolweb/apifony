@@ -33,11 +33,17 @@ class UserController extends AbstractController
                 break;
             case 'application/json':
                 try {
-                    $requestBodyPayload = $this->getJsonRequestBody($request, , );
-                    $this->validateRequestBody($requestBodyPayload);
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request);
+                    $this->validateRequestBody(
+                        $requestBodyPayload,
+                        [
+                            new Assert\Valid,
+                            new Assert\NotNull,
+                        ],
+                    );
                 } catch (DenormalizationException $e) {
                     $errors['requestBody'] = [$e->getMessage()];
-                } catch (ParameterValidationException $e) {
+                } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
 
@@ -125,11 +131,20 @@ class UserController extends AbstractController
                 break;
             case 'application/json':
                 try {
-                    $requestBodyPayload = $this->getJsonRequestBody($request, , );
-                    $this->validateRequestBody($requestBodyPayload);
+                    $requestBodyPayload = $this->getArrayJsonRequestBody($request);
+                    $this->validateRequestBody(
+                        $requestBodyPayload,
+                        [
+                            new Assert\NotNull,
+                            new Assert\All(constraints: [
+                                new Assert\Valid,
+                                new Assert\NotNull,
+                            ]),
+                        ],
+                    );
                 } catch (DenormalizationException $e) {
                     $errors['requestBody'] = [$e->getMessage()];
-                } catch (ParameterValidationException $e) {
+                } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
 
@@ -228,7 +243,7 @@ class UserController extends AbstractController
             $this->validateParameter(
                 $qUsername,
                 [
-                new Assert\NotNull,
+                    new Assert\NotNull,
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -242,7 +257,7 @@ class UserController extends AbstractController
             $this->validateParameter(
                 $qPassword,
                 [
-                new Assert\NotNull,
+                    new Assert\NotNull,
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -504,11 +519,17 @@ class UserController extends AbstractController
                 break;
             case 'application/json':
                 try {
-                    $requestBodyPayload = $this->getJsonRequestBody($request, , );
-                    $this->validateRequestBody($requestBodyPayload);
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request);
+                    $this->validateRequestBody(
+                        $requestBodyPayload,
+                        [
+                            new Assert\Valid,
+                            new Assert\NotNull,
+                        ],
+                    );
                 } catch (DenormalizationException $e) {
                     $errors['requestBody'] = [$e->getMessage()];
-                } catch (ParameterValidationException $e) {
+                } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
 

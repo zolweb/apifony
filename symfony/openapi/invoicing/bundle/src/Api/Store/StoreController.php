@@ -96,11 +96,17 @@ class StoreController extends AbstractController
                 break;
             case 'application/json':
                 try {
-                    $requestBodyPayload = $this->getJsonRequestBody($request, , );
-                    $this->validateRequestBody($requestBodyPayload);
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request);
+                    $this->validateRequestBody(
+                        $requestBodyPayload,
+                        [
+                            new Assert\Valid,
+                            new Assert\NotNull,
+                        ],
+                    );
                 } catch (DenormalizationException $e) {
                     $errors['requestBody'] = [$e->getMessage()];
-                } catch (ParameterValidationException $e) {
+                } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
 

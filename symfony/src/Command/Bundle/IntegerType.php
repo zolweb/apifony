@@ -110,4 +110,9 @@ class IntegerType implements Type
 
         return $constraints;
     }
+
+    public function getBuiltInPhpType(): string
+    {
+        return 'int';
+    }
 }

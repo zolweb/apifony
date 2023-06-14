@@ -139,7 +139,7 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $hAzef,
                 [
-                new Assert\NotNull,
+                    new Assert\NotNull,
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -153,7 +153,7 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $qAgrez,
                 [
-                new Assert\NotNull,
+                    new Assert\NotNull,
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -167,7 +167,7 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $cAzgrzeg,
                 [
-                new Assert\NotNull,
+                    new Assert\NotNull,
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -181,7 +181,7 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $hGegzer,
                 [
-                new Assert\NotNull,
+                    new Assert\NotNull,
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -197,11 +197,16 @@ class DefaultController extends AbstractController
                 break;
             case 'application/json':
                 try {
-                    $requestBodyPayload = $this->getJsonRequestBody($request, , );
-                    $this->validateRequestBody($requestBodyPayload);
+                    $requestBodyPayload = $this->getIntJsonRequestBody($request);
+                    $this->validateRequestBody(
+                        $requestBodyPayload,
+                        [
+                            new Assert\NotNull,
+                        ],
+                    );
                 } catch (DenormalizationException $e) {
                     $errors['requestBody'] = [$e->getMessage()];
-                } catch (ParameterValidationException $e) {
+                } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
 
@@ -593,16 +598,16 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $hH1,
                 [
-                new Assert\NotNull,
-                new AssertF5,
-                new Assert\Regex(pattern: '/[a-z]{3}/'),
-                new Assert\Length(min: 3),
-                new Assert\Length(max: 3),
-                new Assert\Choice(choices: [
-                    'abc',
-                    'def',
-                    'ghi',
-                ]),
+                    new Assert\NotNull,
+                    new AssertF5,
+                    new Assert\Regex(pattern: '/[a-z]{3}/'),
+                    new Assert\Length(min: 3),
+                    new Assert\Length(max: 3),
+                    new Assert\Choice(choices: [
+                        'abc',
+                        'def',
+                        'ghi',
+                    ]),
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -616,16 +621,16 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $hH2,
                 [
-                new Assert\NotNull,
-                new AssertF6,
-                new Assert\DivisibleBy(value: 1),
-                new Assert\GreaterThanOrEqual(value: 1),
-                new Assert\LessThanOrEqual(value: 3),
-                new Assert\Choice(choices: [
-                    1,
-                    2,
-                    3,
-                ]),
+                    new Assert\NotNull,
+                    new AssertF6,
+                    new Assert\DivisibleBy(value: 1),
+                    new Assert\GreaterThanOrEqual(value: 1),
+                    new Assert\LessThanOrEqual(value: 3),
+                    new Assert\Choice(choices: [
+                        1,
+                        2,
+                        3,
+                    ]),
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -639,16 +644,16 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $hH3,
                 [
-                new Assert\NotNull,
-                new AssertF7,
-                new Assert\DivisibleBy(value: 0.1),
-                new Assert\GreaterThanOrEqual(value: 0),
-                new Assert\LessThanOrEqual(value: 1),
-                new Assert\Choice(choices: [
-                    0.1,
-                    0.2,
-                    0.3,
-                ]),
+                    new Assert\NotNull,
+                    new AssertF7,
+                    new Assert\DivisibleBy(value: 0.1),
+                    new Assert\GreaterThanOrEqual(value: 0),
+                    new Assert\LessThanOrEqual(value: 1),
+                    new Assert\Choice(choices: [
+                        0.1,
+                        0.2,
+                        0.3,
+                    ]),
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -662,10 +667,10 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $hH4,
                 [
-                new Assert\NotNull,
-                new Assert\Choice(choices: [
-                    true,
-                ]),
+                    new Assert\NotNull,
+                    new Assert\Choice(choices: [
+                        true,
+                    ]),
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -679,16 +684,16 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $qQ1,
                 [
-                new Assert\NotNull,
-                new AssertF9,
-                new Assert\Regex(pattern: '/[a-z]{3}/'),
-                new Assert\Length(min: 3),
-                new Assert\Length(max: 3),
-                new Assert\Choice(choices: [
-                    'abc',
-                    'def',
-                    'ghi',
-                ]),
+                    new Assert\NotNull,
+                    new AssertF9,
+                    new Assert\Regex(pattern: '/[a-z]{3}/'),
+                    new Assert\Length(min: 3),
+                    new Assert\Length(max: 3),
+                    new Assert\Choice(choices: [
+                        'abc',
+                        'def',
+                        'ghi',
+                    ]),
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -702,16 +707,16 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $qQ2,
                 [
-                new Assert\NotNull,
-                new AssertF10,
-                new Assert\DivisibleBy(value: 1),
-                new Assert\GreaterThanOrEqual(value: 1),
-                new Assert\LessThanOrEqual(value: 3),
-                new Assert\Choice(choices: [
-                    1,
-                    2,
-                    3,
-                ]),
+                    new Assert\NotNull,
+                    new AssertF10,
+                    new Assert\DivisibleBy(value: 1),
+                    new Assert\GreaterThanOrEqual(value: 1),
+                    new Assert\LessThanOrEqual(value: 3),
+                    new Assert\Choice(choices: [
+                        1,
+                        2,
+                        3,
+                    ]),
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -725,16 +730,16 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $qQ3,
                 [
-                new Assert\NotNull,
-                new AssertF13,
-                new Assert\DivisibleBy(value: 0.1),
-                new Assert\GreaterThanOrEqual(value: 0),
-                new Assert\LessThanOrEqual(value: 1),
-                new Assert\Choice(choices: [
-                    0.1,
-                    0.2,
-                    0.3,
-                ]),
+                    new Assert\NotNull,
+                    new AssertF13,
+                    new Assert\DivisibleBy(value: 0.1),
+                    new Assert\GreaterThanOrEqual(value: 0),
+                    new Assert\LessThanOrEqual(value: 1),
+                    new Assert\Choice(choices: [
+                        0.1,
+                        0.2,
+                        0.3,
+                    ]),
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -748,8 +753,8 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $qQ4,
                 [
-                new Assert\NotNull,
-                new AssertF12,
+                    new Assert\NotNull,
+                    new AssertF12,
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -763,16 +768,16 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $cC1,
                 [
-                new Assert\NotNull,
-                new AssertF13,
-                new Assert\Regex(pattern: '/[a-z]{3}/'),
-                new Assert\Length(min: 3),
-                new Assert\Length(max: 3),
-                new Assert\Choice(choices: [
-                    'abc',
-                    'def',
-                    'ghi',
-                ]),
+                    new Assert\NotNull,
+                    new AssertF13,
+                    new Assert\Regex(pattern: '/[a-z]{3}/'),
+                    new Assert\Length(min: 3),
+                    new Assert\Length(max: 3),
+                    new Assert\Choice(choices: [
+                        'abc',
+                        'def',
+                        'ghi',
+                    ]),
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -786,16 +791,16 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $cC2,
                 [
-                new Assert\NotNull,
-                new AssertF14,
-                new Assert\DivisibleBy(value: 1),
-                new Assert\GreaterThanOrEqual(value: 1),
-                new Assert\LessThanOrEqual(value: 3),
-                new Assert\Choice(choices: [
-                    1,
-                    2,
-                    3,
-                ]),
+                    new Assert\NotNull,
+                    new AssertF14,
+                    new Assert\DivisibleBy(value: 1),
+                    new Assert\GreaterThanOrEqual(value: 1),
+                    new Assert\LessThanOrEqual(value: 3),
+                    new Assert\Choice(choices: [
+                        1,
+                        2,
+                        3,
+                    ]),
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -809,16 +814,16 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $cC3,
                 [
-                new Assert\NotNull,
-                new AssertF15,
-                new Assert\DivisibleBy(value: 0.1),
-                new Assert\GreaterThanOrEqual(value: 0),
-                new Assert\LessThanOrEqual(value: 1),
-                new Assert\Choice(choices: [
-                    0.1,
-                    0.2,
-                    0.3,
-                ]),
+                    new Assert\NotNull,
+                    new AssertF15,
+                    new Assert\DivisibleBy(value: 0.1),
+                    new Assert\GreaterThanOrEqual(value: 0),
+                    new Assert\LessThanOrEqual(value: 1),
+                    new Assert\Choice(choices: [
+                        0.1,
+                        0.2,
+                        0.3,
+                    ]),
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -832,8 +837,8 @@ class DefaultController extends AbstractController
             $this->validateParameter(
                 $cC4,
                 [
-                new Assert\NotNull,
-                new AssertF16,
+                    new Assert\NotNull,
+                    new AssertF16,
                 ],
             );
         } catch (DenormalizationException $e) {
@@ -849,11 +854,17 @@ class DefaultController extends AbstractController
                 break;
             case 'application/json':
                 try {
-                    $requestBodyPayload = $this->getJsonRequestBody($request, , );
-                    $this->validateRequestBody($requestBodyPayload);
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request);
+                    $this->validateRequestBody(
+                        $requestBodyPayload,
+                        [
+                            new Assert\Valid,
+                            new Assert\NotNull,
+                        ],
+                    );
                 } catch (DenormalizationException $e) {
                     $errors['requestBody'] = [$e->getMessage()];
-                } catch (ParameterValidationException $e) {
+                } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
 

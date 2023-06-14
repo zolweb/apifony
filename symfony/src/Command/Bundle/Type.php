@@ -28,4 +28,6 @@ interface Type
      * @return array<Constraint>
      */
     public function getConstraints(): array;
+
+    public function getBuiltInPhpType(): string;
 }

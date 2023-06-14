@@ -90,4 +90,9 @@ class BooleanType implements Type
 
         return $constraints;
     }
+
+    public function getBuiltInPhpType(): string
+    {
+        return 'bool';
+    }
 }

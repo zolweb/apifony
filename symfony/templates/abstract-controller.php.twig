@@ -96,16 +96,11 @@ abstract class AbstractController
      */
     public function get{{ type|capitalize }}{{ nullable ? 'OrNull' : '' }}JsonRequestBody(
         Request $request,
-        bool $required,
         ?{{ type }} $default = null,
     ): {{ nullable ? '?' : '' }}{{ type }} {
         $value = $request->getContent();
 
         if ($value === '') {
-            if ($required) {
-                throw new DenormalizationException('Request body is required.');
-            }
-
     {%~ if not nullable %}
             if ($default === null) {
                 throw new DenormalizationException('Request body must not be null.');
@@ -159,16 +154,11 @@ abstract class AbstractController
     public function getObject{{ nullable ? 'OrNull' : '' }}JsonRequestBody(
         Request $request,
         string $class,
-        bool $required,
         ?object $default = null,
     ): {{ nullable ? '?' : '' }}object {
         $value = $request->getContent();
 
         if ($value === '') {
-            if ($required) {
-                throw new DenormalizationException('Request body is required.');
-            }
-
     {%~ if not nullable %}
             if ($default === null) {
                 throw new DenormalizationException('Request body must not be null.');

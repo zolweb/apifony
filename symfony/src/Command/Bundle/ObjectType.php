@@ -84,4 +84,9 @@ class ObjectType implements Type
 
         return $constraints;
     }
+
+    public function getBuiltInPhpType(): string
+    {
+        return 'object';
+    }
 }

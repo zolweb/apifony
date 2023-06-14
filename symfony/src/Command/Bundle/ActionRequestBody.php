@@ -96,14 +96,32 @@ class ActionRequestBody
         return $this->payloadType;
     }
 
+    /**
+     * @return array<Constraint>
+     */
+    public function getConstraints(): array
+    {
+        return $this->payloadType?->getConstraints() ?? [];
+    }
+
     public function getPayloadNormalizedType(): string
     {
         return $this->payloadType?->getNormalizedType() ?? 'Empty';
     }
 
+    public function getPayloadOpenApiType(): ?string
+    {
+        return $this->payloadType?->getMethodParameterType();
+    }
+
     public function getPayloadPhpType(): ?string
     {
-        return $this->payloadType?->getPhpDocParameterAnnotationType();
+        return $this->payloadType?->getMethodParameterType();
+    }
+
+    public function getPayloadBuiltInPhpType(): ?string
+    {
+        return $this->payloadType?->getBuiltInPhpType();
     }
 
     public function initializationFromRequest(): ?string

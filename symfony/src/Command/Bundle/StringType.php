@@ -117,4 +117,9 @@ class StringType implements Type
 
         return $constraints;
     }
+
+    public function getBuiltInPhpType(): string
+    {
+        return 'string';
+    }
 }

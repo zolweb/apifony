@@ -344,16 +344,11 @@ abstract class AbstractController
      */
     public function getStringJsonRequestBody(
         Request $request,
-        bool $required,
         ?string $default = null,
     ): string {
         $value = $request->getContent();
 
         if ($value === '') {
-            if ($required) {
-                throw new DenormalizationException('Request body is required.');
-            }
-
             if ($default === null) {
                 throw new DenormalizationException('Request body must not be null.');
             }
@@ -375,16 +370,11 @@ abstract class AbstractController
      */
     public function getStringOrNullJsonRequestBody(
         Request $request,
-        bool $required,
         ?string $default = null,
     ): ?string {
         $value = $request->getContent();
 
         if ($value === '') {
-            if ($required) {
-                throw new DenormalizationException('Request body is required.');
-            }
-
             return $default;
         }
 
@@ -402,16 +392,11 @@ abstract class AbstractController
      */
     public function getIntJsonRequestBody(
         Request $request,
-        bool $required,
         ?int $default = null,
     ): int {
         $value = $request->getContent();
 
         if ($value === '') {
-            if ($required) {
-                throw new DenormalizationException('Request body is required.');
-            }
-
             if ($default === null) {
                 throw new DenormalizationException('Request body must not be null.');
             }
@@ -433,16 +418,11 @@ abstract class AbstractController
      */
     public function getIntOrNullJsonRequestBody(
         Request $request,
-        bool $required,
         ?int $default = null,
     ): ?int {
         $value = $request->getContent();
 
         if ($value === '') {
-            if ($required) {
-                throw new DenormalizationException('Request body is required.');
-            }
-
             return $default;
         }
 
@@ -464,16 +444,11 @@ abstract class AbstractController
      */
     public function getFloatJsonRequestBody(
         Request $request,
-        bool $required,
         ?float $default = null,
     ): float {
         $value = $request->getContent();
 
         if ($value === '') {
-            if ($required) {
-                throw new DenormalizationException('Request body is required.');
-            }
-
             if ($default === null) {
                 throw new DenormalizationException('Request body must not be null.');
             }
@@ -495,16 +470,11 @@ abstract class AbstractController
      */
     public function getFloatOrNullJsonRequestBody(
         Request $request,
-        bool $required,
         ?float $default = null,
     ): ?float {
         $value = $request->getContent();
 
         if ($value === '') {
-            if ($required) {
-                throw new DenormalizationException('Request body is required.');
-            }
-
             return $default;
         }
 
@@ -526,16 +496,11 @@ abstract class AbstractController
      */
     public function getBoolJsonRequestBody(
         Request $request,
-        bool $required,
         ?bool $default = null,
     ): bool {
         $value = $request->getContent();
 
         if ($value === '') {
-            if ($required) {
-                throw new DenormalizationException('Request body is required.');
-            }
-
             if ($default === null) {
                 throw new DenormalizationException('Request body must not be null.');
             }
@@ -557,16 +522,11 @@ abstract class AbstractController
      */
     public function getBoolOrNullJsonRequestBody(
         Request $request,
-        bool $required,
         ?bool $default = null,
     ): ?bool {
         $value = $request->getContent();
 
         if ($value === '') {
-            if ($required) {
-                throw new DenormalizationException('Request body is required.');
-            }
-
             return $default;
         }
 
@@ -589,16 +549,11 @@ abstract class AbstractController
     public function getObjectJsonRequestBody(
         Request $request,
         string $class,
-        bool $required,
         ?object $default = null,
     ): object {
         $value = $request->getContent();
 
         if ($value === '') {
-            if ($required) {
-                throw new DenormalizationException('Request body is required.');
-            }
-
             if ($default === null) {
                 throw new DenormalizationException('Request body must not be null.');
             }
@@ -615,16 +570,11 @@ abstract class AbstractController
     public function getObjectOrNullJsonRequestBody(
         Request $request,
         string $class,
-        bool $required,
         ?object $default = null,
     ): ?object {
         $value = $request->getContent();
 
         if ($value === '') {
-            if ($required) {
-                throw new DenormalizationException('Request body is required.');
-            }
-
             return $default;
         }
 
