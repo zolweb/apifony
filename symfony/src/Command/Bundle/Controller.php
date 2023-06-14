@@ -6,14 +6,15 @@ class Controller implements File
 {
     /**
      * @param array<Action> $actions
+     * @param array<string> $usedModelNames
      */
     public static function build(
         string $bundleNamespace,
         string $aggregateName,
         array $actions,
         Handler $handler,
+        array $usedModelNames,
     ): self {
-        $usedModelNames = [];
         $usedFormatConstraintNames = [];
         foreach ($actions as $action) {
             foreach ($action->getParameters() as $parameter) {
@@ -21,11 +22,6 @@ class Controller implements File
                     foreach ($constraint->getFormatConstraintClassNames() as $constraintName) {
                         $usedFormatConstraintNames[$constraintName] = true;
                     }
-                }
-            }
-            foreach ($action->getRequestBodies() as $requestBody) {
-                if ($requestBody->getUsedModelName() !== null) {
-                    $usedModelNames[$requestBody->getUsedModelName()] = true;
                 }
             }
         }
@@ -36,7 +32,7 @@ class Controller implements File
             $bundleNamespace,
             $aggregateName,
             array_keys($usedFormatConstraintNames),
-            array_keys($usedModelNames),
+            $usedModelNames,
         );
     }
 

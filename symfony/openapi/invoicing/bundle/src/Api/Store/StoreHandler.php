@@ -2,6 +2,8 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Store;
 
+use App\Zol\Invoicing\Presentation\Api\Bundle\Model\Order;
+
 interface StoreHandler
 {
     public function GetInventoryFromEmptyPayloadToApplicationJsonContent(

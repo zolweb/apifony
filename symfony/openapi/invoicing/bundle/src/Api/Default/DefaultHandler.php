@@ -2,6 +2,8 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Default;
 
+use App\Zol\Invoicing\Presentation\Api\Bundle\Model\Test;
+
 interface DefaultHandler
 {
     public function GetClientFromEmptyPayloadToApplicationJsonContent(

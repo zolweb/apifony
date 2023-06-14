@@ -33,10 +33,20 @@ class Aggregate
             );
         }
 
+        $usedModelNames = [];
+        foreach ($actions as $action) {
+            foreach ($action->getRequestBodies() as $requestBody) {
+                if ($requestBody->getUsedModelName() !== null) {
+                    $usedModelNames[$requestBody->getUsedModelName()] = true;
+                }
+            }
+        }
+        $usedModelNames = array_keys($usedModelNames);
+
         return new self(
             $name,
-            $handler = Handler::build($bundleNamespace, $name, $actions),
-            Controller::build($bundleNamespace, $name, $actions, $handler),
+            $handler = Handler::build($bundleNamespace, $name, $actions, $usedModelNames),
+            Controller::build($bundleNamespace, $name, $actions, $handler, $usedModelNames),
         );
     }
 

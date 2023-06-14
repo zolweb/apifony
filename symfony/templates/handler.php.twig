@@ -3,6 +3,10 @@
 
 namespace {{ handler.namespace }};
 
+{% for modelName in handler.usedModelNames %}
+use {{ handler.bundleNamespace }}\Model\{{ modelName }};
+{% endfor %}
+
 interface {{ handler.className }}
 {
 {%~ for action in handler.actions %}

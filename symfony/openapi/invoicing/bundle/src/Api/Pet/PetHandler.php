@@ -2,6 +2,8 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Pet;
 
+use App\Zol\Invoicing\Presentation\Api\Bundle\Model\Pet;
+
 interface PetHandler
 {
     public function UpdatePetFromUpdatePetApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(

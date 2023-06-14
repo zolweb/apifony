@@ -2,6 +2,8 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\User;
 
+use App\Zol\Invoicing\Presentation\Api\Bundle\Model\User;
+
 interface UserHandler
 {
     public function CreateUserFromEmptyPayloadToApplicationJsonContent(
