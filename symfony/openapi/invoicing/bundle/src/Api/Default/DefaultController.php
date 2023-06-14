@@ -238,6 +238,7 @@ class DefaultController extends AbstractController
             $qAgrez,
             $cAzgrzeg,
             $hGegzer,
+            $requestBodyPayload,
         )) {
             throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
@@ -434,6 +435,12 @@ class DefaultController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
+        }
+
+        if (!isset(
+            $requestBodyPayload,
+        )) {
+            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');
@@ -872,6 +879,7 @@ class DefaultController extends AbstractController
             $cC2,
             $cC3,
             $cC4,
+            $requestBodyPayload,
         )) {
             throw new RuntimeException('All parameter variables should be initialized at the time.');
         }

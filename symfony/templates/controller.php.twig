@@ -119,11 +119,14 @@ class {{ controller.className }} extends AbstractController
             );
         }
 
-{%~ if action.parameters(['query', 'header', 'cookie']) %}
+{%~ if action.parameters(['query', 'header', 'cookie']) or action.requestBodies %}
         if (!isset(
 {%~ for param in action.parameters(['query', 'header', 'cookie']) %}
             ${{ param.variableName }},
 {%~ endfor %}
+{%~ if action.requestBodies %}
+            $requestBodyPayload,
+{%~ endif %}
         )) {
             throw new RuntimeException('All parameter variables should be initialized at the time.');
         }

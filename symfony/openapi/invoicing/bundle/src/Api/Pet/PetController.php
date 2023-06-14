@@ -67,6 +67,12 @@ class PetController extends AbstractController
             );
         }
 
+        if (!isset(
+            $requestBodyPayload,
+        )) {
+            throw new RuntimeException('All parameter variables should be initialized at the time.');
+        }
+
         $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
             case $requestBodyPayload instanceOf UpdatePetApplicationJsonRequestBodyPayload:
@@ -149,6 +155,12 @@ class PetController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
+        }
+
+        if (!isset(
+            $requestBodyPayload,
+        )) {
+            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');
@@ -243,6 +255,7 @@ class PetController extends AbstractController
 
         if (!isset(
             $qStatus,
+            $requestBodyPayload,
         )) {
             throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
@@ -334,6 +347,7 @@ class PetController extends AbstractController
 
         if (!isset(
             $qTags,
+            $requestBodyPayload,
         )) {
             throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
@@ -421,6 +435,12 @@ class PetController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
+        }
+
+        if (!isset(
+            $requestBodyPayload,
+        )) {
+            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');
@@ -539,6 +559,7 @@ class PetController extends AbstractController
         if (!isset(
             $qName,
             $qStatus,
+            $requestBodyPayload,
         )) {
             throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
@@ -638,6 +659,7 @@ class PetController extends AbstractController
 
         if (!isset(
             $hApi_key,
+            $requestBodyPayload,
         )) {
             throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
@@ -736,6 +758,7 @@ class PetController extends AbstractController
 
         if (!isset(
             $qAdditionalMetadata,
+            $requestBodyPayload,
         )) {
             throw new RuntimeException('All parameter variables should be initialized at the time.');
         }

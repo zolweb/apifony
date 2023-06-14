@@ -70,6 +70,12 @@ class UserController extends AbstractController
             );
         }
 
+        if (!isset(
+            $requestBodyPayload,
+        )) {
+            throw new RuntimeException('All parameter variables should be initialized at the time.');
+        }
+
         $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
             case is_null($requestBodyPayload):
@@ -149,6 +155,12 @@ class UserController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
+        }
+
+        if (!isset(
+            $requestBodyPayload,
+        )) {
+            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');
@@ -251,6 +263,7 @@ class UserController extends AbstractController
         if (!isset(
             $qUsername,
             $qPassword,
+            $requestBodyPayload,
         )) {
             throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
@@ -328,6 +341,12 @@ class UserController extends AbstractController
             );
         }
 
+        if (!isset(
+            $requestBodyPayload,
+        )) {
+            throw new RuntimeException('All parameter variables should be initialized at the time.');
+        }
+
         $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
             case is_null($requestBodyPayload):
@@ -401,6 +420,12 @@ class UserController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
+        }
+
+        if (!isset(
+            $requestBodyPayload,
+        )) {
+            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');
@@ -504,6 +529,12 @@ class UserController extends AbstractController
             );
         }
 
+        if (!isset(
+            $requestBodyPayload,
+        )) {
+            throw new RuntimeException('All parameter variables should be initialized at the time.');
+        }
+
         $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
             case is_null($requestBodyPayload):
@@ -598,6 +629,12 @@ class UserController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
+        }
+
+        if (!isset(
+            $requestBodyPayload,
+        )) {
+            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');

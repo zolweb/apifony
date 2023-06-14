@@ -54,6 +54,12 @@ class StoreController extends AbstractController
             );
         }
 
+        if (!isset(
+            $requestBodyPayload,
+        )) {
+            throw new RuntimeException('All parameter variables should be initialized at the time.');
+        }
+
         $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
             case is_null($requestBodyPayload):
@@ -131,6 +137,12 @@ class StoreController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
+        }
+
+        if (!isset(
+            $requestBodyPayload,
+        )) {
+            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');
@@ -241,6 +253,12 @@ class StoreController extends AbstractController
             );
         }
 
+        if (!isset(
+            $requestBodyPayload,
+        )) {
+            throw new RuntimeException('All parameter variables should be initialized at the time.');
+        }
+
         $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
             case is_null($requestBodyPayload):
@@ -324,6 +342,12 @@ class StoreController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
+        }
+
+        if (!isset(
+            $requestBodyPayload,
+        )) {
+            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');
