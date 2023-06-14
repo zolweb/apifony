@@ -44,6 +44,9 @@ class ActionRequestBody
                 $hasModel = false;
             }
             $payloadType = TypeFactory::build($className, $schema, $components);
+            if ($payloadType instanceof ArrayType) {
+                throw new Exception('Request bodies with array schema are not supported.');
+            }
 
             if ($hasModel) {
                 $addModels = function(string $rawName, Reference|Schema $schema) use (&$addModels, &$payloadModels, $bundleNamespace, $aggregateName, $className, $components) {

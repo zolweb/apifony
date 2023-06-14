@@ -23,16 +23,6 @@ interface UserHandler
     ):
         CreateUsersWithListInput200ApplicationJsonResponse;
 
-    public function CreateUsersWithListInputFromUserArrayPayloadToContent(
-        array $requestBodyPayload,
-    ):
-        CreateUsersWithListInput100EmptyResponse;
-
-    public function CreateUsersWithListInputFromUserArrayPayloadToApplicationJsonContent(
-        array $requestBodyPayload,
-    ):
-        CreateUsersWithListInput200ApplicationJsonResponse;
-
     public function LoginUserFromEmptyPayloadToApplicationJsonContent(
         string $qUsername,
         string $qPassword,

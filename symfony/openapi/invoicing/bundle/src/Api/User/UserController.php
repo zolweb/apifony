@@ -130,26 +130,6 @@ class UserController extends AbstractController
                 $requestBodyPayload = null;
 
                 break;
-            case 'application/json':
-                try {
-                    $requestBodyPayload = $this->getArrayJsonRequestBody($request);
-                    $this->validateRequestBody(
-                        $requestBodyPayload,
-                        [
-                            new Assert\NotNull,
-                            new Assert\All(constraints: [
-                                new Assert\Valid,
-                                new Assert\NotNull,
-                            ]),
-                        ],
-                    );
-                } catch (DenormalizationException $e) {
-                    $errors['requestBody'] = [$e->getMessage()];
-                } catch (RequestBodyValidationException $e) {
-                    $errors['requestBody'] = $e->messages;
-                }
-
-                break;
             default:
                 return new JsonResponse(
                     [
@@ -182,31 +162,6 @@ class UserController extends AbstractController
                         break;
                     case 'application/json':
                         $response = $this->handler->CreateUsersWithListInputFromEmptyPayloadToApplicationJsonContent(
-                        );
-
-                        break;
-                    default:
-                        return new JsonResponse(
-                            [
-                                'code' => 'unsupported_response_type',
-                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
-                            ],
-                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
-                        );
-                }
-
-                break;
-            case is_array($requestBodyPayload) && $requestBodyPayload instanceOf User:
-                switch($responsePayloadContentType) {
-                    case null:
-                        $response = $this->handler->CreateUsersWithListInputFromUserArrayPayloadToContent(
-                            $requestBodyPayload,
-                        );
-
-                        break;
-                    case 'application/json':
-                        $response = $this->handler->CreateUsersWithListInputFromUserArrayPayloadToApplicationJsonContent(
-                            $requestBodyPayload,
                         );
 
                         break;
