@@ -7,6 +7,7 @@ class PlaceOrder200ApplicationJsonResponse
     public const CODE = '200';
     public const CONTENT_TYPE = 'application/json';
 
+
     public function __construct(
         public readonly PlaceOrder200ApplicationJsonResponse $payload,
     ) {

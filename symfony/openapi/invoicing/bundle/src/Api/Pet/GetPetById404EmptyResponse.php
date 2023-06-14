@@ -7,8 +7,11 @@ class GetPetById404EmptyResponse
     public const CODE = '404';
     public const CONTENT_TYPE = null;
 
+    public readonly string $payload;
+
     public function __construct(
     ) {
+        $this->payload = '';
     }
 
     /**

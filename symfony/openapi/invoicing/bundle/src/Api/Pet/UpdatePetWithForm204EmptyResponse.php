@@ -7,8 +7,11 @@ class UpdatePetWithForm204EmptyResponse
     public const CODE = '204';
     public const CONTENT_TYPE = null;
 
+    public readonly string $payload;
+
     public function __construct(
     ) {
+        $this->payload = '';
     }
 
     /**

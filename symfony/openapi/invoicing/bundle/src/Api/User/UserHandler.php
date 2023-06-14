@@ -45,11 +45,6 @@ interface UserHandler
     ):
         GetUserByName200ApplicationJsonResponse;
 
-    public function GetUserByNameFromEmptyPayloadToApplicationXmlContent(
-        string $pUsername,
-    ):
-        GetUserByName200ApplicationXmlResponse;
-
     public function GetUserByNameFromEmptyPayloadToContent(
         string $pUsername,
     ):

@@ -7,8 +7,11 @@ class LogoutUser100EmptyResponse
     public const CODE = '100';
     public const CONTENT_TYPE = null;
 
+    public readonly string $payload;
+
     public function __construct(
     ) {
+        $this->payload = '';
     }
 
     /**

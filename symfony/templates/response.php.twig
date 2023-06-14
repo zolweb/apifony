@@ -8,6 +8,10 @@ class {{ response.getClassName }}
     public const CODE = '{{ response.code }}';
     public const CONTENT_TYPE = {{ response.contentType is null ? 'null' : '\'' ~ response.contentType ~ '\'' }};
 
+{%~ if response.contentType is null %}
+    public readonly string $payload;
+{%~ endif %}
+
     public function __construct(
 {%~ if response.contentType is not null %}
         public readonly {{ response.payloadPhpType }} $payload,
@@ -16,6 +20,9 @@ class {{ response.getClassName }}
         public readonly {{ header.phpType }} ${{ header.variableName }},
 {%~ endfor %}
     ) {
+{%~ if response.contentType is null %}
+        $this->payload = '';
+{%~ endif %}
     }
 
     /**

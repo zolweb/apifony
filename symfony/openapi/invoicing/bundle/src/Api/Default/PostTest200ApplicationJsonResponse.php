@@ -7,6 +7,7 @@ class PostTest200ApplicationJsonResponse
     public const CODE = '200';
     public const CONTENT_TYPE = 'application/json';
 
+
     public function __construct(
         public readonly PostTest200ApplicationJsonResponse $payload,
         public readonly string $H1,

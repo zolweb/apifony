@@ -7,6 +7,7 @@ class CreateUser201ApplicationJsonResponse
     public const CODE = '201';
     public const CONTENT_TYPE = 'application/json';
 
+
     public function __construct(
         public readonly CreateUser201ApplicationJsonResponse $payload,
     ) {

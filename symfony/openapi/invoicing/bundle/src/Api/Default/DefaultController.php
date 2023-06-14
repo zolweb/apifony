@@ -901,27 +901,6 @@ class DefaultController extends AbstractController
                         );
 
                         break;
-                    case 'application/xml':
-                        $response = $this->handler->PostTestFromEmptyPayloadToApplicationXmlContent(
-                            $pP1,
-                            $pP2,
-                            $pP3,
-                            $pP4,
-                            $hH1,
-                            $hH2,
-                            $hH3,
-                            $hH4,
-                            $qQ1,
-                            $qQ2,
-                            $qQ3,
-                            $qQ4,
-                            $cC1,
-                            $cC2,
-                            $cC3,
-                            $cC4,
-                        );
-
-                        break;
                     default:
                         return new JsonResponse(
                             [
@@ -937,28 +916,6 @@ class DefaultController extends AbstractController
                 switch($responsePayloadContentType) {
                     case 'application/json':
                         $response = $this->handler->PostTestFromTestPayloadToApplicationJsonContent(
-                            $pP1,
-                            $pP2,
-                            $pP3,
-                            $pP4,
-                            $hH1,
-                            $hH2,
-                            $hH3,
-                            $hH4,
-                            $qQ1,
-                            $qQ2,
-                            $qQ3,
-                            $qQ4,
-                            $cC1,
-                            $cC2,
-                            $cC3,
-                            $cC4,
-                            $requestBodyPayload,
-                        );
-
-                        break;
-                    case 'application/xml':
-                        $response = $this->handler->PostTestFromTestPayloadToApplicationXmlContent(
                             $pP1,
                             $pP2,
                             $pP3,
@@ -996,7 +953,6 @@ class DefaultController extends AbstractController
         switch ($response::CONTENT_TYPE) {
             case 'application/json':
                 return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
-            case 'application/xml':
             default:
                 throw new RuntimeException();
         }

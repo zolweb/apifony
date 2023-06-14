@@ -7,8 +7,11 @@ class UpdatePet405EmptyResponse
     public const CODE = '405';
     public const CONTENT_TYPE = null;
 
+    public readonly string $payload;
+
     public function __construct(
     ) {
+        $this->payload = '';
     }
 
     /**

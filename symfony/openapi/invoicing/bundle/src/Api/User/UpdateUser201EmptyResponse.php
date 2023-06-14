@@ -7,8 +7,11 @@ class UpdateUser201EmptyResponse
     public const CODE = '201';
     public const CONTENT_TYPE = null;
 
+    public readonly string $payload;
+
     public function __construct(
     ) {
+        $this->payload = '';
     }
 
     /**

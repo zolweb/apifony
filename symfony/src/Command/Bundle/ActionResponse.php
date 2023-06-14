@@ -23,6 +23,10 @@ class ActionResponse implements File
         null|Reference|Schema $payload,
         ?Components $components,
     ): self {
+        if (!in_array($contentType, [null, 'application/json'], true)) {
+            throw new Exception('Responses with content type other thant \'application/json\' are not supported.');
+        }
+
         if ($payload instanceof Reference) {
             if ($components === null || !isset($components->schemas[$payload->getName()])) {
                 throw new Exception('Reference not found in schemas components.');

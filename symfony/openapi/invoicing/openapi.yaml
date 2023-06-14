@@ -190,10 +190,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/Pet'
-            application/xml:
-              schema:
-                type: object
-                properties: {}
         '400':
           description: Invalid ID supplied
         '404':
@@ -624,9 +620,6 @@ paths:
             application/json:
               schema:
                 $ref: '#/components/schemas/User'
-            application/xml:
-              schema:
-                $ref: '#/components/schemas/User'
         '400':
           description: Invalid username supplied
         '404':
@@ -781,9 +774,6 @@ paths:
                 default: true
           content:
             application/json:
-              schema:
-                $ref: '#/components/schemas/Test'
-            application/xml:
               schema:
                 $ref: '#/components/schemas/Test'
         '201':

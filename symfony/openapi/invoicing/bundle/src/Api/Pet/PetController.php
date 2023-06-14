@@ -77,12 +77,6 @@ class PetController extends AbstractController
                         );
 
                         break;
-                    case 'application/xml':
-                        $response = $this->handler->UpdatePetFromUpdatePetApplicationJsonRequestBodyPayloadPayloadToApplicationXmlContent(
-                            $requestBodyPayload,
-                        );
-
-                        break;
                     case null:
                         $response = $this->handler->UpdatePetFromUpdatePetApplicationJsonRequestBodyPayloadPayloadToContent(
                             $requestBodyPayload,
@@ -106,7 +100,6 @@ class PetController extends AbstractController
         switch ($response::CONTENT_TYPE) {
             case 'application/json':
                 return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
-            case 'application/xml':
             case null:
                 return new Response('', $response::CODE, $response->getHeaders());
             default:

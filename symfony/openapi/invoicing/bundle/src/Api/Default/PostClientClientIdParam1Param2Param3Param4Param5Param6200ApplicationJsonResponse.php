@@ -7,6 +7,7 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6200ApplicationJsonRe
     public const CODE = '200';
     public const CONTENT_TYPE = 'application/json';
 
+
     public function __construct(
         public readonly string $payload,
     ) {

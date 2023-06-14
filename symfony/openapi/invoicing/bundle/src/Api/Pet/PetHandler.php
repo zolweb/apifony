@@ -11,11 +11,6 @@ interface PetHandler
     ):
         UpdatePet200ApplicationJsonResponse;
 
-    public function UpdatePetFromUpdatePetApplicationJsonRequestBodyPayloadPayloadToApplicationXmlContent(
-        UpdatePetApplicationJsonRequestBodyPayload $requestBodyPayload,
-    ):
-        UpdatePet200ApplicationXmlResponse;
-
     public function UpdatePetFromUpdatePetApplicationJsonRequestBodyPayloadPayloadToContent(
         UpdatePetApplicationJsonRequestBodyPayload $requestBodyPayload,
     ):

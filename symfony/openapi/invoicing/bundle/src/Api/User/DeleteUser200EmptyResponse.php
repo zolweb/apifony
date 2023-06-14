@@ -7,8 +7,11 @@ class DeleteUser200EmptyResponse
     public const CODE = '200';
     public const CONTENT_TYPE = null;
 
+    public readonly string $payload;
+
     public function __construct(
     ) {
+        $this->payload = '';
     }
 
     /**
