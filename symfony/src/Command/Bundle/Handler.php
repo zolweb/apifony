@@ -47,6 +47,9 @@ class Handler implements File
         return $this->bundleNamespace;
     }
 
+    /**
+     * @return array<string>
+     */
     public function getUsedModelNames(): array
     {
         return $this->usedModelNames;
