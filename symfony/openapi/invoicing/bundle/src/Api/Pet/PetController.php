@@ -78,13 +78,13 @@ class PetController extends AbstractController
             case $requestBodyPayload instanceOf UpdatePetApplicationJsonRequestBodyPayload:
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->UpdatePetFromUpdatePetApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
+                        $response = $this->handler->updatePetFromUpdatePetApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         );
 
                         break;
                     case null:
-                        $response = $this->handler->UpdatePetFromUpdatePetApplicationJsonRequestBodyPayloadPayloadToContent(
+                        $response = $this->handler->updatePetFromUpdatePetApplicationJsonRequestBodyPayloadPayloadToContent(
                             $requestBodyPayload,
                         );
 
@@ -168,13 +168,13 @@ class PetController extends AbstractController
             case $requestBodyPayload instanceOf Pet:
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->AddPetFromPetPayloadToApplicationJsonContent(
+                        $response = $this->handler->addPetFromPetPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         );
 
                         break;
                     case null:
-                        $response = $this->handler->AddPetFromPetPayloadToContent(
+                        $response = $this->handler->addPetFromPetPayloadToContent(
                             $requestBodyPayload,
                         );
 
@@ -265,13 +265,13 @@ class PetController extends AbstractController
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->FindPetsByStatusFromEmptyPayloadToApplicationJsonContent(
+                        $response = $this->handler->findPetsByStatusFromEmptyPayloadToApplicationJsonContent(
                             $qStatus,
                         );
 
                         break;
                     case null:
-                        $response = $this->handler->FindPetsByStatusFromEmptyPayloadToContent(
+                        $response = $this->handler->findPetsByStatusFromEmptyPayloadToContent(
                             $qStatus,
                         );
 
@@ -357,13 +357,13 @@ class PetController extends AbstractController
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->FindPetsByTagsFromEmptyPayloadToApplicationJsonContent(
+                        $response = $this->handler->findPetsByTagsFromEmptyPayloadToApplicationJsonContent(
                             $qTags,
                         );
 
                         break;
                     case null:
-                        $response = $this->handler->FindPetsByTagsFromEmptyPayloadToContent(
+                        $response = $this->handler->findPetsByTagsFromEmptyPayloadToContent(
                             $qTags,
                         );
 
@@ -448,13 +448,13 @@ class PetController extends AbstractController
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->GetPetByIdFromEmptyPayloadToApplicationJsonContent(
+                        $response = $this->handler->getPetByIdFromEmptyPayloadToApplicationJsonContent(
                             $pPetId,
                         );
 
                         break;
                     case null:
-                        $response = $this->handler->GetPetByIdFromEmptyPayloadToContent(
+                        $response = $this->handler->getPetByIdFromEmptyPayloadToContent(
                             $pPetId,
                         );
 
@@ -569,7 +569,7 @@ class PetController extends AbstractController
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case null:
-                        $response = $this->handler->UpdatePetWithFormFromEmptyPayloadToContent(
+                        $response = $this->handler->updatePetWithFormFromEmptyPayloadToContent(
                             $pPetId,
                             $qName,
                             $qStatus,
@@ -669,7 +669,7 @@ class PetController extends AbstractController
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case null:
-                        $response = $this->handler->DeletePetFromEmptyPayloadToContent(
+                        $response = $this->handler->deletePetFromEmptyPayloadToContent(
                             $hApi_key,
                             $pPetId,
                         );
@@ -768,7 +768,7 @@ class PetController extends AbstractController
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->UploadFileFromEmptyPayloadToApplicationJsonContent(
+                        $response = $this->handler->uploadFileFromEmptyPayloadToApplicationJsonContent(
                             $pPetId,
                             $qAdditionalMetadata,
                         );

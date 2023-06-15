@@ -33,8 +33,8 @@ class Pet
         #[Assert\Count(min: 2)]
         #[Assert\Count(max: 5)]
         #[Assert\Unique]
+        #[Assert\Valid]
         #[Assert\All(constraints: [
-            new Assert\Valid,
             new Assert\NotNull,
         ])]
         public readonly array $tags,

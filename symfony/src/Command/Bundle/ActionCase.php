@@ -65,7 +65,7 @@ class ActionCase
             $responseContentType,
             sprintf(
                 '%sFrom%sPayloadTo%sContent',
-                u($operation->operationId)->camel()->title(),
+                u($operation->operationId)->camel(),
                 $requestBodyPayloadType?->getNormalizedType() ?? 'Empty',
                 u($responseContentType)->camel()->title(),
             ),

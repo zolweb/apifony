@@ -17,8 +17,8 @@ class PetOwnerAddress
         public readonly string $country,
 
         #[Assert\NotNull]
+        #[Assert\Valid]
         #[Assert\All(constraints: [
-            new Assert\Valid,
             new Assert\NotNull,
         ])]
         public readonly array $phoneNumbers,

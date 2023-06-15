@@ -137,8 +137,19 @@ class ArrayType implements Type
             $constraints[] = new Constraint('Assert\Unique', []);
         }
 
-        if (count($this->itemType->getConstraints()) > 0) {
-            $constraints[] = new Constraint('Assert\All', ['constraints' => $this->itemType->getConstraints()]);
+        $itemConstraints = $this->itemType->getConstraints();
+
+        if ($this->itemType instanceof ObjectType) {
+            foreach ($itemConstraints as $index => $itemConstraint) {
+                if ($itemConstraint->getName() === 'Assert\Valid') {
+                    $constraints[] = new Constraint('Assert\Valid', []);
+                    unset($itemConstraints[$index]);
+                }
+            }
+        }
+
+        if (count($itemConstraints) > 0) {
+            $constraints[] = new Constraint('Assert\All', ['constraints' => $itemConstraints]);
         }
 
         return $constraints;

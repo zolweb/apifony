@@ -6,40 +6,40 @@ use App\Zol\Invoicing\Presentation\Api\Bundle\Model\Order;
 
 interface StoreHandler
 {
-    public function GetInventoryFromEmptyPayloadToApplicationJsonContent(
+    public function getInventoryFromEmptyPayloadToApplicationJsonContent(
     ):
         GetInventory200ApplicationJsonResponse;
 
-    public function PlaceOrderFromEmptyPayloadToApplicationJsonContent(
+    public function placeOrderFromEmptyPayloadToApplicationJsonContent(
     ):
         PlaceOrder200ApplicationJsonResponse;
 
-    public function PlaceOrderFromEmptyPayloadToContent(
+    public function placeOrderFromEmptyPayloadToContent(
     ):
         PlaceOrder405EmptyResponse;
 
-    public function PlaceOrderFromOrderPayloadToApplicationJsonContent(
+    public function placeOrderFromOrderPayloadToApplicationJsonContent(
         Order $requestBodyPayload,
     ):
         PlaceOrder200ApplicationJsonResponse;
 
-    public function PlaceOrderFromOrderPayloadToContent(
+    public function placeOrderFromOrderPayloadToContent(
         Order $requestBodyPayload,
     ):
         PlaceOrder405EmptyResponse;
 
-    public function GetOrderByIdFromEmptyPayloadToApplicationJsonContent(
+    public function getOrderByIdFromEmptyPayloadToApplicationJsonContent(
         int $pOrderId,
     ):
         GetOrderById200ApplicationJsonResponse;
 
-    public function GetOrderByIdFromEmptyPayloadToContent(
+    public function getOrderByIdFromEmptyPayloadToContent(
         int $pOrderId,
     ):
         GetOrderById400EmptyResponse |
         GetOrderById404EmptyResponse;
 
-    public function DeleteOrderFromEmptyPayloadToContent(
+    public function deleteOrderFromEmptyPayloadToContent(
         int $pOrderId,
     ):
         DeleteOrder200EmptyResponse |

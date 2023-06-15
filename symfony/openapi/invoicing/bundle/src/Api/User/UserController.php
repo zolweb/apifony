@@ -81,7 +81,7 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->CreateUserFromEmptyPayloadToApplicationJsonContent(
+                        $response = $this->handler->createUserFromEmptyPayloadToApplicationJsonContent(
                         );
 
                         break;
@@ -99,7 +99,7 @@ class UserController extends AbstractController
             case $requestBodyPayload instanceOf User:
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->CreateUserFromUserPayloadToApplicationJsonContent(
+                        $response = $this->handler->createUserFromUserPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         );
 
@@ -168,12 +168,12 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case null:
-                        $response = $this->handler->CreateUsersWithListInputFromEmptyPayloadToContent(
+                        $response = $this->handler->createUsersWithListInputFromEmptyPayloadToContent(
                         );
 
                         break;
                     case 'application/json':
-                        $response = $this->handler->CreateUsersWithListInputFromEmptyPayloadToApplicationJsonContent(
+                        $response = $this->handler->createUsersWithListInputFromEmptyPayloadToApplicationJsonContent(
                         );
 
                         break;
@@ -273,14 +273,14 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->LoginUserFromEmptyPayloadToApplicationJsonContent(
+                        $response = $this->handler->loginUserFromEmptyPayloadToApplicationJsonContent(
                             $qUsername,
                             $qPassword,
                         );
 
                         break;
                     case null:
-                        $response = $this->handler->LoginUserFromEmptyPayloadToContent(
+                        $response = $this->handler->loginUserFromEmptyPayloadToContent(
                             $qUsername,
                             $qPassword,
                         );
@@ -352,7 +352,7 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case null:
-                        $response = $this->handler->LogoutUserFromEmptyPayloadToContent(
+                        $response = $this->handler->logoutUserFromEmptyPayloadToContent(
                         );
 
                         break;
@@ -433,13 +433,13 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->GetUserByNameFromEmptyPayloadToApplicationJsonContent(
+                        $response = $this->handler->getUserByNameFromEmptyPayloadToApplicationJsonContent(
                             $pUsername,
                         );
 
                         break;
                     case null:
-                        $response = $this->handler->GetUserByNameFromEmptyPayloadToContent(
+                        $response = $this->handler->getUserByNameFromEmptyPayloadToContent(
                             $pUsername,
                         );
 
@@ -540,7 +540,7 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case null:
-                        $response = $this->handler->UpdateUserFromEmptyPayloadToContent(
+                        $response = $this->handler->updateUserFromEmptyPayloadToContent(
                             $pUsername,
                         );
 
@@ -559,7 +559,7 @@ class UserController extends AbstractController
             case $requestBodyPayload instanceOf User:
                 switch($responsePayloadContentType) {
                     case null:
-                        $response = $this->handler->UpdateUserFromUserPayloadToContent(
+                        $response = $this->handler->updateUserFromUserPayloadToContent(
                             $pUsername,
                             $requestBodyPayload,
                         );
@@ -642,7 +642,7 @@ class UserController extends AbstractController
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case null:
-                        $response = $this->handler->DeleteUserFromEmptyPayloadToContent(
+                        $response = $this->handler->deleteUserFromEmptyPayloadToContent(
                             $pUsername,
                         );
 

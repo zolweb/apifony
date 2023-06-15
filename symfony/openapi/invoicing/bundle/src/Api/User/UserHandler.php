@@ -6,63 +6,63 @@ use App\Zol\Invoicing\Presentation\Api\Bundle\Model\User;
 
 interface UserHandler
 {
-    public function CreateUserFromEmptyPayloadToApplicationJsonContent(
+    public function createUserFromEmptyPayloadToApplicationJsonContent(
     ):
         CreateUser201ApplicationJsonResponse;
 
-    public function CreateUserFromUserPayloadToApplicationJsonContent(
+    public function createUserFromUserPayloadToApplicationJsonContent(
         User $requestBodyPayload,
     ):
         CreateUser201ApplicationJsonResponse;
 
-    public function CreateUsersWithListInputFromEmptyPayloadToContent(
+    public function createUsersWithListInputFromEmptyPayloadToContent(
     ):
         CreateUsersWithListInput100EmptyResponse;
 
-    public function CreateUsersWithListInputFromEmptyPayloadToApplicationJsonContent(
+    public function createUsersWithListInputFromEmptyPayloadToApplicationJsonContent(
     ):
         CreateUsersWithListInput200ApplicationJsonResponse;
 
-    public function LoginUserFromEmptyPayloadToApplicationJsonContent(
+    public function loginUserFromEmptyPayloadToApplicationJsonContent(
         string $qUsername,
         string $qPassword,
     ):
         LoginUser200ApplicationJsonResponse;
 
-    public function LoginUserFromEmptyPayloadToContent(
+    public function loginUserFromEmptyPayloadToContent(
         string $qUsername,
         string $qPassword,
     ):
         LoginUser400EmptyResponse;
 
-    public function LogoutUserFromEmptyPayloadToContent(
+    public function logoutUserFromEmptyPayloadToContent(
     ):
         LogoutUser100EmptyResponse |
         LogoutUser200EmptyResponse;
 
-    public function GetUserByNameFromEmptyPayloadToApplicationJsonContent(
+    public function getUserByNameFromEmptyPayloadToApplicationJsonContent(
         string $pUsername,
     ):
         GetUserByName200ApplicationJsonResponse;
 
-    public function GetUserByNameFromEmptyPayloadToContent(
+    public function getUserByNameFromEmptyPayloadToContent(
         string $pUsername,
     ):
         GetUserByName400EmptyResponse |
         GetUserByName404EmptyResponse;
 
-    public function UpdateUserFromEmptyPayloadToContent(
+    public function updateUserFromEmptyPayloadToContent(
         string $pUsername,
     ):
         UpdateUser201EmptyResponse;
 
-    public function UpdateUserFromUserPayloadToContent(
+    public function updateUserFromUserPayloadToContent(
         string $pUsername,
         User $requestBodyPayload,
     ):
         UpdateUser201EmptyResponse;
 
-    public function DeleteUserFromEmptyPayloadToContent(
+    public function deleteUserFromEmptyPayloadToContent(
         string $pUsername,
     ):
         DeleteUser200EmptyResponse |

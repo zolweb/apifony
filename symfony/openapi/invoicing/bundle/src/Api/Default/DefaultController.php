@@ -248,7 +248,7 @@ class DefaultController extends AbstractController
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->GetClientFromEmptyPayloadToApplicationJsonContent(
+                        $response = $this->handler->getClientFromEmptyPayloadToApplicationJsonContent(
                             $pClientId,
                             $pParam3,
                             $pParam4,
@@ -276,7 +276,7 @@ class DefaultController extends AbstractController
             case is_int($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->GetClientFromIntegerPayloadToApplicationJsonContent(
+                        $response = $this->handler->getClientFromIntegerPayloadToApplicationJsonContent(
                             $pClientId,
                             $pParam3,
                             $pParam4,
@@ -448,7 +448,7 @@ class DefaultController extends AbstractController
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->PostClientClientIdParam1Param2Param3Param4Param5Param6FromEmptyPayloadToApplicationJsonContent(
+                        $response = $this->handler->postClientClientIdParam1Param2Param3Param4Param5Param6FromEmptyPayloadToApplicationJsonContent(
                             $pClientId,
                             $pParam3,
                             $pParam4,
@@ -889,7 +889,7 @@ class DefaultController extends AbstractController
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->PostTestFromEmptyPayloadToApplicationJsonContent(
+                        $response = $this->handler->postTestFromEmptyPayloadToApplicationJsonContent(
                             $pP1,
                             $pP2,
                             $pP3,
@@ -923,7 +923,7 @@ class DefaultController extends AbstractController
             case $requestBodyPayload instanceOf Test:
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->PostTestFromTestPayloadToApplicationJsonContent(
+                        $response = $this->handler->postTestFromTestPayloadToApplicationJsonContent(
                             $pP1,
                             $pP2,
                             $pP3,

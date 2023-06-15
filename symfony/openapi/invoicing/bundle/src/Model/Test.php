@@ -34,11 +34,11 @@ class Test
         public readonly array $a6,
 
         #[Assert\NotNull]
-        #[Assert\Count(min: 1)]
+        #[Assert\Count(min: 0)]
         #[Assert\Count(max: 3)]
         #[Assert\Unique]
+        #[Assert\Valid]
         #[Assert\All(constraints: [
-            new Assert\Valid,
             new Assert\NotNull,
         ])]
         public readonly array $a7,

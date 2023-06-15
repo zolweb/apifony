@@ -23,6 +23,11 @@ services:
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
 
+    App\Controller\DefaultController:
+        class: App\Controller\DefaultController
+        tags:
+            - { name: "invoicing_open_api_server.handler", controller: "default" }
+
     App\Validator\F1Definition:
         class: App\Validator\F1Definition
         tags:

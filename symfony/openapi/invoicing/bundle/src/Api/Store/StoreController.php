@@ -65,7 +65,7 @@ class StoreController extends AbstractController
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->GetInventoryFromEmptyPayloadToApplicationJsonContent(
+                        $response = $this->handler->getInventoryFromEmptyPayloadToApplicationJsonContent(
                         );
 
                         break;
@@ -150,12 +150,12 @@ class StoreController extends AbstractController
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->PlaceOrderFromEmptyPayloadToApplicationJsonContent(
+                        $response = $this->handler->placeOrderFromEmptyPayloadToApplicationJsonContent(
                         );
 
                         break;
                     case null:
-                        $response = $this->handler->PlaceOrderFromEmptyPayloadToContent(
+                        $response = $this->handler->placeOrderFromEmptyPayloadToContent(
                         );
 
                         break;
@@ -173,13 +173,13 @@ class StoreController extends AbstractController
             case $requestBodyPayload instanceOf Order:
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->PlaceOrderFromOrderPayloadToApplicationJsonContent(
+                        $response = $this->handler->placeOrderFromOrderPayloadToApplicationJsonContent(
                             $requestBodyPayload,
                         );
 
                         break;
                     case null:
-                        $response = $this->handler->PlaceOrderFromOrderPayloadToContent(
+                        $response = $this->handler->placeOrderFromOrderPayloadToContent(
                             $requestBodyPayload,
                         );
 
@@ -264,13 +264,13 @@ class StoreController extends AbstractController
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case 'application/json':
-                        $response = $this->handler->GetOrderByIdFromEmptyPayloadToApplicationJsonContent(
+                        $response = $this->handler->getOrderByIdFromEmptyPayloadToApplicationJsonContent(
                             $pOrderId,
                         );
 
                         break;
                     case null:
-                        $response = $this->handler->GetOrderByIdFromEmptyPayloadToContent(
+                        $response = $this->handler->getOrderByIdFromEmptyPayloadToContent(
                             $pOrderId,
                         );
 
@@ -355,7 +355,7 @@ class StoreController extends AbstractController
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
                     case null:
-                        $response = $this->handler->DeleteOrderFromEmptyPayloadToContent(
+                        $response = $this->handler->deleteOrderFromEmptyPayloadToContent(
                             $pOrderId,
                         );
 

@@ -6,7 +6,7 @@ use App\Zol\Invoicing\Presentation\Api\Bundle\Model\Test;
 
 interface DefaultHandler
 {
-    public function GetClientFromEmptyPayloadToApplicationJsonContent(
+    public function getClientFromEmptyPayloadToApplicationJsonContent(
         string $pClientId,
         float $pParam3,
         int $pParam4,
@@ -21,7 +21,7 @@ interface DefaultHandler
         GetClient200ApplicationJsonResponse |
         GetClient201ApplicationJsonResponse;
 
-    public function GetClientFromIntegerPayloadToApplicationJsonContent(
+    public function getClientFromIntegerPayloadToApplicationJsonContent(
         string $pClientId,
         float $pParam3,
         int $pParam4,
@@ -37,7 +37,7 @@ interface DefaultHandler
         GetClient200ApplicationJsonResponse |
         GetClient201ApplicationJsonResponse;
 
-    public function PostClientClientIdParam1Param2Param3Param4Param5Param6FromEmptyPayloadToApplicationJsonContent(
+    public function postClientClientIdParam1Param2Param3Param4Param5Param6FromEmptyPayloadToApplicationJsonContent(
         string $pClientId,
         float $pParam3,
         int $pParam4,
@@ -48,7 +48,7 @@ interface DefaultHandler
         PostClientClientIdParam1Param2Param3Param4Param5Param6200ApplicationJsonResponse |
         PostClientClientIdParam1Param2Param3Param4Param5Param6201ApplicationJsonResponse;
 
-    public function PostTestFromEmptyPayloadToApplicationJsonContent(
+    public function postTestFromEmptyPayloadToApplicationJsonContent(
         string $pP1,
         int $pP2,
         float $pP3,
@@ -69,7 +69,7 @@ interface DefaultHandler
         PostTest200ApplicationJsonResponse |
         PostTest201ApplicationJsonResponse;
 
-    public function PostTestFromTestPayloadToApplicationJsonContent(
+    public function postTestFromTestPayloadToApplicationJsonContent(
         string $pP1,
         int $pP2,
         float $pP3,

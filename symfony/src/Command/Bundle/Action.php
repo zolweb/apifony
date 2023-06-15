@@ -4,7 +4,6 @@ namespace App\Command\Bundle;
 
 use App\Command\OpenApi\Components;
 use App\Command\OpenApi\Operation;
-use App\Command\OpenApi\Parameter;
 use App\Command\OpenApi\Reference;
 use function Symfony\Component\String\u;
 
