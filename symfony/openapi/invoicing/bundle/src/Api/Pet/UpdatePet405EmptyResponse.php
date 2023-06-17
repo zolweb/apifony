@@ -2,6 +2,7 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Pet;
 
+
 class UpdatePet405EmptyResponse
 {
     public const CODE = '405';

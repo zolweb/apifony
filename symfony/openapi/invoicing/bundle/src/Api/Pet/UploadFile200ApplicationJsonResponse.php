@@ -2,6 +2,8 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Pet;
 
+use \Model\ApiResponse;
+
 class UploadFile200ApplicationJsonResponse
 {
     public const CODE = '200';
@@ -9,7 +11,7 @@ class UploadFile200ApplicationJsonResponse
 
 
     public function __construct(
-        public readonly UploadFile200ApplicationJsonResponse $payload,
+        public readonly ApiResponse $payload,
     ) {
     }
 

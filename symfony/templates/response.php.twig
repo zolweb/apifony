@@ -3,6 +3,10 @@
 
 namespace {{ response.namespace }};
 
+{% if response.usedModelName %}
+use {{ controller.bundleNamespace }}\Model\{{ response.usedModelName }};
+{% endif %}
+
 class {{ response.getClassName }}
 {
     public const CODE = '{{ response.code }}';

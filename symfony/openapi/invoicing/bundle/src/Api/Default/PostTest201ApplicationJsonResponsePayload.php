@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Model;
+namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Default;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F25 as AssertF25;
@@ -8,7 +8,7 @@ use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F21 as AssertF21;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F22 as AssertF22;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F23 as AssertF23;
 
-class Test
+class PostTest201ApplicationJsonResponsePayload
 {
     /**
      * @param array<string> $a6

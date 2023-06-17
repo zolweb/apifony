@@ -249,12 +249,6 @@ paths:
       responses:
         '200':
           description: successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Pet'
         '400':
           description: Invalid status value
       security:
@@ -281,12 +275,6 @@ paths:
       responses:
         '200':
           description: successful operation
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/schemas/Pet'
         '400':
           description: Invalid tag value
       security:
@@ -1204,6 +1192,10 @@ components:
           x-stoplight:
             id: qy8f1nwi7zhhf
           default: true
+        a5:
+          $ref: '#/components/schemas/Test'
+          x-stoplight:
+            id: 96rzgo1jyv47p
         a6:
           type: array
           x-stoplight:

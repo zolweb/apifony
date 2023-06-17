@@ -2,6 +2,7 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\User;
 
+
 class LoginUser200ApplicationJsonResponse
 {
     public const CODE = '200';

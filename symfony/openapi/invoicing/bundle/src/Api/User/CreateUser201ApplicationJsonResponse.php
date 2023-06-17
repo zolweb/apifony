@@ -2,6 +2,8 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\User;
 
+use \Model\User;
+
 class CreateUser201ApplicationJsonResponse
 {
     public const CODE = '201';
@@ -9,7 +11,7 @@ class CreateUser201ApplicationJsonResponse
 
 
     public function __construct(
-        public readonly CreateUser201ApplicationJsonResponse $payload,
+        public readonly User $payload,
     ) {
     }
 

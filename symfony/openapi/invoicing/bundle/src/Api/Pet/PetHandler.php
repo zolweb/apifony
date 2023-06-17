@@ -3,6 +3,7 @@
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Pet;
 
 use App\Zol\Invoicing\Presentation\Api\Bundle\Model\Pet;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Model\ApiResponse;
 
 interface PetHandler
 {
@@ -28,24 +29,16 @@ interface PetHandler
     ):
         AddPet405EmptyResponse;
 
-    public function findPetsByStatusFromEmptyPayloadToApplicationJsonContent(
-        string $qStatus,
-    ):
-        FindPetsByStatus200ApplicationJsonResponse;
-
     public function findPetsByStatusFromEmptyPayloadToContent(
         string $qStatus,
     ):
+        FindPetsByStatus200EmptyResponse |
         FindPetsByStatus400EmptyResponse;
-
-    public function findPetsByTagsFromEmptyPayloadToApplicationJsonContent(
-        string $qTags,
-    ):
-        FindPetsByTags200ApplicationJsonResponse;
 
     public function findPetsByTagsFromEmptyPayloadToContent(
         string $qTags,
     ):
+        FindPetsByTags200EmptyResponse |
         FindPetsByTags400EmptyResponse;
 
     public function getPetByIdFromEmptyPayloadToApplicationJsonContent(

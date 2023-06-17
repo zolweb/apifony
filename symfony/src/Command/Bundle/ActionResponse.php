@@ -27,25 +27,69 @@ class ActionResponse implements File
             throw new Exception('Responses with content type other thant \'application/json\' are not supported.');
         }
 
-        if ($payload instanceof Reference) {
-            if ($components === null || !isset($components->schemas[$payload->getName()])) {
-                throw new Exception('Reference not found in schemas components.');
+        $className = u(sprintf('%s_%s_%s_ResponsePayload', $actionName, $code, $contentType ?? 'empty'))->camel()->title();
+
+        $payloadModels = [];
+        $payloadType = null;
+        $usedModelName = null;
+        if ($payload !== null) {
+            $schema = $payload;
+            $hasModel = true;
+            if ($schema instanceof Reference) {
+                if ($components === null || !isset($components->schemas[$schema->getName()])) {
+                    throw new Exception('Reference not found in schemas components.');
+                }
+                $schema = $components->schemas[$className = $usedModelName = $schema->getName()];
+                $hasModel = false;
             }
-            $payload = $components->schemas[$payload->getName()];
+            $payloadType = TypeFactory::build($className, $schema, $components);
+            if ($payloadType instanceof ArrayType) {
+                throw new Exception('Responses with array schema are not supported.');
+            }
+
+            if ($hasModel) {
+                $addModels = function(string $rawName, Reference|Schema $schema) use (&$addModels, &$payloadModels, $bundleNamespace, $aggregateName, $className, $components) {
+                    if (!$schema instanceof Reference) {
+                        $type = TypeFactory::build('', $schema, $components);
+                        if ($type instanceof ObjectType) {
+                            $payloadModels[$rawName] = Model::build(
+                                $bundleNamespace,
+                                "{$bundleNamespace}\Api\\{$aggregateName}",
+                                "src/Api/{$aggregateName}",
+                                $className,
+                                $schema,
+                                $components,
+                            );
+                            foreach ($schema->properties as $propertyName => $property) {
+                                $addModels("{$rawName}_{$propertyName}", $property);
+                            }
+                        } elseif ($type instanceof ArrayType) {
+                            if ($schema->items === null) {
+                                throw new Exception('Schema objects of array type without items attribute are not supported.');
+                            }
+                            $addModels($rawName, $schema->items);
+                        }
+                    }
+                };
+
+                $addModels($className, $schema);
+            }
         }
 
         return new self(
             $bundleNamespace,
             $aggregateName,
-            $className = u(sprintf('%s_%s_%s_Response', $actionName, $code, $contentType ?? 'Empty'))->camel()->title(),
+            u(sprintf('%s_%s_%s_Response', $actionName, $code, $contentType ?? 'Empty'))->camel()->title(),
             $code,
             $contentType,
-            $payload !== null ? TypeFactory::build($className, $payload, $components) : null,
+            $payloadType,
             array_map(
                 static fn (string $name) =>
                     ActionResponseHeader::build($name, $response->headers[$name], $components),
                 array_keys($response->headers),
             ),
+            $payloadModels,
+            $usedModelName,
         );
     }
 
@@ -60,6 +104,8 @@ class ActionResponse implements File
         private readonly ?string $contentType,
         private readonly ?Type $payloadType,
         private readonly array $headers,
+        private readonly array $payloadModels,
+        private readonly ?string $usedModelName,
     ) {
     }
 
@@ -76,6 +122,19 @@ class ActionResponse implements File
     public function getPayloadPhpType(): ?string
     {
         return $this->payloadType?->getMethodParameterType();
+    }
+
+    /**
+     * @return array<Model>
+     */
+    public function getPayloadModels(): array
+    {
+        return $this->payloadModels;
+    }
+
+    public function getUsedModelName(): ?string
+    {
+        return $this->usedModelName;
     }
 
     /**

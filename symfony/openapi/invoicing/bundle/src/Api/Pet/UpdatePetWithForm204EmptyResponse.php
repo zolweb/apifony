@@ -2,6 +2,7 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Pet;
 
+
 class UpdatePetWithForm204EmptyResponse
 {
     public const CODE = '204';

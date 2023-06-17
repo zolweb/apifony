@@ -2,6 +2,8 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Store;
 
+use \Model\Order;
+
 class GetOrderById200ApplicationJsonResponse
 {
     public const CODE = '200';
@@ -9,7 +11,7 @@ class GetOrderById200ApplicationJsonResponse
 
 
     public function __construct(
-        public readonly GetOrderById200ApplicationJsonResponse $payload,
+        public readonly Order $payload,
     ) {
     }
 

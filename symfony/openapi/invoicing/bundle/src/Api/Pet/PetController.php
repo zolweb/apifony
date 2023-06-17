@@ -13,6 +13,7 @@ use Symfony\Component\Validator\Constraints as Assert;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Api\AbstractController;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Format\Int64 as AssertInt64;
 use App\Zol\Invoicing\Presentation\Api\Bundle\Model\Pet;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Model\ApiResponse;
 
 class PetController extends AbstractController
 {
@@ -264,12 +265,6 @@ class PetController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
-                    case 'application/json':
-                        $response = $this->handler->findPetsByStatusFromEmptyPayloadToApplicationJsonContent(
-                            $qStatus,
-                        );
-
-                        break;
                     case null:
                         $response = $this->handler->findPetsByStatusFromEmptyPayloadToContent(
                             $qStatus,
@@ -291,8 +286,6 @@ class PetController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
-            case 'application/json':
-                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             case null:
                 return new Response('', $response::CODE, $response->getHeaders());
             default:
@@ -356,12 +349,6 @@ class PetController extends AbstractController
         switch (true) {
             case is_null($requestBodyPayload):
                 switch($responsePayloadContentType) {
-                    case 'application/json':
-                        $response = $this->handler->findPetsByTagsFromEmptyPayloadToApplicationJsonContent(
-                            $qTags,
-                        );
-
-                        break;
                     case null:
                         $response = $this->handler->findPetsByTagsFromEmptyPayloadToContent(
                             $qTags,
@@ -383,8 +370,6 @@ class PetController extends AbstractController
                 throw new RuntimeException();
         }
         switch ($response::CONTENT_TYPE) {
-            case 'application/json':
-                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             case null:
                 return new Response('', $response::CODE, $response->getHeaders());
             default:

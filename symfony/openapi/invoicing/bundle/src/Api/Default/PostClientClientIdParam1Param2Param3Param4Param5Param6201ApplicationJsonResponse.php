@@ -2,6 +2,7 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Default;
 
+
 class PostClientClientIdParam1Param2Param3Param4Param5Param6201ApplicationJsonResponse
 {
     public const CODE = '201';
@@ -9,7 +10,7 @@ class PostClientClientIdParam1Param2Param3Param4Param5Param6201ApplicationJsonRe
 
 
     public function __construct(
-        public readonly PostClientClientIdParam1Param2Param3Param4Param5Param6201ApplicationJsonResponse $payload,
+        public readonly PostClientClientIdParam1Param2Param3Param4Param5Param6201ApplicationJsonResponsePayload $payload,
     ) {
     }
 

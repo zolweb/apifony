@@ -2,6 +2,7 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Store;
 
+
 class PlaceOrder405EmptyResponse
 {
     public const CODE = '405';

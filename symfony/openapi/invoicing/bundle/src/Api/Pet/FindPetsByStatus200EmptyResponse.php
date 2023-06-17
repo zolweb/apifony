@@ -2,13 +2,17 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Pet;
 
+
 class FindPetsByStatus200EmptyResponse
 {
     public const CODE = '200';
     public const CONTENT_TYPE = null;
 
+    public readonly string $payload;
+
     public function __construct(
     ) {
+        $this->payload = '';
     }
 
     /**

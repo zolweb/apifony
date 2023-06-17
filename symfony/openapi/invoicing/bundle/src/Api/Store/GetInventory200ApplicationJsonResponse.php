@@ -2,6 +2,7 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Store;
 
+
 class GetInventory200ApplicationJsonResponse
 {
     public const CODE = '200';
@@ -9,7 +10,7 @@ class GetInventory200ApplicationJsonResponse
 
 
     public function __construct(
-        public readonly GetInventory200ApplicationJsonResponse $payload,
+        public readonly GetInventory200ApplicationJsonResponsePayload $payload,
     ) {
     }
 

@@ -153,6 +153,13 @@ class Action
                 $files[] = $payloadModel;
             }
         }
+        foreach ($this->cases as $case) {
+            foreach ($case->getResponses() as $response) {
+                foreach ($response->getPayloadModels() as $payloadModel) {
+                    $files[] = $payloadModel;
+                }
+            }
+        }
 
         return $files;
     }

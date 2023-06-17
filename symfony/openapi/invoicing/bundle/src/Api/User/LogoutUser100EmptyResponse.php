@@ -2,6 +2,7 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\User;
 
+
 class LogoutUser100EmptyResponse
 {
     public const CODE = '100';

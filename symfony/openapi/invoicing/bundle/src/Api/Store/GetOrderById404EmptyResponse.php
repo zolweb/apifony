@@ -2,6 +2,7 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Store;
 
+
 class GetOrderById404EmptyResponse
 {
     public const CODE = '404';

@@ -2,6 +2,7 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Store;
 
+
 class DeleteOrder200EmptyResponse
 {
     public const CODE = '200';

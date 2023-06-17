@@ -2,6 +2,7 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Default;
 
+
 class GetClient201ApplicationJsonResponse
 {
     public const CODE = '201';
@@ -9,7 +10,7 @@ class GetClient201ApplicationJsonResponse
 
 
     public function __construct(
-        public readonly GetClient201ApplicationJsonResponse $payload,
+        public readonly GetClient201ApplicationJsonResponsePayload $payload,
     ) {
     }
 

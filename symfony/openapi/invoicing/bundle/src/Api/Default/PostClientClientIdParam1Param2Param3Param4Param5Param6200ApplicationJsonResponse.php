@@ -2,6 +2,7 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Default;
 
+
 class PostClientClientIdParam1Param2Param3Param4Param5Param6200ApplicationJsonResponse
 {
     public const CODE = '200';

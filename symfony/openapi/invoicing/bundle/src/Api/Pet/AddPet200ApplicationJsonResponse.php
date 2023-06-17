@@ -2,6 +2,8 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Pet;
 
+use \Model\Pet;
+
 class AddPet200ApplicationJsonResponse
 {
     public const CODE = '200';
@@ -9,7 +11,7 @@ class AddPet200ApplicationJsonResponse
 
 
     public function __construct(
-        public readonly AddPet200ApplicationJsonResponse $payload,
+        public readonly Pet $payload,
     ) {
     }
 

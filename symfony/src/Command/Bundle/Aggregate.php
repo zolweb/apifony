@@ -40,6 +40,13 @@ class Aggregate
                     $usedModelNames[$requestBody->getUsedModelName()] = true;
                 }
             }
+            foreach ($action->getCases() as $case) {
+                foreach ($case->getResponses() as $response) {
+                    if ($response->getUsedModelName() !== null) {
+                        $usedModelNames[$response->getUsedModelName()] = true;
+                    }
+                }
+            }
         }
         $usedModelNames = array_keys($usedModelNames);
 

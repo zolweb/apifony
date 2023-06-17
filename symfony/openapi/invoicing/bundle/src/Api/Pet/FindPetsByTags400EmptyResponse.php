@@ -2,6 +2,7 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Pet;
 
+
 class FindPetsByTags400EmptyResponse
 {
     public const CODE = '400';

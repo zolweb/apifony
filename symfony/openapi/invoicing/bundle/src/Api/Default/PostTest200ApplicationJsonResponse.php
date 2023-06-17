@@ -2,6 +2,8 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Default;
 
+use \Model\Test;
+
 class PostTest200ApplicationJsonResponse
 {
     public const CODE = '200';
@@ -9,7 +11,7 @@ class PostTest200ApplicationJsonResponse
 
 
     public function __construct(
-        public readonly PostTest200ApplicationJsonResponse $payload,
+        public readonly Test $payload,
         public readonly string $H1,
         public readonly int $H2,
         public readonly float $H3,
