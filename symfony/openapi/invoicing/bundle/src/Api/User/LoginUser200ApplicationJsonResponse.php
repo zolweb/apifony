@@ -11,8 +11,8 @@ class LoginUser200ApplicationJsonResponse
 
     public function __construct(
         public readonly string $payload,
-        public readonly int $XRateLimit,
-        public readonly string $XExpiresAfter,
+        public readonly int $xRateLimit,
+        public readonly string $xExpiresAfter,
     ) {
     }
 
@@ -22,8 +22,8 @@ class LoginUser200ApplicationJsonResponse
     public function getHeaders(): array
     {
         return [
-            'X-Rate-Limit' => strval($this->XRateLimit),
-            'X-Expires-After' => strval($this->XExpiresAfter),
+            'X-Rate-Limit' => strval($this->xRateLimit),
+            'X-Expires-After' => strval($this->xExpiresAfter),
             'content-type' => self::CONTENT_TYPE,
         ];
     }

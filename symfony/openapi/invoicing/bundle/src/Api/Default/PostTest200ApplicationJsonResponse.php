@@ -12,10 +12,10 @@ class PostTest200ApplicationJsonResponse
 
     public function __construct(
         public readonly Test $payload,
-        public readonly string $H1,
-        public readonly int $H2,
-        public readonly float $H3,
-        public readonly bool $H4,
+        public readonly string $h1,
+        public readonly int $h2,
+        public readonly float $h3,
+        public readonly bool $h4,
     ) {
     }
 
@@ -25,10 +25,10 @@ class PostTest200ApplicationJsonResponse
     public function getHeaders(): array
     {
         return [
-            'h1' => strval($this->H1),
-            'h2' => strval($this->H2),
-            'h3' => strval($this->H3),
-            'h4' => strval($this->H4),
+            'h1' => strval($this->h1),
+            'h2' => strval($this->h2),
+            'h3' => strval($this->h3),
+            'h4' => strval($this->h4),
             'content-type' => self::CONTENT_TYPE,
         ];
     }
