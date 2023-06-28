@@ -30,4 +30,6 @@ interface Type
     public function getConstraints(): array;
 
     public function getBuiltInPhpType(): string;
+
+    public function getInitValue(): string;
 }

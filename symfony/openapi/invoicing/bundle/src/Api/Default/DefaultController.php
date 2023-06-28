@@ -135,6 +135,7 @@ class DefaultController extends AbstractController
             $errors['path']['param2'] = $e->messages;
         }
 
+        $hAzef = '';
         try {
             $hAzef = $this->getStringParameter($request, 'azef', 'header', true);
             $this->validateParameter(
@@ -149,6 +150,7 @@ class DefaultController extends AbstractController
             $errors['header']['azef'] = $e->messages;
         }
 
+        $qAgrez = .0;
         try {
             $qAgrez = $this->getFloatParameter($request, 'agrez', 'query', true);
             $this->validateParameter(
@@ -163,6 +165,7 @@ class DefaultController extends AbstractController
             $errors['query']['agrez'] = $e->messages;
         }
 
+        $cAzgrzeg = 0;
         try {
             $cAzgrzeg = $this->getIntParameter($request, 'azgrzeg', 'cookie', false, 10);
             $this->validateParameter(
@@ -177,6 +180,7 @@ class DefaultController extends AbstractController
             $errors['cookie']['azgrzeg'] = $e->messages;
         }
 
+        $hGegzer = false;
         try {
             $hGegzer = $this->getBoolParameter($request, 'gegzer', 'header', false, true);
             $this->validateParameter(
@@ -191,9 +195,10 @@ class DefaultController extends AbstractController
             $errors['header']['gegzer'] = $e->messages;
         }
 
+        $requestBodyPayload = null;
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestBodyPayload = null;
+
 
                 break;
             case 'application/json':
@@ -231,16 +236,6 @@ class DefaultController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
-        }
-
-        if (!isset(
-            $hAzef,
-            $qAgrez,
-            $cAzgrzeg,
-            $hGegzer,
-            $requestBodyPayload,
-        )) {
-            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');
@@ -411,9 +406,10 @@ class DefaultController extends AbstractController
             $errors['path']['param2'] = $e->messages;
         }
 
+        $requestBodyPayload = null;
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestBodyPayload = null;
+
 
                 break;
             default:
@@ -435,12 +431,6 @@ class DefaultController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
-        }
-
-        if (!isset(
-            $requestBodyPayload,
-        )) {
-            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');
@@ -569,6 +559,7 @@ class DefaultController extends AbstractController
             $errors['path']['p4'] = $e->messages;
         }
 
+        $hH1 = '';
         try {
             $hH1 = $this->getStringParameter($request, 'h1', 'header', true, 'abc');
             $this->validateParameter(
@@ -592,6 +583,7 @@ class DefaultController extends AbstractController
             $errors['header']['h1'] = $e->messages;
         }
 
+        $hH2 = 0;
         try {
             $hH2 = $this->getIntParameter($request, 'h2', 'header', true, 1);
             $this->validateParameter(
@@ -615,6 +607,7 @@ class DefaultController extends AbstractController
             $errors['header']['h2'] = $e->messages;
         }
 
+        $hH3 = .0;
         try {
             $hH3 = $this->getFloatParameter($request, 'h3', 'header', true, 0.1);
             $this->validateParameter(
@@ -638,6 +631,7 @@ class DefaultController extends AbstractController
             $errors['header']['h3'] = $e->messages;
         }
 
+        $hH4 = false;
         try {
             $hH4 = $this->getBoolParameter($request, 'h4', 'header', true, true);
             $this->validateParameter(
@@ -655,6 +649,7 @@ class DefaultController extends AbstractController
             $errors['header']['h4'] = $e->messages;
         }
 
+        $qQ1 = '';
         try {
             $qQ1 = $this->getStringParameter($request, 'q1', 'query', true, 'abc');
             $this->validateParameter(
@@ -678,6 +673,7 @@ class DefaultController extends AbstractController
             $errors['query']['q1'] = $e->messages;
         }
 
+        $qQ2 = 0;
         try {
             $qQ2 = $this->getIntParameter($request, 'q2', 'query', true, 1);
             $this->validateParameter(
@@ -701,6 +697,7 @@ class DefaultController extends AbstractController
             $errors['query']['q2'] = $e->messages;
         }
 
+        $qQ3 = .0;
         try {
             $qQ3 = $this->getFloatParameter($request, 'q3', 'query', true, 0.1);
             $this->validateParameter(
@@ -724,6 +721,7 @@ class DefaultController extends AbstractController
             $errors['query']['q3'] = $e->messages;
         }
 
+        $qQ4 = false;
         try {
             $qQ4 = $this->getBoolParameter($request, 'q4', 'query', true, true);
             $this->validateParameter(
@@ -739,6 +737,7 @@ class DefaultController extends AbstractController
             $errors['query']['q4'] = $e->messages;
         }
 
+        $cC1 = '';
         try {
             $cC1 = $this->getStringParameter($request, 'c1', 'cookie', true, 'abc');
             $this->validateParameter(
@@ -762,6 +761,7 @@ class DefaultController extends AbstractController
             $errors['cookie']['c1'] = $e->messages;
         }
 
+        $cC2 = 0;
         try {
             $cC2 = $this->getIntParameter($request, 'c2', 'cookie', true, 1);
             $this->validateParameter(
@@ -785,6 +785,7 @@ class DefaultController extends AbstractController
             $errors['cookie']['c2'] = $e->messages;
         }
 
+        $cC3 = .0;
         try {
             $cC3 = $this->getFloatParameter($request, 'c3', 'cookie', true, 0.1);
             $this->validateParameter(
@@ -808,6 +809,7 @@ class DefaultController extends AbstractController
             $errors['cookie']['c3'] = $e->messages;
         }
 
+        $cC4 = false;
         try {
             $cC4 = $this->getBoolParameter($request, 'c4', 'cookie', true, true);
             $this->validateParameter(
@@ -823,9 +825,10 @@ class DefaultController extends AbstractController
             $errors['cookie']['c4'] = $e->messages;
         }
 
+        $requestBodyPayload = null;
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestBodyPayload = null;
+
 
                 break;
             case 'application/json':
@@ -864,24 +867,6 @@ class DefaultController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
-        }
-
-        if (!isset(
-            $hH1,
-            $hH2,
-            $hH3,
-            $hH4,
-            $qQ1,
-            $qQ2,
-            $qQ3,
-            $qQ4,
-            $cC1,
-            $cC2,
-            $cC3,
-            $cC4,
-            $requestBodyPayload,
-        )) {
-            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');

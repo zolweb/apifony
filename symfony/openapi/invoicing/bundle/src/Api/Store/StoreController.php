@@ -28,9 +28,10 @@ class StoreController extends AbstractController
     ): Response {
         $errors = [];
 
+        $requestBodyPayload = null;
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestBodyPayload = null;
+
 
                 break;
             default:
@@ -52,12 +53,6 @@ class StoreController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
-        }
-
-        if (!isset(
-            $requestBodyPayload,
-        )) {
-            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');
@@ -96,9 +91,10 @@ class StoreController extends AbstractController
     ): Response {
         $errors = [];
 
+        $requestBodyPayload = null;
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestBodyPayload = null;
+
 
                 break;
             case 'application/json':
@@ -137,12 +133,6 @@ class StoreController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
-        }
-
-        if (!isset(
-            $requestBodyPayload,
-        )) {
-            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');
@@ -227,9 +217,10 @@ class StoreController extends AbstractController
             $errors['path']['orderId'] = $e->messages;
         }
 
+        $requestBodyPayload = null;
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestBodyPayload = null;
+
 
                 break;
             default:
@@ -251,12 +242,6 @@ class StoreController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
-        }
-
-        if (!isset(
-            $requestBodyPayload,
-        )) {
-            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');
@@ -318,9 +303,10 @@ class StoreController extends AbstractController
             $errors['path']['orderId'] = $e->messages;
         }
 
+        $requestBodyPayload = null;
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestBodyPayload = null;
+
 
                 break;
             default:
@@ -342,12 +328,6 @@ class StoreController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
-        }
-
-        if (!isset(
-            $requestBodyPayload,
-        )) {
-            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');

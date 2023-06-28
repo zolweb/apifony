@@ -122,4 +122,9 @@ class StringType implements Type
     {
         return 'string';
     }
+
+    public function getInitValue(): string
+    {
+        return '\'\'';
+    }
 }

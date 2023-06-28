@@ -54,6 +54,7 @@ class {{ controller.className }} extends AbstractController
 
 {%~ endfor %}
 {%~ for param in action.parameters(['query', 'header', 'cookie']) %}
+        ${{ param.variableName }} = {{ param.initValue }};
         try {
             ${{ param.variableName }} = $this->get{{ param.phpType|capitalize }}{{ param.nullable ? 'OrNull' : '' }}Parameter($request, '{{ param.rawname }}', '{{ param.in }}', {{ param.required ? 'true' : 'false' }}{{ param.hasDefault ? ', ' ~ param.default : ''}});
             $this->validateParameter(
@@ -72,11 +73,12 @@ class {{ controller.className }} extends AbstractController
 
 {%~ endfor %}
 {%~ if action.requestBodies %}
+        $requestBodyPayload = null;
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
     {%~ for requestBody in action.requestBodies %}
             case '{{ requestBody.mimeType ?? 'unspecified' }}':
         {%~ if requestBody.mimeType is null %}
-                $requestBodyPayload = null;
+
         {%~ elseif requestBody.mimeType is same as ('application/json') %}
                 try {
                     $requestBodyPayload = $this->get{{ requestBody.payloadBuiltInPhpType|capitalize }}{{ requestBody.nullable ? 'OrNull' : '' }}JsonRequestBody($request{{ requestBody.payloadBuiltInPhpType is same as 'object' ? ', ' ~ requestBody.payloadPhpType ~ '::class' : '' }}{{ requestBody.hasDefault ? ', ' ~ requestBody.default : '' }});
@@ -119,19 +121,6 @@ class {{ controller.className }} extends AbstractController
             );
         }
 
-{%~ if action.parameters(['query', 'header', 'cookie']) or action.requestBodies %}
-        if (!isset(
-{%~ for param in action.parameters(['query', 'header', 'cookie']) %}
-            ${{ param.variableName }},
-{%~ endfor %}
-{%~ if action.requestBodies %}
-            $requestBodyPayload,
-{%~ endif %}
-        )) {
-            throw new RuntimeException('All parameter variables should be initialized at the time.');
-        }
-
-{%~ endif %}
         $responsePayloadContentType = $request->headers->get('accept');
         switch (true) {
 {%~ for requestBodyPayloadType in action.requestBodyPayloadTypes %}

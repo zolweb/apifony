@@ -115,4 +115,9 @@ class NumberType implements Type
     {
         return 'float';
     }
+
+    public function getInitValue(): string
+    {
+        return '.0';
+    }
 }

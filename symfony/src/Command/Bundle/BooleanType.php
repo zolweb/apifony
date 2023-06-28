@@ -95,4 +95,9 @@ class BooleanType implements Type
     {
         return 'bool';
     }
+
+    public function getInitValue(): string
+    {
+        return 'false';
+    }
 }

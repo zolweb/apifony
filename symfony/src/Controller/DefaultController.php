@@ -37,6 +37,11 @@ class DefaultController implements DefaultHandler
     public function postTestFromTestPayloadToApplicationJsonContent(string $pP1, int $pP2, float $pP3, bool $pP4, string $hH1, int $hH2, float $hH3, bool $hH4, string $qQ1, int $qQ2, float $qQ3, bool $qQ4, string $cC1, int $cC2, float $cC3, bool $cC4, Test $requestBodyPayload,): PostTest200ApplicationJsonResponse|PostTest201ApplicationJsonResponse
     {
         return new PostTest200ApplicationJsonResponse(
+            new Test([], []),
+            $pP1,
+            $pP2,
+            $pP3,
+            $pP4,
         );
     }
 }

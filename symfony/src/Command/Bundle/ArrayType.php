@@ -159,4 +159,9 @@ class ArrayType implements Type
     {
         return 'array';
     }
+
+    public function getInitValue(): string
+    {
+        return '[]';
+    }
 }

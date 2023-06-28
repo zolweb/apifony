@@ -115,4 +115,9 @@ class IntegerType implements Type
     {
         return 'int';
     }
+
+    public function getInitValue(): string
+    {
+        return '0';
+    }
 }

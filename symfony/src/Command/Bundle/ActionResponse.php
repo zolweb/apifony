@@ -95,6 +95,7 @@ class ActionResponse implements File
 
     /**
      * @param array<ActionResponseHeader> $headers
+     * @param array<Model> $payloadModels
      */
     private function __construct(
         private readonly string $bundleNamespace,

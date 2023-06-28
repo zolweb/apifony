@@ -29,6 +29,7 @@ class PetController extends AbstractController
     ): Response {
         $errors = [];
 
+        $requestBodyPayload = null;
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'application/json':
                 try {
@@ -66,12 +67,6 @@ class PetController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
-        }
-
-        if (!isset(
-            $requestBodyPayload,
-        )) {
-            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');
@@ -119,6 +114,7 @@ class PetController extends AbstractController
     ): Response {
         $errors = [];
 
+        $requestBodyPayload = null;
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'application/json':
                 try {
@@ -156,12 +152,6 @@ class PetController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
-        }
-
-        if (!isset(
-            $requestBodyPayload,
-        )) {
-            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');
@@ -209,6 +199,7 @@ class PetController extends AbstractController
     ): Response {
         $errors = [];
 
+        $qStatus = '';
         try {
             $qStatus = $this->getStringParameter($request, 'status', 'query', false, 'available');
             $this->validateParameter(
@@ -228,9 +219,10 @@ class PetController extends AbstractController
             $errors['query']['status'] = $e->messages;
         }
 
+        $requestBodyPayload = null;
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestBodyPayload = null;
+
 
                 break;
             default:
@@ -252,13 +244,6 @@ class PetController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
-        }
-
-        if (!isset(
-            $qStatus,
-            $requestBodyPayload,
-        )) {
-            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');
@@ -298,6 +283,7 @@ class PetController extends AbstractController
     ): Response {
         $errors = [];
 
+        $qTags = '';
         try {
             $qTags = $this->getStringParameter($request, 'tags', 'query', false);
             $this->validateParameter(
@@ -312,9 +298,10 @@ class PetController extends AbstractController
             $errors['query']['tags'] = $e->messages;
         }
 
+        $requestBodyPayload = null;
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestBodyPayload = null;
+
 
                 break;
             default:
@@ -336,13 +323,6 @@ class PetController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
-        }
-
-        if (!isset(
-            $qTags,
-            $requestBodyPayload,
-        )) {
-            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');
@@ -396,9 +376,10 @@ class PetController extends AbstractController
             $errors['path']['petId'] = $e->messages;
         }
 
+        $requestBodyPayload = null;
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestBodyPayload = null;
+
 
                 break;
             default:
@@ -420,12 +401,6 @@ class PetController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
-        }
-
-        if (!isset(
-            $requestBodyPayload,
-        )) {
-            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');
@@ -487,6 +462,7 @@ class PetController extends AbstractController
             $errors['path']['petId'] = $e->messages;
         }
 
+        $qName = '';
         try {
             $qName = $this->getStringParameter($request, 'name', 'query', false);
             $this->validateParameter(
@@ -501,6 +477,7 @@ class PetController extends AbstractController
             $errors['query']['name'] = $e->messages;
         }
 
+        $qStatus = '';
         try {
             $qStatus = $this->getStringParameter($request, 'status', 'query', false);
             $this->validateParameter(
@@ -515,9 +492,10 @@ class PetController extends AbstractController
             $errors['query']['status'] = $e->messages;
         }
 
+        $requestBodyPayload = null;
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestBodyPayload = null;
+
 
                 break;
             default:
@@ -539,14 +517,6 @@ class PetController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
-        }
-
-        if (!isset(
-            $qName,
-            $qStatus,
-            $requestBodyPayload,
-        )) {
-            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');
@@ -602,6 +572,7 @@ class PetController extends AbstractController
             $errors['path']['petId'] = $e->messages;
         }
 
+        $hApi_key = '';
         try {
             $hApi_key = $this->getStringParameter($request, 'api_key', 'header', false);
             $this->validateParameter(
@@ -616,9 +587,10 @@ class PetController extends AbstractController
             $errors['header']['api_key'] = $e->messages;
         }
 
+        $requestBodyPayload = null;
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestBodyPayload = null;
+
 
                 break;
             default:
@@ -640,13 +612,6 @@ class PetController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
-        }
-
-        if (!isset(
-            $hApi_key,
-            $requestBodyPayload,
-        )) {
-            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');
@@ -701,6 +666,7 @@ class PetController extends AbstractController
             $errors['path']['petId'] = $e->messages;
         }
 
+        $qAdditionalMetadata = '';
         try {
             $qAdditionalMetadata = $this->getStringParameter($request, 'additionalMetadata', 'query', false);
             $this->validateParameter(
@@ -715,9 +681,10 @@ class PetController extends AbstractController
             $errors['query']['additionalMetadata'] = $e->messages;
         }
 
+        $requestBodyPayload = null;
         switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
             case 'unspecified':
-                $requestBodyPayload = null;
+
 
                 break;
             default:
@@ -739,13 +706,6 @@ class PetController extends AbstractController
                 ],
                 Response::HTTP_BAD_REQUEST,
             );
-        }
-
-        if (!isset(
-            $qAdditionalMetadata,
-            $requestBodyPayload,
-        )) {
-            throw new RuntimeException('All parameter variables should be initialized at the time.');
         }
 
         $responsePayloadContentType = $request->headers->get('accept');

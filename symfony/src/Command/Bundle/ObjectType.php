@@ -89,4 +89,9 @@ class ObjectType implements Type
     {
         return 'object';
     }
+
+    public function getInitValue(): string
+    {
+        throw new \RuntimeException('Can not init object');
+    }
 }

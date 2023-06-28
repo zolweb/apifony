@@ -116,4 +116,9 @@ class ActionParameter
     {
         return $this->type->getRouteRequirementPattern();
     }
+
+    public function getInitValue(): string
+    {
+        return $this->type->getInitValue();
+    }
 }
