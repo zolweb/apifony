@@ -125,6 +125,11 @@ class ActionResponse implements File
         return $this->payloadType?->getMethodParameterType();
     }
 
+    public function getBundleNamespace(): string
+    {
+        return $this->bundleNamespace;
+    }
+
     /**
      * @return array<Model>
      */

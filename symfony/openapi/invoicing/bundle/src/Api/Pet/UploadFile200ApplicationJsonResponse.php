@@ -2,7 +2,7 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Pet;
 
-use \Model\ApiResponse;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Model\ApiResponse;
 
 class UploadFile200ApplicationJsonResponse
 {

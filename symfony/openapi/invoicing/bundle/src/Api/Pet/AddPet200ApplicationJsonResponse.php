@@ -2,7 +2,7 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Pet;
 
-use \Model\Pet;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Model\Pet;
 
 class AddPet200ApplicationJsonResponse
 {

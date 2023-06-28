@@ -2,7 +2,7 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\User;
 
-use \Model\User;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Model\User;
 
 class CreateUser201ApplicationJsonResponse
 {

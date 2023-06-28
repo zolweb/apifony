@@ -2,7 +2,7 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Default;
 
-use \Model\Test;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Model\Test;
 
 class PostTest200ApplicationJsonResponse
 {

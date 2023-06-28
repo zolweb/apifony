@@ -2,7 +2,7 @@
 
 namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Store;
 
-use \Model\Order;
+use App\Zol\Invoicing\Presentation\Api\Bundle\Model\Order;
 
 class GetOrderById200ApplicationJsonResponse
 {
