@@ -1,6 +1,15 @@
   version: '3.8'
 
   services:
+    ogen:
+      build: docker/php
+      environment:
+        UID:
+        GID:
+      working_dir: /usr/app
+      volumes:
+        - .:/usr/app
+
     web:
       image: zolweb/nginx-sf:3.0-alpine
       environment:

@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Store;
+namespace AppZolInvoicingPresentationApiBundle\Api\Store;
 
-use App\Zol\Invoicing\Presentation\Api\Bundle\Model\Order;
+use AppZolInvoicingPresentationApiBundle\Model\Order;
 
 class GetOrderById200ApplicationJsonResponse
 {

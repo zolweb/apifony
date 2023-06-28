@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Default;
+namespace AppZolInvoicingPresentationApiBundle\Api\Default;
 
 use Symfony\Component\Validator\Constraints as Assert;
 

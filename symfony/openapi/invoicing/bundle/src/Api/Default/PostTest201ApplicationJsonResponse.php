@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Default;
+namespace AppZolInvoicingPresentationApiBundle\Api\Default;
 
-use App\Zol\Invoicing\Presentation\Api\Bundle\Model\Test;
+use AppZolInvoicingPresentationApiBundle\Model\Test;
 
 class PostTest201ApplicationJsonResponse
 {

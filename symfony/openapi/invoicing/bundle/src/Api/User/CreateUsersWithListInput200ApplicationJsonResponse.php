@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\User;
+namespace AppZolInvoicingPresentationApiBundle\Api\User;
 
-use App\Zol\Invoicing\Presentation\Api\Bundle\Model\User;
+use AppZolInvoicingPresentationApiBundle\Model\User;
 
 class CreateUsersWithListInput200ApplicationJsonResponse
 {

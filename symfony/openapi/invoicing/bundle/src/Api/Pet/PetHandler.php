@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Pet;
+namespace AppZolInvoicingPresentationApiBundle\Api\Pet;
 
-use App\Zol\Invoicing\Presentation\Api\Bundle\Model\Pet;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Model\ApiResponse;
+use AppZolInvoicingPresentationApiBundle\Model\Pet;
+use AppZolInvoicingPresentationApiBundle\Model\ApiResponse;
 
 interface PetHandler
 {

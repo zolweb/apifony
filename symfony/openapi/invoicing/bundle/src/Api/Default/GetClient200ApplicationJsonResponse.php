@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Default;
+namespace AppZolInvoicingPresentationApiBundle\Api\Default;
 
 
 class GetClient200ApplicationJsonResponse

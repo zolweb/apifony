@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Model;
+namespace AppZolInvoicingPresentationApiBundle\Model;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\Int64 as AssertInt64;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\Int32 as AssertInt32;
+use AppZolInvoicingPresentationApiBundle\Format\Int64 as AssertInt64;
+use AppZolInvoicingPresentationApiBundle\Format\Int32 as AssertInt32;
 
 class User
 {

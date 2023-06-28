@@ -1,19 +1,19 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Pet;
+namespace AppZolInvoicingPresentationApiBundle\Api\Pet;
 
-use App\Zol\Invoicing\Presentation\Api\Bundle\Api\DenormalizationException;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Api\ParameterValidationException;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Api\RequestBodyValidationException;
+use AppZolInvoicingPresentationApiBundle\Api\DenormalizationException;
+use AppZolInvoicingPresentationApiBundle\Api\ParameterValidationException;
+use AppZolInvoicingPresentationApiBundle\Api\RequestBodyValidationException;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Api\AbstractController;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\Int64 as AssertInt64;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Model\Pet;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Model\ApiResponse;
+use AppZolInvoicingPresentationApiBundle\Api\AbstractController;
+use AppZolInvoicingPresentationApiBundle\Format\Int64 as AssertInt64;
+use AppZolInvoicingPresentationApiBundle\Model\Pet;
+use AppZolInvoicingPresentationApiBundle\Model\ApiResponse;
 
 class PetController extends AbstractController
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Pet;
+namespace AppZolInvoicingPresentationApiBundle\Api\Pet;
 
 
 class FindPetsByStatus400EmptyResponse

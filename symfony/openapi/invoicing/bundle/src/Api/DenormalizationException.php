@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api;
+namespace AppZolInvoicingPresentationApiBundle\Api;
 
 use Exception;
 

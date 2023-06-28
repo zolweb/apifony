@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Pet;
+namespace AppZolInvoicingPresentationApiBundle\Api\Pet;
 
-use App\Zol\Invoicing\Presentation\Api\Bundle\Model\Pet;
+use AppZolInvoicingPresentationApiBundle\Model\Pet;
 
 class UpdatePet200ApplicationJsonResponse
 {

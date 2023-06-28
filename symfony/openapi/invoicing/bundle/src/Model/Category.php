@@ -1,9 +1,9 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Model;
+namespace AppZolInvoicingPresentationApiBundle\Model;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\Int64 as AssertInt64;
+use AppZolInvoicingPresentationApiBundle\Format\Int64 as AssertInt64;
 
 class Category
 {

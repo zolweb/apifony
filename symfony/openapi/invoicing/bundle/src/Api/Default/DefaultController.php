@@ -1,32 +1,32 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Default;
+namespace AppZolInvoicingPresentationApiBundle\Api\Default;
 
-use App\Zol\Invoicing\Presentation\Api\Bundle\Api\DenormalizationException;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Api\ParameterValidationException;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Api\RequestBodyValidationException;
+use AppZolInvoicingPresentationApiBundle\Api\DenormalizationException;
+use AppZolInvoicingPresentationApiBundle\Api\ParameterValidationException;
+use AppZolInvoicingPresentationApiBundle\Api\RequestBodyValidationException;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Api\AbstractController;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\Format as AssertFormat;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F1 as AssertF1;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F2 as AssertF2;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F3 as AssertF3;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F4 as AssertF4;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F5 as AssertF5;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F6 as AssertF6;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F7 as AssertF7;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F9 as AssertF9;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F10 as AssertF10;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F13 as AssertF13;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F12 as AssertF12;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F14 as AssertF14;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F15 as AssertF15;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F16 as AssertF16;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Model\Test;
+use AppZolInvoicingPresentationApiBundle\Api\AbstractController;
+use AppZolInvoicingPresentationApiBundle\Format\Format as AssertFormat;
+use AppZolInvoicingPresentationApiBundle\Format\F1 as AssertF1;
+use AppZolInvoicingPresentationApiBundle\Format\F2 as AssertF2;
+use AppZolInvoicingPresentationApiBundle\Format\F3 as AssertF3;
+use AppZolInvoicingPresentationApiBundle\Format\F4 as AssertF4;
+use AppZolInvoicingPresentationApiBundle\Format\F5 as AssertF5;
+use AppZolInvoicingPresentationApiBundle\Format\F6 as AssertF6;
+use AppZolInvoicingPresentationApiBundle\Format\F7 as AssertF7;
+use AppZolInvoicingPresentationApiBundle\Format\F9 as AssertF9;
+use AppZolInvoicingPresentationApiBundle\Format\F10 as AssertF10;
+use AppZolInvoicingPresentationApiBundle\Format\F13 as AssertF13;
+use AppZolInvoicingPresentationApiBundle\Format\F12 as AssertF12;
+use AppZolInvoicingPresentationApiBundle\Format\F14 as AssertF14;
+use AppZolInvoicingPresentationApiBundle\Format\F15 as AssertF15;
+use AppZolInvoicingPresentationApiBundle\Format\F16 as AssertF16;
+use AppZolInvoicingPresentationApiBundle\Model\Test;
 
 class DefaultController extends AbstractController
 {

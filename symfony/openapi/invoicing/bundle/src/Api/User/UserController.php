@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\User;
+namespace AppZolInvoicingPresentationApiBundle\Api\User;
 
-use App\Zol\Invoicing\Presentation\Api\Bundle\Api\DenormalizationException;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Api\ParameterValidationException;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Api\RequestBodyValidationException;
+use AppZolInvoicingPresentationApiBundle\Api\DenormalizationException;
+use AppZolInvoicingPresentationApiBundle\Api\ParameterValidationException;
+use AppZolInvoicingPresentationApiBundle\Api\RequestBodyValidationException;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Api\AbstractController;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Model\User;
+use AppZolInvoicingPresentationApiBundle\Api\AbstractController;
+use AppZolInvoicingPresentationApiBundle\Model\User;
 
 class UserController extends AbstractController
 {

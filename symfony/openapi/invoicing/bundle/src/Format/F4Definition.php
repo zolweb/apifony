@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Format;
+namespace AppZolInvoicingPresentationApiBundle\Format;
 
 interface F4Definition
 {

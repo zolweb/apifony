@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Model;
+namespace AppZolInvoicingPresentationApiBundle\Model;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F25 as AssertF25;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F21 as AssertF21;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F22 as AssertF22;
-use App\Zol\Invoicing\Presentation\Api\Bundle\Format\F23 as AssertF23;
+use AppZolInvoicingPresentationApiBundle\Format\F25 as AssertF25;
+use AppZolInvoicingPresentationApiBundle\Format\F21 as AssertF21;
+use AppZolInvoicingPresentationApiBundle\Format\F22 as AssertF22;
+use AppZolInvoicingPresentationApiBundle\Format\F23 as AssertF23;
 
 class Test
 {

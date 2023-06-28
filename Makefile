@@ -50,8 +50,11 @@ install: install-app wait-for-database install-db
 # This target is needed to deploy on AWS, feel free to tune it
 build-aws: clean-app build composer-install composer-dump yarn-install webpack-build start assets-install
 
-gen:
+ogen-bash:
+	docker compose run ogen bash
+
+ogen-gen:
 	rm -rf symfony/openapi/invoicing/bundle/*
 	# wget -O symfony/openapi/invoicing/openapi.yaml https://stoplight.io/api/v1/projects/bfav-zol/zol-skeleton/nodes/zol-invoicing.yaml
-	@$(RUNNER_DOCKER_EXEC) 'php ogen InvoicingOpenApiServer App\\Zol\\Invoicing\\Presentation\\Api\\Bundle zol/invoicing-api /var/www/html/openapi/invoicing/openapi.yaml /var/www/html/openapi/invoicing/bundle'
+	docker compose run ogen php ogen InvoicingOpenApiServer App\\Zol\\Invoicing\\Presentation\\Api\\Bundle zol/invoicing-api /usr/app/symfony/openapi/invoicing/openapi.yaml /usr/app/symfony/openapi/invoicing/bundle
 	make cc

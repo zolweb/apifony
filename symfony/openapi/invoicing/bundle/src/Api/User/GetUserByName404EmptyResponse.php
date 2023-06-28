@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\User;
+namespace AppZolInvoicingPresentationApiBundle\Api\User;
 
 
 class GetUserByName404EmptyResponse

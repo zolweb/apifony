@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Default;
+namespace AppZolInvoicingPresentationApiBundle\Api\Default;
 
 
 class PostClientClientIdParam1Param2Param3Param4Param5Param6201ApplicationJsonResponse

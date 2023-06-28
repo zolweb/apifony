@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Zol\Invoicing\Presentation\Api\Bundle\Api\Store;
+namespace AppZolInvoicingPresentationApiBundle\Api\Store;
 
 
 class DeleteOrder404EmptyResponse
