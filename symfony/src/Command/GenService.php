@@ -7,6 +7,7 @@ use App\Command\Bundle\Exception as BundleException;
 use App\Command\OpenApi\OpenApi;
 use App\Command\OpenApi\Exception as OpenApiException;
 use RuntimeException;
+use Symfony\Component\Yaml\Yaml;
 use Twig\Environment;
 use Twig\Error\LoaderError;
 use Twig\Error\RuntimeError;
@@ -16,21 +17,20 @@ use Twig\Loader\FilesystemLoader;
 class GenService
 {
     /**
-     * @param array<mixed> $data
-     *
      * @throws OpenApiException
      * @throws BundleException
      */
-    public function generate(array $data, string $bundleName, string $namespace, string $packageName): void
+    public function generate(string $bundleName, string $namespace, string $packageName, string $openApiSpecPath, string $outputDir): void
     {
-        $openApi = OpenApi::build($data);
+        $spec = Yaml::parseFile($openApiSpecPath);
+        $openApi = OpenApi::build($spec);
         $bundle = Bundle::build($bundleName, $packageName, $namespace, $openApi);
 
         $twig = new Environment(new FilesystemLoader(__DIR__.'/../../templates'));
 
         foreach ($bundle->getFiles() as $file) {
-            if (!file_exists(__DIR__."/../../openapi/invoicing/bundle/{$file->getFolder()}")) {
-                mkdir(__DIR__."/../../openapi/invoicing/bundle/{$file->getFolder()}", recursive: true);
+            if (!file_exists("{$outputDir}/{$file->getFolder()}")) {
+                mkdir("{$outputDir}/{$file->getFolder()}", recursive: true);
             }
 
             try {
@@ -39,7 +39,7 @@ class GenService
                 throw new RuntimeException($e->getMessage(), 0, $e);
             }
 
-            file_put_contents(__DIR__."/../../openapi/invoicing/bundle/{$file->getFolder()}/{$file->getName()}", $content);
+            file_put_contents("{$outputDir}/{$file->getFolder()}/{$file->getName()}", $content);
         }
     }
 }
