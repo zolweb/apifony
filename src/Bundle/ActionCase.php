@@ -67,7 +67,7 @@ class ActionCase
                 '%sFrom%sPayloadTo%sContent',
                 u($operation->operationId)->camel(),
                 $requestBodyPayloadType?->getNormalizedType() ?? 'Empty',
-                u($responseContentType)->camel()->title(),
+                $responseContentType === null ? 'Empty' : u($responseContentType)->camel()->title(),
             ),
             $parameters,
             $responses,
