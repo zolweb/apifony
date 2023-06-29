@@ -277,14 +277,14 @@ class Action
     ): array {
         $responseContentTypes = [];
 
-        foreach ($operation->responses->responses ?? [] as $response) {
+        foreach ($operation->responses->responses ?? [] as $code => $response) {
             if ($response instanceof Reference) {
                 if ($components === null || !isset($components->responses[$response->getName()])) {
                     throw new Exception('Reference not found in responses components.');
                 }
                 $response = $components->responses[$response->getName()];
             }
-            if (count($response->content) === 0) {
+            if (count($response->content) === 0 && $code >= 200 && $code < 300) {
                 $responseContentTypes['Empty'] = null;
             }
             foreach ($response->content as $type => $mediaType) {

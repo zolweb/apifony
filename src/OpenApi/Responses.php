@@ -38,7 +38,7 @@ class Responses
     }
 
     /**
-     * @param array<string, Reference|Response> $responses
+     * @param array<string|int, Reference|Response> $responses
      * @param array<string, mixed> $extensions
      */
     private function __construct(

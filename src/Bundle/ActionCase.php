@@ -32,7 +32,7 @@ class ActionCase
                 }
                 $response = $components->responses[$response->getName()];
             }
-            if ($responseContentType === null && count($response->content) === 0) {
+            if (count($response->content) === 0) {
                 $responses[] = ActionResponse::build(
                     $bundleNamespace,
                     $aggregateName,
