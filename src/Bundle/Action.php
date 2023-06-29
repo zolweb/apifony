@@ -284,9 +284,10 @@ class Action
                 }
                 $response = $components->responses[$response->getName()];
             }
-            if (count($response->content) === 0 && $code >= 200 && $code < 300) {
-                $responseContentTypes['Empty'] = null;
-            }
+            // TODO Clean this and all references to empty content types
+            // if (count($response->content) === 0 && $code >= 200 && $code < 300) {
+            //     $responseContentTypes['Empty'] = null;
+            // }
             foreach ($response->content as $type => $mediaType) {
                 $responseContentTypes[(string) u($type)->camel()->title()] = $type;
             }
