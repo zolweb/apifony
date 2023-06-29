@@ -127,6 +127,7 @@ class {{ controller.className }} extends AbstractController
             case {{ requestBodyPayloadType is null ? 'is_null($requestBodyPayload)' : requestBodyPayloadType.requestBodyPayloadTypeChecking }}:
                 switch($responsePayloadContentType) {
     {%~ for responseContentType in action.responseContentTypes %}
+    {%~ if responseContentType is not null %}
         {%~ set case = action.getCase(requestBodyPayloadType, responseContentType) %}
                     case {{ case.responseContentType is null ? 'null' : '\'' ~ case.responseContentType ~ '\'' }}:
                         $response = $this->handler->{{ case.name }}(
@@ -139,6 +140,7 @@ class {{ controller.className }} extends AbstractController
                         );
 
                         break;
+    {%~ endif %}
     {%~ endfor %}
                     default:
                         return new JsonResponse(
