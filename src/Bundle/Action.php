@@ -284,10 +284,9 @@ class Action
                 }
                 $response = $components->responses[$response->getName()];
             }
-            // TODO Clean this and all references to empty content types
-            // if (count($response->content) === 0 && $code >= 200 && $code < 300) {
-            //     $responseContentTypes['Empty'] = null;
-            // }
+            if (count($response->content) === 0 && $code >= 200 && $code < 300) {
+                $responseContentTypes['Empty'] = null;
+            }
             foreach ($response->content as $type => $mediaType) {
                 $responseContentTypes[(string) u($type)->camel()->title()] = $type;
             }
@@ -319,16 +318,18 @@ class Action
 
         foreach ($requestBodyPayloadTypes as $requestBodyPayloadType) {
             foreach ($responseContentTypes as $responseContentType) {
-                $cases[] = ActionCase::build(
-                    $bundleNamespace,
-                    $aggregateName,
-                    $actionClassName,
-                    $requestBodyPayloadType,
-                    $responseContentType,
-                    $parameters,
-                    $operation,
-                    $components,
-                );
+                if ($responseContentType !== null) {
+                    $cases[] = ActionCase::build(
+                        $bundleNamespace,
+                        $aggregateName,
+                        $actionClassName,
+                        $requestBodyPayloadType,
+                        $responseContentType,
+                        $parameters,
+                        $operation,
+                        $components,
+                    );
+                }
             }
         }
 
