@@ -74,9 +74,9 @@ class {{ controller.className }} extends AbstractController
 {%~ endfor %}
 {%~ if action.requestBodies %}
         $requestBodyPayload = null;
-        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', 'unspecified')) {
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', '')) {
     {%~ for requestBody in action.requestBodies %}
-            case '{{ requestBody.mimeType ?? 'unspecified' }}':
+            case '{{ requestBody.mimeType ?? '' }}':
         {%~ if requestBody.mimeType is null %}
 
         {%~ elseif requestBody.mimeType is same as ('application/json') %}
