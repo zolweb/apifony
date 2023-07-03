@@ -29,7 +29,7 @@ class ModelAttribute
         }
         $className = u($className)->camel()->title();
         $type = TypeFactory::build($className, $property, $components);
-        if ($property->type === 'array') {
+        if ($type instanceof ArrayType) {
             $usedModelName = $type->getUsedModel();
         }
 

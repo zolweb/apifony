@@ -11,7 +11,7 @@ class ArrayType implements Type
 {
     private readonly Schema $schema;
     private readonly Type $itemType;
-    private readonly string $usedModel;
+    private readonly ?string $usedModel;
 
     /**
      * @throws Exception
