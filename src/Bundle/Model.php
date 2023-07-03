@@ -18,6 +18,7 @@ class Model implements File
         string $rawName,
         Schema $schema,
         ?Components $components,
+        bool $isComponent,
     ): self {
         $className = u($rawName)->camel()->title();
 
@@ -46,6 +47,15 @@ class Model implements File
             }
         }
 
+        $usedModelNames = [];
+        if ($isComponent) {
+            foreach ($attributes as $attribute) {
+                if ($attribute->getUsedModelName() !== null) {
+                    $usedModelNames[] = $attribute->getUsedModelName();
+                }
+            }
+        }
+
         return new self(
             $bundleNamespace,
             $namespace,
@@ -53,12 +63,14 @@ class Model implements File
             $className,
             $attributes,
             array_keys($usedFormatConstraintNames),
+            $usedModelNames,
         );
     }
 
     /**
      * @param array<ModelAttribute> $attributes
      * @param array<string> $usedFormatConstraintNames
+     * @param array<string> $usedModelNames
      */
     private function __construct(
         private readonly string $bundleNamespace,
@@ -67,6 +79,7 @@ class Model implements File
         private readonly string $className,
         private readonly array $attributes,
         private readonly array $usedFormatConstraintNames,
+        private readonly array $usedModelNames,
     ) {
     }
 
@@ -84,6 +97,14 @@ class Model implements File
     public function getAttributes(): array
     {
         return $this->attributes;
+    }
+
+    /**
+     * @return array<string>
+     */
+    public function getUsedModelNames(): array
+    {
+        return $this->usedModelNames;
     }
 
     /**

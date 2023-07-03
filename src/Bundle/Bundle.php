@@ -223,6 +223,7 @@ class Bundle implements File
                         $rawName,
                         $schema,
                         $components,
+                        true,
                     );
                     foreach ($schema->properties as $propertyName => $property) {
                         $addModels("{$rawName}_{$propertyName}", $property);

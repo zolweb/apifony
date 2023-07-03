@@ -60,6 +60,7 @@ class ActionRequestBody
                                 $className,
                                 $schema,
                                 $components,
+                                false,
                             );
                             foreach ($schema->properties as $propertyName => $property) {
                                 $addModels("{$rawName}_{$propertyName}", $property);

@@ -18,13 +18,14 @@ class ModelAttribute
         Reference|Schema $property,
         ?Components $components,
     ): self {
+        $usedModelName = null;
         $variableName = u($rawName)->camel();
         $className = "{$modelClassName}_{$variableName}";
         if ($property instanceof Reference) {
             if ($components === null || !isset($components->schemas[$property->getName()])) {
                 throw new Exception('Reference not found in schemas components.');
             }
-            $property = $components->schemas[$className = $property->getName()];
+            $property = $components->schemas[$className = $usedModelName = $property->getName()];
         }
         $className = u($className)->camel()->title();
 
@@ -33,6 +34,7 @@ class ModelAttribute
             $variableName,
             $property,
             TypeFactory::build($className, $property, $components),
+            $usedModelName,
         );
     }
 
@@ -41,7 +43,13 @@ class ModelAttribute
         private readonly string $variableName,
         private readonly Schema $schema,
         private readonly Type $type,
+        private readonly ?string $usedModelName,
     ) {
+    }
+
+    public function getUsedModelName(): ?string
+    {
+        return $this->usedModelName;
     }
 
     public function isArray(): bool

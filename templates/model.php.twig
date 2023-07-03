@@ -7,6 +7,10 @@ use Symfony\Component\Validator\Constraints as Assert;
 {% for constraintName in model.usedFormatConstraintNames %}
 use {{ model.bundleNamespace }}\Format\{{ constraintName }} as Assert{{ constraintName }};
 {% endfor %}
+{% for modelName in model.usedModelNames %}
+use {{ model.bundleNamespace }}\Model\{{ modelName }};
+{% endfor %}
+
 
 class {{ model.className }}
 {
