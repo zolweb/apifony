@@ -48,7 +48,7 @@ class Model implements File
         }
 
         $usedModelNames = [];
-        if ($isComponent) {
+        if (!$isComponent) {
             foreach ($attributes as $attribute) {
                 if ($attribute->getUsedModelName() !== null) {
                     $usedModelNames[] = $attribute->getUsedModelName();
