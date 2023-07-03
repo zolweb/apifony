@@ -28,12 +28,16 @@ class ModelAttribute
             $property = $components->schemas[$className = $usedModelName = $property->getName()];
         }
         $className = u($className)->camel()->title();
+        $type = TypeFactory::build($className, $property, $components);
+        if ($property->type === 'array') {
+            $usedModelName = $type->getUsedModel();
+        }
 
         return new self(
             $rawName,
             $variableName,
             $property,
-            TypeFactory::build($className, $property, $components),
+            $type,
             $usedModelName,
         );
     }

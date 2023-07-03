@@ -11,6 +11,7 @@ class ArrayType implements Type
 {
     private readonly Schema $schema;
     private readonly Type $itemType;
+    private readonly string $usedModel;
 
     /**
      * @throws Exception
@@ -32,16 +33,18 @@ class ArrayType implements Type
         if ($items === null) {
             throw new Exception('Schema objects of array type without items attribute are not supported.');
         }
+        $usedModel = null;
         if ($items instanceof Reference) {
             if ($components === null || !isset($components->schemas[$items->getName()])) {
                 throw new Exception('Reference not found in schemas components.');
             }
-            $items = $components->schemas[$className = $items->getName()];
+            $items = $components->schemas[$className = $usedModel = $items->getName()];
             $className = u($className)->camel()->title();
         }
 
         $this->schema = $schema;
         $this->itemType = TypeFactory::build($className, $items, $components);
+        $this->usedModel = $usedModel;
     }
 
     public function isNullable(): bool
@@ -163,5 +166,10 @@ class ArrayType implements Type
     public function getInitValue(): string
     {
         return '[]';
+    }
+
+    public function getUsedModel(): ?string
+    {
+        return $this->usedModel;
     }
 }

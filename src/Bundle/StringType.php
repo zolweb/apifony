@@ -127,4 +127,9 @@ class StringType implements Type
     {
         return '\'\'';
     }
+
+    public function getUsedModel(): ?string
+    {
+        return null;
+    }
 }

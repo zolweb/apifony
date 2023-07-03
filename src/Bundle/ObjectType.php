@@ -94,4 +94,9 @@ class ObjectType implements Type
     {
         throw new \RuntimeException('Can not init object');
     }
+
+    public function getUsedModel(): ?string
+    {
+        return null;
+    }
 }

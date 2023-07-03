@@ -100,4 +100,9 @@ class BooleanType implements Type
     {
         return 'false';
     }
+
+    public function getUsedModel(): ?string
+    {
+        return null;
+    }
 }

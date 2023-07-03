@@ -120,4 +120,9 @@ class NumberType implements Type
     {
         return '.0';
     }
+
+    public function getUsedModel(): ?string
+    {
+        return null;
+    }
 }
