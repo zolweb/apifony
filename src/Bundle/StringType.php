@@ -50,7 +50,8 @@ class StringType implements Type
 
     public function getRouteRequirementPattern(): string
     {
-        return $this->schema->pattern !== null ? $this->schema->pattern : '[^:/?#[\\]@!$&\'()*+,;=]+';
+        // TODO Remove one of the \' and write a twig escaper for yaml strings
+        return $this->schema->pattern !== null ? $this->schema->pattern : '[^:/?#[\\]@!$&\'\'()*+,;=]+';
     }
 
     public function getStringToTypeCastFunction(): string
