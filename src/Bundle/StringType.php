@@ -50,7 +50,7 @@ class StringType implements Type
 
     public function getRouteRequirementPattern(): string
     {
-        return $this->schema->pattern !== null ? $this->schema->pattern : '[^:/?#[]@!$&\'()*+,;=]+';
+        return $this->schema->pattern !== null ? $this->schema->pattern : '[^:/?#[\\]@!$&\'()*+,;=]+';
     }
 
     public function getStringToTypeCastFunction(): string

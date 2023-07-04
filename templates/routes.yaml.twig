@@ -1,3 +1,4 @@
+{%~ autoescape false %}
 {%~ for controller in routes.controllers %}
     {%~ for action in controller.actions %}
 {{ routes.serviceNamespace }}_{{ action.serviceName }}:
@@ -18,3 +19,4 @@
 
     {%~ endif %}
 {%~ endfor %}
+{%~ endautoescape %}
