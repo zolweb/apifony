@@ -13,7 +13,7 @@ interface {{ handler.className }}
     {%~ for case in action.cases %}
     public function {{ case.name }}(
         {%~ for param in case.parameters %}
-        {{ param.phpType }} ${{ param.variableName }},
+        {{ param.nullable ? '?' : '' }}{{ param.phpType }} ${{ param.variableName }},
         {%~ endfor %}
         {%~ if case.requestBodyPayloadParameter %}
         {{ case.requestBodyPayloadParameterPhpType }} $requestBodyPayload,
