@@ -222,7 +222,7 @@ class Action
         }
 
         // Due to StopLight not allowing to declare required on requestBodies, a requestBody is always required
-        if ($requestBody === null /* || !$requestBody->required */) {
+        if ($requestBody === null || count($requestBody->content) === 0 /* || !$requestBody->required */) {
             $requestBodies[] = ActionRequestBody::build(
                 $bundleNamespace,
                 $aggregateName,
