@@ -1,5 +1,5 @@
 {
-    "name": "zol/ogen",
+    "name": "zolteam/ogen",
     "license": "AGPL-3.0-or-later",
     "require": {
         "symfony/string": "^6.3",
