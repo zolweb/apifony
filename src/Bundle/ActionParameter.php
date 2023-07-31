@@ -26,7 +26,7 @@ class ActionParameter
         if ($parameter->schema === null) {
             throw new Exception('Parameter objects without schema attribute are not supported.');
         }
-        $variableName = sprintf('%s%s', $parameter->in[0], u($parameter->name)->title());
+        $variableName = sprintf('%s%s', $parameter->in[0], u($parameter->name)->camel()->title());
         $className = "{$actionClassName}_{$parameter->name}";
         $className = u($className)->camel()->title();
 
