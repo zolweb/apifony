@@ -183,41 +183,6 @@ abstract class AbstractController
     }
 
 {%~ endfor %}
-{%~ for nullable in [false, true] %}
-    /**
-     * @throws DenormalizationException
-     */
-    public function getArray{{ nullable ? 'OrNull' : '' }}JsonRequestBody(
-        Request $request,
-        string $class,
-        ?object $default = null,
-    ): {{ nullable ? '?' : '' }}array {
-        $value = $request->getContent();
-
-        if ($value === '') {
-    {%~ if not nullable %}
-            if ($default === null) {
-                throw new DenormalizationException('Request body must not be null.');
-            }
-
-    {%~ endif %}
-            return $default;
-        }
-
-    {%~ if nullable %}
-        if ($value === 'null') {
-            return null;
-        }
-
-    {%~ endif %}
-        try {
-            return json_decode($value, true, flags: JSON_THROW_ON_ERROR);
-        } catch (\JsonException $e) {
-            throw new DenormalizationException("Request body could not be deserialized: {$e->getMessage()}");
-        }
-    }
-
-{%~ endfor %}
 
     /**
      * @param array<Constraint> $constraints
