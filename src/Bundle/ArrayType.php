@@ -83,29 +83,6 @@ class ArrayType implements Type
         throw new Exception('Array parameters are not supported.');
     }
 
-    public function getRequestBodyPayloadInitializationFromRequest(): string
-    {
-        return $this->schema->type === 'object' ?
-            "\$requestBodyPayload = \$this->serializer->deserialize(\$request->getContent(), 'Flex[]', JsonEncoder::FORMAT);" :
-            '$requestBodyPayload = json_decode($request->getContent(), true)';
-    }
-
-    public function getRequestBodyPayloadValidationViolationsInitialization(): string
-    {
-        return $this->schema->type === 'object' ?
-            '$violations = $this->validator->validate($requestBodyPayload, [new Assert\Valid()]);' :
-            sprintf(
-                "\$violations = \$this->validator->validate(\$requestBodyPayload, [\n%s\n]);",
-                implode(
-                    '',
-                    array_map(
-                        static fn (Constraint $constraint) => $constraint->getInstantiation(5),
-                        $this->getConstraints(),
-                    ),
-                ),
-            );
-    }
-
     public function getNormalizedType(): string
     {
         return "{$this->itemType->getNormalizedType()}Array";

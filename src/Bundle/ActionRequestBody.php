@@ -140,16 +140,6 @@ class ActionRequestBody
         return $this->payloadType?->getBuiltInPhpType();
     }
 
-    public function initializationFromRequest(): ?string
-    {
-        return $this->payloadType?->getRequestBodyPayloadInitializationFromRequest();
-    }
-
-    public function validationViolationsInitialization(): ?string
-    {
-        return $this->payloadType?->getRequestBodyPayloadValidationViolationsInitialization();
-    }
-
     /**
      * @return array<Model>
      */

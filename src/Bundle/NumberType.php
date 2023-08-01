@@ -43,25 +43,6 @@ class NumberType implements Type
         return 'floatval';
     }
 
-    public function getRequestBodyPayloadInitializationFromRequest(): string
-    {
-        return '$requestBodyPayload = json_decode($request->getContent(), true);';
-    }
-
-    public function getRequestBodyPayloadValidationViolationsInitialization(): string
-    {
-        return sprintf(
-            "\$violations = \$this->validator->validate(\$requestBodyPayload, [\n%s\n]);",
-            implode(
-                '',
-                array_map(
-                    static fn (Constraint $constraint) => $constraint->getInstantiation(5),
-                    $this->getConstraints(),
-                ),
-            ),
-        );
-    }
-
     public function getNormalizedType(): string
     {
         return 'Float';

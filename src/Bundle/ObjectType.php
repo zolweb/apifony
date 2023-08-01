@@ -7,11 +7,14 @@ use function Symfony\Component\String\u;
 
 class ObjectType implements Type
 {
+    private readonly bool $isRaw;
+
     public function __construct(
         private readonly Schema $schema,
         private readonly bool $nullable,
         private readonly string $name,
     ) {
+        $this->isRaw = $this->schema->extensions['x-raw'] ?? false;
     }
 
     public function isNullable(): bool
@@ -21,12 +24,12 @@ class ObjectType implements Type
 
     public function getPhpDocParameterAnnotationType(): string
     {
-        return $this->name;
+        return $this->isRaw ? 'array<mixed>' : $this->name;
     }
 
     public function getMethodParameterType(): string
     {
-        return $this->name;
+        return $this->isRaw ? 'array' : $this->name;
     }
 
     public function getMethodParameterDefault(): ?string
@@ -50,29 +53,23 @@ class ObjectType implements Type
         throw new Exception('Object parameters are not supported.');
     }
 
-    public function getRequestBodyPayloadInitializationFromRequest(): string
-    {
-        return "\$requestBodyPayload = \$this->serializer->deserialize(\$request->getContent(), '{$this->name}', JsonEncoder::FORMAT);";
-    }
-
-    public function getRequestBodyPayloadValidationViolationsInitialization(): string
-    {
-        return '$violations = $this->validator->validate($requestBodyPayload);';
-    }
-
     public function getNormalizedType(): string
     {
-        return $this->name;
+        return $this->isRaw ? 'array<mixed>' : $this->name;
     }
 
     public function getRequestBodyPayloadTypeChecking(): string
     {
-        return "\$requestBodyPayload instanceOf {$this->name}";
+        return $this->isRaw ? 'is_array($requestBodyPayload)' : "\$requestBodyPayload instanceOf {$this->name}";
     }
 
     public function getConstraints(): array
     {
-        $constraints = [new Constraint('Assert\Valid', [])];
+        $constraints = [];
+
+        if (!$this->isRaw) {
+            $constraints[] = new Constraint('Assert\Valid', []);
+        }
 
         if (!$this->nullable) {
             $constraints[] = new Constraint('Assert\NotNull', []);
@@ -87,7 +84,7 @@ class ObjectType implements Type
 
     public function getBuiltInPhpType(): string
     {
-        return 'object';
+        return $this->isRaw ? 'array' : 'object';
     }
 
     public function getInitValue(): string

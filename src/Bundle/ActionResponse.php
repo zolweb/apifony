@@ -52,15 +52,17 @@ class ActionResponse implements File
                     if (!$schema instanceof Reference) {
                         $type = TypeFactory::build('', $schema, $components);
                         if ($type instanceof ObjectType) {
-                            $payloadModels[$rawName] = Model::build(
-                                $bundleNamespace,
-                                "{$bundleNamespace}\Api\\{$aggregateName}",
-                                "src/Api/{$aggregateName}",
-                                $className,
-                                $schema,
-                                $components,
-                                false,
-                            );
+                            if (!isset($schema->extensions['x-raw'])) {
+                                $payloadModels[$rawName] = Model::build(
+                                    $bundleNamespace,
+                                    "{$bundleNamespace}\Api\\{$aggregateName}",
+                                    "src/Api/{$aggregateName}",
+                                    $className,
+                                    $schema,
+                                    $components,
+                                    false,
+                                );
+                            }
                             foreach ($schema->properties as $propertyName => $property) {
                                 $addModels("{$rawName}_{$propertyName}", $property);
                             }

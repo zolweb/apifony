@@ -16,10 +16,6 @@ interface Type
 
     public function getStringToTypeCastFunction(): string;
 
-    public function getRequestBodyPayloadInitializationFromRequest(): string;
-
-    public function getRequestBodyPayloadValidationViolationsInitialization(): string;
-
     public function getNormalizedType(): string;
 
     public function getRequestBodyPayloadTypeChecking(): string;
