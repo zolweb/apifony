@@ -52,7 +52,7 @@ class ActionResponse implements File
                     if (!$schema instanceof Reference) {
                         $type = TypeFactory::build('', $schema, $components);
                         if ($type instanceof ObjectType) {
-                            if (!isset($schema->extensions['x-raw'])) {
+                            if (!($schema->extensions['x-raw'] ?? false)) {
                                 $payloadModels[$rawName] = Model::build(
                                     $bundleNamespace,
                                     "{$bundleNamespace}\Api\\{$aggregateName}",
@@ -62,9 +62,9 @@ class ActionResponse implements File
                                     $components,
                                     false,
                                 );
-                            }
-                            foreach ($schema->properties as $propertyName => $property) {
-                                $addModels("{$rawName}_{$propertyName}", $property);
+                                foreach ($schema->properties as $propertyName => $property) {
+                                    $addModels("{$rawName}_{$propertyName}", $property);
+                                }
                             }
                         } elseif ($type instanceof ArrayType) {
                             if ($schema->items === null) {

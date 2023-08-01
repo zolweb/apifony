@@ -53,17 +53,19 @@ class ActionRequestBody
                     if (!$schema instanceof Reference) {
                         $type = TypeFactory::build('', $schema, $components);
                         if ($type instanceof ObjectType) {
-                            $payloadModels[$rawName] = Model::build(
-                                $bundleNamespace,
-                                "{$bundleNamespace}\Api\\{$aggregateName}",
-                                "src/Api/{$aggregateName}",
-                                $className,
-                                $schema,
-                                $components,
-                                false,
-                            );
-                            foreach ($schema->properties as $propertyName => $property) {
-                                $addModels("{$rawName}_{$propertyName}", $property);
+                            if (!($schema->extensions['x-raw'] ?? false)) {
+                                $payloadModels[$rawName] = Model::build(
+                                    $bundleNamespace,
+                                    "{$bundleNamespace}\Api\\{$aggregateName}",
+                                    "src/Api/{$aggregateName}",
+                                    $className,
+                                    $schema,
+                                    $components,
+                                    false,
+                                );
+                                foreach ($schema->properties as $propertyName => $property) {
+                                    $addModels("{$rawName}_{$propertyName}", $property);
+                                }
                             }
                         } elseif ($type instanceof ArrayType) {
                             if ($schema->items === null) {

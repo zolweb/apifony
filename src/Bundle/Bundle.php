@@ -216,17 +216,19 @@ class Bundle implements File
             if (!isset($models[$rawName])) {
                 $type = TypeFactory::build('', $schema, $components);
                 if ($type instanceof ObjectType) {
-                    $models[$rawName] = Model::build(
-                        $namespace,
-                        "{$namespace}\Model",
-                        "src/Model",
-                        $rawName,
-                        $schema,
-                        $components,
-                        true,
-                    );
-                    foreach ($schema->properties as $propertyName => $property) {
-                        $addModels("{$rawName}_{$propertyName}", $property);
+                    if (!($schema->extensions['x-raw'] ?? false)) {
+                        $models[$rawName] = Model::build(
+                            $namespace,
+                            "{$namespace}\Model",
+                            "src/Model",
+                            $rawName,
+                            $schema,
+                            $components,
+                            true,
+                        );
+                        foreach ($schema->properties as $propertyName => $property) {
+                            $addModels("{$rawName}_{$propertyName}", $property);
+                        }
                     }
                 } elseif ($type instanceof ArrayType) {
                     if ($schema->items === null) {
