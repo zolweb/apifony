@@ -58,7 +58,7 @@ class ModelAttribute
 
     public function isArray(): bool
     {
-        return $this->schema->type === 'array';
+        return $this->schema->type === 'array' || ($this->schema->type === 'object' && ($this->schema->extensions['x-raw'] ?? false));
     }
 
     public function hasDefault(): bool
