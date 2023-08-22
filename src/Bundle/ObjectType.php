@@ -24,12 +24,12 @@ class ObjectType implements Type
 
     public function getPhpDocParameterAnnotationType(): string
     {
-        return $this->isRaw ? 'array<mixed>' : $this->name;
+        return $this->isRaw ? 'array<mixed>|\stdClass' : $this->name;
     }
 
     public function getMethodParameterType(): string
     {
-        return $this->isRaw ? 'array' : $this->name;
+        return $this->isRaw ? 'array|\stdClass' : $this->name;
     }
 
     public function getMethodParameterDefault(): ?string
@@ -55,7 +55,7 @@ class ObjectType implements Type
 
     public function getNormalizedType(): string
     {
-        return $this->isRaw ? 'array<mixed>' : $this->name;
+        return $this->isRaw ? 'array<mixed>|\stdClass' : $this->name;
     }
 
     public function getRequestBodyPayloadTypeChecking(): string
@@ -84,7 +84,7 @@ class ObjectType implements Type
 
     public function getBuiltInPhpType(): string
     {
-        return $this->isRaw ? 'array' : 'object';
+        return $this->isRaw ? 'array|\stdClass' : 'object';
     }
 
     public function getInitValue(): string
