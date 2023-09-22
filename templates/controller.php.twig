@@ -121,7 +121,7 @@ class {{ controller.className }} extends AbstractController
             );
         }
 
-        $responsePayloadContentType = $request->headers->get('accept');
+        $responsePayloadContentType = $request->headers->get('accept', 'application/json');
         switch (true) {
 {%~ for requestBodyPayloadType in action.requestBodyPayloadTypes %}
             case {{ requestBodyPayloadType is null ? 'is_null($requestBodyPayload)' : requestBodyPayloadType.requestBodyPayloadTypeChecking }}:
