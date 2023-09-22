@@ -123,7 +123,7 @@ class {{ controller.className }} extends AbstractController
 
         $responsePayloadContentType = $request->headers->get('accept', 'application/json');
         if (str_contains($responsePayloadContentType, '*/*')) {
-            $responsePayloadContentType = 'application/json'
+            $responsePayloadContentType = 'application/json';
         }
 
         switch (true) {
