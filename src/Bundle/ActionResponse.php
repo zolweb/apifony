@@ -48,7 +48,7 @@ class ActionResponse implements File
             }
 
             if ($hasModel) {
-                $addModels = function(string $rawName, Reference|Schema $schema) use (&$addModels, &$payloadModels, $bundleNamespace, $aggregateName, $className, $components) {
+                $addModels = function(string $rawName, Reference|Schema $schema) use (&$addModels, &$payloadModels, $bundleNamespace, $aggregateName, $components) {
                     if (!$schema instanceof Reference) {
                         $type = TypeFactory::build('', $schema, $components);
                         if ($type instanceof ObjectType) {
@@ -57,7 +57,7 @@ class ActionResponse implements File
                                     $bundleNamespace,
                                     "{$bundleNamespace}\Api\\{$aggregateName}",
                                     "src/Api/{$aggregateName}",
-                                    $className,
+                                    $rawName,
                                     $schema,
                                     $components,
                                     false,
