@@ -108,6 +108,8 @@ class Constraint
                                                             strval($item),
                                                         is_bool($item) =>
                                                             $item ? 'true' : 'false',
+                                                        is_null($item) =>
+                                                            'null',
                                                         $item instanceOf self =>
                                                             $item->getInstantiation($indentation + 1),
                                                     }
