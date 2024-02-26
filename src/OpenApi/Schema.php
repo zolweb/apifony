@@ -35,7 +35,7 @@ class Schema
                 throw new Exception('Schema objects enum attribute must be a string.');
             }
             foreach ($data['enum'] as $e) {
-                if (!is_string($e) && !is_int($e) && !is_float($e) && !is_bool($e)) {
+                if (!is_string($e) && !is_int($e) && !is_float($e) && !is_bool($e) && !is_null($e)) {
                     throw new Exception('Schema objects enum attribute elements must be a string, an int, a float or a boolean.');
                 }
                 $enum[] = $e;
@@ -135,7 +135,7 @@ class Schema
 
     /**
      * @param string|array<string> $type
-     * @param array<string|int|float|bool> $enum
+     * @param array<string|int|float|bool|null> $enum
      * @param array<string, Reference|Schema> $properties
      * @param array<string, mixed> $extensions
      */
