@@ -44,18 +44,13 @@ services:
                 - '@{{ services.serviceNamespace }}.php_stan_extractor'
                 - '@{{ services.serviceNamespace }}.reflection_extractor'
 
-    {{ services.serviceNamespace }}.annotation_reader:
-        class: 'Doctrine\Common\Annotations\AnnotationReader'
-
-    {{ services.serviceNamespace }}.annotation_loader:
-        class: 'Symfony\Component\Serializer\Mapping\Loader\AnnotationLoader'
-        arguments:
-            $reader: '@{{ services.serviceNamespace }}.annotation_reader'
+    {{ services.serviceNamespace }}.attribute_loader:
+        class: 'Symfony\Component\Serializer\Mapping\Loader\AttributeLoader'
 
     {{ services.serviceNamespace }}.class_metadata_factory:
         class: 'Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory'
         arguments:
-            $loader: '@{{ services.serviceNamespace }}.annotation_loader'
+            $loader: '@{{ services.serviceNamespace }}.attribute_loader'
 
     {{ services.serviceNamespace }}.metadata_aware_name_converter:
         class: 'Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter'
