@@ -2,8 +2,8 @@
     "name": "zolteam/ogen",
     "license": "AGPL-3.0-or-later",
     "require": {
-        "symfony/string": "^6.3",
-        "symfony/yaml": "^6.3",
+        "symfony/string": "^6.0 || ^7.0",
+        "symfony/yaml": "^6.0 || ^7.0",
         "twig/twig": "^3.6"
     },
     "require-dev": {
