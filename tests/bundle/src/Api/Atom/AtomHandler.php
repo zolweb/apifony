@@ -9,4 +9,10 @@ interface AtomHandler
         string $pAtomId,
     ):
         GetAtom200ApplicationJsonResponse;
+
+    public function postAtomFromPostAtomApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
+        PostAtomApplicationJsonRequestBodyPayload $requestBodyPayload,
+    ):
+        PostAtom201EmptyResponse |
+        PostAtom400ApplicationJsonResponse;
 }

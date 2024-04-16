@@ -101,4 +101,87 @@ class AtomController extends AbstractController
                 throw new RuntimeException();
         }
     }
+
+    public function postAtom(
+        Request $request,
+    ): Response {
+        $errors = [];
+
+        $requestBodyPayload = null;
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', '')) {
+            case 'application/json':
+                try {
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request, PostAtomApplicationJsonRequestBodyPayload::class);
+                    $this->validateRequestBody(
+                        $requestBodyPayload,
+                        [
+                            new Assert\Valid,
+                            new Assert\NotNull,
+                        ],
+                    );
+                } catch (DenormalizationException $e) {
+                    $errors['requestBody'] = [$e->getMessage()];
+                } catch (RequestBodyValidationException $e) {
+                    $errors['requestBody'] = $e->messages;
+                }
+
+                break;
+            default:
+                return new JsonResponse(
+                    [
+                        'code' => 'unsupported_request_type',
+                        'message' => "The value '$requestBodyPayloadContentType' received in content-type header is not a supported format.",
+                    ],
+                    Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                );
+        }
+
+        if (count($errors) > 0) {
+            return new JsonResponse(
+                [
+                    'code' => 'validation_failed',
+                    'message' => 'Validation has failed.',
+                    'errors' => $errors,
+                ],
+                Response::HTTP_BAD_REQUEST,
+            );
+        }
+
+        $responsePayloadContentType = $request->headers->get('accept', 'application/json');
+        if (str_contains($responsePayloadContentType, '*/*')) {
+            $responsePayloadContentType = 'application/json';
+        }
+
+        switch (true) {
+            case $requestBodyPayload instanceOf PostAtomApplicationJsonRequestBodyPayload:
+                switch($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->postAtomFromPostAtomApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
+                            $requestBodyPayload,
+                        );
+
+                        break;
+                    default:
+                        return new JsonResponse(
+                            [
+                                'code' => 'unsupported_response_type',
+                                'message' => "The value '$responsePayloadContentType' received in accept header is not a supported format.",
+                            ],
+                            Response::HTTP_UNSUPPORTED_MEDIA_TYPE,
+                        );
+                }
+
+                break;
+            default:
+                throw new RuntimeException();
+        }
+        switch ($response::CONTENT_TYPE) {
+            case null:
+                return new Response('', $response::CODE, $response->getHeaders());
+            case 'application/json':
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
+            default:
+                throw new RuntimeException();
+        }
+    }
 }

@@ -23,4 +23,28 @@ paths:
                 properties:
                   id:
                     type: 'string'
+  /atoms:
+    post:
+      operationId: 'post-atom'
+      tags:
+        - 'atom'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: 'object'
+              properties:
+                id:
+                  type: 'string'
+      responses:
+        '201': {}
+        '400': # todo pouvoir créer des endpoints sans response body
+          content:
+            application/json:
+              schema:
+                type: 'object'
+                properties:
+                  code:
+                    type: 'string'
+
 components: {}

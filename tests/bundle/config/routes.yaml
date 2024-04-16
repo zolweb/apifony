@@ -4,3 +4,8 @@ zol_ogen_tests_test_open_api_server_get_atom:
         atomId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
     methods: get
     controller: Zol\Ogen\Tests\TestOpenApiServer\Api\Atom\AtomController::getAtom
+
+zol_ogen_tests_test_open_api_server_post_atom:
+    path: /atoms
+    methods: post
+    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\Atom\AtomController::postAtom

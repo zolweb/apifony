@@ -20,4 +20,20 @@ final class OgenTest extends WebTestCase
 
         self::assertResponseStatusCodeSame(200);
     }
+
+    public function testPostAtom(): void
+    {
+        $httpClient = self::createClient();
+        $httpClient->catchExceptions(false);
+
+        $httpClient->jsonRequest(
+            method: 'POST',
+            uri: '/atoms',
+            parameters: [
+                'id' => 'hydrogen',
+            ],
+        );
+
+        self::assertResponseStatusCodeSame(201);
+    }
 }
