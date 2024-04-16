@@ -33,5 +33,10 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
             'http_method_override' => false,
             'test' => true,
         ]);
+
+        $container->services()
+            ->set(TestHandler::class)
+            ->tag('test_open_api_server.handler', ['controller' => 'atom'])
+        ;
     }
 }

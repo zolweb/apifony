@@ -203,6 +203,8 @@ class Bundle implements File
      */
     private static function buildModels(string $namespace, ?Components $components): array
     {
+        $models = [];
+
         /**
          * @throws Exception
          */

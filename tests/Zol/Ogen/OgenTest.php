@@ -8,20 +8,16 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
 final class OgenTest extends WebTestCase
 {
-    public function testA(): void
+    public function testGetAtom(): void
     {
         $httpClient = self::createClient();
         $httpClient->catchExceptions(false);
 
-        $httpClient->jsonRequest(
-            method: 'POST',
-            uri: '/contents',
-            parameters: [
-                'contentTypeId' => 'atom',
-                'name' => 'Hydrogen',
-                'localeId' => 'en',
-                'data' => [],
-            ],
+        $httpClient->request(
+            method: 'GET',
+            uri: '/atoms/hydrogen',
         );
+
+        self::assertResponseStatusCodeSame(200);
     }
 }

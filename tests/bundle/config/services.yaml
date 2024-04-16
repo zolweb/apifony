@@ -2,43 +2,8 @@ services:
 
     ### Controllers ###
 
-    Zol\Ogen\Tests\TestOpenApiServer\Api\ContentType\ContentTypeController:
-        class: Zol\Ogen\Tests\TestOpenApiServer\Api\ContentType\ContentTypeController
-        arguments:
-            $serializer: '@zol_ogen_tests_test_open_api_server.serializer_interface'
-            $validator: '@validator'
-        public: true
-
-    Zol\Ogen\Tests\TestOpenApiServer\Api\Locale\LocaleController:
-        class: Zol\Ogen\Tests\TestOpenApiServer\Api\Locale\LocaleController
-        arguments:
-            $serializer: '@zol_ogen_tests_test_open_api_server.serializer_interface'
-            $validator: '@validator'
-        public: true
-
-    Zol\Ogen\Tests\TestOpenApiServer\Api\Content\ContentController:
-        class: Zol\Ogen\Tests\TestOpenApiServer\Api\Content\ContentController
-        arguments:
-            $serializer: '@zol_ogen_tests_test_open_api_server.serializer_interface'
-            $validator: '@validator'
-        public: true
-
-    Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController:
-        class: Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController
-        arguments:
-            $serializer: '@zol_ogen_tests_test_open_api_server.serializer_interface'
-            $validator: '@validator'
-        public: true
-
-    Zol\Ogen\Tests\TestOpenApiServer\Api\Media\MediaController:
-        class: Zol\Ogen\Tests\TestOpenApiServer\Api\Media\MediaController
-        arguments:
-            $serializer: '@zol_ogen_tests_test_open_api_server.serializer_interface'
-            $validator: '@validator'
-        public: true
-
-    Zol\Ogen\Tests\TestOpenApiServer\Api\MediaTree\MediaTreeController:
-        class: Zol\Ogen\Tests\TestOpenApiServer\Api\MediaTree\MediaTreeController
+    Zol\Ogen\Tests\TestOpenApiServer\Api\Atom\AtomController:
+        class: Zol\Ogen\Tests\TestOpenApiServer\Api\Atom\AtomController
         arguments:
             $serializer: '@zol_ogen_tests_test_open_api_server.serializer_interface'
             $validator: '@validator'
@@ -46,15 +11,6 @@ services:
 
     ### Format validators ###
 
-    Zol\Ogen\Tests\TestOpenApiServer\Format\MediaFolderIdValidator:
-        class: Zol\Ogen\Tests\TestOpenApiServer\Format\MediaFolderIdValidator
-        public: true
-        tags: ['validator.constraint_validator']
-
-    Zol\Ogen\Tests\TestOpenApiServer\Format\UuidValidator:
-        class: Zol\Ogen\Tests\TestOpenApiServer\Format\UuidValidator
-        public: true
-        tags: ['validator.constraint_validator']
 
     ### Serializer ###
 
