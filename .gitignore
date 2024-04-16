@@ -1,9 +1,4 @@
 .idea/
 .zol/
-
-data/*
 var/*
-
-/.env
-
 vendor/

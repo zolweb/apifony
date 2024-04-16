@@ -1,8 +1,0 @@
-controllers:
-    resource:
-        path: ../src/Controller/
-        namespace: App\Controller
-    type: attribute
-
-invoicing_open_api_server:
-    resource: "@InvoicingOpenApiServerBundle/config/routes.yaml"
