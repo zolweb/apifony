@@ -1,0 +1,168 @@
+zol_test_open_api_server_get_content_type_list:
+    path: /content-types
+    methods: get
+    controller: Zol\TestOpenApiServer\Api\ContentType\ContentTypeController::getContentTypeList
+
+zol_test_open_api_server_get_content_type:
+    path: /content-types/{contentTypeId}
+    requirements:
+        contentTypeId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    methods: get
+    controller: Zol\TestOpenApiServer\Api\ContentType\ContentTypeController::getContentType
+
+zol_test_open_api_server_get_locale_list:
+    path: /locales
+    methods: get
+    controller: Zol\TestOpenApiServer\Api\Locale\LocaleController::getLocaleList
+
+zol_test_open_api_server_post_content:
+    path: /contents
+    methods: post
+    controller: Zol\TestOpenApiServer\Api\Content\ContentController::postContent
+
+zol_test_open_api_server_get_content_list:
+    path: /contents
+    methods: get
+    controller: Zol\TestOpenApiServer\Api\Content\ContentController::getContentList
+
+zol_test_open_api_server_get_content:
+    path: /contents/{contentId}
+    requirements:
+        contentId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    methods: get
+    controller: Zol\TestOpenApiServer\Api\Content\ContentController::getContent
+
+zol_test_open_api_server_patch_content:
+    path: /contents/{contentId}
+    requirements:
+        contentId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    methods: patch
+    controller: Zol\TestOpenApiServer\Api\Content\ContentController::patchContent
+
+zol_test_open_api_server_archive_content:
+    path: /contents/{contentId}:archive
+    requirements:
+        contentId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    methods: post
+    controller: Zol\TestOpenApiServer\Api\Content\ContentController::archiveContent
+
+zol_test_open_api_server_restore_content:
+    path: /contents/{contentId}:restore
+    requirements:
+        contentId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    methods: post
+    controller: Zol\TestOpenApiServer\Api\Content\ContentController::restoreContent
+
+zol_test_open_api_server_duplicate_content:
+    path: /contents/{contentId}:duplicate
+    requirements:
+        contentId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    methods: post
+    controller: Zol\TestOpenApiServer\Api\Content\ContentController::duplicateContent
+
+zol_test_open_api_server_post_content_translation:
+    path: /content-translations
+    methods: post
+    controller: Zol\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController::postContentTranslation
+
+zol_test_open_api_server_patch_content_translation:
+    path: /content-translations/{contentTranslationId}
+    requirements:
+        contentTranslationId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    methods: patch
+    controller: Zol\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController::patchContentTranslation
+
+zol_test_open_api_server_get_content_translation:
+    path: /content-translations/{contentTranslationId}
+    requirements:
+        contentTranslationId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    methods: get
+    controller: Zol\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController::getContentTranslation
+
+zol_test_open_api_server_get_content_translation_data_versions:
+    path: /content-translations/{contentTranslationId}/data-versions
+    requirements:
+        contentTranslationId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    methods: get
+    controller: Zol\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController::getContentTranslationDataVersions
+
+zol_test_open_api_server_publish_content_translation:
+    path: /content-translations/{contentTranslationId}:publish
+    requirements:
+        contentTranslationId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    methods: post
+    controller: Zol\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController::publishContentTranslation
+
+zol_test_open_api_server_withdraw_content_translation:
+    path: /content-translations/{contentTranslationId}:withdraw
+    requirements:
+        contentTranslationId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    methods: post
+    controller: Zol\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController::withdrawContentTranslation
+
+zol_test_open_api_server_get_media_list:
+    path: /medias
+    methods: get
+    controller: Zol\TestOpenApiServer\Api\Media\MediaController::getMediaList
+
+zol_test_open_api_server_post_media:
+    path: /medias
+    methods: post
+    controller: Zol\TestOpenApiServer\Api\Media\MediaController::postMedia
+
+zol_test_open_api_server_get_media:
+    path: /medias/{mediaId}
+    requirements:
+        mediaId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    methods: get
+    controller: Zol\TestOpenApiServer\Api\Media\MediaController::getMedia
+
+zol_test_open_api_server_patch_media:
+    path: /medias/{mediaId}
+    requirements:
+        mediaId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    methods: patch
+    controller: Zol\TestOpenApiServer\Api\Media\MediaController::patchMedia
+
+zol_test_open_api_server_archive_media:
+    path: /medias/{mediaId}:archive
+    requirements:
+        mediaId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    methods: post
+    controller: Zol\TestOpenApiServer\Api\Media\MediaController::archiveMedia
+
+zol_test_open_api_server_get_media_tree:
+    path: /media-trees/mine
+    methods: get
+    controller: Zol\TestOpenApiServer\Api\MediaTree\MediaTreeController::getMediaTree
+
+zol_test_open_api_server_move_to_media_folder:
+    path: /media-trees/mine:move-to-media-folder
+    methods: post
+    controller: Zol\TestOpenApiServer\Api\MediaTree\MediaTreeController::moveToMediaFolder
+
+zol_test_open_api_server_add_media_folder:
+    path: /media-trees/mine/media-folders
+    methods: post
+    controller: Zol\TestOpenApiServer\Api\MediaTree\MediaTreeController::addMediaFolder
+
+zol_test_open_api_server_get_media_folder:
+    path: /media-trees/mine/media-folders/{mediaFolderId}
+    requirements:
+        mediaFolderId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    methods: get
+    controller: Zol\TestOpenApiServer\Api\MediaTree\MediaTreeController::getMediaFolder
+
+zol_test_open_api_server_update_media_folder:
+    path: /media-trees/mine/media-folders/{mediaFolderId}
+    requirements:
+        mediaFolderId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    methods: patch
+    controller: Zol\TestOpenApiServer\Api\MediaTree\MediaTreeController::updateMediaFolder
+
+zol_test_open_api_server_delete_media_folder:
+    path: /media-trees/mine/media-folders/{mediaFolderId}
+    requirements:
+        mediaFolderId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    methods: delete
+    controller: Zol\TestOpenApiServer\Api\MediaTree\MediaTreeController::deleteMediaFolder
