@@ -1,6 +1,6 @@
 <?php
 
-namespace Zol\TestOpenApiServer\Api\ContentType;
+namespace Zol\Ogen\Tests\TestOpenApiServer\Api\ContentType;
 
 use Symfony\Component\Validator\Constraints as Assert;
 

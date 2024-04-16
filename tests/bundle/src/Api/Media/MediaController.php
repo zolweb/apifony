@@ -1,19 +1,19 @@
 <?php
 
-namespace Zol\TestOpenApiServer\Api\Media;
+namespace Zol\Ogen\Tests\TestOpenApiServer\Api\Media;
 
-use Zol\TestOpenApiServer\Api\DenormalizationException;
-use Zol\TestOpenApiServer\Api\ParameterValidationException;
-use Zol\TestOpenApiServer\Api\RequestBodyValidationException;
+use Zol\Ogen\Tests\TestOpenApiServer\Api\DenormalizationException;
+use Zol\Ogen\Tests\TestOpenApiServer\Api\ParameterValidationException;
+use Zol\Ogen\Tests\TestOpenApiServer\Api\RequestBodyValidationException;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
-use Zol\TestOpenApiServer\Api\AbstractController;
-use Zol\TestOpenApiServer\Format\MediaFolderId as AssertMediaFolderId;
-use Zol\TestOpenApiServer\Format\Uuid as AssertUuid;
-use Zol\TestOpenApiServer\Model\Media;
+use Zol\Ogen\Tests\TestOpenApiServer\Api\AbstractController;
+use Zol\Ogen\Tests\TestOpenApiServer\Format\MediaFolderId as AssertMediaFolderId;
+use Zol\Ogen\Tests\TestOpenApiServer\Format\Uuid as AssertUuid;
+use Zol\Ogen\Tests\TestOpenApiServer\Model\Media;
 
 class MediaController extends AbstractController
 {

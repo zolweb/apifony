@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Zol\\TestOpenApiServer\\" : "src/"
+            "Zol\\Ogen\\Tests\\TestOpenApiServer\\" : "src/"
         }
     }
 }

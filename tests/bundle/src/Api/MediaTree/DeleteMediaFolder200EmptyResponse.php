@@ -1,6 +1,6 @@
 <?php
 
-namespace Zol\TestOpenApiServer\Api\MediaTree;
+namespace Zol\Ogen\Tests\TestOpenApiServer\Api\MediaTree;
 
 
 class DeleteMediaFolder200EmptyResponse

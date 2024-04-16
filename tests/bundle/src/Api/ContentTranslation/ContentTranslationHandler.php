@@ -1,8 +1,8 @@
 <?php
 
-namespace Zol\TestOpenApiServer\Api\ContentTranslation;
+namespace Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation;
 
-use Zol\TestOpenApiServer\Model\ContentTranslation;
+use Zol\Ogen\Tests\TestOpenApiServer\Model\ContentTranslation;
 
 interface ContentTranslationHandler
 {

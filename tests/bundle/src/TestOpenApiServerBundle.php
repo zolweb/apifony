@@ -1,6 +1,6 @@
 <?php
 
-namespace Zol\TestOpenApiServer;
+namespace Zol\Ogen\Tests\TestOpenApiServer;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -22,42 +22,42 @@ class TestOpenApiServerBundle extends AbstractBundle
                             switch ($tag['controller']) {
                                 case 'content_type':
                                     $container
-                                        ->findDefinition('Zol\TestOpenApiServer\Api\ContentType\ContentTypeController')
+                                        ->findDefinition('Zol\Ogen\Tests\TestOpenApiServer\Api\ContentType\ContentTypeController')
                                         ->addMethodCall('setHandler', [new Reference($id)]);
 
                                 break;
 
                                 case 'locale':
                                     $container
-                                        ->findDefinition('Zol\TestOpenApiServer\Api\Locale\LocaleController')
+                                        ->findDefinition('Zol\Ogen\Tests\TestOpenApiServer\Api\Locale\LocaleController')
                                         ->addMethodCall('setHandler', [new Reference($id)]);
 
                                 break;
 
                                 case 'content':
                                     $container
-                                        ->findDefinition('Zol\TestOpenApiServer\Api\Content\ContentController')
+                                        ->findDefinition('Zol\Ogen\Tests\TestOpenApiServer\Api\Content\ContentController')
                                         ->addMethodCall('setHandler', [new Reference($id)]);
 
                                 break;
 
                                 case 'content_translation':
                                     $container
-                                        ->findDefinition('Zol\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController')
+                                        ->findDefinition('Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController')
                                         ->addMethodCall('setHandler', [new Reference($id)]);
 
                                 break;
 
                                 case 'media':
                                     $container
-                                        ->findDefinition('Zol\TestOpenApiServer\Api\Media\MediaController')
+                                        ->findDefinition('Zol\Ogen\Tests\TestOpenApiServer\Api\Media\MediaController')
                                         ->addMethodCall('setHandler', [new Reference($id)]);
 
                                 break;
 
                                 case 'media_tree':
                                     $container
-                                        ->findDefinition('Zol\TestOpenApiServer\Api\MediaTree\MediaTreeController')
+                                        ->findDefinition('Zol\Ogen\Tests\TestOpenApiServer\Api\MediaTree\MediaTreeController')
                                         ->addMethodCall('setHandler', [new Reference($id)]);
 
                                 break;
@@ -70,14 +70,14 @@ class TestOpenApiServerBundle extends AbstractBundle
                             switch ($tag['format']) {
                                 case 'media-folder-id':
                                     $container
-                                        ->findDefinition('Zol\TestOpenApiServer\Format\MediaFolderIdValidator')
+                                        ->findDefinition('Zol\Ogen\Tests\TestOpenApiServer\Format\MediaFolderIdValidator')
                                         ->addMethodCall('setFormatDefinition', [new Reference($id)]);
 
                                 break;
 
                                 case 'uuid':
                                     $container
-                                        ->findDefinition('Zol\TestOpenApiServer\Format\UuidValidator')
+                                        ->findDefinition('Zol\Ogen\Tests\TestOpenApiServer\Format\UuidValidator')
                                         ->addMethodCall('setFormatDefinition', [new Reference($id)]);
 
                                 break;

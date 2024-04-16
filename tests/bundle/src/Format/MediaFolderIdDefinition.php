@@ -1,6 +1,6 @@
 <?php
 
-namespace Zol\TestOpenApiServer\Format;
+namespace Zol\Ogen\Tests\TestOpenApiServer\Format;
 
 interface MediaFolderIdDefinition
 {

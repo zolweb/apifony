@@ -18,9 +18,9 @@ services:
       - ./composer.lock:/var/www/html/composer.lock:delegated
       - ~/.composer:/var/www/.composer:cached
       - ./tests:/var/www/html/tests:delegated
+      - ./phpunit.xml.dist:/var/www/html/phpunit.xml.dist:delegated
       # - ./.php-cs-fixer.dist.php:/var/www/html/.php-cs-fixer.dist.php:delegated
       # - ./openapi:/var/www/html/openapi:delegated
       # - ./phpstan.neon:/var/www/html/phpstan.neon:delegated
-      # - ./phpunit.xml.dist:/var/www/html/phpunit.xml.dist:delegated
       # - ./var/logs/php-fpm:/var/log/php:cached
       # - ./var/symfony:/var/www/html/var:delegated

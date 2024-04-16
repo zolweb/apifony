@@ -1,6 +1,6 @@
 <?php
 
-namespace Zol\TestOpenApiServer\Api\ContentTranslation;
+namespace Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation;
 
 
 class GetContentTranslation404ApplicationJsonResponse

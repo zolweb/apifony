@@ -1,6 +1,6 @@
 <?php
 
-namespace Zol\TestOpenApiServer\Api\Media;
+namespace Zol\Ogen\Tests\TestOpenApiServer\Api\Media;
 
 
 class PostMedia400ApplicationJsonResponse

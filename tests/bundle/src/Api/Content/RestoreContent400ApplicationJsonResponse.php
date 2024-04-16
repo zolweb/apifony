@@ -1,6 +1,6 @@
 <?php
 
-namespace Zol\TestOpenApiServer\Api\Content;
+namespace Zol\Ogen\Tests\TestOpenApiServer\Api\Content;
 
 
 class RestoreContent400ApplicationJsonResponse

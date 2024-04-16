@@ -1,6 +1,6 @@
 <?php
 
-namespace Zol\TestOpenApiServer\Api\Locale;
+namespace Zol\Ogen\Tests\TestOpenApiServer\Api\Locale;
 
 
 class GetLocaleList200ApplicationJsonResponse

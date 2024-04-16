@@ -1,6 +1,6 @@
 <?php
 
-namespace Zol\TestOpenApiServer\Api;
+namespace Zol\Ogen\Tests\TestOpenApiServer\Api;
 
 use Exception;
 

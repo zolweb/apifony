@@ -1,9 +1,9 @@
 <?php
 
-namespace Zol\TestOpenApiServer\Api\Media;
+namespace Zol\Ogen\Tests\TestOpenApiServer\Api\Media;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use Zol\TestOpenApiServer\Format\MediaFolderId as AssertMediaFolderId;
+use Zol\Ogen\Tests\TestOpenApiServer\Format\MediaFolderId as AssertMediaFolderId;
 
 
 class PostMediaApplicationJsonRequestBodyPayload

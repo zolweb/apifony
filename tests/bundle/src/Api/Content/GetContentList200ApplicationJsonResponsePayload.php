@@ -1,10 +1,10 @@
 <?php
 
-namespace Zol\TestOpenApiServer\Api\Content;
+namespace Zol\Ogen\Tests\TestOpenApiServer\Api\Content;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use Zol\TestOpenApiServer\Model\Content;
-use Zol\TestOpenApiServer\Model\Pagination;
+use Zol\Ogen\Tests\TestOpenApiServer\Model\Content;
+use Zol\Ogen\Tests\TestOpenApiServer\Model\Pagination;
 
 
 class GetContentList200ApplicationJsonResponsePayload

@@ -1,6 +1,6 @@
 <?php
 
-namespace Zol\TestOpenApiServer\Api;
+namespace Zol\Ogen\Tests\TestOpenApiServer\Api;
 
 use RuntimeException;
 use Symfony\Component\HttpFoundation\Request;

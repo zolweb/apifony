@@ -1,10 +1,10 @@
 <?php
 
-namespace Zol\TestOpenApiServer\Api\Media;
+namespace Zol\Ogen\Tests\TestOpenApiServer\Api\Media;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use Zol\TestOpenApiServer\Model\Media;
-use Zol\TestOpenApiServer\Model\Pagination;
+use Zol\Ogen\Tests\TestOpenApiServer\Model\Media;
+use Zol\Ogen\Tests\TestOpenApiServer\Model\Pagination;
 
 
 class GetMediaList200ApplicationJsonResponsePayload

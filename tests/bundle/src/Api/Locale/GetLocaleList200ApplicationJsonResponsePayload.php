@@ -1,9 +1,9 @@
 <?php
 
-namespace Zol\TestOpenApiServer\Api\Locale;
+namespace Zol\Ogen\Tests\TestOpenApiServer\Api\Locale;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use Zol\TestOpenApiServer\Model\Locale;
+use Zol\Ogen\Tests\TestOpenApiServer\Model\Locale;
 
 
 class GetLocaleList200ApplicationJsonResponsePayload

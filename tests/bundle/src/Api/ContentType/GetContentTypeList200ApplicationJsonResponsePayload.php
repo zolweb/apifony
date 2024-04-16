@@ -1,9 +1,9 @@
 <?php
 
-namespace Zol\TestOpenApiServer\Api\ContentType;
+namespace Zol\Ogen\Tests\TestOpenApiServer\Api\ContentType;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use Zol\TestOpenApiServer\Model\ContentType;
+use Zol\Ogen\Tests\TestOpenApiServer\Model\ContentType;
 
 
 class GetContentTypeList200ApplicationJsonResponsePayload

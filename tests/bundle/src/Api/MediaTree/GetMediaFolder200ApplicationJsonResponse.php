@@ -1,8 +1,8 @@
 <?php
 
-namespace Zol\TestOpenApiServer\Api\MediaTree;
+namespace Zol\Ogen\Tests\TestOpenApiServer\Api\MediaTree;
 
-use Zol\TestOpenApiServer\Model\MediaFolder;
+use Zol\Ogen\Tests\TestOpenApiServer\Model\MediaFolder;
 
 class GetMediaFolder200ApplicationJsonResponse
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Zol\TestOpenApiServer\Api\ContentTranslation;
+namespace Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation;
 
 use Symfony\Component\Validator\Constraints as Assert;
-use Zol\TestOpenApiServer\Model\ContentTranslationDataVersion;
-use Zol\TestOpenApiServer\Model\Pagination;
+use Zol\Ogen\Tests\TestOpenApiServer\Model\ContentTranslationDataVersion;
+use Zol\Ogen\Tests\TestOpenApiServer\Model\Pagination;
 
 
 class GetContentTranslationDataVersions200ApplicationJsonResponsePayload

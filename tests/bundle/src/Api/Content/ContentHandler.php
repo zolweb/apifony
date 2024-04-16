@@ -1,8 +1,8 @@
 <?php
 
-namespace Zol\TestOpenApiServer\Api\Content;
+namespace Zol\Ogen\Tests\TestOpenApiServer\Api\Content;
 
-use Zol\TestOpenApiServer\Model\Content;
+use Zol\Ogen\Tests\TestOpenApiServer\Model\Content;
 
 interface ContentHandler
 {

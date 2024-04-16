@@ -1,8 +1,8 @@
 <?php
 
-namespace Zol\TestOpenApiServer\Api\Media;
+namespace Zol\Ogen\Tests\TestOpenApiServer\Api\Media;
 
-use Zol\TestOpenApiServer\Model\Media;
+use Zol\Ogen\Tests\TestOpenApiServer\Model\Media;
 
 class GetMedia200ApplicationJsonResponse
 {

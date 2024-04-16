@@ -1,18 +1,18 @@
 <?php
 
-namespace Zol\TestOpenApiServer\Api\Content;
+namespace Zol\Ogen\Tests\TestOpenApiServer\Api\Content;
 
-use Zol\TestOpenApiServer\Api\DenormalizationException;
-use Zol\TestOpenApiServer\Api\ParameterValidationException;
-use Zol\TestOpenApiServer\Api\RequestBodyValidationException;
+use Zol\Ogen\Tests\TestOpenApiServer\Api\DenormalizationException;
+use Zol\Ogen\Tests\TestOpenApiServer\Api\ParameterValidationException;
+use Zol\Ogen\Tests\TestOpenApiServer\Api\RequestBodyValidationException;
 use RuntimeException;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
-use Zol\TestOpenApiServer\Api\AbstractController;
-use Zol\TestOpenApiServer\Format\Uuid as AssertUuid;
-use Zol\TestOpenApiServer\Model\Content;
+use Zol\Ogen\Tests\TestOpenApiServer\Api\AbstractController;
+use Zol\Ogen\Tests\TestOpenApiServer\Format\Uuid as AssertUuid;
+use Zol\Ogen\Tests\TestOpenApiServer\Model\Content;
 
 class ContentController extends AbstractController
 {

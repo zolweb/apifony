@@ -7,10 +7,19 @@
         "twig/twig": "^3.6"
     },
     "require-dev": {
+        "symfony/test-pack": "^1.1",
+        "symfony/filesystem": "^7.0",
+        "symfony/framework-bundle": "^7.0"
     },
     "autoload": {
         "psr-4": {
             "Zol\\Ogen\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Zol\\Ogen\\Tests\\": "tests/",
+            "Zol\\Ogen\\Tests\\TestOpenApiServer\\" : "tests/bundle/src"
         }
     },
     "bin": [
