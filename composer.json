@@ -1,6 +1,9 @@
 {
     "name": "zolteam/ogen",
     "license": "AGPL-3.0-or-later",
+    "bin": [
+        "ogen"
+    ],
     "require": {
         "symfony/string": "^6.0 || ^7.0",
         "symfony/yaml": "^6.0 || ^7.0",
@@ -9,7 +12,8 @@
     "require-dev": {
         "symfony/test-pack": "^1.1",
         "symfony/filesystem": "^7.0",
-        "symfony/framework-bundle": "^7.0"
+        "symfony/framework-bundle": "^7.0",
+        "zol/test-openapi-server": "dev-main"
     },
     "autoload": {
         "psr-4": {
@@ -22,7 +26,10 @@
             "Zol\\Ogen\\Tests\\TestOpenApiServer\\" : "tests/bundle/src"
         }
     },
-    "bin": [
-        "ogen"
+    "repositories": [
+        {
+            "type": "path",
+            "url": "tests/bundle"
+        }
     ]
 }

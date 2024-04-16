@@ -15,7 +15,7 @@ final class OgenTest extends WebTestCase
 
         $httpClient->jsonRequest(
             method: 'POST',
-            uri: '/admin/contents',
+            uri: '/contents',
             parameters: [
                 'contentTypeId' => 'atom',
                 'name' => 'Hydrogen',
