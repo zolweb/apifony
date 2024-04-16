@@ -5,3 +5,5 @@ data/*
 var/*
 
 /.env
+
+vendor/
