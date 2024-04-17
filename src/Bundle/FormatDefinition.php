@@ -2,6 +2,7 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\BuilderFactory;
 use PhpParser\Node\Stmt\Namespace_;
 
 class FormatDefinition implements File
@@ -20,11 +21,6 @@ class FormatDefinition implements File
         private readonly string $bundleNamespace,
         private readonly string $formatName,
     ) {
-    }
-
-    public function getNamespace(): string
-    {
-        return "{$this->bundleNamespace}\Format";
     }
 
     public function getInterfaceName(): string
@@ -54,11 +50,30 @@ class FormatDefinition implements File
 
     public function hasNamespaceAst(): bool
     {
-        return false;
+        return true;
     }
 
     public function getNamespaceAst(): Namespace_
     {
-        throw new \RuntimeException();
+        $f = new BuilderFactory();
+
+        $methodValidate = $f->method('validate');
+        $methodValidate->makePublic();
+        $methodValidate->addParam($f->param('value')->setType('mixed'));
+        $methodValidate->setReturnType('array');
+        $methodValidate->setDocComment(<<<'COMMENT'
+            /**
+             * @return string[]
+             */
+            COMMENT
+        );
+
+        $interface = $f->interface("{$this->formatName}Definition");
+        $interface->addStmt($methodValidate);
+
+        $namespace = $f->namespace("{$this->bundleNamespace}\Format");
+        $namespace->addStmt($interface);
+
+        return $namespace->getNode();
     }
 }
