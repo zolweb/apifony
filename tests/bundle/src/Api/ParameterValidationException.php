@@ -2,16 +2,13 @@
 
 namespace Zol\Ogen\Tests\TestOpenApiServer\Api;
 
-use Exception;
-
-class ParameterValidationException extends Exception
+class ParameterValidationException extends \Exception
 {
     /**
-     * @param array<string> $messages
+     * @param string[] $messages
      */
-    public function __construct(
-        public readonly array $messages,
-    ) {
+    public function __construct(public readonly array $messages)
+    {
         parent::__construct();
     }
 }

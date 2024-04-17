@@ -52,7 +52,7 @@ class RequestBodyValidationException implements File
         $constructor->addStmt($f->staticCall('parent', '__construct'));
         $constructor->setDocComment(<<<'COMMENT'
             /**
-             * @param array<string, array<string>> $messages
+             * @param array<string, string[]> $messages
              */
             COMMENT
         );

@@ -5,7 +5,7 @@ namespace Zol\Ogen\Tests\TestOpenApiServer\Api;
 class RequestBodyValidationException extends \Exception
 {
     /**
-     * @param array<string, array<string>> $messages
+     * @param array<string, string[]> $messages
      */
     public function __construct(public readonly array $messages)
     {
