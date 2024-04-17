@@ -11,5 +11,6 @@ zol-common:
 	@cd .zol && git clone --branch $(zol_common_version) git@gitlab.com:zolteam/zol-common.git
 
 test:
+	@$(RUNNER_DOCKER_EXEC) 'rm -rf /var/www/html/tests/bundle/*'
 	@$(RUNNER_DOCKER_EXEC) './ogen TestOpenApiServer Zol\\Ogen\\Tests\\TestOpenApiServer zol/test-openapi-server /var/www/html/tests/openapi.yaml /var/www/html/tests/bundle'
 	@$(RUNNER_DOCKER_EXEC) 'php vendor/bin/phpunit'
