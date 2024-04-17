@@ -2,18 +2,19 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\BuilderFactory;
+use PhpParser\Comment\Doc;
 use PhpParser\Node\Stmt\Namespace_;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 
 class RequestBodyValidationException implements File
 {
     public function __construct(
         private readonly string $bundleNamespace,
     ) {
-    }
-
-    public function getNamespace(): string
-    {
-        return "{$this->bundleNamespace}\Api";
     }
 
     public function getFolder(): string
@@ -38,11 +39,31 @@ class RequestBodyValidationException implements File
 
     public function hasNamespaceAst(): bool
     {
-        return false;
+        return true;
     }
 
     public function getNamespaceAst(): Namespace_
     {
-        throw new \RuntimeException();
+        $f = new BuilderFactory();
+
+        $constructor = $f->method('__construct');
+        $constructor->makePublic();
+        $constructor->addParam($f->param('messages')->setType('array')->makePublic()->makeReadonly());
+        $constructor->addStmt($f->staticCall('parent', '__construct'));
+        $constructor->setDocComment(<<<'COMMENT'
+            /**
+             * @param array<string, array<string>> $messages
+             */
+            COMMENT
+        );
+
+        $class = $f->class('RequestBodyValidationException');
+        $class->extend('\Exception');
+        $class->addStmt($constructor);
+
+        $namespace = $f->namespace("{$this->bundleNamespace}\Api");
+        $namespace->addStmt($class);
+
+        return $namespace->getNode();
     }
 }

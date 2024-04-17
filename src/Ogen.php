@@ -2,6 +2,9 @@
 
 namespace Zol\Ogen;
 
+use PhpParser\NodeDumper;
+use PhpParser\ParserFactory;
+use PhpParser\PhpVersion;
 use PhpParser\PrettyPrinter\Standard;
 use RuntimeException;
 use Zol\Ogen\Bundle\Bundle;
@@ -23,6 +26,12 @@ class Ogen
      */
     public function generate(string $bundleName, string $namespace, string $packageName, string $openApiSpecPath, string $outputDir): void
     {
+        // $parser = (new ParserFactory())->createForVersion(PhpVersion::fromString('8.2'));
+        // $stmts = $parser->parse(self::CODE);
+        // $nodeDumper = new NodeDumper(['dumpComments' => true]);
+        // echo $nodeDumper->dump($stmts), "\n";
+        // exit;
+
         $spec = Yaml::parseFile($openApiSpecPath);
         $openApi = OpenApi::build($spec);
         $bundle = Bundle::build($bundleName, $packageName, $namespace, $openApi);
@@ -48,4 +57,22 @@ class Ogen
             file_put_contents("{$outputDir}/{$file->getFolder()}/{$file->getName()}", $content);
         }
     }
+
+    private const CODE = <<<'PHP'
+<?php
+
+namespace Zol\Ogen\Tests\TestOpenApiServer\Api;
+
+class RequestBodyValidationException extends \Exception
+{
+    /**
+     * @param array<string, array<string>> $messages
+     */
+    public function __construct(public readonly array $messages)
+    {
+        parent::__construct();
+    }
+}
+PHP;
+
 }
