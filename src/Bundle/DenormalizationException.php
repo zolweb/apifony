@@ -3,8 +3,6 @@
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Node\Expr\StaticCall;
-use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
 
 class DenormalizationException implements File
@@ -46,7 +44,7 @@ class DenormalizationException implements File
         $constructor = $f->method('__construct');
         $constructor->makePublic();
         $constructor->addParam($f->param('message')->setType('string'));
-        $constructor->addStmt(new StaticCall(new Name('parent'), '__construct', [$f->var('message')]));
+        $constructor->addStmt($f->staticCall('parent', '__construct', [$f->var('message')]));
 
         $class = $f->class('DenormalizationException');
         $class->extend('\Exception');
