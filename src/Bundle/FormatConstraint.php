@@ -52,13 +52,13 @@ class FormatConstraint implements File
     {
         $f = new BuilderFactory();
 
-        $class = $f->class($this->formatName);
-        $class->extend('Constraint');
-        $class->addAttribute($f->attribute('\Attribute'));
+        $class = $f->class($this->formatName)
+            ->extend('Constraint')
+            ->addAttribute($f->attribute('\Attribute'));
 
-        $namespace = $f->namespace("{$this->bundleNamespace}\Format");
-        $namespace->addStmt($f->use('Symfony\Component\Validator\Constraint'));
-        $namespace->addStmt($class);
+        $namespace = $f->namespace("{$this->bundleNamespace}\Format")
+            ->addStmt($f->use('Symfony\Component\Validator\Constraint'))
+            ->addStmt($class);
 
         return $namespace->getNode();
     }

@@ -46,23 +46,23 @@ class RequestBodyValidationException implements File
     {
         $f = new BuilderFactory();
 
-        $constructor = $f->method('__construct');
-        $constructor->makePublic();
-        $constructor->addParam($f->param('messages')->setType('array')->makePublic()->makeReadonly());
-        $constructor->addStmt($f->staticCall('parent', '__construct'));
-        $constructor->setDocComment(<<<'COMMENT'
-            /**
-             * @param array<string, string[]> $messages
-             */
-            COMMENT
-        );
+        $constructor = $f->method('__construct')
+            ->makePublic()
+            ->addParam($f->param('messages')->setType('array')->makePublic()->makeReadonly())
+            ->addStmt($f->staticCall('parent', '__construct'))
+            ->setDocComment(<<<'COMMENT'
+                /**
+                 * @param array<string, string[]> $messages
+                 */
+                COMMENT
+            );
 
-        $class = $f->class('RequestBodyValidationException');
-        $class->extend('\Exception');
-        $class->addStmt($constructor);
+        $class = $f->class('RequestBodyValidationException')
+            ->extend('\Exception')
+            ->addStmt($constructor);
 
-        $namespace = $f->namespace("{$this->bundleNamespace}\Api");
-        $namespace->addStmt($class);
+        $namespace = $f->namespace("{$this->bundleNamespace}\Api")
+            ->addStmt($class);
 
         return $namespace->getNode();
     }

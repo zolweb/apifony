@@ -13,9 +13,9 @@ class Format
         $name = u($rawName)->camel()->title();
 
         return new self(
-            $definition = FormatDefinition::build($bundleNamespace, $name),
+            FormatDefinition::build($bundleNamespace, $name),
             FormatConstraint::build($bundleNamespace, $name),
-            FormatValidator::build($bundleNamespace, $name, $definition),
+            FormatValidator::build($bundleNamespace, $name),
         );
     }
 

@@ -23,11 +23,6 @@ class FormatDefinition implements File
     ) {
     }
 
-    public function getInterfaceName(): string
-    {
-        return "{$this->formatName}Definition";
-    }
-
     public function getFolder(): string
     {
         return 'src/Format';
@@ -57,22 +52,22 @@ class FormatDefinition implements File
     {
         $f = new BuilderFactory();
 
-        $methodValidate = $f->method('validate');
-        $methodValidate->makePublic();
-        $methodValidate->addParam($f->param('value')->setType('mixed'));
-        $methodValidate->setReturnType('array');
-        $methodValidate->setDocComment(<<<'COMMENT'
-            /**
-             * @return string[]
-             */
-            COMMENT
-        );
+        $methodValidate = $f->method('validate')
+            ->makePublic()
+            ->addParam($f->param('value')->setType('mixed'))
+            ->setReturnType('array')
+            ->setDocComment(<<<'COMMENT'
+                /**
+                 * @return string[]
+                 */
+                COMMENT
+            );
 
-        $interface = $f->interface("{$this->formatName}Definition");
-        $interface->addStmt($methodValidate);
+        $interface = $f->interface("{$this->formatName}Definition")
+            ->addStmt($methodValidate);
 
-        $namespace = $f->namespace("{$this->bundleNamespace}\Format");
-        $namespace->addStmt($interface);
+        $namespace = $f->namespace("{$this->bundleNamespace}\Format")
+            ->addStmt($interface);
 
         return $namespace->getNode();
     }

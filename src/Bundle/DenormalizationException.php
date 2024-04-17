@@ -41,17 +41,17 @@ class DenormalizationException implements File
     {
         $f = new BuilderFactory();
 
-        $constructor = $f->method('__construct');
-        $constructor->makePublic();
-        $constructor->addParam($f->param('message')->setType('string'));
-        $constructor->addStmt($f->staticCall('parent', '__construct', [$f->var('message')]));
+        $constructor = $f->method('__construct')
+            ->makePublic()
+            ->addParam($f->param('message')->setType('string'))
+            ->addStmt($f->staticCall('parent', '__construct', [$f->var('message')]));
 
-        $class = $f->class('DenormalizationException');
-        $class->extend('\Exception');
-        $class->addStmt($constructor);
+        $class = $f->class('DenormalizationException')
+            ->extend('\Exception')
+            ->addStmt($constructor);
 
-        $namespace = $f->namespace("{$this->bundleNamespace}\Api");
-        $namespace->addStmt($class);
+        $namespace = $f->namespace("{$this->bundleNamespace}\Api")
+            ->addStmt($class);
 
         return $namespace->getNode();
     }

@@ -2,9 +2,9 @@
 
 namespace Zol\Ogen;
 
-// use PhpParser\NodeDumper;
-// use PhpParser\ParserFactory;
-// use PhpParser\PhpVersion;
+use PhpParser\NodeDumper;
+use PhpParser\ParserFactory;
+use PhpParser\PhpVersion;
 use PhpParser\PrettyPrinter\Standard;
 use RuntimeException;
 use Zol\Ogen\Bundle\Bundle;
@@ -63,21 +63,30 @@ class Ogen
         }
     }
 
-//     private const CODE = <<<'PHP'
-// <?php
-//
-// namespace Zol\Ogen\Tests\TestOpenApiServer\Api;
-//
-// class RequestBodyValidationException extends \Exception
-// {
-//     /**
-//      * @param array<string, array<string>> $messages
-//      */
-//     public function __construct(public readonly array $messages)
-//     {
-//         parent::__construct();
-//     }
-// }
-// PHP;
+    private const CODE = <<<'PHP'
+<?php
+
+namespace Zol\Ogen\Tests\TestOpenApiServer\Format;
+
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintValidator;
+
+class MediaFolderIdValidator extends ConstraintValidator
+{
+    private MediaFolderIdDefinition $formatDefinition;
+
+    public function setFormatDefinition(MediaFolderIdDefinition $formatDefinition): void
+    {
+        $this->formatDefinition = $formatDefinition;
+    }
+
+    public function validate(mixed $value, Constraint $constraint): void
+    {
+        foreach ($this->formatDefinition->validate($value) as $violation) {
+            $this->context->buildViolation($violation)->addViolation();
+        }
+    }
+}
+PHP;
 
 }
