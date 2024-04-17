@@ -2,10 +2,8 @@
 
 namespace Zol\Ogen\Tests\TestOpenApiServer\Format;
 
-use Attribute;
 use Symfony\Component\Validator\Constraint;
-
-#[Attribute]
+#[\Attribute]
 class MediaFolderId extends Constraint
 {
 }

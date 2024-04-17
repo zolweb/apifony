@@ -2,6 +2,7 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\BuilderFactory;
 use PhpParser\Node\Stmt\Namespace_;
 
 class FormatConstraint implements File
@@ -20,16 +21,6 @@ class FormatConstraint implements File
         private readonly string $bundleNamespace,
         private readonly string $formatName,
     ) {
-    }
-
-    public function getNamespace(): string
-    {
-        return "{$this->bundleNamespace}\Format";
-    }
-
-    public function getClassName(): string
-    {
-        return $this->formatName;
     }
 
     public function getFolder(): string
@@ -54,11 +45,21 @@ class FormatConstraint implements File
 
     public function hasNamespaceAst(): bool
     {
-        return false;
+        return true;
     }
 
     public function getNamespaceAst(): Namespace_
     {
-        throw new \RuntimeException();
+        $f = new BuilderFactory();
+
+        $class = $f->class($this->formatName);
+        $class->extend('Constraint');
+        $class->addAttribute($f->attribute('\Attribute'));
+
+        $namespace = $f->namespace("{$this->bundleNamespace}\Format");
+        $namespace->addStmt($f->use('Symfony\Component\Validator\Constraint'));
+        $namespace->addStmt($class);
+
+        return $namespace->getNode();
     }
 }
