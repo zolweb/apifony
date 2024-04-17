@@ -2,6 +2,8 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\Node\Stmt\Namespace_;
+
 class FormatDefinition implements File
 {
     public static function build(
@@ -48,5 +50,15 @@ class FormatDefinition implements File
     public function getParametersRootName(): string
     {
         return 'definition';
+    }
+
+    public function hasNamespaceAst(): bool
+    {
+        return false;
+    }
+
+    public function getNamespaceAst(): Namespace_
+    {
+        throw new \RuntimeException();
     }
 }

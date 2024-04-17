@@ -2,6 +2,7 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\Node\Stmt\Namespace_;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Schema;
 use function Symfony\Component\String\u;
@@ -154,5 +155,15 @@ class Model implements File
     public function getTemplate(): string
     {
         return 'model.php.twig';
+    }
+
+    public function hasNamespaceAst(): bool
+    {
+        return false;
+    }
+
+    public function getNamespaceAst(): Namespace_
+    {
+        throw new \RuntimeException();
     }
 }

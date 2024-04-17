@@ -2,6 +2,8 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\Node\Stmt\Namespace_;
+
 class FormatValidator implements File
 {
     public static function build(
@@ -56,5 +58,15 @@ class FormatValidator implements File
     public function getParametersRootName(): string
     {
         return 'validator';
+    }
+
+    public function hasNamespaceAst(): bool
+    {
+        return false;
+    }
+
+    public function getNamespaceAst(): Namespace_
+    {
+        throw new \RuntimeException();
     }
 }

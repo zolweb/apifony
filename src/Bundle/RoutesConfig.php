@@ -2,6 +2,7 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\Node\Stmt\Namespace_;
 use function Symfony\Component\String\u;
 
 class RoutesConfig implements File
@@ -84,5 +85,15 @@ class RoutesConfig implements File
     public function getParametersRootName(): string
     {
         return 'routes';
+    }
+
+    public function hasNamespaceAst(): bool
+    {
+        return false;
+    }
+
+    public function getNamespaceAst(): Namespace_
+    {
+        throw new \RuntimeException();
     }
 }

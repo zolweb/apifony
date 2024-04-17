@@ -2,6 +2,8 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\Node\Stmt\Namespace_;
+
 class RequestBodyValidationException implements File
 {
     public function __construct(
@@ -32,5 +34,15 @@ class RequestBodyValidationException implements File
     public function getParametersRootName(): string
     {
         return 'exception';
+    }
+
+    public function hasNamespaceAst(): bool
+    {
+        return false;
+    }
+
+    public function getNamespaceAst(): Namespace_
+    {
+        throw new \RuntimeException();
     }
 }

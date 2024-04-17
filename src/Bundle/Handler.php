@@ -2,6 +2,8 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\Node\Stmt\Namespace_;
+
 class Handler implements File
 {
     /**
@@ -99,5 +101,15 @@ class Handler implements File
     public function getParametersRootName(): string
     {
         return 'handler';
+    }
+
+    public function hasNamespaceAst(): bool
+    {
+        return false;
+    }
+
+    public function getNamespaceAst(): Namespace_
+    {
+        throw new \RuntimeException();
     }
 }

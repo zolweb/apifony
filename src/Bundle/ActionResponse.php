@@ -2,6 +2,7 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\Node\Stmt\Namespace_;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Reference;
 use Zol\Ogen\OpenApi\Response;
@@ -182,5 +183,15 @@ class ActionResponse implements File
     public function getParametersRootName(): string
     {
         return 'response';
+    }
+
+    public function hasNamespaceAst(): bool
+    {
+        return false;
+    }
+
+    public function getNamespaceAst(): Namespace_
+    {
+        throw new \RuntimeException();
     }
 }

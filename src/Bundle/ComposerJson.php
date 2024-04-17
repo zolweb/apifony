@@ -2,6 +2,8 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\Node\Stmt\Namespace_;
+
 class ComposerJson implements File
 {
     public function __construct(
@@ -38,5 +40,15 @@ class ComposerJson implements File
     public function getParametersRootName(): string
     {
         return 'composer';
+    }
+
+    public function hasNamespaceAst(): bool
+    {
+        return false;
+    }
+
+    public function getNamespaceAst(): Namespace_
+    {
+        throw new \RuntimeException();
     }
 }
