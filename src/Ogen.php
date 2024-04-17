@@ -2,9 +2,9 @@
 
 namespace Zol\Ogen;
 
-use PhpParser\NodeDumper;
-use PhpParser\ParserFactory;
-use PhpParser\PhpVersion;
+// use PhpParser\NodeDumper;
+// use PhpParser\ParserFactory;
+// use PhpParser\PhpVersion;
 use PhpParser\PrettyPrinter\Standard;
 use RuntimeException;
 use Zol\Ogen\Bundle\Bundle;
@@ -33,6 +33,11 @@ class Ogen
         // exit;
 
         $spec = Yaml::parseFile($openApiSpecPath);
+
+        if (!is_array($spec)) {
+            throw new RuntimeException('Yaml content must be an array');
+        }
+
         $openApi = OpenApi::build($spec);
         $bundle = Bundle::build($bundleName, $packageName, $namespace, $openApi);
 
@@ -58,21 +63,21 @@ class Ogen
         }
     }
 
-    private const CODE = <<<'PHP'
-<?php
-
-namespace Zol\Ogen\Tests\TestOpenApiServer\Api;
-
-class RequestBodyValidationException extends \Exception
-{
-    /**
-     * @param array<string, array<string>> $messages
-     */
-    public function __construct(public readonly array $messages)
-    {
-        parent::__construct();
-    }
-}
-PHP;
+//     private const CODE = <<<'PHP'
+// <?php
+//
+// namespace Zol\Ogen\Tests\TestOpenApiServer\Api;
+//
+// class RequestBodyValidationException extends \Exception
+// {
+//     /**
+//      * @param array<string, array<string>> $messages
+//      */
+//     public function __construct(public readonly array $messages)
+//     {
+//         parent::__construct();
+//     }
+// }
+// PHP;
 
 }

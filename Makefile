@@ -1,4 +1,4 @@
-zol_common_version=v8.2.0
+zol_common_version=v8.1.0
 zol_common_entrypoint=.zol/zol-common/makefile/entrypoint.mk
 
 ifneq ("$(wildcard $(zol_common_entrypoint))","")

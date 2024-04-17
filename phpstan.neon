@@ -1,0 +1,15 @@
+parameters:
+    level: max
+    paths:
+        - src
+        # todo tests
+    exceptions:
+        check:
+            missingCheckedExceptionInThrows: true
+            tooWideThrowType: true
+        uncheckedExceptionClasses:
+            - 'RuntimeException'
+            - 'LogicException'
+            - 'Error'
+includes:
+    - vendor/phpstan/phpstan/conf/bleedingEdge.neon

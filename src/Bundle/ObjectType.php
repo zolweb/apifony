@@ -14,7 +14,7 @@ class ObjectType implements Type
         private readonly bool $nullable,
         private readonly string $name,
     ) {
-        $this->isRaw = $this->schema->extensions['x-raw'] ?? false;
+        $this->isRaw = ($this->schema->extensions['x-raw'] ?? false) === true;
     }
 
     public function isNullable(): bool

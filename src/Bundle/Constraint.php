@@ -7,7 +7,7 @@ use function Symfony\Component\String\u;
 class Constraint
 {
     /**
-     * @param array<string, string|int|float|bool|array<string|int|float|bool|self>> $parameters
+     * @param array<string, string|int|float|bool|null|array<string|int|float|bool|null|self>> $parameters
      */
     public function __construct(
         private readonly string $name,
@@ -119,6 +119,7 @@ class Constraint
                                         ),
                                         str_repeat(' ', ($indentation) * 4),
                                     ),
+                                default => throw new \RuntimeException('Unexpected parameter type'),
                             },
                             count($this->parameters) > 1 ? ",\n" : '',
                         ),
