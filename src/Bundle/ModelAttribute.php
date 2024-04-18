@@ -2,6 +2,11 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\BuilderFactory;
+use PhpParser\Node\Param;
+use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Reference;
 use Zol\Ogen\OpenApi\Schema;
@@ -102,5 +107,35 @@ class ModelAttribute
     public function getPhpStanType(): string
     {
         return $this->type->getPhpDocParameterAnnotationType();
+    }
+
+    public function getTypeDocAst(): TypeNode
+    {
+        return $this->type->getDocAst();
+    }
+
+    public function getDocAst(): PhpDocTagNode
+    {
+        return new PhpDocTagNode('@param', new ParamTagValueNode($this->type->getDocAst(), false, "\${$this->variableName}", ''));
+    }
+
+    public function getParamAst(): Param
+    {
+        $f = new BuilderFactory();
+
+        $param = $f->param($this->variableName)
+            ->setType(($this->type->isNullable() ? '?' : '').$this->getPhpType())
+            ->makePublic()
+            ->makeReadonly();
+
+        if ($this->schema->default !== null) {
+            $param->setDefault($this->schema->default);
+        }
+
+        foreach ($this->type->getConstraints() as $constraint) {
+            $param->addAttribute($constraint->getAttributeAst());
+        }
+
+        return $param->getNode();
     }
 }

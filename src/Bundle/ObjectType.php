@@ -2,6 +2,11 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\TypeNode;
+use PHPStan\PhpDocParser\Ast\Type\UnionTypeNode;
 use Zol\Ogen\OpenApi\Schema;
 use function Symfony\Component\String\u;
 
@@ -95,5 +100,18 @@ class ObjectType implements Type
     public function getUsedModel(): ?string
     {
         return null;
+    }
+
+    public function getDocAst(): TypeNode
+    {
+        $type = $this->isRaw ?
+            new UnionTypeNode([new GenericTypeNode(new IdentifierTypeNode('array'), [new IdentifierTypeNode('mixed')]), new IdentifierTypeNode('\stdClass')]) :
+            new IdentifierTypeNode($this->name);
+
+        if ($this->nullable) {
+            $type = new NullableTypeNode($type);
+        }
+
+        return $type;
     }
 }

@@ -66,25 +66,42 @@ class Ogen
     private const CODE = <<<'PHP'
 <?php
 
-namespace Zol\Ogen\Tests\TestOpenApiServer\Format;
+namespace Zol\Ogen\Tests\TestOpenApiServer\Model;
 
-use Symfony\Component\Validator\Constraint;
-use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\Constraints as Assert;
 
-class MediaFolderIdValidator extends ConstraintValidator
+
+class Content
 {
-    private MediaFolderIdDefinition $formatDefinition;
+    /**
+     * @param array<ContentTranslation> $translations
+     */
+    public function __construct(
+        #[Assert\NotNull]
+        public readonly string $id,
 
-    public function setFormatDefinition(MediaFolderIdDefinition $formatDefinition): void
-    {
-        $this->formatDefinition = $formatDefinition;
-    }
+        #[Assert\NotNull]
+        public readonly int $version,
 
-    public function validate(mixed $value, Constraint $constraint): void
-    {
-        foreach ($this->formatDefinition->validate($value) as $violation) {
-            $this->context->buildViolation($violation)->addViolation();
-        }
+        #[Assert\NotNull]
+        public readonly string $contentTypeId,
+
+        #[Assert\NotNull]
+        public readonly string $name,
+
+        #[Assert\NotNull]
+        public readonly string $status,
+
+        #[Assert\NotNull]
+        #[Assert\Valid]
+        #[Assert\All(constraints: [
+            new Assert\NotNull,
+        ])]
+        public readonly array $translations,
+
+        #[Assert\NotNull]
+        public readonly int $creationTimestamp,
+    ) {
     }
 }
 PHP;

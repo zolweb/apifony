@@ -2,6 +2,13 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\BuilderFactory;
+use PhpParser\Node\Arg;
+use PhpParser\Node\ArrayItem;
+use PhpParser\Node\Attribute;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Identifier;
 use function Symfony\Component\String\u;
 
 class Constraint
@@ -49,16 +56,6 @@ class Constraint
     {
         return sprintf(
             '%snew %s%s',
-            str_repeat(' ', $indentation * 4),
-            $this->name,
-            $this->format($indentation),
-        );
-    }
-
-    public function getAnnotation(int $indentation): string
-    {
-        return sprintf(
-            '%s#[%s%s]',
             str_repeat(' ', $indentation * 4),
             $this->name,
             $this->format($indentation),
@@ -128,5 +125,56 @@ class Constraint
                 ),
                 count($this->parameters) > 1 ? str_repeat(' ', ($indentation) * 4) : '',
             ) : '';
+    }
+
+    public function getInstantiationAst(): New_
+    {
+        $f = new BuilderFactory();
+
+        return $f->new(
+            $this->name,
+            $this->getArgumentsAst(),
+        );
+    }
+
+    public function getAttributeAst(): Attribute
+    {
+        $f = new BuilderFactory();
+
+        return $f->attribute(
+            $this->name,
+            $this->getArgumentsAst(),
+        );
+    }
+
+    /**
+     * @return Arg[]
+     */
+    public function getArgumentsAst(): array
+    {
+        $f = new BuilderFactory();
+
+        return array_map(
+            fn (string $parameterName) => new Arg(
+                match (true) {
+                    // todo s'occuper d'ajouter les / des regex dans une boucle en amont (constucteur ?)
+                    $this->name === 'Assert\Regex' && $parameterName === 'pattern' => $f->val("/{$this->parameters[$parameterName]}/"),
+                    is_array($this->parameters[$parameterName]) => new Array_(
+                        array_map(
+                            static fn ($item) => new ArrayItem(
+                                match (true) {
+                                    $item instanceof self => $item->getInstantiationAst(),
+                                    default => $f->val($item)
+                                },
+                            ),
+                            $this->parameters[$parameterName],
+                        ),
+                    ),
+                    default => $f->val($this->parameters[$parameterName]),
+                },
+                name: new Identifier($parameterName),
+            ),
+            array_keys($this->parameters),
+        );
     }
 }

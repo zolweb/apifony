@@ -2,6 +2,8 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PHPStan\PhpDocParser\Ast\Type\TypeNode;
+
 interface Type
 {
     public function isNullable(): bool;
@@ -30,4 +32,6 @@ interface Type
     public function getInitValue(): string;
 
     public function getUsedModel(): ?string;
+
+    public function getDocAst(): TypeNode;
 }

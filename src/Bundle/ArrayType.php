@@ -2,6 +2,10 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Reference;
 use Zol\Ogen\OpenApi\Schema;
@@ -148,5 +152,16 @@ class ArrayType implements Type
     public function getUsedModel(): ?string
     {
         return $this->usedModel;
+    }
+
+    public function getDocAst(): TypeNode
+    {
+        $type = new GenericTypeNode(new IdentifierTypeNode('array'), [$this->itemType->getDocAst()]);
+
+        if ($this->nullable) {
+            $type = new NullableTypeNode($type);
+        }
+
+        return $type;
     }
 }

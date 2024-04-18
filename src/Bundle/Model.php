@@ -2,7 +2,11 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\BuilderFactory;
 use PhpParser\Node\Stmt\Namespace_;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
+use PHPStan\PhpDocParser\Printer\Printer;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Schema;
 use function Symfony\Component\String\u;
@@ -159,11 +163,44 @@ class Model implements File
 
     public function hasNamespaceAst(): bool
     {
-        return false;
+        return true;
     }
 
     public function getNamespaceAst(): Namespace_
     {
-        throw new \RuntimeException();
+        $f = new BuilderFactory();
+
+        $constructor = $f->method('__construct')
+            ->makePublic();
+
+        foreach ($this->attributes as $attribute) {
+            $constructor->addParam($attribute->getParamAst());
+        }
+
+        if (count($this->getArrayAttributes()) > 0) {
+            $comment = new PhpDocNode(array_map(
+                static fn (ModelAttribute $attribute): PhpDocTagNode => $attribute->getDocAst(),
+                $this->getArrayAttributes(),
+            ));
+            $constructor->setDocComment((new Printer())->print($comment));
+        }
+
+        $class = $f->class($this->className)
+            ->addStmt($constructor);
+
+        $namespace = $f->namespace($this->namespace)
+            ->addStmt($f->use('Symfony\Component\Validator\Constraints')->as('Assert'));
+
+        foreach ($this->usedFormatConstraintNames as $constraintName) {
+            $namespace->addStmt($f->use("{$this->bundleNamespace}\Format\\{$constraintName}")->as("Assert{$constraintName}"));
+        }
+
+        foreach ($this->usedModelNames as $modelName) {
+            $namespace->addStmt($f->use("{$this->bundleNamespace}\Model\\{$modelName}"));
+        }
+
+        $namespace->addStmt($class);
+
+        return $namespace->getNode();
     }
 }

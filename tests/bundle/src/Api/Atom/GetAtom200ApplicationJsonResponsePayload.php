@@ -3,13 +3,9 @@
 namespace Zol\Ogen\Tests\TestOpenApiServer\Api\Atom;
 
 use Symfony\Component\Validator\Constraints as Assert;
-
-
 class GetAtom200ApplicationJsonResponsePayload
 {
-    public function __construct(
-        #[Assert\NotNull]
-        public readonly string $id,
-    ) {
+    public function __construct(#[Assert\NotNull] public readonly string $id)
+    {
     }
 }

@@ -2,6 +2,9 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
+use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use Zol\Ogen\OpenApi\Schema;
 use function Symfony\Component\String\u;
 
@@ -114,5 +117,16 @@ class StringType implements Type
     public function getUsedModel(): ?string
     {
         return null;
+    }
+
+    public function getDocAst(): TypeNode
+    {
+        $type = new IdentifierTypeNode('string');
+
+        if ($this->nullable) {
+            $type = new NullableTypeNode($type);
+        }
+
+        return $type;
     }
 }
