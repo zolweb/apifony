@@ -2,7 +2,12 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\BuilderFactory;
+use PhpParser\Node\ArrayItem;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Node\Stmt\Return_;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Reference;
 use Zol\Ogen\OpenApi\Response;
@@ -114,26 +119,6 @@ class ActionResponse implements File
     ) {
     }
 
-    public function getCode(): string
-    {
-        return $this->code;
-    }
-
-    public function getContentType(): ?string
-    {
-        return $this->contentType;
-    }
-
-    public function getPayloadPhpType(): ?string
-    {
-        return $this->payloadType?->getMethodParameterType();
-    }
-
-    public function getBundleNamespace(): string
-    {
-        return $this->bundleNamespace;
-    }
-
     /**
      * @return array<Model>
      */
@@ -145,19 +130,6 @@ class ActionResponse implements File
     public function getUsedModelName(): ?string
     {
         return $this->usedModelName;
-    }
-
-    /**
-     * @return array<ActionResponseHeader>
-     */
-    public function getHeaders(): array
-    {
-        return $this->headers;
-    }
-
-    public function getNamespace(): string
-    {
-        return "{$this->bundleNamespace}\Api\\{$this->aggregateName}";
     }
 
     public function getClassName(): string
@@ -187,11 +159,62 @@ class ActionResponse implements File
 
     public function hasNamespaceAst(): bool
     {
-        return false;
+        return true;
     }
 
     public function getNamespaceAst(): Namespace_
     {
-        throw new \RuntimeException();
+        $f = new BuilderFactory();
+
+        $constructor = $f->method('__construct')
+            ->makePublic();
+
+        if ($this->contentType !== null) {
+            if ($this->payloadType === null) { # todo code smell
+                throw new \RuntimeException();
+            }
+            $constructor->addParam($f->param('payload')->setType($this->payloadType->getMethodParameterType())->makePublic()->makeReadonly());
+        }
+
+        foreach ($this->headers as $header) {
+            $constructor->addParam($f->param($header->getVariableName())->setType($header->getPhpType())->makePublic()->makeReadonly());
+        }
+
+        if ($this->contentType === null) {
+            $constructor->addStmt(new Assign($f->propertyFetch($f->var('this'), 'payload'), $f->val('')));
+        }
+
+        $getHeadersMethod = $f->method('getHeaders')
+            ->makePublic()
+            ->setReturnType('array')
+            ->setDocComment(<<<'COMMENT'
+                /**
+                 * @return array<string, ?string>
+                 */
+                COMMENT
+            )
+            ->addStmt(new Return_(new Array_(array_merge(
+                array_map(static fn (ActionResponseHeader $header) => new ArrayItem($f->funcCall('strval', [$f->propertyFetch($f->var('this'), $header->getVariableName())]), $f->val($header->getName())), $this->headers),
+                [new ArrayItem($f->classConstFetch('self', 'CONTENT_TYPE'), $f->val('content-type'))],
+            ))));
+
+        $class = $f->class($this->name)
+            ->addStmt($f->classConst('CODE', $this->code)->makePublic())
+            ->addStmt($f->classConst('CONTENT_TYPE', $this->contentType)->makePublic())
+            ->addStmt($constructor)
+            ->addStmt($getHeadersMethod);
+
+        if ($this->contentType === null) {
+            $class->addStmt($f->property('payload')->setType('string')->makePublic()->makeReadonly());
+        }
+
+        $namespace = $f->namespace("{$this->bundleNamespace}\Api\\{$this->aggregateName}")
+            ->addStmt($class);
+
+        if ($this->usedModelName !== null) {
+            $namespace->addStmt($f->use("{$this->bundleNamespace }\Model\{$this->usedModelName}"));
+        }
+
+        return $namespace->getNode();
     }
 }
