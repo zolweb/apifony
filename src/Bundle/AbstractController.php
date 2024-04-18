@@ -9,11 +9,13 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Greater;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Cast\String_;
-use PhpParser\Node\Expr\FuncCall;
+use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\Throw_;
+use PhpParser\Node\InterpolatedStringPart;
+use PhpParser\Node\MatchArm;
+use PhpParser\Node\Scalar\InterpolatedString;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
-use PhpParser\Node\Stmt\Function_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Namespace_;
 
@@ -119,8 +121,43 @@ class AbstractController implements File
 
         $class = $f->class('AbstractController')
             ->makeAbstract()
-            ->addStmt($constructor)
-            ->addStmt($validateParameter)
+            ->addStmt($constructor);
+
+        foreach (['string', 'int', 'float', 'bool'] as $type) {
+            foreach ([false, true] as $nullable) {
+                $getParameterMethod = $f->method(sprintf('get%s%sParameter', ucfirst($type), $nullable ? 'OrNull' : ''))
+                    ->makePublic()
+                    ->addParam($f->param('request')->setType('Request'))
+                    ->addParam($f->param('name')->setType('string'))
+                    ->addParam($f->param('in')->setType('string'))
+                    ->addParam($f->param('required')->setType('bool'))
+                    ->addParam($f->param('default')->setType("?{$type}")->setDefault(null))
+                    ->setReturnType(sprintf("%s{$type}", $nullable ? '?' : ''))
+                    ->setDocComment(<<<'COMMENT'
+                        /**
+                         * @throws DenormalizationException
+                         */
+                        COMMENT
+                    )
+                    ->addStmt(new Expression(new Assign($f->var('bag'), new Match_($f->var('in'), [
+                        new MatchArm([$f->val('query')], $f->propertyFetch($f->var('request'), 'query')),
+                        new MatchArm([$f->val('header')], $f->propertyFetch($f->var('request'), 'headers')),
+                        new MatchArm([$f->val('cookie')], $f->propertyFetch($f->var('request'), 'cookies')),
+                        new MatchArm(null, new Throw_($f->new('\RuntimeException', [$f->val('Invalid parameter location.')]))),
+                    ]))))
+                    ->addStmt(new Expression(new Assign($f->var('isset'), $f->methodCall($f->var('bag'), 'has', [$f->var('name')]))))
+                    ->addStmt(new Expression(new Assign($f->var('value'), $f->methodCall($f->var('bag'), 'get', [$f->var('name')]))))
+                    ->addStmt(new If_(new BooleanNot($f->var('isset')), ['stmts' => [
+                        new If_($f->var('required'), ['stmts' => [
+                            new Expression(new Throw_($f->new('DenormalizationException', [new InterpolatedString([new InterpolatedStringPart('Parameter '), $f->var('name'), new InterpolatedStringPart(' in '), $f->var('in'), new InterpolatedStringPart(' is required.')])]))),
+                        ]]),
+                    ]]));
+
+                $class->addStmt($getParameterMethod);
+            }
+        }
+
+        $class->addStmt($validateParameter)
             ->addStmt($validateRequestBody);
 
         $namespace = $f->namespace("{$this->bundleNamespace}\Api")

@@ -15,6 +15,158 @@ abstract class AbstractController
     {
     }
     /**
+     * @throws DenormalizationException
+     */
+    public function getStringParameter(Request $request, string $name, string $in, bool $required, ?string $default = null): string
+    {
+        $bag = match ($in) {
+            'query' => $request->query,
+            'header' => $request->headers,
+            'cookie' => $request->cookies,
+            default => throw new \RuntimeException('Invalid parameter location.'),
+        };
+        $isset = $bag->has($name);
+        $value = $bag->get($name);
+        if (!$isset) {
+            if ($required) {
+                throw new DenormalizationException("Parameter {$name} in {$in} is required.");
+            }
+        }
+    }
+    /**
+     * @throws DenormalizationException
+     */
+    public function getStringOrNullParameter(Request $request, string $name, string $in, bool $required, ?string $default = null): ?string
+    {
+        $bag = match ($in) {
+            'query' => $request->query,
+            'header' => $request->headers,
+            'cookie' => $request->cookies,
+            default => throw new \RuntimeException('Invalid parameter location.'),
+        };
+        $isset = $bag->has($name);
+        $value = $bag->get($name);
+        if (!$isset) {
+            if ($required) {
+                throw new DenormalizationException("Parameter {$name} in {$in} is required.");
+            }
+        }
+    }
+    /**
+     * @throws DenormalizationException
+     */
+    public function getIntParameter(Request $request, string $name, string $in, bool $required, ?int $default = null): int
+    {
+        $bag = match ($in) {
+            'query' => $request->query,
+            'header' => $request->headers,
+            'cookie' => $request->cookies,
+            default => throw new \RuntimeException('Invalid parameter location.'),
+        };
+        $isset = $bag->has($name);
+        $value = $bag->get($name);
+        if (!$isset) {
+            if ($required) {
+                throw new DenormalizationException("Parameter {$name} in {$in} is required.");
+            }
+        }
+    }
+    /**
+     * @throws DenormalizationException
+     */
+    public function getIntOrNullParameter(Request $request, string $name, string $in, bool $required, ?int $default = null): ?int
+    {
+        $bag = match ($in) {
+            'query' => $request->query,
+            'header' => $request->headers,
+            'cookie' => $request->cookies,
+            default => throw new \RuntimeException('Invalid parameter location.'),
+        };
+        $isset = $bag->has($name);
+        $value = $bag->get($name);
+        if (!$isset) {
+            if ($required) {
+                throw new DenormalizationException("Parameter {$name} in {$in} is required.");
+            }
+        }
+    }
+    /**
+     * @throws DenormalizationException
+     */
+    public function getFloatParameter(Request $request, string $name, string $in, bool $required, ?float $default = null): float
+    {
+        $bag = match ($in) {
+            'query' => $request->query,
+            'header' => $request->headers,
+            'cookie' => $request->cookies,
+            default => throw new \RuntimeException('Invalid parameter location.'),
+        };
+        $isset = $bag->has($name);
+        $value = $bag->get($name);
+        if (!$isset) {
+            if ($required) {
+                throw new DenormalizationException("Parameter {$name} in {$in} is required.");
+            }
+        }
+    }
+    /**
+     * @throws DenormalizationException
+     */
+    public function getFloatOrNullParameter(Request $request, string $name, string $in, bool $required, ?float $default = null): ?float
+    {
+        $bag = match ($in) {
+            'query' => $request->query,
+            'header' => $request->headers,
+            'cookie' => $request->cookies,
+            default => throw new \RuntimeException('Invalid parameter location.'),
+        };
+        $isset = $bag->has($name);
+        $value = $bag->get($name);
+        if (!$isset) {
+            if ($required) {
+                throw new DenormalizationException("Parameter {$name} in {$in} is required.");
+            }
+        }
+    }
+    /**
+     * @throws DenormalizationException
+     */
+    public function getBoolParameter(Request $request, string $name, string $in, bool $required, ?bool $default = null): bool
+    {
+        $bag = match ($in) {
+            'query' => $request->query,
+            'header' => $request->headers,
+            'cookie' => $request->cookies,
+            default => throw new \RuntimeException('Invalid parameter location.'),
+        };
+        $isset = $bag->has($name);
+        $value = $bag->get($name);
+        if (!$isset) {
+            if ($required) {
+                throw new DenormalizationException("Parameter {$name} in {$in} is required.");
+            }
+        }
+    }
+    /**
+     * @throws DenormalizationException
+     */
+    public function getBoolOrNullParameter(Request $request, string $name, string $in, bool $required, ?bool $default = null): ?bool
+    {
+        $bag = match ($in) {
+            'query' => $request->query,
+            'header' => $request->headers,
+            'cookie' => $request->cookies,
+            default => throw new \RuntimeException('Invalid parameter location.'),
+        };
+        $isset = $bag->has($name);
+        $value = $bag->get($name);
+        if (!$isset) {
+            if ($required) {
+                throw new DenormalizationException("Parameter {$name} in {$in} is required.");
+            }
+        }
+    }
+    /**
      * @param array<Constraint> $constraints
      *
      * @throws ParameterValidationException
