@@ -1,5 +1,5 @@
 {
-    "name": "zol/test-openapi-server",
+    "name": "{{ composer.packageName }}",
     "require": {
         "doctrine/annotations": "^2.0",
         "phpdocumentor/reflection-docblock": "^5.4",
@@ -14,7 +14,7 @@
     },
     "autoload": {
         "psr-4": {
-            "Zol\\Ogen\\Tests\\TestOpenApiServer\\": "src/"
+            "{{ composer.namespace|e('js') }}\\" : "src/"
         }
     }
 }
