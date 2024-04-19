@@ -9,8 +9,9 @@ use Zol\Ogen\Ogen;
 use Zol\Ogen\OpenApi\Exception as OpenApiException;
 
 $autoloadLocations = [
-   __DIR__.'/../autoload.php', // When installed via composer
-   __DIR__.'/vendor/autoload.php', // When run from codebase
+   __DIR__.'/../autoload.php',
+   __DIR__.'/../../autoload.php',
+   __DIR__.'/vendor/autoload.php',
 ];
 
 foreach ($autoloadLocations as $autoloadLocation) {
