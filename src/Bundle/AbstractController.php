@@ -3,10 +3,13 @@
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Greater;
+use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Expr\Match_;
@@ -18,6 +21,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Node\Stmt\Return_;
 
 class AbstractController implements File
 {
@@ -147,11 +151,45 @@ class AbstractController implements File
                     ]))))
                     ->addStmt(new Expression(new Assign($f->var('isset'), $f->methodCall($f->var('bag'), 'has', [$f->var('name')]))))
                     ->addStmt(new Expression(new Assign($f->var('value'), $f->methodCall($f->var('bag'), 'get', [$f->var('name')]))))
-                    ->addStmt(new If_(new BooleanNot($f->var('isset')), ['stmts' => [
+                    ->addStmt(new If_(new BooleanNot($f->var('isset')), ['stmts' => array_filter([
                         new If_($f->var('required'), ['stmts' => [
                             new Expression(new Throw_($f->new('DenormalizationException', [new InterpolatedString([new InterpolatedStringPart('Parameter '), $f->var('name'), new InterpolatedStringPart(' in '), $f->var('in'), new InterpolatedStringPart(' is required.')])]))),
                         ]]),
-                    ]]));
+                        $nullable ?
+                            null :
+                            new If_(new Identical($f->var('default'), $f->val(null)), ['stmts' => [
+                                new Expression(new Throw_($f->new('DenormalizationException', [new InterpolatedString([new InterpolatedStringPart('Parameter '), $f->var('name'), new InterpolatedStringPart(' in '), $f->var('in'), new InterpolatedStringPart(' must not be null.')])]))),
+                            ]]),
+                        new Return_($f->var('default')),
+                    ])]))
+                    ->addStmt(new If_(new Identical($f->val('value'), $f->val(null)), ['stmts' => [
+                        $nullable ?
+                            new Return_($f->val(null)) :
+                            new Expression(new Throw_($f->new('DenormalizationException', [new InterpolatedString([new InterpolatedStringPart('Parameter '), $f->var('name'), new InterpolatedStringPart(' in '), $f->var('in'), new InterpolatedStringPart(' must not be null.')])]))),
+                    ]]))
+                    ->addStmts(match($type) {
+                        'string' => [
+                            new Return_($f->var('value')),
+                        ],
+                        'int' => [
+                            new If_(new BooleanNot($f->funcCall('ctype_digit', [$f->var('value')])), ['stmts' => [
+                                new Expression(new Throw_($f->new('DenormalizationException', [new InterpolatedString([new InterpolatedStringPart('Parameter '), $f->var('name'), new InterpolatedStringPart(' in '), $f->var('in'), new InterpolatedStringPart(' must be an integer.')])]))),
+                            ]]),
+                            new Return_($f->funcCall('intval', [$f->var('value')])),
+                        ],
+                        'float' => [
+                            new If_(new BooleanNot($f->funcCall('is_numeric', [$f->var('value')])), ['stmts' => [
+                                new Expression(new Throw_($f->new('DenormalizationException', [new InterpolatedString([new InterpolatedStringPart('Parameter '), $f->var('name'), new InterpolatedStringPart(' in '), $f->var('in'), new InterpolatedStringPart(' must be a numeric.')])]))),
+                            ]]),
+                            new Return_($f->funcCall('floatval', [$f->var('value')])),
+                        ],
+                        'bool' => [
+                            new If_(new BooleanNot($f->funcCall('in_array', [$f->var('value'), $f->val(['true', 'false']), $f->val(true)])), ['stmts' => [
+                                new Expression(new Throw_($f->new('DenormalizationException', [new InterpolatedString([new InterpolatedStringPart('Parameter '), $f->var('name'), new InterpolatedStringPart(' in '), $f->var('in'), new InterpolatedStringPart(' must be a boolean.')])]))),
+                            ]]),
+                            new Return_(new ArrayDimFetch(new Array_([new ArrayItem($f->val(true), $f->val('true')), new ArrayItem($f->val(false), $f->val('false'))]), $f->var('value'))),
+                        ],
+                    });
 
                 $class->addStmt($getParameterMethod);
             }

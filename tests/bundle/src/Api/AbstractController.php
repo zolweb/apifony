@@ -31,7 +31,15 @@ abstract class AbstractController
             if ($required) {
                 throw new DenormalizationException("Parameter {$name} in {$in} is required.");
             }
+            if ($default === null) {
+                throw new DenormalizationException("Parameter {$name} in {$in} must not be null.");
+            }
+            return $default;
         }
+        if ('value' === null) {
+            throw new DenormalizationException("Parameter {$name} in {$in} must not be null.");
+        }
+        return $value;
     }
     /**
      * @throws DenormalizationException
@@ -50,7 +58,12 @@ abstract class AbstractController
             if ($required) {
                 throw new DenormalizationException("Parameter {$name} in {$in} is required.");
             }
+            return $default;
         }
+        if ('value' === null) {
+            return null;
+        }
+        return $value;
     }
     /**
      * @throws DenormalizationException
@@ -69,7 +82,18 @@ abstract class AbstractController
             if ($required) {
                 throw new DenormalizationException("Parameter {$name} in {$in} is required.");
             }
+            if ($default === null) {
+                throw new DenormalizationException("Parameter {$name} in {$in} must not be null.");
+            }
+            return $default;
         }
+        if ('value' === null) {
+            throw new DenormalizationException("Parameter {$name} in {$in} must not be null.");
+        }
+        if (!ctype_digit($value)) {
+            throw new DenormalizationException("Parameter {$name} in {$in} must be an integer.");
+        }
+        return intval($value);
     }
     /**
      * @throws DenormalizationException
@@ -88,7 +112,15 @@ abstract class AbstractController
             if ($required) {
                 throw new DenormalizationException("Parameter {$name} in {$in} is required.");
             }
+            return $default;
         }
+        if ('value' === null) {
+            return null;
+        }
+        if (!ctype_digit($value)) {
+            throw new DenormalizationException("Parameter {$name} in {$in} must be an integer.");
+        }
+        return intval($value);
     }
     /**
      * @throws DenormalizationException
@@ -107,7 +139,18 @@ abstract class AbstractController
             if ($required) {
                 throw new DenormalizationException("Parameter {$name} in {$in} is required.");
             }
+            if ($default === null) {
+                throw new DenormalizationException("Parameter {$name} in {$in} must not be null.");
+            }
+            return $default;
         }
+        if ('value' === null) {
+            throw new DenormalizationException("Parameter {$name} in {$in} must not be null.");
+        }
+        if (!is_numeric($value)) {
+            throw new DenormalizationException("Parameter {$name} in {$in} must be a numeric.");
+        }
+        return floatval($value);
     }
     /**
      * @throws DenormalizationException
@@ -126,7 +169,15 @@ abstract class AbstractController
             if ($required) {
                 throw new DenormalizationException("Parameter {$name} in {$in} is required.");
             }
+            return $default;
         }
+        if ('value' === null) {
+            return null;
+        }
+        if (!is_numeric($value)) {
+            throw new DenormalizationException("Parameter {$name} in {$in} must be a numeric.");
+        }
+        return floatval($value);
     }
     /**
      * @throws DenormalizationException
@@ -145,7 +196,18 @@ abstract class AbstractController
             if ($required) {
                 throw new DenormalizationException("Parameter {$name} in {$in} is required.");
             }
+            if ($default === null) {
+                throw new DenormalizationException("Parameter {$name} in {$in} must not be null.");
+            }
+            return $default;
         }
+        if ('value' === null) {
+            throw new DenormalizationException("Parameter {$name} in {$in} must not be null.");
+        }
+        if (!in_array($value, ['true', 'false'], true)) {
+            throw new DenormalizationException("Parameter {$name} in {$in} must be a boolean.");
+        }
+        return ['true' => true, 'false' => false][$value];
     }
     /**
      * @throws DenormalizationException
@@ -164,7 +226,15 @@ abstract class AbstractController
             if ($required) {
                 throw new DenormalizationException("Parameter {$name} in {$in} is required.");
             }
+            return $default;
         }
+        if ('value' === null) {
+            return null;
+        }
+        if (!in_array($value, ['true', 'false'], true)) {
+            throw new DenormalizationException("Parameter {$name} in {$in} must be a boolean.");
+        }
+        return ['true' => true, 'false' => false][$value];
     }
     /**
      * @param array<Constraint> $constraints
