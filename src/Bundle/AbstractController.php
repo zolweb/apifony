@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Greater;
 use PhpParser\Node\Expr\BinaryOp\Identical;
+use PhpParser\Node\Expr\BinaryOp\LogicalAnd;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Expr\Match_;
@@ -188,6 +189,67 @@ class AbstractController implements File
                                 new Expression(new Throw_($f->new('DenormalizationException', [new InterpolatedString([new InterpolatedStringPart('Parameter '), $f->var('name'), new InterpolatedStringPart(' in '), $f->var('in'), new InterpolatedStringPart(' must be a boolean.')])]))),
                             ]]),
                             new Return_(new ArrayDimFetch(new Array_([new ArrayItem($f->val(true), $f->val('true')), new ArrayItem($f->val(false), $f->val('false'))]), $f->var('value'))),
+                        ],
+                    });
+
+                $class->addStmt($getParameterMethod);
+            }
+        }
+
+        foreach (['string', 'int', 'float', 'bool'] as $type) {
+            foreach ([false, true] as $nullable) {
+                $getParameterMethod = $f->method(sprintf('get%s%sJsonRequestBody', ucfirst($type), $nullable ? 'OrNull' : ''))
+                    ->makePublic()
+                    ->addParam($f->param('request')->setType('Request'))
+                    ->addParam($f->param('default')->setType("?{$type}")->setDefault(null))
+                    ->setReturnType(sprintf("%s{$type}", $nullable ? '?' : ''))
+                    ->setDocComment(<<<'COMMENT'
+                        /**
+                         * @throws DenormalizationException
+                         */
+                        COMMENT
+                    )
+                    ->addStmt(new Expression(new Assign($f->var('value'), $f->methodCall($f->var('request'), 'getContent'))))
+                    ->addStmt(new If_(new Identical($f->var('value'), $f->val('')), ['stmts' => array_filter([
+                        $nullable ?
+                            null :
+                            new If_(new Identical($f->var('default'), $f->val(null)), ['stmts' => [
+                                new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body must not be null.')]))),
+                            ]]),
+                        new Return_($f->var('default')),
+                    ])]))
+                    ->addStmt(new Expression(new Assign($f->var('value'), $f->funcCall('json_decode', [$f->var('value'), $f->val(true)]))))
+                    ->addStmts(array_filter([
+                        $nullable && $type !== 'string' ?
+                            new If_(new Identical($f->val('value'), $f->val(null)), ['stmts' => [
+                                new Return_($f->val(null)),
+                            ]]) :
+                            null,
+                    ]))
+                    ->addStmts(match($type) {
+                        'string' => [
+                            new If_(new BooleanNot($f->funcCall('is_string', [$f->var('value')])), ['stmts' => [
+                                new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body must be a string.')]))),
+                            ]]),
+                            new Return_($f->var('value')),
+                        ],
+                        'int' => [
+                            new If_(new BooleanNot($f->funcCall('is_int', [$f->var('value')])), ['stmts' => [
+                                new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body must be an integer.')]))),
+                            ]]),
+                            new Return_($f->var('value')),
+                        ],
+                        'float' => [
+                            new If_(new LogicalAnd(new BooleanNot($f->funcCall('is_int', [$f->var('value')])), new BooleanNot($f->funcCall('is_float', [$f->var('value')]))), ['stmts' => [
+                                new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body must be a numeric.')]))),
+                            ]]),
+                            new Return_($f->funcCall('floatval', [$f->var('value')])),
+                        ],
+                        'bool' => [
+                            new If_(new BooleanNot($f->funcCall('is_bool', [$f->var('value')])), ['stmts' => [
+                                new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body must be a boolean.')]))),
+                            ]]),
+                            new Return_($f->var('value')),
                         ],
                     });
 

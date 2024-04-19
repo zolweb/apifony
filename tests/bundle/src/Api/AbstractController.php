@@ -237,6 +237,147 @@ abstract class AbstractController
         return ['true' => true, 'false' => false][$value];
     }
     /**
+     * @throws DenormalizationException
+     */
+    public function getStringJsonRequestBody(Request $request, ?string $default = null): string
+    {
+        $value = $request->getContent();
+        if ($value === '') {
+            if ($default === null) {
+                throw new DenormalizationException('Request body must not be null.');
+            }
+            return $default;
+        }
+        $value = json_decode($value, true);
+        if (!is_string($value)) {
+            throw new DenormalizationException('Request body must be a string.');
+        }
+        return $value;
+    }
+    /**
+     * @throws DenormalizationException
+     */
+    public function getStringOrNullJsonRequestBody(Request $request, ?string $default = null): ?string
+    {
+        $value = $request->getContent();
+        if ($value === '') {
+            return $default;
+        }
+        $value = json_decode($value, true);
+        if (!is_string($value)) {
+            throw new DenormalizationException('Request body must be a string.');
+        }
+        return $value;
+    }
+    /**
+     * @throws DenormalizationException
+     */
+    public function getIntJsonRequestBody(Request $request, ?int $default = null): int
+    {
+        $value = $request->getContent();
+        if ($value === '') {
+            if ($default === null) {
+                throw new DenormalizationException('Request body must not be null.');
+            }
+            return $default;
+        }
+        $value = json_decode($value, true);
+        if (!is_int($value)) {
+            throw new DenormalizationException('Request body must be an integer.');
+        }
+        return $value;
+    }
+    /**
+     * @throws DenormalizationException
+     */
+    public function getIntOrNullJsonRequestBody(Request $request, ?int $default = null): ?int
+    {
+        $value = $request->getContent();
+        if ($value === '') {
+            return $default;
+        }
+        $value = json_decode($value, true);
+        if ('value' === null) {
+            return null;
+        }
+        if (!is_int($value)) {
+            throw new DenormalizationException('Request body must be an integer.');
+        }
+        return $value;
+    }
+    /**
+     * @throws DenormalizationException
+     */
+    public function getFloatJsonRequestBody(Request $request, ?float $default = null): float
+    {
+        $value = $request->getContent();
+        if ($value === '') {
+            if ($default === null) {
+                throw new DenormalizationException('Request body must not be null.');
+            }
+            return $default;
+        }
+        $value = json_decode($value, true);
+        if (!is_int($value) and !is_float($value)) {
+            throw new DenormalizationException('Request body must be a numeric.');
+        }
+        return floatval($value);
+    }
+    /**
+     * @throws DenormalizationException
+     */
+    public function getFloatOrNullJsonRequestBody(Request $request, ?float $default = null): ?float
+    {
+        $value = $request->getContent();
+        if ($value === '') {
+            return $default;
+        }
+        $value = json_decode($value, true);
+        if ('value' === null) {
+            return null;
+        }
+        if (!is_int($value) and !is_float($value)) {
+            throw new DenormalizationException('Request body must be a numeric.');
+        }
+        return floatval($value);
+    }
+    /**
+     * @throws DenormalizationException
+     */
+    public function getBoolJsonRequestBody(Request $request, ?bool $default = null): bool
+    {
+        $value = $request->getContent();
+        if ($value === '') {
+            if ($default === null) {
+                throw new DenormalizationException('Request body must not be null.');
+            }
+            return $default;
+        }
+        $value = json_decode($value, true);
+        if (!is_bool($value)) {
+            throw new DenormalizationException('Request body must be a boolean.');
+        }
+        return $value;
+    }
+    /**
+     * @throws DenormalizationException
+     */
+    public function getBoolOrNullJsonRequestBody(Request $request, ?bool $default = null): ?bool
+    {
+        $value = $request->getContent();
+        if ($value === '') {
+            return $default;
+        }
+        $value = json_decode($value, true);
+        if ('value' === null) {
+            return null;
+        }
+        if (!is_bool($value)) {
+            throw new DenormalizationException('Request body must be a boolean.');
+        }
+        return $value;
+    }
+    /**
      * @param array<Constraint> $constraints
      *
      * @throws ParameterValidationException
