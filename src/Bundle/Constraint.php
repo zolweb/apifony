@@ -158,7 +158,7 @@ class Constraint
             fn (string $parameterName) => new Arg(
                 match (true) {
                     // todo s'occuper d'ajouter les / des regex dans une boucle en amont (constucteur ?)
-                    $this->name === 'Assert\Regex' && $parameterName === 'pattern' => $f->val("/{$this->parameters[$parameterName]}/"),
+                    is_string($this->parameters[$parameterName]) && $this->name === 'Assert\Regex' && $parameterName === 'pattern' => $f->val("/{$this->parameters[$parameterName]}/"),
                     is_array($this->parameters[$parameterName]) => new Array_(
                         array_map(
                             static fn ($item) => new ArrayItem(

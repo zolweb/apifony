@@ -378,6 +378,42 @@ abstract class AbstractController
         return $value;
     }
     /**
+     * @throws DenormalizationException
+     */
+    public function getObjectJsonRequestBody(Request $request, string $class, ?object $default = null): object
+    {
+        $value = $request->getContent();
+        if ($value === '') {
+            if ($default === null) {
+                throw new DenormalizationException('Request body must not be null.');
+            }
+            return $default;
+        }
+        try {
+            return $this->serializer->deserialize($value, $class, JsonEncoder::FORMAT);
+        } catch (ExceptionInterface $e) {
+            throw new DenormalizationException("Request body could not be deserialized: {$e->getMessage()}");
+        }
+    }
+    /**
+     * @throws DenormalizationException
+     */
+    public function getObjectOrNullJsonRequestBody(Request $request, string $class, ?object $default = null): ?object
+    {
+        $value = $request->getContent();
+        if ($value === '') {
+            return $default;
+        }
+        if ('value' === null) {
+            return null;
+        }
+        try {
+            return $this->serializer->deserialize($value, $class, JsonEncoder::FORMAT);
+        } catch (ExceptionInterface $e) {
+            throw new DenormalizationException("Request body could not be deserialized: {$e->getMessage()}");
+        }
+    }
+    /**
      * @param array<Constraint> $constraints
      *
      * @throws ParameterValidationException

@@ -3,9 +3,9 @@
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
-use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Greater;
@@ -17,12 +17,15 @@ use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\InterpolatedStringPart;
 use PhpParser\Node\MatchArm;
+use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\InterpolatedString;
+use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\Stmt\TryCatch;
 
 class AbstractController implements File
 {
@@ -255,6 +258,48 @@ class AbstractController implements File
 
                 $class->addStmt($getParameterMethod);
             }
+        }
+
+        foreach ([false, true] as $nullable) {
+            $getParameterMethod = $f->method(sprintf('getObject%sJsonRequestBody', $nullable ? 'OrNull' : ''))
+                ->makePublic()
+                ->addParam($f->param('request')->setType('Request'))
+                ->addParam($f->param('class')->setType('string'))
+                ->addParam($f->param('default')->setType("?object")->setDefault(null))
+                ->setReturnType(sprintf("%sobject", $nullable ? '?' : ''))
+                ->setDocComment(<<<'COMMENT'
+                    /**
+                     * @throws DenormalizationException
+                     */
+                    COMMENT
+                )
+                ->addStmt(new Expression(new Assign($f->var('value'), $f->methodCall($f->var('request'), 'getContent'))))
+                ->addStmt(new If_(new Identical($f->var('value'), $f->val('')), ['stmts' => array_filter([
+                    $nullable ?
+                        null :
+                        new If_(new Identical($f->var('default'), $f->val(null)), ['stmts' => [
+                            new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body must not be null.')]))),
+                        ]]),
+                    new Return_($f->var('default')),
+                ])]))
+                ->addStmts(array_filter([
+                    $nullable ?
+                        new If_(new Identical($f->val('value'), $f->val(null)), ['stmts' => [
+                            new Return_($f->val(null)),
+                        ]]) :
+                        null,
+                ]))
+                ->addStmt(new TryCatch(
+                    [
+                        new Return_($f->methodCall($f->propertyFetch($f->var('this'), 'serializer'), 'deserialize', [$f->var('value'), $f->var('class'), $f->classConstFetch('JsonEncoder', 'FORMAT')])),
+                    ], [
+                       new Catch_([new Name('ExceptionInterface')], $f->var('e'), [
+                           new Expression(new Throw_($f->new('DenormalizationException', [new InterpolatedString([new InterpolatedStringPart('Request body could not be deserialized: '), $f->methodCall($f->var('e'), 'getMessage')])]))),
+                       ])
+                    ]),
+                );
+
+            $class->addStmt($getParameterMethod);
         }
 
         $class->addStmt($validateParameter)
