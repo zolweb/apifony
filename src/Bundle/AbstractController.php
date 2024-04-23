@@ -10,7 +10,7 @@ use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Greater;
 use PhpParser\Node\Expr\BinaryOp\Identical;
-use PhpParser\Node\Expr\BinaryOp\LogicalAnd;
+use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Expr\Match_;
@@ -243,7 +243,7 @@ class AbstractController implements File
                             new Return_($f->var('value')),
                         ],
                         'float' => [
-                            new If_(new LogicalAnd(new BooleanNot($f->funcCall('is_int', [$f->var('value')])), new BooleanNot($f->funcCall('is_float', [$f->var('value')]))), ['stmts' => [
+                            new If_(new BooleanAnd(new BooleanNot($f->funcCall('is_int', [$f->var('value')])), new BooleanNot($f->funcCall('is_float', [$f->var('value')]))), ['stmts' => [
                                 new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body must be a numeric.')]))),
                             ]]),
                             new Return_($f->funcCall('floatval', [$f->var('value')])),

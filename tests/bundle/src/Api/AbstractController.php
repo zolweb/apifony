@@ -318,7 +318,7 @@ abstract class AbstractController
             return $default;
         }
         $value = json_decode($value, true);
-        if (!is_int($value) and !is_float($value)) {
+        if (!is_int($value) && !is_float($value)) {
             throw new DenormalizationException('Request body must be a numeric.');
         }
         return floatval($value);
@@ -336,7 +336,7 @@ abstract class AbstractController
         if ($value === null) {
             return null;
         }
-        if (!is_int($value) and !is_float($value)) {
+        if (!is_int($value) && !is_float($value)) {
             throw new DenormalizationException('Request body must be a numeric.');
         }
         return floatval($value);
