@@ -166,7 +166,7 @@ class AbstractController implements File
                             ]]),
                         new Return_($f->var('default')),
                     ])]))
-                    ->addStmt(new If_(new Identical($f->val('value'), $f->val(null)), ['stmts' => [
+                    ->addStmt(new If_(new Identical($f->var('value'), $f->val(null)), ['stmts' => [
                         $nullable ?
                             new Return_($f->val(null)) :
                             new Expression(new Throw_($f->new('DenormalizationException', [new InterpolatedString([new InterpolatedStringPart('Parameter \''), $f->var('name'), new InterpolatedStringPart('\' in \''), $f->var('in'), new InterpolatedStringPart('\' must not be null.')])]))),

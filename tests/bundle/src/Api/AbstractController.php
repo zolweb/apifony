@@ -36,7 +36,7 @@ abstract class AbstractController
             }
             return $default;
         }
-        if ('value' === null) {
+        if ($value === null) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
         }
         return $value;
@@ -60,7 +60,7 @@ abstract class AbstractController
             }
             return $default;
         }
-        if ('value' === null) {
+        if ($value === null) {
             return null;
         }
         return $value;
@@ -87,7 +87,7 @@ abstract class AbstractController
             }
             return $default;
         }
-        if ('value' === null) {
+        if ($value === null) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
         }
         if (!ctype_digit($value)) {
@@ -114,7 +114,7 @@ abstract class AbstractController
             }
             return $default;
         }
-        if ('value' === null) {
+        if ($value === null) {
             return null;
         }
         if (!ctype_digit($value)) {
@@ -144,7 +144,7 @@ abstract class AbstractController
             }
             return $default;
         }
-        if ('value' === null) {
+        if ($value === null) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
         }
         if (!is_numeric($value)) {
@@ -171,7 +171,7 @@ abstract class AbstractController
             }
             return $default;
         }
-        if ('value' === null) {
+        if ($value === null) {
             return null;
         }
         if (!is_numeric($value)) {
@@ -201,7 +201,7 @@ abstract class AbstractController
             }
             return $default;
         }
-        if ('value' === null) {
+        if ($value === null) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
         }
         if (!in_array($value, ['true', 'false'], true)) {
@@ -228,7 +228,7 @@ abstract class AbstractController
             }
             return $default;
         }
-        if ('value' === null) {
+        if ($value === null) {
             return null;
         }
         if (!in_array($value, ['true', 'false'], true)) {
