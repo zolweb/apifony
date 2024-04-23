@@ -404,8 +404,8 @@ abstract class AbstractController
         if ($value === '') {
             return $default;
         }
-        if ('value' === null) {
-            return null;
+        if ($value === null) {
+            return 'null';
         }
         try {
             return $this->serializer->deserialize($value, $class, JsonEncoder::FORMAT);
