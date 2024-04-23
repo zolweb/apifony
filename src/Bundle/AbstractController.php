@@ -224,7 +224,7 @@ class AbstractController implements File
                     ->addStmt(new Expression(new Assign($f->var('value'), $f->funcCall('json_decode', [$f->var('value'), $f->val(true)]))))
                     ->addStmts(array_filter([
                         $nullable && $type !== 'string' ?
-                            new If_(new Identical($f->val('value'), $f->val(null)), ['stmts' => [
+                            new If_(new Identical($f->var('value'), $f->val(null)), ['stmts' => [
                                 new Return_($f->val(null)),
                             ]]) :
                             null,

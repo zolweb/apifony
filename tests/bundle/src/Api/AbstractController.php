@@ -297,7 +297,7 @@ abstract class AbstractController
             return $default;
         }
         $value = json_decode($value, true);
-        if ('value' === null) {
+        if ($value === null) {
             return null;
         }
         if (!is_int($value)) {
@@ -333,7 +333,7 @@ abstract class AbstractController
             return $default;
         }
         $value = json_decode($value, true);
-        if ('value' === null) {
+        if ($value === null) {
             return null;
         }
         if (!is_int($value) and !is_float($value)) {
@@ -369,7 +369,7 @@ abstract class AbstractController
             return $default;
         }
         $value = json_decode($value, true);
-        if ('value' === null) {
+        if ($value === null) {
             return null;
         }
         if (!is_bool($value)) {
