@@ -284,7 +284,7 @@ class AbstractController implements File
                 ])]))
                 ->addStmts(array_filter([
                     $nullable ?
-                        new If_(new Identical($f->val('value'), $f->val(null)), ['stmts' => [
+                        new If_(new Identical($f->var('value'), $f->val(null)), ['stmts' => [
                             new Return_($f->val(null)),
                         ]]) :
                         null,
