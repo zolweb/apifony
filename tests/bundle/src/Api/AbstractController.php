@@ -29,15 +29,15 @@ abstract class AbstractController
         $value = $bag->get($name);
         if (!$isset) {
             if ($required) {
-                throw new DenormalizationException("Parameter {$name} in {$in} is required.");
+                throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
             }
             if ($default === null) {
-                throw new DenormalizationException("Parameter {$name} in {$in} must not be null.");
+                throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
             }
             return $default;
         }
         if ('value' === null) {
-            throw new DenormalizationException("Parameter {$name} in {$in} must not be null.");
+            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
         }
         return $value;
     }
@@ -56,7 +56,7 @@ abstract class AbstractController
         $value = $bag->get($name);
         if (!$isset) {
             if ($required) {
-                throw new DenormalizationException("Parameter {$name} in {$in} is required.");
+                throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
             }
             return $default;
         }
@@ -80,18 +80,18 @@ abstract class AbstractController
         $value = $bag->get($name);
         if (!$isset) {
             if ($required) {
-                throw new DenormalizationException("Parameter {$name} in {$in} is required.");
+                throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
             }
             if ($default === null) {
-                throw new DenormalizationException("Parameter {$name} in {$in} must not be null.");
+                throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
             }
             return $default;
         }
         if ('value' === null) {
-            throw new DenormalizationException("Parameter {$name} in {$in} must not be null.");
+            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
         }
         if (!ctype_digit($value)) {
-            throw new DenormalizationException("Parameter {$name} in {$in} must be an integer.");
+            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be an integer.");
         }
         return intval($value);
     }
@@ -110,7 +110,7 @@ abstract class AbstractController
         $value = $bag->get($name);
         if (!$isset) {
             if ($required) {
-                throw new DenormalizationException("Parameter {$name} in {$in} is required.");
+                throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
             }
             return $default;
         }
@@ -118,7 +118,7 @@ abstract class AbstractController
             return null;
         }
         if (!ctype_digit($value)) {
-            throw new DenormalizationException("Parameter {$name} in {$in} must be an integer.");
+            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be an integer.");
         }
         return intval($value);
     }
@@ -137,18 +137,18 @@ abstract class AbstractController
         $value = $bag->get($name);
         if (!$isset) {
             if ($required) {
-                throw new DenormalizationException("Parameter {$name} in {$in} is required.");
+                throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
             }
             if ($default === null) {
-                throw new DenormalizationException("Parameter {$name} in {$in} must not be null.");
+                throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
             }
             return $default;
         }
         if ('value' === null) {
-            throw new DenormalizationException("Parameter {$name} in {$in} must not be null.");
+            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
         }
         if (!is_numeric($value)) {
-            throw new DenormalizationException("Parameter {$name} in {$in} must be a numeric.");
+            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a numeric.");
         }
         return floatval($value);
     }
@@ -167,7 +167,7 @@ abstract class AbstractController
         $value = $bag->get($name);
         if (!$isset) {
             if ($required) {
-                throw new DenormalizationException("Parameter {$name} in {$in} is required.");
+                throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
             }
             return $default;
         }
@@ -175,7 +175,7 @@ abstract class AbstractController
             return null;
         }
         if (!is_numeric($value)) {
-            throw new DenormalizationException("Parameter {$name} in {$in} must be a numeric.");
+            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a numeric.");
         }
         return floatval($value);
     }
@@ -194,18 +194,18 @@ abstract class AbstractController
         $value = $bag->get($name);
         if (!$isset) {
             if ($required) {
-                throw new DenormalizationException("Parameter {$name} in {$in} is required.");
+                throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
             }
             if ($default === null) {
-                throw new DenormalizationException("Parameter {$name} in {$in} must not be null.");
+                throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
             }
             return $default;
         }
         if ('value' === null) {
-            throw new DenormalizationException("Parameter {$name} in {$in} must not be null.");
+            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
         }
         if (!in_array($value, ['true', 'false'], true)) {
-            throw new DenormalizationException("Parameter {$name} in {$in} must be a boolean.");
+            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a boolean.");
         }
         return ['true' => true, 'false' => false][$value];
     }
@@ -224,7 +224,7 @@ abstract class AbstractController
         $value = $bag->get($name);
         if (!$isset) {
             if ($required) {
-                throw new DenormalizationException("Parameter {$name} in {$in} is required.");
+                throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
             }
             return $default;
         }
@@ -232,7 +232,7 @@ abstract class AbstractController
             return null;
         }
         if (!in_array($value, ['true', 'false'], true)) {
-            throw new DenormalizationException("Parameter {$name} in {$in} must be a boolean.");
+            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a boolean.");
         }
         return ['true' => true, 'false' => false][$value];
     }
