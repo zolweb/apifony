@@ -111,7 +111,7 @@ class StringType implements Type
 
     public function getInitValue(): string
     {
-        return '\'\'';
+        return '';
     }
 
     public function getUsedModel(): ?string

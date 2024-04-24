@@ -100,9 +100,9 @@ class NumberType implements Type
         return 'float';
     }
 
-    public function getInitValue(): string
+    public function getInitValue(): float
     {
-        return '.0';
+        return .0;
     }
 
     public function getUsedModel(): ?string

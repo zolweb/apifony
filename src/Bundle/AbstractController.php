@@ -155,17 +155,18 @@ class AbstractController implements File
                     ]))))
                     ->addStmt(new Expression(new Assign($f->var('isset'), $f->methodCall($f->var('bag'), 'has', [$f->var('name')]))))
                     ->addStmt(new Expression(new Assign($f->var('value'), $f->methodCall($f->var('bag'), 'get', [$f->var('name')]))))
-                    ->addStmt(new If_(new BooleanNot($f->var('isset')), ['stmts' => array_filter([
-                        new If_($f->var('required'), ['stmts' => [
+                    ->addStmt(new If_(new BooleanNot($f->var('isset')), ['stmts' => array_merge(
+                        [new If_($f->var('required'), ['stmts' => [
                             new Expression(new Throw_($f->new('DenormalizationException', [new InterpolatedString([new InterpolatedStringPart('Parameter \''), $f->var('name'), new InterpolatedStringPart('\' in \''), $f->var('in'), new InterpolatedStringPart('\' is required.')])]))),
-                        ]]),
+                        ]])],
                         $nullable ?
-                            null :
-                            new If_(new Identical($f->var('default'), $f->val(null)), ['stmts' => [
+                            [] :
+                            [new If_(new Identical($f->var('default'), $f->val(null)), ['stmts' => [
                                 new Expression(new Throw_($f->new('DenormalizationException', [new InterpolatedString([new InterpolatedStringPart('Parameter \''), $f->var('name'), new InterpolatedStringPart('\' in \''), $f->var('in'), new InterpolatedStringPart('\' must not be null.')])]))),
-                            ]]),
-                        new Return_($f->var('default')),
-                    ])]))
+
+                            ]])],
+                        [new Return_($f->var('default'))],
+                    )]))
                     ->addStmt(new If_(new Identical($f->var('value'), $f->val(null)), ['stmts' => [
                         $nullable ?
                             new Return_($f->val(null)) :
@@ -213,22 +214,22 @@ class AbstractController implements File
                         COMMENT
                     )
                     ->addStmt(new Expression(new Assign($f->var('value'), $f->methodCall($f->var('request'), 'getContent'))))
-                    ->addStmt(new If_(new Identical($f->var('value'), $f->val('')), ['stmts' => array_filter([
+                    ->addStmt(new If_(new Identical($f->var('value'), $f->val('')), ['stmts' => array_merge(
                         $nullable ?
-                            null :
-                            new If_(new Identical($f->var('default'), $f->val(null)), ['stmts' => [
+                            [] :
+                            [new If_(new Identical($f->var('default'), $f->val(null)), ['stmts' => [
                                 new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body must not be null.')]))),
-                            ]]),
-                        new Return_($f->var('default')),
-                    ])]))
+                            ]])],
+                        [new Return_($f->var('default'))],
+                    )]))
                     ->addStmt(new Expression(new Assign($f->var('value'), $f->funcCall('json_decode', [$f->var('value'), $f->val(true)]))))
-                    ->addStmts(array_filter([
+                    ->addStmts(
                         $nullable && $type !== 'string' ?
-                            new If_(new Identical($f->var('value'), $f->val(null)), ['stmts' => [
+                            [new If_(new Identical($f->var('value'), $f->val(null)), ['stmts' => [
                                 new Return_($f->val(null)),
-                            ]]) :
-                            null,
-                    ]))
+                            ]])] :
+                            [],
+                    )
                     ->addStmts(match($type) {
                         'string' => [
                             new If_(new BooleanNot($f->funcCall('is_string', [$f->var('value')])), ['stmts' => [
@@ -274,21 +275,21 @@ class AbstractController implements File
                     COMMENT
                 )
                 ->addStmt(new Expression(new Assign($f->var('value'), $f->methodCall($f->var('request'), 'getContent'))))
-                ->addStmt(new If_(new Identical($f->var('value'), $f->val('')), ['stmts' => array_filter([
+                ->addStmt(new If_(new Identical($f->var('value'), $f->val('')), ['stmts' => array_merge(
                     $nullable ?
-                        null :
-                        new If_(new Identical($f->var('default'), $f->val(null)), ['stmts' => [
+                        [] :
+                        [new If_(new Identical($f->var('default'), $f->val(null)), ['stmts' => [
                             new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body must not be null.')]))),
-                        ]]),
-                    new Return_($f->var('default')),
-                ])]))
-                ->addStmts(array_filter([
+                        ]])],
+                    [new Return_($f->var('default'))],
+                )]))
+                ->addStmts(
                     $nullable ?
-                        new If_(new Identical($f->var('value'), $f->val('null')), ['stmts' => [
+                        [new If_(new Identical($f->var('value'), $f->val('null')), ['stmts' => [
                             new Return_($f->val(null)),
-                        ]]) :
-                        null,
-                ]))
+                        ]])] :
+                        [],
+                )
                 ->addStmt(new TryCatch(
                     [
                         new Return_($f->methodCall($f->propertyFetch($f->var('this'), 'serializer'), 'deserialize', [$f->var('value'), $f->var('class'), $f->classConstFetch('JsonEncoder', 'FORMAT')])),

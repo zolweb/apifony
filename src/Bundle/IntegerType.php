@@ -100,9 +100,9 @@ class IntegerType implements Type
         return 'int';
     }
 
-    public function getInitValue(): string
+    public function getInitValue(): int
     {
-        return '0';
+        return 0;
     }
 
     public function getUsedModel(): ?string

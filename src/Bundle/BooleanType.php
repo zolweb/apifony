@@ -80,9 +80,9 @@ class BooleanType implements Type
         return 'bool';
     }
 
-    public function getInitValue(): string
+    public function getInitValue(): bool
     {
-        return 'false';
+        return false;
     }
 
     public function getUsedModel(): ?string
