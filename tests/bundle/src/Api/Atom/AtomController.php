@@ -26,9 +26,31 @@ class AtomController extends AbstractController
         } catch (ParameterValidationException $e) {
             $errors['path']['atomId'] = $e->messages;
         }
+        $requestBodyPayload = null;
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', '')) {
+            case '':
+                break;
+            default:
+                return new JsonResponse(['code' => 'unsupported_request_type', "The value '{$requestBodyPayloadContentType}' received in content-type header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+        }
     }
     public function postAtom(Request $request): Response
     {
         $errors = [];
+        $requestBodyPayload = null;
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', '')) {
+            case 'application/json':
+                try {
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request, PostAtomApplicationJsonRequestBodyPayload::class);
+                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()])
+                } catch (DenormalizationException $e) {
+                    $errors['requestBody'] = [$e->messages];
+                } catch (RequestBodyValidationException $e) {
+                    $errors['requestBody'] = $e->messages;
+                }
+                break;
+            default:
+                return new JsonResponse(['code' => 'unsupported_request_type', "The value '{$requestBodyPayloadContentType}' received in content-type header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+        }
     }
 }

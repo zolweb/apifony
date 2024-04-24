@@ -22,6 +22,21 @@ class ContentController extends AbstractController
     public function postContent(Request $request): Response
     {
         $errors = [];
+        $requestBodyPayload = null;
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', '')) {
+            case 'application/json':
+                try {
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request, PostContentApplicationJsonRequestBodyPayload::class);
+                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()])
+                } catch (DenormalizationException $e) {
+                    $errors['requestBody'] = [$e->messages];
+                } catch (RequestBodyValidationException $e) {
+                    $errors['requestBody'] = $e->messages;
+                }
+                break;
+            default:
+                return new JsonResponse(['code' => 'unsupported_request_type', "The value '{$requestBodyPayloadContentType}' received in content-type header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+        }
     }
     public function getContentList(Request $request): Response
     {
@@ -80,6 +95,13 @@ class ContentController extends AbstractController
         } catch (ParameterValidationException $e) {
             $errors['query']['search'] = $e->messages;
         }
+        $requestBodyPayload = null;
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', '')) {
+            case '':
+                break;
+            default:
+                return new JsonResponse(['code' => 'unsupported_request_type', "The value '{$requestBodyPayloadContentType}' received in content-type header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+        }
     }
     public function getContent(Request $request, string $contentId): Response
     {
@@ -89,6 +111,13 @@ class ContentController extends AbstractController
             $this->validateParameter($pContentId, [new Assert\NotNull(), new AssertUuid()]);
         } catch (ParameterValidationException $e) {
             $errors['path']['contentId'] = $e->messages;
+        }
+        $requestBodyPayload = null;
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', '')) {
+            case '':
+                break;
+            default:
+                return new JsonResponse(['code' => 'unsupported_request_type', "The value '{$requestBodyPayloadContentType}' received in content-type header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
         }
     }
     public function patchContent(Request $request, string $contentId): Response
@@ -100,6 +129,21 @@ class ContentController extends AbstractController
         } catch (ParameterValidationException $e) {
             $errors['path']['contentId'] = $e->messages;
         }
+        $requestBodyPayload = null;
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', '')) {
+            case 'application/json':
+                try {
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request, PatchContentApplicationJsonRequestBodyPayload::class);
+                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()])
+                } catch (DenormalizationException $e) {
+                    $errors['requestBody'] = [$e->messages];
+                } catch (RequestBodyValidationException $e) {
+                    $errors['requestBody'] = $e->messages;
+                }
+                break;
+            default:
+                return new JsonResponse(['code' => 'unsupported_request_type', "The value '{$requestBodyPayloadContentType}' received in content-type header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+        }
     }
     public function archiveContent(Request $request, string $contentId): Response
     {
@@ -109,6 +153,21 @@ class ContentController extends AbstractController
             $this->validateParameter($pContentId, [new Assert\NotNull(), new AssertUuid()]);
         } catch (ParameterValidationException $e) {
             $errors['path']['contentId'] = $e->messages;
+        }
+        $requestBodyPayload = null;
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', '')) {
+            case 'application/json':
+                try {
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request, ArchiveContentApplicationJsonRequestBodyPayload::class);
+                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()])
+                } catch (DenormalizationException $e) {
+                    $errors['requestBody'] = [$e->messages];
+                } catch (RequestBodyValidationException $e) {
+                    $errors['requestBody'] = $e->messages;
+                }
+                break;
+            default:
+                return new JsonResponse(['code' => 'unsupported_request_type', "The value '{$requestBodyPayloadContentType}' received in content-type header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
         }
     }
     public function restoreContent(Request $request, string $contentId): Response
@@ -120,6 +179,21 @@ class ContentController extends AbstractController
         } catch (ParameterValidationException $e) {
             $errors['path']['contentId'] = $e->messages;
         }
+        $requestBodyPayload = null;
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', '')) {
+            case 'application/json':
+                try {
+                    $requestBodyPayload = $this->getObjectJsonRequestBody($request, RestoreContentApplicationJsonRequestBodyPayload::class);
+                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()])
+                } catch (DenormalizationException $e) {
+                    $errors['requestBody'] = [$e->messages];
+                } catch (RequestBodyValidationException $e) {
+                    $errors['requestBody'] = $e->messages;
+                }
+                break;
+            default:
+                return new JsonResponse(['code' => 'unsupported_request_type', "The value '{$requestBodyPayloadContentType}' received in content-type header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+        }
     }
     public function duplicateContent(Request $request, string $contentId): Response
     {
@@ -129,6 +203,13 @@ class ContentController extends AbstractController
             $this->validateParameter($pContentId, [new Assert\NotNull(), new AssertUuid()]);
         } catch (ParameterValidationException $e) {
             $errors['path']['contentId'] = $e->messages;
+        }
+        $requestBodyPayload = null;
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', '')) {
+            case '':
+                break;
+            default:
+                return new JsonResponse(['code' => 'unsupported_request_type', "The value '{$requestBodyPayloadContentType}' received in content-type header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
         }
     }
 }

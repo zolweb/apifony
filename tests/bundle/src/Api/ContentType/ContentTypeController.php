@@ -21,6 +21,13 @@ class ContentTypeController extends AbstractController
     public function getContentTypeList(Request $request): Response
     {
         $errors = [];
+        $requestBodyPayload = null;
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', '')) {
+            case '':
+                break;
+            default:
+                return new JsonResponse(['code' => 'unsupported_request_type', "The value '{$requestBodyPayloadContentType}' received in content-type header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+        }
     }
     public function getContentType(Request $request, string $contentTypeId): Response
     {
@@ -30,6 +37,13 @@ class ContentTypeController extends AbstractController
             $this->validateParameter($pContentTypeId, [new Assert\NotNull()]);
         } catch (ParameterValidationException $e) {
             $errors['path']['contentTypeId'] = $e->messages;
+        }
+        $requestBodyPayload = null;
+        switch ($requestBodyPayloadContentType = $request->headers->get('content-type', '')) {
+            case '':
+                break;
+            default:
+                return new JsonResponse(['code' => 'unsupported_request_type', "The value '{$requestBodyPayloadContentType}' received in content-type header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
         }
     }
 }

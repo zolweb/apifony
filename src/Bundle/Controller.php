@@ -3,14 +3,21 @@
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\New_;
+use PhpParser\Node\InterpolatedStringPart;
 use PhpParser\Node\Name;
+use PhpParser\Node\Scalar\InterpolatedString;
+use PhpParser\Node\Stmt\Break_;
+use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Node\Stmt\Return_;
+use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\UseItem;
@@ -192,6 +199,48 @@ class Controller implements File
                             new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($parameter->getIn())), $f->val($parameter->getRawName())), $f->propertyFetch($f->var('e'), 'messages'))),
                         ])
                     ]));
+            }
+
+            if (count($action->getRequestBodies()) > 0) {
+                $actionMethod->addStmt(new Expression(new Assign($f->var('requestBodyPayload'), $f->val(null))))
+                    ->addStmt(new Switch_(new Assign($f->var('requestBodyPayloadContentType'), $f->methodCall($f->propertyFetch($f->var('request'), 'headers'), 'get', [$f->val('content-type'), $f->val('')])), array_merge(array_map(
+                            static fn (ActionRequestBody $actionRequestBody): Case_ => new Case_($f->val($actionRequestBody->getMimeType() ?? ''), array_merge(
+                                match ($actionRequestBody->getMimeType()) {
+                                    'application/json' => [
+                                        new TryCatch([
+                                            new Expression(new Assign($f->var('requestBodyPayload'), $f->methodCall($f->var('this'), sprintf('get%sJsonRequestBody', ucfirst($actionRequestBody->getPayloadBuiltInPhpType())), array_merge([$f->var('request')], $actionRequestBody->getPayloadBuiltInPhpType() === 'object' ? [$f->classConstFetch($actionRequestBody->getPayloadPhpType(), 'class')] : [])))),
+                                            $f->methodCall($f->var('this'), 'validateRequestBody', [
+                                                $f->var('requestBodyPayload'),
+                                                array_map(
+                                                    static fn (Constraint $constraint): New_ => $constraint->getInstantiationAst(),
+                                                    $actionRequestBody->getConstraints(),
+                                                ),
+                                            ]),
+                                        ], [
+                                            new Catch_([new Name('DenormalizationException')], $f->var('e'), [
+                                                new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), new Array_([$f->propertyFetch($f->var('e'), 'messages')]))),
+                                            ]),
+                                            new Catch_([new Name('RequestBodyValidationException')], $f->var('e'), [
+                                                new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), $f->propertyFetch($f->var('e'), 'messages'))),
+                                            ])
+                                        ]),
+                                    ],
+                                    default => [],
+                                },
+                                [new Break_()],
+                            )),
+                            $action->getRequestBodies(),
+                        ),
+                        [new Case_(null, [
+                            new Return_($f->new('JsonResponse', [
+                                new Array_([
+                                    new ArrayItem($f->val('unsupported_request_type'), $f->val('code')),
+                                    new ArrayItem(new InterpolatedString([new InterpolatedStringPart('The value \''), $f->var('requestBodyPayloadContentType'), new InterpolatedStringPart('\' received in content-type header is not a supported format.')])),
+                                ]),
+                                $f->classConstFetch('Response', 'HTTP_UNSUPPORTED_MEDIA_TYPE'),
+                            ]))
+                        ])]
+                    )));
             }
 
             $class->addStmt($actionMethod);
