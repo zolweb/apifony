@@ -132,14 +132,26 @@ class ActionRequestBody
         return $this->payloadType?->getMethodParameterType();
     }
 
-    public function getPayloadPhpType(): ?string
+    public function getPayloadPhpType(): string
     {
-        return $this->payloadType?->getMethodParameterType();
+        $type = $this->payloadType?->getMethodParameterType();
+
+        if ($type === null) {
+            throw new \RuntimeException();
+        }
+
+        return $type;
     }
 
-    public function getPayloadBuiltInPhpType(): ?string
+    public function getPayloadBuiltInPhpType(): string
     {
-        return $this->payloadType?->getBuiltInPhpType();
+        $type = $this->payloadType?->getBuiltInPhpType();
+
+        if ($type === null) {
+            throw new \RuntimeException();
+        }
+
+        return $type;
     }
 
     /**

@@ -46,6 +46,18 @@ class MediaTreeController extends AbstractController
         if (str_contains($responsePayloadContentType, '*/*')) {
             $responsePayloadContentType = 'application/json';
         }
+        switch (true) {
+            case is_null($requestBodyPayload):
+                switch ($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->getMediaTreeFromEmptyPayloadToApplicationJsonContent($qPath);
+                        break;
+                    default:
+                        return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+                }
+            default:
+                throw new \RuntimeException();
+        }
     }
     public function moveToMediaFolder(Request $request): Response
     {
@@ -55,7 +67,7 @@ class MediaTreeController extends AbstractController
             case 'application/json':
                 try {
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, MoveToMediaFolderApplicationJsonRequestBodyPayload::class);
-                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()])
+                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
                     $errors['requestBody'] = [$e->messages];
                 } catch (RequestBodyValidationException $e) {
@@ -71,6 +83,18 @@ class MediaTreeController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'application/json');
         if (str_contains($responsePayloadContentType, '*/*')) {
             $responsePayloadContentType = 'application/json';
+        }
+        switch (true) {
+            case $requestBodyPayload instanceof MoveToMediaFolderApplicationJsonRequestBodyPayload:
+                switch ($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->moveToMediaFolderFromMoveToMediaFolderApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent($requestBodyPayload);
+                        break;
+                    default:
+                        return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+                }
+            default:
+                throw new \RuntimeException();
         }
     }
     public function addMediaFolder(Request $request): Response
@@ -81,7 +105,7 @@ class MediaTreeController extends AbstractController
             case 'application/json':
                 try {
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, AddMediaFolderApplicationJsonRequestBodyPayload::class);
-                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()])
+                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
                     $errors['requestBody'] = [$e->messages];
                 } catch (RequestBodyValidationException $e) {
@@ -97,6 +121,18 @@ class MediaTreeController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'application/json');
         if (str_contains($responsePayloadContentType, '*/*')) {
             $responsePayloadContentType = 'application/json';
+        }
+        switch (true) {
+            case $requestBodyPayload instanceof AddMediaFolderApplicationJsonRequestBodyPayload:
+                switch ($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->addMediaFolderFromAddMediaFolderApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent($requestBodyPayload);
+                        break;
+                    default:
+                        return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+                }
+            default:
+                throw new \RuntimeException();
         }
     }
     public function getMediaFolder(Request $request, string $mediaFolderId): Response
@@ -122,6 +158,18 @@ class MediaTreeController extends AbstractController
         if (str_contains($responsePayloadContentType, '*/*')) {
             $responsePayloadContentType = 'application/json';
         }
+        switch (true) {
+            case is_null($requestBodyPayload):
+                switch ($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->getMediaFolderFromEmptyPayloadToApplicationJsonContent($pMediaFolderId);
+                        break;
+                    default:
+                        return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+                }
+            default:
+                throw new \RuntimeException();
+        }
     }
     public function updateMediaFolder(Request $request, string $mediaFolderId): Response
     {
@@ -137,7 +185,7 @@ class MediaTreeController extends AbstractController
             case 'application/json':
                 try {
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, UpdateMediaFolderApplicationJsonRequestBodyPayload::class);
-                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()])
+                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
                     $errors['requestBody'] = [$e->messages];
                 } catch (RequestBodyValidationException $e) {
@@ -153,6 +201,18 @@ class MediaTreeController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'application/json');
         if (str_contains($responsePayloadContentType, '*/*')) {
             $responsePayloadContentType = 'application/json';
+        }
+        switch (true) {
+            case $requestBodyPayload instanceof UpdateMediaFolderApplicationJsonRequestBodyPayload:
+                switch ($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->updateMediaFolderFromUpdateMediaFolderApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent($pMediaFolderId, $requestBodyPayload);
+                        break;
+                    default:
+                        return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+                }
+            default:
+                throw new \RuntimeException();
         }
     }
     public function deleteMediaFolder(Request $request, string $mediaFolderId): Response
@@ -169,7 +229,7 @@ class MediaTreeController extends AbstractController
             case 'application/json':
                 try {
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, DeleteMediaFolderApplicationJsonRequestBodyPayload::class);
-                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()])
+                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
                     $errors['requestBody'] = [$e->messages];
                 } catch (RequestBodyValidationException $e) {
@@ -185,6 +245,18 @@ class MediaTreeController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'application/json');
         if (str_contains($responsePayloadContentType, '*/*')) {
             $responsePayloadContentType = 'application/json';
+        }
+        switch (true) {
+            case $requestBodyPayload instanceof DeleteMediaFolderApplicationJsonRequestBodyPayload:
+                switch ($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->deleteMediaFolderFromDeleteMediaFolderApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent($pMediaFolderId, $requestBodyPayload);
+                        break;
+                    default:
+                        return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+                }
+            default:
+                throw new \RuntimeException();
         }
     }
 }

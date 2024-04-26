@@ -4,6 +4,7 @@ namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Scalar\Float_;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -109,9 +110,9 @@ class NumberType implements Type
         return 'float';
     }
 
-    public function getInitValue(): float
+    public function getInitValue(): Expr
     {
-        return .0;
+        return new Float_(.0);
     }
 
     public function getUsedModel(): ?string

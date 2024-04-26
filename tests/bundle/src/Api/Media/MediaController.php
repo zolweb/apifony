@@ -23,7 +23,7 @@ class MediaController extends AbstractController
     public function getMediaList(Request $request): Response
     {
         $errors = [];
-        $qPageNumber = '0';
+        $qPageNumber = 0;
         try {
             $qPageNumber = $this->getIntParameter($request, 'pageNumber', 'query', true);
             $this->validateParameter($qPageNumber, [new Assert\NotNull()]);
@@ -32,7 +32,7 @@ class MediaController extends AbstractController
         } catch (ParameterValidationException $e) {
             $errors['query']['pageNumber'] = $e->messages;
         }
-        $qPageSize = '0';
+        $qPageSize = 0;
         try {
             $qPageSize = $this->getIntParameter($request, 'pageSize', 'query', true);
             $this->validateParameter($qPageSize, [new Assert\NotNull()]);
@@ -82,6 +82,18 @@ class MediaController extends AbstractController
         if (str_contains($responsePayloadContentType, '*/*')) {
             $responsePayloadContentType = 'application/json';
         }
+        switch (true) {
+            case is_null($requestBodyPayload):
+                switch ($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->getMediaListFromEmptyPayloadToApplicationJsonContent($qPageNumber, $qPageSize, $qSort, $qSearch, $qFolderId);
+                        break;
+                    default:
+                        return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+                }
+            default:
+                throw new \RuntimeException();
+        }
     }
     public function postMedia(Request $request): Response
     {
@@ -91,7 +103,7 @@ class MediaController extends AbstractController
             case 'application/json':
                 try {
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, PostMediaApplicationJsonRequestBodyPayload::class);
-                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()])
+                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
                     $errors['requestBody'] = [$e->messages];
                 } catch (RequestBodyValidationException $e) {
@@ -107,6 +119,18 @@ class MediaController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'application/json');
         if (str_contains($responsePayloadContentType, '*/*')) {
             $responsePayloadContentType = 'application/json';
+        }
+        switch (true) {
+            case $requestBodyPayload instanceof PostMediaApplicationJsonRequestBodyPayload:
+                switch ($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->postMediaFromPostMediaApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent($requestBodyPayload);
+                        break;
+                    default:
+                        return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+                }
+            default:
+                throw new \RuntimeException();
         }
     }
     public function getMedia(Request $request, string $mediaId): Response
@@ -132,6 +156,18 @@ class MediaController extends AbstractController
         if (str_contains($responsePayloadContentType, '*/*')) {
             $responsePayloadContentType = 'application/json';
         }
+        switch (true) {
+            case is_null($requestBodyPayload):
+                switch ($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->getMediaFromEmptyPayloadToApplicationJsonContent($pMediaId);
+                        break;
+                    default:
+                        return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+                }
+            default:
+                throw new \RuntimeException();
+        }
     }
     public function patchMedia(Request $request, string $mediaId): Response
     {
@@ -147,7 +183,7 @@ class MediaController extends AbstractController
             case 'application/json':
                 try {
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, PatchMediaApplicationJsonRequestBodyPayload::class);
-                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()])
+                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
                     $errors['requestBody'] = [$e->messages];
                 } catch (RequestBodyValidationException $e) {
@@ -163,6 +199,18 @@ class MediaController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'application/json');
         if (str_contains($responsePayloadContentType, '*/*')) {
             $responsePayloadContentType = 'application/json';
+        }
+        switch (true) {
+            case $requestBodyPayload instanceof PatchMediaApplicationJsonRequestBodyPayload:
+                switch ($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->patchMediaFromPatchMediaApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent($pMediaId, $requestBodyPayload);
+                        break;
+                    default:
+                        return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+                }
+            default:
+                throw new \RuntimeException();
         }
     }
     public function archiveMedia(Request $request, string $mediaId): Response
@@ -179,7 +227,7 @@ class MediaController extends AbstractController
             case 'application/json':
                 try {
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, ArchiveMediaApplicationJsonRequestBodyPayload::class);
-                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()])
+                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
                     $errors['requestBody'] = [$e->messages];
                 } catch (RequestBodyValidationException $e) {
@@ -195,6 +243,18 @@ class MediaController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'application/json');
         if (str_contains($responsePayloadContentType, '*/*')) {
             $responsePayloadContentType = 'application/json';
+        }
+        switch (true) {
+            case $requestBodyPayload instanceof ArchiveMediaApplicationJsonRequestBodyPayload:
+                switch ($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->archiveMediaFromArchiveMediaApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent($pMediaId, $requestBodyPayload);
+                        break;
+                    default:
+                        return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+                }
+            default:
+                throw new \RuntimeException();
         }
     }
 }

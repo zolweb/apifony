@@ -4,6 +4,8 @@ namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Name;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -89,9 +91,9 @@ class BooleanType implements Type
         return 'bool';
     }
 
-    public function getInitValue(): bool
+    public function getInitValue(): Expr
     {
-        return false;
+        return new ConstFetch(new Name('false'));
     }
 
     public function getUsedModel(): ?string

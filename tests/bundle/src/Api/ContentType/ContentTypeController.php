@@ -35,6 +35,18 @@ class ContentTypeController extends AbstractController
         if (str_contains($responsePayloadContentType, '*/*')) {
             $responsePayloadContentType = 'application/json';
         }
+        switch (true) {
+            case is_null($requestBodyPayload):
+                switch ($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->getContentTypeListFromEmptyPayloadToApplicationJsonContent();
+                        break;
+                    default:
+                        return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+                }
+            default:
+                throw new \RuntimeException();
+        }
     }
     public function getContentType(Request $request, string $contentTypeId): Response
     {
@@ -58,6 +70,18 @@ class ContentTypeController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'application/json');
         if (str_contains($responsePayloadContentType, '*/*')) {
             $responsePayloadContentType = 'application/json';
+        }
+        switch (true) {
+            case is_null($requestBodyPayload):
+                switch ($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->getContentTypeFromEmptyPayloadToApplicationJsonContent($pContentTypeId);
+                        break;
+                    default:
+                        return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+                }
+            default:
+                throw new \RuntimeException();
         }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\Node\Expr;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Parameter;
 use Zol\Ogen\OpenApi\Reference;
@@ -117,7 +118,7 @@ class ActionParameter
         return $this->type->getRouteRequirementPattern();
     }
 
-    public function getInitValue(): string
+    public function getInitValueAst(): Expr
     {
         return $this->type->getInitValue();
     }

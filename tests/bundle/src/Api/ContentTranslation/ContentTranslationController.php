@@ -27,7 +27,7 @@ class ContentTranslationController extends AbstractController
             case 'application/json':
                 try {
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, PostContentTranslationApplicationJsonRequestBodyPayload::class);
-                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()])
+                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
                     $errors['requestBody'] = [$e->messages];
                 } catch (RequestBodyValidationException $e) {
@@ -43,6 +43,18 @@ class ContentTranslationController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'application/json');
         if (str_contains($responsePayloadContentType, '*/*')) {
             $responsePayloadContentType = 'application/json';
+        }
+        switch (true) {
+            case $requestBodyPayload instanceof PostContentTranslationApplicationJsonRequestBodyPayload:
+                switch ($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->postContentTranslationFromPostContentTranslationApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent($requestBodyPayload);
+                        break;
+                    default:
+                        return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+                }
+            default:
+                throw new \RuntimeException();
         }
     }
     public function patchContentTranslation(Request $request, string $contentTranslationId): Response
@@ -59,7 +71,7 @@ class ContentTranslationController extends AbstractController
             case 'application/json':
                 try {
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, PatchContentTranslationApplicationJsonRequestBodyPayload::class);
-                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()])
+                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
                     $errors['requestBody'] = [$e->messages];
                 } catch (RequestBodyValidationException $e) {
@@ -75,6 +87,18 @@ class ContentTranslationController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'application/json');
         if (str_contains($responsePayloadContentType, '*/*')) {
             $responsePayloadContentType = 'application/json';
+        }
+        switch (true) {
+            case $requestBodyPayload instanceof PatchContentTranslationApplicationJsonRequestBodyPayload:
+                switch ($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->patchContentTranslationFromPatchContentTranslationApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent($pContentTranslationId, $requestBodyPayload);
+                        break;
+                    default:
+                        return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+                }
+            default:
+                throw new \RuntimeException();
         }
     }
     public function getContentTranslation(Request $request, string $contentTranslationId): Response
@@ -100,6 +124,18 @@ class ContentTranslationController extends AbstractController
         if (str_contains($responsePayloadContentType, '*/*')) {
             $responsePayloadContentType = 'application/json';
         }
+        switch (true) {
+            case is_null($requestBodyPayload):
+                switch ($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->getContentTranslationFromEmptyPayloadToApplicationJsonContent($pContentTranslationId);
+                        break;
+                    default:
+                        return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+                }
+            default:
+                throw new \RuntimeException();
+        }
     }
     public function getContentTranslationDataVersions(Request $request, string $contentTranslationId): Response
     {
@@ -110,7 +146,7 @@ class ContentTranslationController extends AbstractController
         } catch (ParameterValidationException $e) {
             $errors['path']['contentTranslationId'] = $e->messages;
         }
-        $qPageNumber = '0';
+        $qPageNumber = 0;
         try {
             $qPageNumber = $this->getIntParameter($request, 'pageNumber', 'query', true);
             $this->validateParameter($qPageNumber, [new Assert\NotNull()]);
@@ -119,7 +155,7 @@ class ContentTranslationController extends AbstractController
         } catch (ParameterValidationException $e) {
             $errors['query']['pageNumber'] = $e->messages;
         }
-        $qPageSize = '0';
+        $qPageSize = 0;
         try {
             $qPageSize = $this->getIntParameter($request, 'pageSize', 'query', true);
             $this->validateParameter($qPageSize, [new Assert\NotNull()]);
@@ -142,6 +178,18 @@ class ContentTranslationController extends AbstractController
         if (str_contains($responsePayloadContentType, '*/*')) {
             $responsePayloadContentType = 'application/json';
         }
+        switch (true) {
+            case is_null($requestBodyPayload):
+                switch ($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->getContentTranslationDataVersionsFromEmptyPayloadToApplicationJsonContent($pContentTranslationId, $qPageNumber, $qPageSize);
+                        break;
+                    default:
+                        return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+                }
+            default:
+                throw new \RuntimeException();
+        }
     }
     public function publishContentTranslation(Request $request, string $contentTranslationId): Response
     {
@@ -157,7 +205,7 @@ class ContentTranslationController extends AbstractController
             case 'application/json':
                 try {
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, PublishContentTranslationApplicationJsonRequestBodyPayload::class);
-                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()])
+                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
                     $errors['requestBody'] = [$e->messages];
                 } catch (RequestBodyValidationException $e) {
@@ -173,6 +221,18 @@ class ContentTranslationController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'application/json');
         if (str_contains($responsePayloadContentType, '*/*')) {
             $responsePayloadContentType = 'application/json';
+        }
+        switch (true) {
+            case $requestBodyPayload instanceof PublishContentTranslationApplicationJsonRequestBodyPayload:
+                switch ($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->publishContentTranslationFromPublishContentTranslationApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent($pContentTranslationId, $requestBodyPayload);
+                        break;
+                    default:
+                        return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+                }
+            default:
+                throw new \RuntimeException();
         }
     }
     public function withdrawContentTranslation(Request $request, string $contentTranslationId): Response
@@ -189,7 +249,7 @@ class ContentTranslationController extends AbstractController
             case 'application/json':
                 try {
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, WithdrawContentTranslationApplicationJsonRequestBodyPayload::class);
-                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()])
+                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
                     $errors['requestBody'] = [$e->messages];
                 } catch (RequestBodyValidationException $e) {
@@ -205,6 +265,18 @@ class ContentTranslationController extends AbstractController
         $responsePayloadContentType = $request->headers->get('accept', 'application/json');
         if (str_contains($responsePayloadContentType, '*/*')) {
             $responsePayloadContentType = 'application/json';
+        }
+        switch (true) {
+            case $requestBodyPayload instanceof WithdrawContentTranslationApplicationJsonRequestBodyPayload:
+                switch ($responsePayloadContentType) {
+                    case 'application/json':
+                        $response = $this->handler->withdrawContentTranslationFromWithdrawContentTranslationApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent($pContentTranslationId, $requestBodyPayload);
+                        break;
+                    default:
+                        return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+                }
+            default:
+                throw new \RuntimeException();
         }
     }
 }

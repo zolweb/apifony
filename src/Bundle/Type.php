@@ -33,7 +33,7 @@ interface Type
 
     public function getBuiltInPhpType(): string;
 
-    public function getInitValue(): string|bool|int|float|array;
+    public function getInitValue(): Expr;
 
     public function getUsedModel(): ?string;
 

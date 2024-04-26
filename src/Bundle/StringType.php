@@ -4,6 +4,7 @@ namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Scalar\String_;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -118,9 +119,9 @@ class StringType implements Type
         return 'string';
     }
 
-    public function getInitValue(): string
+    public function getInitValue(): Expr
     {
-        return '';
+        return new String_('');
     }
 
     public function getUsedModel(): ?string

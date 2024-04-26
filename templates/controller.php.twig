@@ -128,7 +128,6 @@ class {{ controller.className }} extends AbstractController
 
         switch (true) {
 {%~ for requestBodyPayloadType in action.requestBodyPayloadTypes %}
-////////////////////////////////////////////////////////////////////////////////////////////////
             case {{ requestBodyPayloadType is null ? 'is_null($requestBodyPayload)' : requestBodyPayloadType.requestBodyPayloadTypeChecking }}:
                 switch($responsePayloadContentType) {
     {%~ for responseContentType in action.responseContentTypes %}
@@ -162,6 +161,7 @@ class {{ controller.className }} extends AbstractController
             default:
                 throw new RuntimeException();
         }
+////////////////////////////////////////////////////////////////////////////////////////////////
         switch ($response::CONTENT_TYPE) {
 {%~ for responseContentType in action.responseContentTypes %}
             case {{ responseContentType is null ? 'null' : '\'' ~ responseContentType ~ '\'' }}:

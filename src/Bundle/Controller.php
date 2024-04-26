@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Greater;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\Throw_;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\InterpolatedStringPart;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\InterpolatedString;
@@ -184,7 +185,7 @@ class Controller implements File
             }
 
             foreach ($action->getParameters(['query', 'header', 'cookie']) as $parameter) {
-                $actionMethod->addStmt(new Expression(new Assign($f->var($parameter->getVariableName()), $f->val($parameter->getInitValue()))))
+                $actionMethod->addStmt(new Expression(new Assign($f->var($parameter->getVariableName()), $parameter->getInitValueAst())))
                     -> addStmt(new TryCatch([
                         new Expression(new Assign($f->var($parameter->getVariableName()), $f->methodCall($f->var('this'), sprintf('get%s%sParameter', ucfirst($parameter->getPhpType()), $parameter->isNullable() ? 'OrNull' : ''), array_merge([$f->var('request'), $parameter->getRawName(), $parameter->getIn(), $parameter->isRequired()], $parameter->hasDefault() ? [$parameter->getDefault()] : [])))),
                         new Expression($f->methodCall($f->var('this'), 'validateParameter', [
@@ -196,7 +197,7 @@ class Controller implements File
                         ])),
                     ], [
                         new Catch_([new Name('DenormalizationException')], $f->var('e'), [
-                            new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($parameter->getIn())), $f->val($parameter->getRawName())), new Array_([$f->propertyFetch($f->var('e'), 'messages')]))),
+                            new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($parameter->getIn())), $f->val($parameter->getRawName())), new Array_([new ArrayItem($f->propertyFetch($f->var('e'), 'messages'))]))),
                         ]),
                         new Catch_([new Name('ParameterValidationException')], $f->var('e'), [
                             new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($parameter->getIn())), $f->val($parameter->getRawName())), $f->propertyFetch($f->var('e'), 'messages'))),
@@ -212,16 +213,16 @@ class Controller implements File
                                     'application/json' => [
                                         new TryCatch([
                                             new Expression(new Assign($f->var('requestBodyPayload'), $f->methodCall($f->var('this'), sprintf('get%sJsonRequestBody', ucfirst($actionRequestBody->getPayloadBuiltInPhpType())), array_merge([$f->var('request')], $actionRequestBody->getPayloadBuiltInPhpType() === 'object' ? [$f->classConstFetch($actionRequestBody->getPayloadPhpType(), 'class')] : [])))),
-                                            $f->methodCall($f->var('this'), 'validateRequestBody', [
+                                            new Expression($f->methodCall($f->var('this'), 'validateRequestBody', [
                                                 $f->var('requestBodyPayload'),
                                                 array_map(
                                                     static fn (Constraint $constraint): New_ => $constraint->getInstantiationAst(),
                                                     $actionRequestBody->getConstraints(),
                                                 ),
-                                            ]),
+                                            ])),
                                         ], [
                                             new Catch_([new Name('DenormalizationException')], $f->var('e'), [
-                                                new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), new Array_([$f->propertyFetch($f->var('e'), 'messages')]))),
+                                                new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), new Array_([new ArrayItem($f->propertyFetch($f->var('e'), 'messages'))]))),
                                             ]),
                                             new Catch_([new Name('RequestBodyValidationException')], $f->var('e'), [
                                                 new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), $f->propertyFetch($f->var('e'), 'messages'))),
@@ -262,7 +263,31 @@ class Controller implements File
                 ]]))
                 ->addStmt(new Switch_($f->val(true), array_merge(
                     array_map(
-                        static fn (?Type $requestBodyPayloadType): Case_ => new Case_($requestBodyPayloadType === null ? $f->funcCall('is_null', [$f->var('requestBodyPayload')]) : $requestBodyPayloadType->getRequestBodyPayloadTypeCheckingAst()),
+                        static fn (?Type $requestBodyPayloadType): Case_ => new Case_($requestBodyPayloadType === null ? $f->funcCall('is_null', [$f->var('requestBodyPayload')]) : $requestBodyPayloadType->getRequestBodyPayloadTypeCheckingAst(), [
+                            new Switch_($f->var('responsePayloadContentType'), array_merge(
+                                array_map(
+                                    static fn (?string $responseContentType): Case_ =>
+                                        // todo move in Action
+                                        new Case_($f->val($action->getCase($requestBodyPayloadType, $responseContentType)->getResponseContentType()), [
+                                            new Expression(new Assign($f->var('response'), $f->methodCall($f->propertyFetch($f->var('this'), 'handler'), $action->getCase($requestBodyPayloadType, $responseContentType)->getName(), array_merge(
+                                                array_map(static fn (ActionParameter $parameter): Variable => $f->var($parameter->getVariableName()), $action->getCase($requestBodyPayloadType, $responseContentType)->getParameters()),
+                                                $action->getCase($requestBodyPayloadType, $responseContentType)->hasRequestBodyPayloadParameter() ? [$f->var('requestBodyPayload')] : [],
+                                            )))),
+                                            new Break_(),
+                                        ]),
+                                    array_filter($action->getResponseContentTypes()),
+                                ),
+                                [new Case_(null, [
+                                    new Return_($f->new('JsonResponse', [
+                                        new Array_([
+                                            new ArrayItem($f->val('unsupported_response_type'), $f->val('code')),
+                                            new ArrayItem(new InterpolatedString([new InterpolatedStringPart('The value \''), $f->var('responsePayloadContentType'), new InterpolatedStringPart('\' received in accept header is not a supported format.')]), $f->val('message')),
+                                        ]),
+                                        $f->classConstFetch('Response', 'HTTP_UNSUPPORTED_MEDIA_TYPE'),
+                                    ])),
+                                ])],
+                            )),
+                        ]),
                         $action->getRequestBodyPayloadTypes(),
                     ),
                     [new Case_(null, [new Expression(new Throw_($f->new('\RuntimeException')))])],

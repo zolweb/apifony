@@ -153,9 +153,9 @@ class ArrayType implements Type
         return 'array';
     }
 
-    public function getInitValue(): array
+    public function getInitValue(): Expr
     {
-        return [];
+        return new Expr\Array_();
     }
 
     public function getUsedModel(): ?string

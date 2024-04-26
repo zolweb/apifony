@@ -104,7 +104,7 @@ class ObjectType implements Type
         return $this->isRaw ? 'array|\stdClass' : 'object';
     }
 
-    public function getInitValue(): string
+    public function getInitValue(): Expr
     {
         throw new \RuntimeException('Can not init object');
     }
