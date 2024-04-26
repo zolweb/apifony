@@ -287,6 +287,7 @@ class Controller implements File
                                     ])),
                                 ])],
                             )),
+                            new Break_(),
                         ]),
                         $action->getRequestBodyPayloadTypes(),
                     ),
