@@ -46,5 +46,11 @@ class LocaleController extends AbstractController
             default:
                 throw new \RuntimeException();
         }
+        switch ($response::CONTENT_TYPE) {
+            case 'application/json':
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
+            default:
+                throw new \RuntimeException();
+        }
     }
 }

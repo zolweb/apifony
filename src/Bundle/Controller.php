@@ -291,6 +291,17 @@ class Controller implements File
                         $action->getRequestBodyPayloadTypes(),
                     ),
                     [new Case_(null, [new Expression(new Throw_($f->new('\RuntimeException')))])],
+                )))
+                ->addStmt(new Switch_($f->classConstFetch($f->var('response'), 'CONTENT_TYPE'), array_merge(
+                    array_map(
+                        static fn (?string $responseContentType): Case_ => new Case_($f->val($responseContentType), [
+                            $responseContentType === null ?
+                                new Return_($f->new('Response', [$f->val(''), $f->classConstFetch($f->var('response'), 'CODE'), $f->methodCall($f->var('response'), 'getHeaders')])) :
+                                new Return_($f->new('JsonResponse', [$f->propertyFetch($f->var('response'), 'payload'), $f->classConstFetch($f->var('response'), 'CODE'), $f->methodCall($f->var('response'), 'getHeaders')])),
+                        ]),
+                        $action->getResponseContentTypes(),
+                    ),
+                    [new Case_(null, [new Expression(new Throw_($f->new('\RuntimeException')))])],
                 )));
 
             $class->addStmt($actionMethod);

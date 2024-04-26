@@ -94,6 +94,12 @@ class MediaController extends AbstractController
             default:
                 throw new \RuntimeException();
         }
+        switch ($response::CONTENT_TYPE) {
+            case 'application/json':
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
+            default:
+                throw new \RuntimeException();
+        }
     }
     public function postMedia(Request $request): Response
     {
@@ -132,6 +138,14 @@ class MediaController extends AbstractController
             default:
                 throw new \RuntimeException();
         }
+        switch ($response::CONTENT_TYPE) {
+            case null:
+                return new Response('', $response::CODE, $response->getHeaders());
+            case 'application/json':
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
+            default:
+                throw new \RuntimeException();
+        }
     }
     public function getMedia(Request $request, string $mediaId): Response
     {
@@ -165,6 +179,12 @@ class MediaController extends AbstractController
                     default:
                         return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
                 }
+            default:
+                throw new \RuntimeException();
+        }
+        switch ($response::CONTENT_TYPE) {
+            case 'application/json':
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             default:
                 throw new \RuntimeException();
         }
@@ -212,6 +232,14 @@ class MediaController extends AbstractController
             default:
                 throw new \RuntimeException();
         }
+        switch ($response::CONTENT_TYPE) {
+            case null:
+                return new Response('', $response::CODE, $response->getHeaders());
+            case 'application/json':
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
+            default:
+                throw new \RuntimeException();
+        }
     }
     public function archiveMedia(Request $request, string $mediaId): Response
     {
@@ -253,6 +281,14 @@ class MediaController extends AbstractController
                     default:
                         return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
                 }
+            default:
+                throw new \RuntimeException();
+        }
+        switch ($response::CONTENT_TYPE) {
+            case null:
+                return new Response('', $response::CODE, $response->getHeaders());
+            case 'application/json':
+                return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
             default:
                 throw new \RuntimeException();
         }
