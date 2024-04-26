@@ -251,7 +251,7 @@ class Controller implements File
                 new Return_($f->new('JsonResponse', [
                     new Array_([
                         new ArrayItem($f->val('validation_failed'), $f->val('code')),
-                        new ArrayItem($f->val('Validation has failed'), $f->val('message')),
+                        new ArrayItem($f->val('Validation has failed.'), $f->val('message')),
                         new ArrayItem($f->var('errors'), $f->val('errors')),
                     ]),
                     $f->classConstFetch('Response', 'HTTP_BAD_REQUEST'),
