@@ -69,7 +69,7 @@ class AtomController extends AbstractController
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, PostAtomApplicationJsonRequestBodyPayload::class);
                     $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
-                    $errors['requestBody'] = [$e->messages];
+                    $errors['requestBody'] = [$e->getMessage()];
                 } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }

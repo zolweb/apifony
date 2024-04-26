@@ -197,7 +197,7 @@ class Controller implements File
                         ])),
                     ], [
                         new Catch_([new Name('DenormalizationException')], $f->var('e'), [
-                            new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($parameter->getIn())), $f->val($parameter->getRawName())), new Array_([new ArrayItem($f->propertyFetch($f->var('e'), 'messages'))]))),
+                            new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($parameter->getIn())), $f->val($parameter->getRawName())), new Array_([new ArrayItem($f->methodCall($f->var('e'), 'getMessage'))]))),
                         ]),
                         new Catch_([new Name('ParameterValidationException')], $f->var('e'), [
                             new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($parameter->getIn())), $f->val($parameter->getRawName())), $f->propertyFetch($f->var('e'), 'messages'))),
@@ -222,7 +222,7 @@ class Controller implements File
                                             ])),
                                         ], [
                                             new Catch_([new Name('DenormalizationException')], $f->var('e'), [
-                                                new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), new Array_([new ArrayItem($f->propertyFetch($f->var('e'), 'messages'))]))),
+                                                new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), new Array_([new ArrayItem($f->methodCall($f->var('e'), 'getMessage'))]))),
                                             ]),
                                             new Catch_([new Name('RequestBodyValidationException')], $f->var('e'), [
                                                 new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), $f->propertyFetch($f->var('e'), 'messages'))),

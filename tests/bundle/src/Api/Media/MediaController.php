@@ -28,7 +28,7 @@ class MediaController extends AbstractController
             $qPageNumber = $this->getIntParameter($request, 'pageNumber', 'query', true);
             $this->validateParameter($qPageNumber, [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $errors['query']['pageNumber'] = [$e->messages];
+            $errors['query']['pageNumber'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
             $errors['query']['pageNumber'] = $e->messages;
         }
@@ -37,7 +37,7 @@ class MediaController extends AbstractController
             $qPageSize = $this->getIntParameter($request, 'pageSize', 'query', true);
             $this->validateParameter($qPageSize, [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $errors['query']['pageSize'] = [$e->messages];
+            $errors['query']['pageSize'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
             $errors['query']['pageSize'] = $e->messages;
         }
@@ -46,7 +46,7 @@ class MediaController extends AbstractController
             $qSort = $this->getStringOrNullParameter($request, 'sort', 'query', false);
             $this->validateParameter($qSort, [new Assert\Regex(pattern: '/^(creationTimestamp|name)(:(asc|desc))?$/')]);
         } catch (DenormalizationException $e) {
-            $errors['query']['sort'] = [$e->messages];
+            $errors['query']['sort'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
             $errors['query']['sort'] = $e->messages;
         }
@@ -55,7 +55,7 @@ class MediaController extends AbstractController
             $qSearch = $this->getStringOrNullParameter($request, 'search', 'query', false);
             $this->validateParameter($qSearch, []);
         } catch (DenormalizationException $e) {
-            $errors['query']['search'] = [$e->messages];
+            $errors['query']['search'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
             $errors['query']['search'] = $e->messages;
         }
@@ -64,7 +64,7 @@ class MediaController extends AbstractController
             $qFolderId = $this->getStringOrNullParameter($request, 'folderId', 'query', false);
             $this->validateParameter($qFolderId, [new AssertMediaFolderId()]);
         } catch (DenormalizationException $e) {
-            $errors['query']['folderId'] = [$e->messages];
+            $errors['query']['folderId'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
             $errors['query']['folderId'] = $e->messages;
         }
@@ -111,7 +111,7 @@ class MediaController extends AbstractController
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, PostMediaApplicationJsonRequestBodyPayload::class);
                     $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
-                    $errors['requestBody'] = [$e->messages];
+                    $errors['requestBody'] = [$e->getMessage()];
                 } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
@@ -205,7 +205,7 @@ class MediaController extends AbstractController
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, PatchMediaApplicationJsonRequestBodyPayload::class);
                     $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
-                    $errors['requestBody'] = [$e->messages];
+                    $errors['requestBody'] = [$e->getMessage()];
                 } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
@@ -257,7 +257,7 @@ class MediaController extends AbstractController
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, ArchiveMediaApplicationJsonRequestBodyPayload::class);
                     $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
-                    $errors['requestBody'] = [$e->messages];
+                    $errors['requestBody'] = [$e->getMessage()];
                 } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }

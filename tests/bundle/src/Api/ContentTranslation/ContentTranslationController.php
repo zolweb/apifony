@@ -29,7 +29,7 @@ class ContentTranslationController extends AbstractController
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, PostContentTranslationApplicationJsonRequestBodyPayload::class);
                     $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
-                    $errors['requestBody'] = [$e->messages];
+                    $errors['requestBody'] = [$e->getMessage()];
                 } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
@@ -81,7 +81,7 @@ class ContentTranslationController extends AbstractController
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, PatchContentTranslationApplicationJsonRequestBodyPayload::class);
                     $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
-                    $errors['requestBody'] = [$e->messages];
+                    $errors['requestBody'] = [$e->getMessage()];
                 } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
@@ -173,7 +173,7 @@ class ContentTranslationController extends AbstractController
             $qPageNumber = $this->getIntParameter($request, 'pageNumber', 'query', true);
             $this->validateParameter($qPageNumber, [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $errors['query']['pageNumber'] = [$e->messages];
+            $errors['query']['pageNumber'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
             $errors['query']['pageNumber'] = $e->messages;
         }
@@ -182,7 +182,7 @@ class ContentTranslationController extends AbstractController
             $qPageSize = $this->getIntParameter($request, 'pageSize', 'query', true);
             $this->validateParameter($qPageSize, [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $errors['query']['pageSize'] = [$e->messages];
+            $errors['query']['pageSize'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
             $errors['query']['pageSize'] = $e->messages;
         }
@@ -235,7 +235,7 @@ class ContentTranslationController extends AbstractController
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, PublishContentTranslationApplicationJsonRequestBodyPayload::class);
                     $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
-                    $errors['requestBody'] = [$e->messages];
+                    $errors['requestBody'] = [$e->getMessage()];
                 } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
@@ -287,7 +287,7 @@ class ContentTranslationController extends AbstractController
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, WithdrawContentTranslationApplicationJsonRequestBodyPayload::class);
                     $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
-                    $errors['requestBody'] = [$e->messages];
+                    $errors['requestBody'] = [$e->getMessage()];
                 } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }

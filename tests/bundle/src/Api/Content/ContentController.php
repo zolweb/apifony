@@ -29,7 +29,7 @@ class ContentController extends AbstractController
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, PostContentApplicationJsonRequestBodyPayload::class);
                     $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
-                    $errors['requestBody'] = [$e->messages];
+                    $errors['requestBody'] = [$e->getMessage()];
                 } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
@@ -73,7 +73,7 @@ class ContentController extends AbstractController
             $qContentTypeId = $this->getStringOrNullParameter($request, 'contentTypeId', 'query', false);
             $this->validateParameter($qContentTypeId, []);
         } catch (DenormalizationException $e) {
-            $errors['query']['contentTypeId'] = [$e->messages];
+            $errors['query']['contentTypeId'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
             $errors['query']['contentTypeId'] = $e->messages;
         }
@@ -82,7 +82,7 @@ class ContentController extends AbstractController
             $qPageNumber = $this->getIntParameter($request, 'pageNumber', 'query', true);
             $this->validateParameter($qPageNumber, [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $errors['query']['pageNumber'] = [$e->messages];
+            $errors['query']['pageNumber'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
             $errors['query']['pageNumber'] = $e->messages;
         }
@@ -91,7 +91,7 @@ class ContentController extends AbstractController
             $qPageSize = $this->getIntParameter($request, 'pageSize', 'query', true);
             $this->validateParameter($qPageSize, [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $errors['query']['pageSize'] = [$e->messages];
+            $errors['query']['pageSize'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
             $errors['query']['pageSize'] = $e->messages;
         }
@@ -100,7 +100,7 @@ class ContentController extends AbstractController
             $qSort = $this->getStringOrNullParameter($request, 'sort', 'query', false);
             $this->validateParameter($qSort, [new Assert\Regex(pattern: '/^(creationTimestamp|name)(:(asc|desc))?$/')]);
         } catch (DenormalizationException $e) {
-            $errors['query']['sort'] = [$e->messages];
+            $errors['query']['sort'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
             $errors['query']['sort'] = $e->messages;
         }
@@ -109,7 +109,7 @@ class ContentController extends AbstractController
             $qStatus = $this->getStringOrNullParameter($request, 'status', 'query', false);
             $this->validateParameter($qStatus, []);
         } catch (DenormalizationException $e) {
-            $errors['query']['status'] = [$e->messages];
+            $errors['query']['status'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
             $errors['query']['status'] = $e->messages;
         }
@@ -118,7 +118,7 @@ class ContentController extends AbstractController
             $qSearch = $this->getStringOrNullParameter($request, 'search', 'query', false);
             $this->validateParameter($qSearch, []);
         } catch (DenormalizationException $e) {
-            $errors['query']['search'] = [$e->messages];
+            $errors['query']['search'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
             $errors['query']['search'] = $e->messages;
         }
@@ -213,7 +213,7 @@ class ContentController extends AbstractController
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, PatchContentApplicationJsonRequestBodyPayload::class);
                     $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
-                    $errors['requestBody'] = [$e->messages];
+                    $errors['requestBody'] = [$e->getMessage()];
                 } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
@@ -265,7 +265,7 @@ class ContentController extends AbstractController
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, ArchiveContentApplicationJsonRequestBodyPayload::class);
                     $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
-                    $errors['requestBody'] = [$e->messages];
+                    $errors['requestBody'] = [$e->getMessage()];
                 } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
@@ -317,7 +317,7 @@ class ContentController extends AbstractController
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, RestoreContentApplicationJsonRequestBodyPayload::class);
                     $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
-                    $errors['requestBody'] = [$e->messages];
+                    $errors['requestBody'] = [$e->getMessage()];
                 } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }

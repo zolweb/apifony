@@ -28,7 +28,7 @@ class MediaTreeController extends AbstractController
             $qPath = $this->getStringParameter($request, 'path', 'query', false, '\'root\'');
             $this->validateParameter($qPath, [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $errors['query']['path'] = [$e->messages];
+            $errors['query']['path'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
             $errors['query']['path'] = $e->messages;
         }
@@ -75,7 +75,7 @@ class MediaTreeController extends AbstractController
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, MoveToMediaFolderApplicationJsonRequestBodyPayload::class);
                     $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
-                    $errors['requestBody'] = [$e->messages];
+                    $errors['requestBody'] = [$e->getMessage()];
                 } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
@@ -121,7 +121,7 @@ class MediaTreeController extends AbstractController
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, AddMediaFolderApplicationJsonRequestBodyPayload::class);
                     $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
-                    $errors['requestBody'] = [$e->messages];
+                    $errors['requestBody'] = [$e->getMessage()];
                 } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
@@ -215,7 +215,7 @@ class MediaTreeController extends AbstractController
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, UpdateMediaFolderApplicationJsonRequestBodyPayload::class);
                     $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
-                    $errors['requestBody'] = [$e->messages];
+                    $errors['requestBody'] = [$e->getMessage()];
                 } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
@@ -267,7 +267,7 @@ class MediaTreeController extends AbstractController
                     $requestBodyPayload = $this->getObjectJsonRequestBody($request, DeleteMediaFolderApplicationJsonRequestBodyPayload::class);
                     $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
                 } catch (DenormalizationException $e) {
-                    $errors['requestBody'] = [$e->messages];
+                    $errors['requestBody'] = [$e->getMessage()];
                 } catch (RequestBodyValidationException $e) {
                     $errors['requestBody'] = $e->messages;
                 }
