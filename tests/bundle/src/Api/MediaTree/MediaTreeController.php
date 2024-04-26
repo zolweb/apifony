@@ -25,7 +25,7 @@ class MediaTreeController extends AbstractController
         $errors = [];
         $qPath = '';
         try {
-            $qPath = $this->getStringParameter($request, 'path', 'query', false, '\'root\'');
+            $qPath = $this->getStringParameter($request, 'path', 'query', false, 'root');
             $this->validateParameter($qPath, [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
             $errors['query']['path'] = [$e->getMessage()];

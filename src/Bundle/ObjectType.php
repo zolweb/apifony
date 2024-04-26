@@ -40,9 +40,9 @@ class ObjectType implements Type
         return $this->isRaw ? 'array|\stdClass' : $this->name;
     }
 
-    public function getMethodParameterDefault(): ?string
+    public function getMethodParameterDefault(): Expr
     {
-        return null;
+        throw new \RuntimeException();
     }
 
     /**

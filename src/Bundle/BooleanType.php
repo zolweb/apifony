@@ -35,9 +35,13 @@ class BooleanType implements Type
         return 'bool';
     }
 
-    public function getMethodParameterDefault(): ?string
+    public function getMethodParameterDefault(): Expr
     {
-        return [true => 'true', false => 'false', null => null][$this->schema->default];
+        if (!$this->schema->hasDefault) {
+            throw new \RuntimeException();
+        }
+
+        return new ConstFetch(new Name([true => 'true', false => 'false', null => 'null'][$this->schema->default]));
     }
 
     public function getRouteRequirementPattern(): string

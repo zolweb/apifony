@@ -13,7 +13,7 @@ interface Type
 
     public function getMethodParameterType(): string;
 
-    public function getMethodParameterDefault(): ?string;
+    public function getMethodParameterDefault(): Expr;
 
     public function getRouteRequirementPattern(): string;
 

@@ -3,6 +3,7 @@
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Param;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
@@ -71,7 +72,7 @@ class ModelAttribute
         return $this->schema->default !== null;
     }
 
-    public function getDefault(): ?string
+    public function getDefault(): Expr
     {
         return $this->type->getMethodParameterDefault();
     }

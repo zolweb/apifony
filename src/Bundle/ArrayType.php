@@ -4,6 +4,8 @@ namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Name;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
@@ -68,9 +70,9 @@ class ArrayType implements Type
         return "array<{$this->itemType->getPhpDocParameterAnnotationType()}>";
     }
 
-    public function getMethodParameterDefault(): ?string
+    public function getMethodParameterDefault(): Expr
     {
-        return null;
+       return new ConstFetch(new Name('null'));
     }
 
     /**

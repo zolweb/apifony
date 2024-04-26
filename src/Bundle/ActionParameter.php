@@ -6,6 +6,7 @@ use PhpParser\Node\Expr;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Parameter;
 use Zol\Ogen\OpenApi\Reference;
+use Zol\Ogen\OpenApi\Schema;
 use function Symfony\Component\String\u;
 
 class ActionParameter
@@ -35,6 +36,7 @@ class ActionParameter
             $variableName,
             $parameter,
             TypeFactory::build($className, $parameter->schema, $components),
+            $parameter->schema,
         );
     }
 
@@ -42,6 +44,7 @@ class ActionParameter
         private readonly string $variableName,
         private readonly Parameter $parameter,
         private readonly Type $type,
+        private readonly Schema $schema,
     ) {
     }
 
@@ -57,10 +60,10 @@ class ActionParameter
 
     public function hasDefault(): bool
     {
-        return $this->type->getMethodParameterDefault() !== null;
+        return $this->schema->hasDefault;
     }
 
-    public function getDefault(): ?string
+    public function getDefault(): Expr
     {
         return $this->type->getMethodParameterDefault();
     }

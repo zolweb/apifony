@@ -4,6 +4,8 @@ namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
@@ -37,21 +39,21 @@ class StringType implements Type
     /**
      * @throws Exception
      */
-    public function getMethodParameterDefault(): ?string
+    public function getMethodParameterDefault(): Expr
     {
-        if ($this->schema->hasDefault) {
-            if (is_string($this->schema->default)) {
-                return sprintf('\'%s\'', str_replace('\'', '\\\'', $this->schema->default));
-            }
-            if (is_null($this->schema->default)) {
-                if (!$this->nullable) {
-                    throw new Exception('Schemas that are not nullable cannot have null default.');
-                }
-                return 'null';
-            }
+        if (!$this->schema->hasDefault) {
+            throw new \RuntimeException();
         }
 
-        return null;
+        return $this->schema->default !== null ? new String_($this->schema->default) : new ConstFetch(new Name('null'));
+
+        // todo check in schema
+        // if (is_null($this->schema->default)) {
+        //     if (!$this->nullable) {
+        //         throw new Exception('Schemas that are not nullable cannot have null default.');
+        //     }
+        //     return 'null';
+        // }
     }
 
     public function getRouteRequirementPattern(): string

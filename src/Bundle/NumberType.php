@@ -4,6 +4,7 @@ namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\Float_;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
@@ -34,9 +35,13 @@ class NumberType implements Type
         return 'float';
     }
 
-    public function getMethodParameterDefault(): ?string
+    public function getMethodParameterDefault(): Expr
     {
-        return $this->schema->default !== null ? (string)$this->schema->default : null;
+        if (!$this->schema->hasDefault) {
+            throw new \RuntimeException();
+        }
+
+        return $this->schema->default !== null ? new Float_($this->schema->default) : new Expr\ConstFetch(new Name('null'));
     }
 
     public function getRouteRequirementPattern(): string
