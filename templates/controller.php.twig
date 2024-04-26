@@ -110,7 +110,6 @@ class {{ controller.className }} extends AbstractController
         }
 
 {%~ endif %}
-////////////////////////////////////////////////////////////////////////////////////////////////
         if (count($errors) > 0) {
             return new JsonResponse(
                 [
@@ -129,6 +128,7 @@ class {{ controller.className }} extends AbstractController
 
         switch (true) {
 {%~ for requestBodyPayloadType in action.requestBodyPayloadTypes %}
+////////////////////////////////////////////////////////////////////////////////////////////////
             case {{ requestBodyPayloadType is null ? 'is_null($requestBodyPayload)' : requestBodyPayloadType.requestBodyPayloadTypeChecking }}:
                 switch($responsePayloadContentType) {
     {%~ for responseContentType in action.responseContentTypes %}

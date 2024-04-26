@@ -2,6 +2,8 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\BuilderFactory;
+use PhpParser\Node\Expr;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -54,6 +56,13 @@ class IntegerType implements Type
     public function getRequestBodyPayloadTypeChecking(): string
     {
         return 'is_int($requestBodyPayload)';
+    }
+
+    public function getRequestBodyPayloadTypeCheckingAst(): Expr
+    {
+        $f = new BuilderFactory();
+
+        return $f->funcCall('is_int', [$f->var('requestBodyPayload')]);
     }
 
     public function getConstraints(): array

@@ -2,6 +2,7 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\Node\Expr;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 
 interface Type
@@ -21,6 +22,9 @@ interface Type
     public function getNormalizedType(): string;
 
     public function getRequestBodyPayloadTypeChecking(): string;
+
+    // todo take ast variable in parameter
+    public function getRequestBodyPayloadTypeCheckingAst(): Expr;
 
     /**
      * @return array<Constraint>

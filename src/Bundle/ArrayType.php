@@ -2,6 +2,8 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\BuilderFactory;
+use PhpParser\Node\Expr;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
@@ -95,6 +97,13 @@ class ArrayType implements Type
     public function getRequestBodyPayloadTypeChecking(): string
     {
         return "is_array(\$requestBodyPayload) && {$this->itemType->getRequestBodyPayloadTypeChecking()}";
+    }
+
+    public function getRequestBodyPayloadTypeCheckingAst(): Expr
+    {
+        $f = new BuilderFactory();
+
+        return new Expr\BinaryOp\BooleanAnd($f->funcCall('is_array', [$f->var('requestBodyPayload')]), $this->itemType->getRequestBodyPayloadTypeCheckingAst());
     }
 
     public function getConstraints(): array

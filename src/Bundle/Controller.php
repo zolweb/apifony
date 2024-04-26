@@ -7,7 +7,9 @@ use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\BinaryOp\Greater;
 use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\InterpolatedStringPart;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\InterpolatedString;
@@ -15,6 +17,7 @@ use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
@@ -242,6 +245,28 @@ class Controller implements File
                         ])]
                     )));
             }
+
+            $actionMethod->addStmt(new If_(new Greater($f->funcCall('count', [$f->var('errors')]), $f->val(0)), ['stmts' => [
+                new Return_($f->new('JsonResponse', [
+                    new Array_([
+                        new ArrayItem($f->val('validation_failed'), $f->val('code')),
+                        new ArrayItem($f->val('Validation has failed'), $f->val('message')),
+                        new ArrayItem($f->var('errors'), $f->val('errors')),
+                    ]),
+                    $f->classConstFetch('Response', 'HTTP_BAD_REQUEST'),
+                ]))
+            ]]))
+                ->addStmt(new Expression(new Assign($f->var('responsePayloadContentType'), $f->methodCall($f->propertyFetch($f->var('request'), 'headers'), 'get', [$f->val('accept'), $f->val('application/json')]))))
+                ->addStmt(new If_($f->funcCall('str_contains', [$f->var('responsePayloadContentType'), $f->val('*/*')]), ['stmts' => [
+                    new Expression(new Assign($f->var('responsePayloadContentType'), $f->val('application/json'))),
+                ]]))
+                ->addStmt(new Switch_($f->val(true), array_merge(
+                    array_map(
+                        static fn (?Type $requestBodyPayloadType): Case_ => new Case_($requestBodyPayloadType === null ? $f->funcCall('is_null', [$f->var('requestBodyPayload')]) : $requestBodyPayloadType->getRequestBodyPayloadTypeCheckingAst()),
+                        $action->getRequestBodyPayloadTypes(),
+                    ),
+                    [new Case_(null, [new Expression(new Throw_($f->new('\RuntimeException')))])],
+                )));
 
             $class->addStmt($actionMethod);
         }

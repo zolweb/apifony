@@ -28,6 +28,13 @@ class ContentTypeController extends AbstractController
             default:
                 return new JsonResponse(['code' => 'unsupported_request_type', "The value '{$requestBodyPayloadContentType}' received in content-type header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
         }
+        if (count($errors) > 0) {
+            return new JsonResponse(['code' => 'validation_failed', 'message' => 'Validation has failed', 'errors' => $errors], Response::HTTP_BAD_REQUEST);
+        }
+        $responsePayloadContentType = $request->headers->get('accept', 'application/json');
+        if (str_contains($responsePayloadContentType, '*/*')) {
+            $responsePayloadContentType = 'application/json';
+        }
     }
     public function getContentType(Request $request, string $contentTypeId): Response
     {
@@ -44,6 +51,13 @@ class ContentTypeController extends AbstractController
                 break;
             default:
                 return new JsonResponse(['code' => 'unsupported_request_type', "The value '{$requestBodyPayloadContentType}' received in content-type header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+        }
+        if (count($errors) > 0) {
+            return new JsonResponse(['code' => 'validation_failed', 'message' => 'Validation has failed', 'errors' => $errors], Response::HTTP_BAD_REQUEST);
+        }
+        $responsePayloadContentType = $request->headers->get('accept', 'application/json');
+        if (str_contains($responsePayloadContentType, '*/*')) {
+            $responsePayloadContentType = 'application/json';
         }
     }
 }

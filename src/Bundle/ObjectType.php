@@ -2,6 +2,9 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\BuilderFactory;
+use PhpParser\Node\Expr;
+use PhpParser\Node\Name;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
@@ -66,6 +69,15 @@ class ObjectType implements Type
     public function getRequestBodyPayloadTypeChecking(): string
     {
         return $this->isRaw ? 'is_array($requestBodyPayload)' : "\$requestBodyPayload instanceOf {$this->name}";
+    }
+
+    public function getRequestBodyPayloadTypeCheckingAst(): Expr
+    {
+        $f = new BuilderFactory();
+
+        return $this->isRaw ?
+            $f->funcCall('is_array', [$f->var('requestBodyPayload')]) :
+            new Expr\Instanceof_($f->var('requestBodyPayload'), new Name($this->name));
     }
 
     public function getConstraints(): array
