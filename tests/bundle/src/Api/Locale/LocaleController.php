@@ -25,7 +25,7 @@ class LocaleController extends AbstractController
             case '':
                 break;
             default:
-                return new JsonResponse(['code' => 'unsupported_request_type', "The value '{$requestBodyPayloadContentType}' received in content-type header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
+                return new JsonResponse(['code' => 'unsupported_request_type', 'message' => "The value '{$requestBodyPayloadContentType}' received in content-type header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
         }
         if (count($errors) > 0) {
             return new JsonResponse(['code' => 'validation_failed', 'message' => 'Validation has failed', 'errors' => $errors], Response::HTTP_BAD_REQUEST);

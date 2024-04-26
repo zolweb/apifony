@@ -239,7 +239,7 @@ class Controller implements File
                             new Return_($f->new('JsonResponse', [
                                 new Array_([
                                     new ArrayItem($f->val('unsupported_request_type'), $f->val('code')),
-                                    new ArrayItem(new InterpolatedString([new InterpolatedStringPart('The value \''), $f->var('requestBodyPayloadContentType'), new InterpolatedStringPart('\' received in content-type header is not a supported format.')])),
+                                    new ArrayItem(new InterpolatedString([new InterpolatedStringPart('The value \''), $f->var('requestBodyPayloadContentType'), new InterpolatedStringPart('\' received in content-type header is not a supported format.')]), $f->val('message')),
                                 ]),
                                 $f->classConstFetch('Response', 'HTTP_UNSUPPORTED_MEDIA_TYPE'),
                             ]))
