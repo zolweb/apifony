@@ -64,7 +64,7 @@ class ComposerJson implements File
                         "{$this->namespace}\\" => 'src/'
                     ],
                 ],
-            ], JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
+            ], JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES);
         } catch (\JsonException) {
             throw new \RuntimeException();
         }
