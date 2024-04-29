@@ -112,15 +112,15 @@ class ServicesConfig implements File
             'class' => 'Symfony\Component\Serializer\Encoder\JsonEncoder',
         ];
 
-        $config['service']["{$this->getServiceNamespace()}.php_stan_extractor"] = [
+        $config['services']["{$this->getServiceNamespace()}.php_stan_extractor"] = [
             'class' => 'Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor',
         ];
 
-        $config['service']["{$this->getServiceNamespace()}.reflection_extractor"] = [
+        $config['services']["{$this->getServiceNamespace()}.reflection_extractor"] = [
             'class' => 'Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor',
         ];
 
-        $config['service']["{$this->getServiceNamespace()}.property_info_extractor"] = [
+        $config['services']["{$this->getServiceNamespace()}.property_info_extractor"] = [
             'class' => 'Symfony\Component\PropertyInfo\PropertyInfoExtractor',
             'arguments' => [
                 '$typeExtractors' => [
@@ -130,25 +130,25 @@ class ServicesConfig implements File
             ],
         ];
 
-        $config['service']["{$this->getServiceNamespace()}.attribute_loader"] = [
+        $config['services']["{$this->getServiceNamespace()}.attribute_loader"] = [
             'class' => 'Symfony\Component\Serializer\Mapping\Loader\AttributeLoader',
         ];
 
-        $config['service']["{$this->getServiceNamespace()}.class_metadata_factory"] = [
+        $config['services']["{$this->getServiceNamespace()}.class_metadata_factory"] = [
             'class' => 'Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory',
             'arguments' => [
                 '$loader' => "@{$this->getServiceNamespace()}.attribute_loader",
             ],
         ];
 
-        $config['service']["{$this->getServiceNamespace()}.metadata_aware_name_converter"] = [
+        $config['services']["{$this->getServiceNamespace()}.metadata_aware_name_converter"] = [
             'class' => 'Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter',
             'arguments' => [
                 '$metadataFactory' => "@{$this->getServiceNamespace()}.class_metadata_factory",
             ],
         ];
 
-        $config['service']["{$this->getServiceNamespace()}.object_normalizer"] = [
+        $config['services']["{$this->getServiceNamespace()}.object_normalizer"] = [
             'class' => 'Symfony\Component\Serializer\Normalizer\ObjectNormalizer',
             'arguments' => [
                 '$propertyTypeExtractor' => "@{$this->getServiceNamespace()}.property_info_extractor",
@@ -157,11 +157,11 @@ class ServicesConfig implements File
             ],
         ];
 
-        $config['service']["{$this->getServiceNamespace()}.array_denormalizer"] = [
+        $config['services']["{$this->getServiceNamespace()}.array_denormalizer"] = [
             'class' => 'Symfony\Component\Serializer\Normalizer\ArrayDenormalizer',
         ];
 
-        $config['service']["{$this->getServiceNamespace()}.serializer_interface"] = [
+        $config['services']["{$this->getServiceNamespace()}.serializer_interface"] = [
             'class' => 'Symfony\Component\Serializer\Serializer',
             'arguments' => [
                 '$encoders' => [

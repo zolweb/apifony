@@ -9,7 +9,6 @@ services:
     Zol\Ogen\Tests\TestOpenApiServer\Format\MediaFolderIdValidator: { class: Zol\Ogen\Tests\TestOpenApiServer\Format\MediaFolderIdValidator, public: true, tags: [validator.constraint_validator] }
     Zol\Ogen\Tests\TestOpenApiServer\Format\UuidValidator: { class: Zol\Ogen\Tests\TestOpenApiServer\Format\UuidValidator, public: true, tags: [validator.constraint_validator] }
     zol_ogen_tests_test_open_api_server.json_encoder: { class: Symfony\Component\Serializer\Encoder\JsonEncoder }
-service:
     zol_ogen_tests_test_open_api_server.php_stan_extractor: { class: Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor }
     zol_ogen_tests_test_open_api_server.reflection_extractor: { class: Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor }
     zol_ogen_tests_test_open_api_server.property_info_extractor: { class: Symfony\Component\PropertyInfo\PropertyInfoExtractor, arguments: { $typeExtractors: ['@zol_ogen_tests_test_open_api_server.php_stan_extractor', '@zol_ogen_tests_test_open_api_server.reflection_extractor'] } }
