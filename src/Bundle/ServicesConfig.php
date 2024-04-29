@@ -93,8 +93,8 @@ class ServicesConfig implements File
             $config['services']["{$controller->getNamespace()}\\{$controller->getClassName()}"] = [
                 'class' => "{$controller->getNamespace()}\\{$controller->getClassName()}",
                 'arguments' => [
-                    'serializer' => "@{$this->getServiceNamespace()}.serializer_interface",
-                    'validator' => '@validator',
+                    '$serializer' => "@{$this->getServiceNamespace()}.serializer_interface",
+                    '$validator' => '@validator',
                 ],
                 'public' => true,
             ];
