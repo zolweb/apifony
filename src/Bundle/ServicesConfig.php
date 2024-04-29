@@ -174,6 +174,6 @@ class ServicesConfig implements File
             ],
         ];
 
-        return Yaml::dump($config);
+        return Yaml::dump($config, 100);
     }
 }

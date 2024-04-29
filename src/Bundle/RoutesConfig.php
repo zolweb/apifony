@@ -108,6 +108,6 @@ class RoutesConfig implements File
             }
         }
 
-        return Yaml::dump($routes);
+        return Yaml::dump($routes, 100);
     }
 }
