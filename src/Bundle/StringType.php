@@ -36,16 +36,21 @@ class StringType implements Type
         return 'string';
     }
 
-    /**
-     * @throws Exception
-     */
     public function getMethodParameterDefault(): Expr
     {
         if (!$this->schema->hasDefault) {
             throw new \RuntimeException();
         }
 
-        return $this->schema->default !== null ? new String_($this->schema->default) : new ConstFetch(new Name('null'));
+        if ($this->schema->default === null) {
+            return new ConstFetch(new Name('null'));
+        }
+
+        if (!is_string($this->schema->default)) {
+            throw new \RuntimeException();
+        }
+
+        return new String_($this->schema->default);
 
         // todo check in schema
         // if (is_null($this->schema->default)) {

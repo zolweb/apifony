@@ -2,7 +2,16 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\BuilderFactory;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Stmt\Break_;
+use PhpParser\Node\Stmt\Case_;
+use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Node\Stmt\Switch_;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Header;
 use Zol\Ogen\OpenApi\OpenApi;
@@ -302,11 +311,77 @@ class Bundle implements File
 
     public function hasNamespaceAst(): bool
     {
-        return false;
+        return true;
     }
 
     public function getNamespaceAst(): Namespace_
     {
-        throw new \RuntimeException();
+        $f = new BuilderFactory();
+
+        $buildMethod = $f->method('build')
+            ->makePublic()
+            ->setReturnType('void')
+            ->addParam($f->param('container')->setType('ContainerBuilder'))
+            ->addStmt($f->staticCall('parent', 'build', [$f->var('container')]))
+            ->addStmt($f->methodCall($f->var('container'), 'addCompilerPass', [
+                new New_($f->class('')->implement('CompilerPassInterface')
+                    ->addStmt($f->method('process')
+                        ->makePublic()
+                        ->addParam($f->param('container')->setType('ContainerBuilder'))
+                        ->setReturnType('void')
+                        ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [sprintf('%s.handler', u($this->name)->snake())]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
+                            new Foreach_($f->var('tags'), $f->var('tag'), ['stmts' => [
+                                new Switch_(new ArrayDimFetch($f->var('tag'), $f->val('controller')), array_map(
+                                    fn (Aggregate $aggregate) => new Case_($f->val($aggregate->getTag()), [
+                                        new Expression($f->methodCall($f->methodCall($f->var('container'), 'findDefinition', [sprintf('%s\%s', $aggregate->getController()->getNamespace(), $aggregate->getController()->getClassName())]), 'addMethodCall', [$f->val('setHandler'), new Array_([new \PhpParser\Node\ArrayItem($f->new('Reference', [$f->var('id')]))])])),
+                                        new Break_(),
+                                    ]),
+                                    $this->getAggregates(),
+                                )),
+                            ]]),
+                        ]]))
+                        ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [sprintf('%s.format_definition', u($this->name)->snake())]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
+                            new Foreach_($f->var('tags'), $f->var('tag'), ['stmts' => [
+                                new Switch_(new ArrayDimFetch($f->var('tag'), $f->val('format')), array_map(
+                                    fn (string $formatName) => new Case_($f->val($formatName), [
+                                        new Expression($f->methodCall($f->methodCall($f->var('container'), 'findDefinition', [sprintf('%s\%s', $this->getFormats()[$formatName]->getValidator()->getNamespace(), $this->getFormats()[$formatName]->getValidator()->getClassName())]), 'addMethodCall', [$f->val('setFormatDefinition'), new Array_([new \PhpParser\Node\ArrayItem($f->new('Reference', [$f->var('id')]))])])),
+                                        new Break_(),
+                                    ]),
+                                    array_keys($this->getFormats()),
+                                )),
+                            ]]),
+                        ]])),
+                    )->getNode(),
+                ),
+            ]));
+
+        $loadExtensionMethod = $f->method('loadExtension')
+            ->makePublic()
+            ->addParam($f->param('config')->setType('array'))
+            ->addParam($f->param('container')->setType('ContainerConfigurator'))
+            ->addParam($f->param('builder')->setType('ContainerBuilder'))
+            ->setReturnType('void')
+            ->setDocComment(<<<'COMMENT'
+                /**
+                 * @param array<mixed> $config
+                 */
+                COMMENT
+            )
+            ->addStmt($f->methodCall($f->var('container'), 'import', [$f->val('../config/services.yaml')]));
+
+        $class = $f->class("{$this->name}Bundle")
+            ->extend('AbstractBundle')
+            ->addStmt($buildMethod)
+            ->addStmt($loadExtensionMethod);
+
+        $namespace = $f->namespace($this->namespace)
+            ->addStmt($f->use('Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface'))
+            ->addStmt($f->use('Symfony\Component\DependencyInjection\ContainerBuilder'))
+            ->addStmt($f->use('Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator'))
+            ->addStmt($f->use('Symfony\Component\DependencyInjection\Reference'))
+            ->addStmt($f->use('Symfony\Component\HttpKernel\Bundle\AbstractBundle'))
+            ->addStmt($class);
+
+        return $namespace->getNode();
     }
 }

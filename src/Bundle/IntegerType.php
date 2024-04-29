@@ -42,7 +42,15 @@ class IntegerType implements Type
             throw new \RuntimeException();
         }
 
-        return $this->schema->default !== null ? new Int_($this->schema->default) : new ConstFetch(new Name('null'));
+        if ($this->schema->default === null) {
+            return new ConstFetch(new Name('null'));
+        }
+
+        if (!is_int($this->schema->default)) {
+            throw new \RuntimeException();
+        }
+
+        return new Int_($this->schema->default);
     }
 
     public function getRouteRequirementPattern(): string

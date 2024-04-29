@@ -66,42 +66,101 @@ class Ogen
     private const CODE = <<<'PHP'
 <?php
 
-namespace Zol\Ogen\Tests\TestOpenApiServer\Model;
+namespace Zol\Cortizol\AdminOpenApiServer;
 
-use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
+use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 
-
-class Content
+class CortizolAdminOpenApiServerBundle extends AbstractBundle
 {
+    public function build(ContainerBuilder $container): void
+    {
+        parent::build($container);
+
+        $container->addCompilerPass(
+            new class () implements CompilerPassInterface {
+                public function process(ContainerBuilder $container): void {
+                    foreach ($container->findTaggedServiceIds('cortizol_admin_open_api_server.handler') as $id => $tags) {
+                        foreach ($tags as $tag) {
+                            switch ($tag['controller']) {
+                                case 'content_type':
+                                    $container
+                                        ->findDefinition('Zol\Cortizol\AdminOpenApiServer\Api\ContentType\ContentTypeController')
+                                        ->addMethodCall('setHandler', [new Reference($id)]);
+
+                                break;
+
+                                case 'locale':
+                                    $container
+                                        ->findDefinition('Zol\Cortizol\AdminOpenApiServer\Api\Locale\LocaleController')
+                                        ->addMethodCall('setHandler', [new Reference($id)]);
+
+                                break;
+
+                                case 'content':
+                                    $container
+                                        ->findDefinition('Zol\Cortizol\AdminOpenApiServer\Api\Content\ContentController')
+                                        ->addMethodCall('setHandler', [new Reference($id)]);
+
+                                break;
+
+                                case 'content_translation':
+                                    $container
+                                        ->findDefinition('Zol\Cortizol\AdminOpenApiServer\Api\ContentTranslation\ContentTranslationController')
+                                        ->addMethodCall('setHandler', [new Reference($id)]);
+
+                                break;
+
+                                case 'media':
+                                    $container
+                                        ->findDefinition('Zol\Cortizol\AdminOpenApiServer\Api\Media\MediaController')
+                                        ->addMethodCall('setHandler', [new Reference($id)]);
+
+                                break;
+
+                                case 'media_tree':
+                                    $container
+                                        ->findDefinition('Zol\Cortizol\AdminOpenApiServer\Api\MediaTree\MediaTreeController')
+                                        ->addMethodCall('setHandler', [new Reference($id)]);
+
+                                break;
+                            }
+                        }
+                    }
+
+                    foreach ($container->findTaggedServiceIds('cortizol_admin_open_api_server.format_definition') as $id => $tags) {
+                        foreach ($tags as $tag) {
+                            switch ($tag['format']) {
+                                case 'media-folder-id':
+                                    $container
+                                        ->findDefinition('Zol\Cortizol\AdminOpenApiServer\Format\MediaFolderIdValidator')
+                                        ->addMethodCall('setFormatDefinition', [new Reference($id)]);
+
+                                break;
+
+                                case 'uuid':
+                                    $container
+                                        ->findDefinition('Zol\Cortizol\AdminOpenApiServer\Format\UuidValidator')
+                                        ->addMethodCall('setFormatDefinition', [new Reference($id)]);
+
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        );
+    }
+
     /**
-     * @param array<ContentTranslation> $translations
+     * @param array<mixed> $config
      */
-    public function __construct(
-        #[Assert\NotNull]
-        public readonly string $id,
-
-        #[Assert\NotNull]
-        public readonly int $version,
-
-        #[Assert\NotNull]
-        public readonly string $contentTypeId,
-
-        #[Assert\NotNull]
-        public readonly string $name,
-
-        #[Assert\NotNull]
-        public readonly string $status,
-
-        #[Assert\NotNull]
-        #[Assert\Valid]
-        #[Assert\All(constraints: [
-            new Assert\NotNull,
-        ])]
-        public readonly array $translations,
-
-        #[Assert\NotNull]
-        public readonly int $creationTimestamp,
-    ) {
+    public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
+    {
+        $container->import('../config/services.yaml');
     }
 }
 PHP;

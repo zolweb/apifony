@@ -28,6 +28,9 @@ class ActionParameter
         if ($parameter->schema === null) {
             throw new Exception('Parameter objects without schema attribute are not supported.');
         }
+        if ($parameter->schema instanceof Reference) {
+            throw new \RuntimeException();
+        }
         $variableName = sprintf('%s%s', $parameter->in[0], u($parameter->name)->camel()->title());
         $className = "{$actionClassName}_{$parameter->name}";
         $className = u($className)->camel()->title();
