@@ -131,7 +131,7 @@ class Handler implements File
                             $actionCase->hasRequestBodyPayloadParameter() ? [$f->param('requestBodyPayload')->setType($actionCase->getRequestBodyPayloadParameterPhpType())] : [],
                         ))
                         ->setReturnType(new UnionType(array_map(
-                            static fn (ActionResponse $response) => new Name($response->getName()),
+                            static fn (ActionResponse $response) => new Name($response->getClassName()),
                             $actionCase->getResponses(),
                         ))),
                     $action->getCases(),
