@@ -4,6 +4,7 @@ namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\PrettyPrinter\Standard;
 
 class ParameterValidationException implements File
 {
@@ -32,12 +33,7 @@ class ParameterValidationException implements File
         return 'exception';
     }
 
-    public function hasNamespaceAst(): bool
-    {
-        return true;
-    }
-
-    public function getNamespaceAst(): Namespace_
+    public function getContent(): string
     {
         $f = new BuilderFactory();
 
@@ -59,6 +55,6 @@ class ParameterValidationException implements File
         $namespace = $f->namespace("{$this->bundleNamespace}\Api")
             ->addStmt($class);
 
-        return $namespace->getNode();
+        return (new Standard)->prettyPrintFile([$namespace->getNode()]);
     }
 }

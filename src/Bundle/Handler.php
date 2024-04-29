@@ -9,6 +9,7 @@ use PhpParser\BuilderFactory;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\UnionType;
+use PhpParser\PrettyPrinter\Standard;
 
 class Handler implements File
 {
@@ -114,7 +115,7 @@ class Handler implements File
         return true;
     }
 
-    public function getNamespaceAst(): Namespace_
+    public function getContent(): string
     {
         $f = new BuilderFactory();
 
@@ -146,6 +147,6 @@ class Handler implements File
             ))
             ->addStmt($interface);
 
-        return $namespace->getNode();
+        return (new Standard)->prettyPrintFile([$namespace->getNode()]);
     }
 }

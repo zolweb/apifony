@@ -8,6 +8,7 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Return_;
+use PhpParser\PrettyPrinter\Standard;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Reference;
 use Zol\Ogen\OpenApi\Response;
@@ -157,12 +158,7 @@ class ActionResponse implements File
         return 'response';
     }
 
-    public function hasNamespaceAst(): bool
-    {
-        return true;
-    }
-
-    public function getNamespaceAst(): Namespace_
+    public function getContent(): string
     {
         $f = new BuilderFactory();
 
@@ -215,6 +211,6 @@ class ActionResponse implements File
             $namespace->addStmt($f->use("{$this->bundleNamespace }\Model\{$this->usedModelName}"));
         }
 
-        return $namespace->getNode();
+        return (new Standard)->prettyPrintFile([$namespace->getNode()]);
     }
 }

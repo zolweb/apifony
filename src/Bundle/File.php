@@ -2,8 +2,6 @@
 
 namespace Zol\Ogen\Bundle;
 
-use PhpParser\Node\Stmt\Namespace_;
-
 interface File
 {
     public function getFolder(): string;
@@ -14,7 +12,5 @@ interface File
 
     public function getParametersRootName(): string;
 
-    public function hasNamespaceAst(): bool;
-
-    public function getNamespaceAst(): Namespace_;
+    public function getContent(): string;
 }

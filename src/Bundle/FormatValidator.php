@@ -7,6 +7,7 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\PrettyPrinter\Standard;
 
 class FormatValidator implements File
 {
@@ -56,12 +57,7 @@ class FormatValidator implements File
         return 'validator';
     }
 
-    public function hasNamespaceAst(): bool
-    {
-        return true;
-    }
-
-    public function getNamespaceAst(): Namespace_
+    public function getContent(): string
     {
         $f = new BuilderFactory();
 
@@ -91,6 +87,6 @@ class FormatValidator implements File
             ->addStmt($f->use('Symfony\Component\Validator\ConstraintValidator'))
             ->addStmt($class);
 
-        return $namespace->getNode();
+        return (new Standard)->prettyPrintFile([$namespace->getNode()]);
     }
 }

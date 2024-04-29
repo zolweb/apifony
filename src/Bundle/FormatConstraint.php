@@ -4,6 +4,7 @@ namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\PrettyPrinter\Standard;
 
 class FormatConstraint implements File
 {
@@ -43,12 +44,7 @@ class FormatConstraint implements File
         return 'constraint';
     }
 
-    public function hasNamespaceAst(): bool
-    {
-        return true;
-    }
-
-    public function getNamespaceAst(): Namespace_
+    public function getContent(): string
     {
         $f = new BuilderFactory();
 
@@ -60,6 +56,6 @@ class FormatConstraint implements File
             ->addStmt($f->use('Symfony\Component\Validator\Constraint'))
             ->addStmt($class);
 
-        return $namespace->getNode();
+        return (new Standard)->prettyPrintFile([$namespace->getNode()]);
     }
 }

@@ -4,6 +4,7 @@ namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\PrettyPrinter\Standard;
 
 class FormatDefinition implements File
 {
@@ -43,12 +44,7 @@ class FormatDefinition implements File
         return 'definition';
     }
 
-    public function hasNamespaceAst(): bool
-    {
-        return true;
-    }
-
-    public function getNamespaceAst(): Namespace_
+    public function getContent(): string
     {
         $f = new BuilderFactory();
 
@@ -69,6 +65,6 @@ class FormatDefinition implements File
         $namespace = $f->namespace("{$this->bundleNamespace}\Format")
             ->addStmt($interface);
 
-        return $namespace->getNode();
+        return (new Standard)->prettyPrintFile([$namespace->getNode()]);
     }
 }

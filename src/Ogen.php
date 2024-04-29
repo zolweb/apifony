@@ -2,21 +2,12 @@
 
 namespace Zol\Ogen;
 
-use PhpParser\NodeDumper;
-use PhpParser\ParserFactory;
-use PhpParser\PhpVersion;
-use PhpParser\PrettyPrinter\Standard;
 use RuntimeException;
 use Zol\Ogen\Bundle\Bundle;
 use Zol\Ogen\Bundle\Exception as BundleException;
 use Zol\Ogen\OpenApi\Exception as OpenApiException;
 use Zol\Ogen\OpenApi\OpenApi;
 use Symfony\Component\Yaml\Yaml;
-use Twig\Environment;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
-use Twig\Loader\FilesystemLoader;
 
 class Ogen
 {
@@ -35,25 +26,12 @@ class Ogen
         $openApi = OpenApi::build($spec);
         $bundle = Bundle::build($bundleName, $packageName, $namespace, $openApi);
 
-        $twig = new Environment(new FilesystemLoader(__DIR__.'/../templates'));
-        $astPrinter = new Standard();
-
         foreach ($bundle->getFiles() as $file) {
             if (!file_exists("{$outputDir}/{$file->getFolder()}")) {
                 mkdir("{$outputDir}/{$file->getFolder()}", recursive: true);
             }
 
-            if ($file->hasNamespaceAst()) {
-                $content = $astPrinter->prettyPrintFile([$file->getNamespaceAst()]);
-            } else {
-                try {
-                    $content = $twig->render($file->getTemplate(), [$file->getParametersRootName() => $file]);
-                } catch (LoaderError|RuntimeError|SyntaxError $e) {
-                    throw new RuntimeException($e->getMessage(), 0, $e);
-                }
-            }
-
-            file_put_contents("{$outputDir}/{$file->getFolder()}/{$file->getName()}", $content);
+            file_put_contents("{$outputDir}/{$file->getFolder()}/{$file->getName()}", $file->getContent());
         }
     }
 }

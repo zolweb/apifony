@@ -11,7 +11,6 @@ services:
     volumes:
       - ./ogen:/var/www/html/ogen:delegated
       - ./src:/var/www/html/src:delegated
-      - ./templates:/var/www/html/templates:delegated
       - ./vendor:/var/www/html/vendor:delegated
       - ./composer.json:/var/www/html/composer.json:delegated
       - ./composer.lock:/var/www/html/composer.lock:delegated

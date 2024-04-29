@@ -1,180 +1,134 @@
 zol_ogen_tests_test_open_api_server_get_atom:
-    path: /atoms/{atomId}
-    requirements:
-        atomId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    path: '/atoms/{atomId}'
     methods: get
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\Atom\AtomController::getAtom
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\Atom\AtomController::getAtom'
+    requirements: { atomId: '[^:/?\x{0023}[\]@!$&''''()*+,;=]+' }
 zol_ogen_tests_test_open_api_server_post_atom:
     path: /atoms
     methods: post
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\Atom\AtomController::postAtom
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\Atom\AtomController::postAtom'
 zol_ogen_tests_test_open_api_server_get_content_type_list:
     path: /content-types
     methods: get
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\ContentType\ContentTypeController::getContentTypeList
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\ContentType\ContentTypeController::getContentTypeList'
 zol_ogen_tests_test_open_api_server_get_content_type:
-    path: /content-types/{contentTypeId}
-    requirements:
-        contentTypeId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    path: '/content-types/{contentTypeId}'
     methods: get
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\ContentType\ContentTypeController::getContentType
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\ContentType\ContentTypeController::getContentType'
+    requirements: { contentTypeId: '[^:/?\x{0023}[\]@!$&''''()*+,;=]+' }
 zol_ogen_tests_test_open_api_server_get_locale_list:
     path: /locales
     methods: get
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\Locale\LocaleController::getLocaleList
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\Locale\LocaleController::getLocaleList'
 zol_ogen_tests_test_open_api_server_post_content:
     path: /contents
     methods: post
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\Content\ContentController::postContent
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\Content\ContentController::postContent'
 zol_ogen_tests_test_open_api_server_get_content_list:
     path: /contents
     methods: get
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\Content\ContentController::getContentList
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\Content\ContentController::getContentList'
 zol_ogen_tests_test_open_api_server_get_content:
-    path: /contents/{contentId}
-    requirements:
-        contentId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    path: '/contents/{contentId}'
     methods: get
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\Content\ContentController::getContent
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\Content\ContentController::getContent'
+    requirements: { contentId: '[^:/?\x{0023}[\]@!$&''''()*+,;=]+' }
 zol_ogen_tests_test_open_api_server_patch_content:
-    path: /contents/{contentId}
-    requirements:
-        contentId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    path: '/contents/{contentId}'
     methods: patch
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\Content\ContentController::patchContent
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\Content\ContentController::patchContent'
+    requirements: { contentId: '[^:/?\x{0023}[\]@!$&''''()*+,;=]+' }
 zol_ogen_tests_test_open_api_server_archive_content:
-    path: /contents/{contentId}:archive
-    requirements:
-        contentId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    path: '/contents/{contentId}:archive'
     methods: post
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\Content\ContentController::archiveContent
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\Content\ContentController::archiveContent'
+    requirements: { contentId: '[^:/?\x{0023}[\]@!$&''''()*+,;=]+' }
 zol_ogen_tests_test_open_api_server_restore_content:
-    path: /contents/{contentId}:restore
-    requirements:
-        contentId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    path: '/contents/{contentId}:restore'
     methods: post
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\Content\ContentController::restoreContent
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\Content\ContentController::restoreContent'
+    requirements: { contentId: '[^:/?\x{0023}[\]@!$&''''()*+,;=]+' }
 zol_ogen_tests_test_open_api_server_duplicate_content:
-    path: /contents/{contentId}:duplicate
-    requirements:
-        contentId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    path: '/contents/{contentId}:duplicate'
     methods: post
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\Content\ContentController::duplicateContent
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\Content\ContentController::duplicateContent'
+    requirements: { contentId: '[^:/?\x{0023}[\]@!$&''''()*+,;=]+' }
 zol_ogen_tests_test_open_api_server_post_content_translation:
     path: /content-translations
     methods: post
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController::postContentTranslation
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController::postContentTranslation'
 zol_ogen_tests_test_open_api_server_patch_content_translation:
-    path: /content-translations/{contentTranslationId}
-    requirements:
-        contentTranslationId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    path: '/content-translations/{contentTranslationId}'
     methods: patch
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController::patchContentTranslation
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController::patchContentTranslation'
+    requirements: { contentTranslationId: '[^:/?\x{0023}[\]@!$&''''()*+,;=]+' }
 zol_ogen_tests_test_open_api_server_get_content_translation:
-    path: /content-translations/{contentTranslationId}
-    requirements:
-        contentTranslationId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    path: '/content-translations/{contentTranslationId}'
     methods: get
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController::getContentTranslation
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController::getContentTranslation'
+    requirements: { contentTranslationId: '[^:/?\x{0023}[\]@!$&''''()*+,;=]+' }
 zol_ogen_tests_test_open_api_server_get_content_translation_data_versions:
-    path: /content-translations/{contentTranslationId}/data-versions
-    requirements:
-        contentTranslationId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    path: '/content-translations/{contentTranslationId}/data-versions'
     methods: get
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController::getContentTranslationDataVersions
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController::getContentTranslationDataVersions'
+    requirements: { contentTranslationId: '[^:/?\x{0023}[\]@!$&''''()*+,;=]+' }
 zol_ogen_tests_test_open_api_server_publish_content_translation:
-    path: /content-translations/{contentTranslationId}:publish
-    requirements:
-        contentTranslationId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    path: '/content-translations/{contentTranslationId}:publish'
     methods: post
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController::publishContentTranslation
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController::publishContentTranslation'
+    requirements: { contentTranslationId: '[^:/?\x{0023}[\]@!$&''''()*+,;=]+' }
 zol_ogen_tests_test_open_api_server_withdraw_content_translation:
-    path: /content-translations/{contentTranslationId}:withdraw
-    requirements:
-        contentTranslationId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    path: '/content-translations/{contentTranslationId}:withdraw'
     methods: post
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController::withdrawContentTranslation
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController::withdrawContentTranslation'
+    requirements: { contentTranslationId: '[^:/?\x{0023}[\]@!$&''''()*+,;=]+' }
 zol_ogen_tests_test_open_api_server_get_media_list:
     path: /medias
     methods: get
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\Media\MediaController::getMediaList
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\Media\MediaController::getMediaList'
 zol_ogen_tests_test_open_api_server_post_media:
     path: /medias
     methods: post
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\Media\MediaController::postMedia
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\Media\MediaController::postMedia'
 zol_ogen_tests_test_open_api_server_get_media:
-    path: /medias/{mediaId}
-    requirements:
-        mediaId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    path: '/medias/{mediaId}'
     methods: get
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\Media\MediaController::getMedia
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\Media\MediaController::getMedia'
+    requirements: { mediaId: '[^:/?\x{0023}[\]@!$&''''()*+,;=]+' }
 zol_ogen_tests_test_open_api_server_patch_media:
-    path: /medias/{mediaId}
-    requirements:
-        mediaId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    path: '/medias/{mediaId}'
     methods: patch
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\Media\MediaController::patchMedia
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\Media\MediaController::patchMedia'
+    requirements: { mediaId: '[^:/?\x{0023}[\]@!$&''''()*+,;=]+' }
 zol_ogen_tests_test_open_api_server_archive_media:
-    path: /medias/{mediaId}:archive
-    requirements:
-        mediaId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    path: '/medias/{mediaId}:archive'
     methods: post
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\Media\MediaController::archiveMedia
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\Media\MediaController::archiveMedia'
+    requirements: { mediaId: '[^:/?\x{0023}[\]@!$&''''()*+,;=]+' }
 zol_ogen_tests_test_open_api_server_get_media_tree:
     path: /media-trees/mine
     methods: get
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\MediaTree\MediaTreeController::getMediaTree
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\MediaTree\MediaTreeController::getMediaTree'
 zol_ogen_tests_test_open_api_server_move_to_media_folder:
-    path: /media-trees/mine:move-to-media-folder
+    path: '/media-trees/mine:move-to-media-folder'
     methods: post
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\MediaTree\MediaTreeController::moveToMediaFolder
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\MediaTree\MediaTreeController::moveToMediaFolder'
 zol_ogen_tests_test_open_api_server_add_media_folder:
     path: /media-trees/mine/media-folders
     methods: post
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\MediaTree\MediaTreeController::addMediaFolder
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\MediaTree\MediaTreeController::addMediaFolder'
 zol_ogen_tests_test_open_api_server_get_media_folder:
-    path: /media-trees/mine/media-folders/{mediaFolderId}
-    requirements:
-        mediaFolderId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    path: '/media-trees/mine/media-folders/{mediaFolderId}'
     methods: get
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\MediaTree\MediaTreeController::getMediaFolder
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\MediaTree\MediaTreeController::getMediaFolder'
+    requirements: { mediaFolderId: '[^:/?\x{0023}[\]@!$&''''()*+,;=]+' }
 zol_ogen_tests_test_open_api_server_update_media_folder:
-    path: /media-trees/mine/media-folders/{mediaFolderId}
-    requirements:
-        mediaFolderId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    path: '/media-trees/mine/media-folders/{mediaFolderId}'
     methods: patch
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\MediaTree\MediaTreeController::updateMediaFolder
-
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\MediaTree\MediaTreeController::updateMediaFolder'
+    requirements: { mediaFolderId: '[^:/?\x{0023}[\]@!$&''''()*+,;=]+' }
 zol_ogen_tests_test_open_api_server_delete_media_folder:
-    path: /media-trees/mine/media-folders/{mediaFolderId}
-    requirements:
-        mediaFolderId: '[^:/?\x{0023}[\]@!$&''()*+,;=]+'
+    path: '/media-trees/mine/media-folders/{mediaFolderId}'
     methods: delete
-    controller: Zol\Ogen\Tests\TestOpenApiServer\Api\MediaTree\MediaTreeController::deleteMediaFolder
+    controller: 'Zol\Ogen\Tests\TestOpenApiServer\Api\MediaTree\MediaTreeController::deleteMediaFolder'
+    requirements: { mediaFolderId: '[^:/?\x{0023}[\]@!$&''''()*+,;=]+' }

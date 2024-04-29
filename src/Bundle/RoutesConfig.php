@@ -3,6 +3,7 @@
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\Node\Stmt\Namespace_;
+use Symfony\Component\Yaml\Yaml;
 use function Symfony\Component\String\u;
 
 class RoutesConfig implements File
@@ -87,13 +88,26 @@ class RoutesConfig implements File
         return 'routes';
     }
 
-    public function hasNamespaceAst(): bool
+    public function getContent(): string
     {
-        return false;
-    }
+        $routes = [];
 
-    public function getNamespaceAst(): Namespace_
-    {
-        throw new \RuntimeException();
+        foreach ($this->controllers as $controller) {
+            foreach ($controller->actions as $action) {
+                $routes["{$this->getServiceNamespace()}_{$action->getServiceName()}"] = [
+                    'path' => $action->getRoute(),
+                    'methods' => $action->getMethod(),
+                    'controller' => "{$controller->getNamespace()}\\{$controller->getClassName()}::{$action->getName()}"
+                ];
+                if (count($action->getParameters(['path'])) > 0) {
+                    $routes["{$this->getServiceNamespace()}_{$action->getServiceName()}"]['requirements'] = [];
+                    foreach ($action->getParameters(['path']) as $parameter) {
+                        $routes["{$this->getServiceNamespace()}_{$action->getServiceName()}"]['requirements'][$parameter->getRawName()] = $parameter->getRouteRequirementPattern();
+                    }
+                }
+            }
+        }
+
+        return Yaml::dump($routes);
     }
 }

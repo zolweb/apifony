@@ -12,6 +12,7 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Switch_;
+use PhpParser\PrettyPrinter\Standard;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Header;
 use Zol\Ogen\OpenApi\OpenApi;
@@ -309,12 +310,7 @@ class Bundle implements File
         return 'bundle';
     }
 
-    public function hasNamespaceAst(): bool
-    {
-        return true;
-    }
-
-    public function getNamespaceAst(): Namespace_
+    public function getContent(): string
     {
         $f = new BuilderFactory();
 
@@ -382,6 +378,6 @@ class Bundle implements File
             ->addStmt($f->use('Symfony\Component\HttpKernel\Bundle\AbstractBundle'))
             ->addStmt($class);
 
-        return $namespace->getNode();
+        return (new Standard)->prettyPrintFile([$namespace->getNode()]);
     }
 }

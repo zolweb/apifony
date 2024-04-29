@@ -25,6 +25,7 @@ use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\Node\Stmt\Use_;
 use PhpParser\Node\UseItem;
+use PhpParser\PrettyPrinter\Standard;
 
 class Controller implements File
 {
@@ -135,12 +136,7 @@ class Controller implements File
         return 'controller';
     }
 
-    public function hasNamespaceAst(): bool
-    {
-        return true;
-    }
-
-    public function getNamespaceAst(): Namespace_
+    public function getContent(): string
     {
         $f = new BuilderFactory();
 
@@ -328,6 +324,6 @@ class Controller implements File
 
         $namespace->addStmt($class);
 
-        return $namespace->getNode();
+        return (new Standard)->prettyPrintFile([$namespace->getNode()]);
     }
 }

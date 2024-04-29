@@ -26,6 +26,7 @@ use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\TryCatch;
+use PhpParser\PrettyPrinter\Standard;
 
 class AbstractController implements File
 {
@@ -64,12 +65,7 @@ class AbstractController implements File
         return 'abstractController';
     }
 
-    public function hasNamespaceAst(): bool
-    {
-        return true;
-    }
-
-    public function getNamespaceAst(): Namespace_
+    public function getContent(): string
     {
         $f = new BuilderFactory();
 
@@ -316,6 +312,6 @@ class AbstractController implements File
             ->addStmt($f->use('Symfony\Component\Serializer\Exception\ExceptionInterface'))
             ->addStmt($class);
 
-        return $namespace->getNode();
+        return (new Standard)->prettyPrintFile([$namespace->getNode()]);
     }
 }

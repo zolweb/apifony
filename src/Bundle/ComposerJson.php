@@ -42,13 +42,31 @@ class ComposerJson implements File
         return 'composer';
     }
 
-    public function hasNamespaceAst(): bool
+    public function getContent(): string
     {
-        return false;
-    }
-
-    public function getNamespaceAst(): Namespace_
-    {
-        throw new \RuntimeException();
+        try {
+            return json_encode([
+                'name' => $this->packageName,
+                'require' => [
+                    'doctrine/annotations' => '^2.0',
+                    'phpdocumentor/reflection-docblock' => '^5.3',
+                    'phpstan/phpdoc-parser' => '^1.24',
+                    'symfony/dependency-injection' => '7.0.*',
+                    'symfony/http-foundation' => '7.0.*',
+                    'symfony/http-kernel' => '7.0.*',
+                    'symfony/serializer' => '7.0.*',
+                    'symfony/validator' => '7.0.*',
+                    'symfony/property-access' => '7.0.*',
+                    'symfony/property-info' => '7.0.*'
+                ],
+                'autoload' => [
+                    'psr-4' => [
+                        "{$this->namespace}\\" => 'src/'
+                    ],
+                ],
+            ], JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR);
+        } catch (\JsonException) {
+            throw new \RuntimeException();
+        }
     }
 }

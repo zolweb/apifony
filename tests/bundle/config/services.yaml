@@ -1,114 +1,21 @@
 services:
-
-    ### Controllers ###
-
-    Zol\Ogen\Tests\TestOpenApiServer\Api\Atom\AtomController:
-        class: Zol\Ogen\Tests\TestOpenApiServer\Api\Atom\AtomController
-        arguments:
-            $serializer: '@zol_ogen_tests_test_open_api_server.serializer_interface'
-            $validator: '@validator'
-        public: true
-
-    Zol\Ogen\Tests\TestOpenApiServer\Api\ContentType\ContentTypeController:
-        class: Zol\Ogen\Tests\TestOpenApiServer\Api\ContentType\ContentTypeController
-        arguments:
-            $serializer: '@zol_ogen_tests_test_open_api_server.serializer_interface'
-            $validator: '@validator'
-        public: true
-
-    Zol\Ogen\Tests\TestOpenApiServer\Api\Locale\LocaleController:
-        class: Zol\Ogen\Tests\TestOpenApiServer\Api\Locale\LocaleController
-        arguments:
-            $serializer: '@zol_ogen_tests_test_open_api_server.serializer_interface'
-            $validator: '@validator'
-        public: true
-
-    Zol\Ogen\Tests\TestOpenApiServer\Api\Content\ContentController:
-        class: Zol\Ogen\Tests\TestOpenApiServer\Api\Content\ContentController
-        arguments:
-            $serializer: '@zol_ogen_tests_test_open_api_server.serializer_interface'
-            $validator: '@validator'
-        public: true
-
-    Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController:
-        class: Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController
-        arguments:
-            $serializer: '@zol_ogen_tests_test_open_api_server.serializer_interface'
-            $validator: '@validator'
-        public: true
-
-    Zol\Ogen\Tests\TestOpenApiServer\Api\Media\MediaController:
-        class: Zol\Ogen\Tests\TestOpenApiServer\Api\Media\MediaController
-        arguments:
-            $serializer: '@zol_ogen_tests_test_open_api_server.serializer_interface'
-            $validator: '@validator'
-        public: true
-
-    Zol\Ogen\Tests\TestOpenApiServer\Api\MediaTree\MediaTreeController:
-        class: Zol\Ogen\Tests\TestOpenApiServer\Api\MediaTree\MediaTreeController
-        arguments:
-            $serializer: '@zol_ogen_tests_test_open_api_server.serializer_interface'
-            $validator: '@validator'
-        public: true
-
-    ### Format validators ###
-
-    Zol\Ogen\Tests\TestOpenApiServer\Format\MediaFolderIdValidator:
-        class: Zol\Ogen\Tests\TestOpenApiServer\Format\MediaFolderIdValidator
-        public: true
-        tags: ['validator.constraint_validator']
-
-    Zol\Ogen\Tests\TestOpenApiServer\Format\UuidValidator:
-        class: Zol\Ogen\Tests\TestOpenApiServer\Format\UuidValidator
-        public: true
-        tags: ['validator.constraint_validator']
-
-    ### Serializer ###
-
-    zol_ogen_tests_test_open_api_server.json_encoder:
-        class: 'Symfony\Component\Serializer\Encoder\JsonEncoder'
-
-    zol_ogen_tests_test_open_api_server.php_stan_extractor:
-        class: 'Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor'
-
-    zol_ogen_tests_test_open_api_server.reflection_extractor:
-        class: 'Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor'
-
-    zol_ogen_tests_test_open_api_server.property_info_extractor:
-        class: 'Symfony\Component\PropertyInfo\PropertyInfoExtractor'
-        arguments:
-            $typeExtractors:
-                - '@zol_ogen_tests_test_open_api_server.php_stan_extractor'
-                - '@zol_ogen_tests_test_open_api_server.reflection_extractor'
-
-    zol_ogen_tests_test_open_api_server.attribute_loader:
-        class: 'Symfony\Component\Serializer\Mapping\Loader\AttributeLoader'
-
-    zol_ogen_tests_test_open_api_server.class_metadata_factory:
-        class: 'Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory'
-        arguments:
-            $loader: '@zol_ogen_tests_test_open_api_server.attribute_loader'
-
-    zol_ogen_tests_test_open_api_server.metadata_aware_name_converter:
-        class: 'Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter'
-        arguments:
-            $metadataFactory: '@zol_ogen_tests_test_open_api_server.class_metadata_factory'
-
-    zol_ogen_tests_test_open_api_server.object_normalizer:
-        class: 'Symfony\Component\Serializer\Normalizer\ObjectNormalizer'
-        arguments:
-            $propertyTypeExtractor: '@zol_ogen_tests_test_open_api_server.property_info_extractor'
-            $classMetadataFactory: '@zol_ogen_tests_test_open_api_server.class_metadata_factory'
-            $nameConverter: '@zol_ogen_tests_test_open_api_server.metadata_aware_name_converter'
-
-    zol_ogen_tests_test_open_api_server.array_denormalizer:
-        class: 'Symfony\Component\Serializer\Normalizer\ArrayDenormalizer'
-
-    zol_ogen_tests_test_open_api_server.serializer_interface:
-        class: 'Symfony\Component\Serializer\Serializer'
-        arguments:
-            $encoders:
-                - '@zol_ogen_tests_test_open_api_server.json_encoder'
-            $normalizers:
-                - '@zol_ogen_tests_test_open_api_server.object_normalizer'
-                - '@zol_ogen_tests_test_open_api_server.array_denormalizer'
+    Zol\Ogen\Tests\TestOpenApiServer\Api\Atom\AtomController: { class: Zol\Ogen\Tests\TestOpenApiServer\Api\Atom\AtomController, arguments: { serializer: '@zol_ogen_tests_test_open_api_server.serializer_interface', validator: '@validator' }, public: true }
+    Zol\Ogen\Tests\TestOpenApiServer\Api\ContentType\ContentTypeController: { class: Zol\Ogen\Tests\TestOpenApiServer\Api\ContentType\ContentTypeController, arguments: { serializer: '@zol_ogen_tests_test_open_api_server.serializer_interface', validator: '@validator' }, public: true }
+    Zol\Ogen\Tests\TestOpenApiServer\Api\Locale\LocaleController: { class: Zol\Ogen\Tests\TestOpenApiServer\Api\Locale\LocaleController, arguments: { serializer: '@zol_ogen_tests_test_open_api_server.serializer_interface', validator: '@validator' }, public: true }
+    Zol\Ogen\Tests\TestOpenApiServer\Api\Content\ContentController: { class: Zol\Ogen\Tests\TestOpenApiServer\Api\Content\ContentController, arguments: { serializer: '@zol_ogen_tests_test_open_api_server.serializer_interface', validator: '@validator' }, public: true }
+    Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController: { class: Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation\ContentTranslationController, arguments: { serializer: '@zol_ogen_tests_test_open_api_server.serializer_interface', validator: '@validator' }, public: true }
+    Zol\Ogen\Tests\TestOpenApiServer\Api\Media\MediaController: { class: Zol\Ogen\Tests\TestOpenApiServer\Api\Media\MediaController, arguments: { serializer: '@zol_ogen_tests_test_open_api_server.serializer_interface', validator: '@validator' }, public: true }
+    Zol\Ogen\Tests\TestOpenApiServer\Api\MediaTree\MediaTreeController: { class: Zol\Ogen\Tests\TestOpenApiServer\Api\MediaTree\MediaTreeController, arguments: { serializer: '@zol_ogen_tests_test_open_api_server.serializer_interface', validator: '@validator' }, public: true }
+    Zol\Ogen\Tests\TestOpenApiServer\Format\MediaFolderIdValidator: { class: Zol\Ogen\Tests\TestOpenApiServer\Format\MediaFolderIdValidator, public: true, tags: [validator.constraint_validator] }
+    Zol\Ogen\Tests\TestOpenApiServer\Format\UuidValidator: { class: Zol\Ogen\Tests\TestOpenApiServer\Format\UuidValidator, public: true, tags: [validator.constraint_validator] }
+    zol_ogen_tests_test_open_api_server.json_encoder: { class: Symfony\Component\Serializer\Encoder\JsonEncoder }
+service:
+    zol_ogen_tests_test_open_api_server.php_stan_extractor: { class: Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor }
+    zol_ogen_tests_test_open_api_server.reflection_extractor: { class: Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor }
+    zol_ogen_tests_test_open_api_server.property_info_extractor: { class: Symfony\Component\PropertyInfo\PropertyInfoExtractor, arguments: { $typeExtractors: ['@zol_ogen_tests_test_open_api_server.php_stan_extractor', '@zol_ogen_tests_test_open_api_server.reflection_extractor'] } }
+    zol_ogen_tests_test_open_api_server.attribute_loader: { class: Symfony\Component\Serializer\Mapping\Loader\AttributeLoader }
+    zol_ogen_tests_test_open_api_server.class_metadata_factory: { class: Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory, arguments: { $loader: '@zol_ogen_tests_test_open_api_server.attribute_loader' } }
+    zol_ogen_tests_test_open_api_server.metadata_aware_name_converter: { class: Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter, arguments: { $metadataFactory: '@zol_ogen_tests_test_open_api_server.class_metadata_factory' } }
+    zol_ogen_tests_test_open_api_server.object_normalizer: { class: Symfony\Component\Serializer\Normalizer\ObjectNormalizer, arguments: { $propertyTypeExtractor: '@zol_ogen_tests_test_open_api_server.property_info_extractor', $classMetadataFactory: '@zol_ogen_tests_test_open_api_server.class_metadata_factory', $nameConverter: '@zol_ogen_tests_test_open_api_server.metadata_aware_name_converter' } }
+    zol_ogen_tests_test_open_api_server.array_denormalizer: { class: Symfony\Component\Serializer\Normalizer\ArrayDenormalizer }
+    zol_ogen_tests_test_open_api_server.serializer_interface: { class: Symfony\Component\Serializer\Serializer, arguments: { $encoders: ['@zol_ogen_tests_test_open_api_server.json_encoder'], $normalizers: ['@zol_ogen_tests_test_open_api_server.object_normalizer', '@zol_ogen_tests_test_open_api_server.array_denormalizer'] } }
