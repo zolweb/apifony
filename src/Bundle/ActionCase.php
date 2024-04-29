@@ -110,9 +110,15 @@ class ActionCase
         return $this->requestBodyPayloadType;
     }
 
-    public function getRequestBodyPayloadParameterPhpType(): ?string
+    public function getRequestBodyPayloadParameterPhpType(): string
     {
-        return $this->requestBodyPayloadType?->getMethodParameterType();
+        $type = $this->requestBodyPayloadType?->getMethodParameterType();
+
+        if ($type === null) {
+            throw new \RuntimeException();
+        }
+
+        return $type;
     }
 
     public function getResponseContentType(): ?string

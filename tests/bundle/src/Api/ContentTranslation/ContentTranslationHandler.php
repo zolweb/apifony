@@ -3,53 +3,12 @@
 namespace Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation;
 
 use Zol\Ogen\Tests\TestOpenApiServer\Model\ContentTranslation;
-
 interface ContentTranslationHandler
 {
-    public function postContentTranslationFromPostContentTranslationApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
-        PostContentTranslationApplicationJsonRequestBodyPayload $requestBodyPayload,
-    ):
-        PostContentTranslation201EmptyResponse |
-        PostContentTranslation400ApplicationJsonResponse |
-        PostContentTranslation409ApplicationJsonResponse;
-
-    public function patchContentTranslationFromPatchContentTranslationApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
-        string $pContentTranslationId,
-        PatchContentTranslationApplicationJsonRequestBodyPayload $requestBodyPayload,
-    ):
-        PatchContentTranslation200EmptyResponse |
-        PatchContentTranslation400ApplicationJsonResponse |
-        PatchContentTranslation404ApplicationJsonResponse |
-        PatchContentTranslation409ApplicationJsonResponse;
-
-    public function getContentTranslationFromEmptyPayloadToApplicationJsonContent(
-        string $pContentTranslationId,
-    ):
-        GetContentTranslation200ApplicationJsonResponse |
-        GetContentTranslation404ApplicationJsonResponse;
-
-    public function getContentTranslationDataVersionsFromEmptyPayloadToApplicationJsonContent(
-        string $pContentTranslationId,
-        int $qPageNumber,
-        int $qPageSize,
-    ):
-        GetContentTranslationDataVersions200ApplicationJsonResponse;
-
-    public function publishContentTranslationFromPublishContentTranslationApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
-        string $pContentTranslationId,
-        PublishContentTranslationApplicationJsonRequestBodyPayload $requestBodyPayload,
-    ):
-        PublishContentTranslation200EmptyResponse |
-        PublishContentTranslation400ApplicationJsonResponse |
-        PublishContentTranslation404ApplicationJsonResponse |
-        PublishContentTranslation409ApplicationJsonResponse;
-
-    public function withdrawContentTranslationFromWithdrawContentTranslationApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(
-        string $pContentTranslationId,
-        WithdrawContentTranslationApplicationJsonRequestBodyPayload $requestBodyPayload,
-    ):
-        WithdrawContentTranslation200EmptyResponse |
-        WithdrawContentTranslation400ApplicationJsonResponse |
-        WithdrawContentTranslation404ApplicationJsonResponse |
-        WithdrawContentTranslation409ApplicationJsonResponse;
+    public function postContentTranslationFromPostContentTranslationApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(PostContentTranslationApplicationJsonRequestBodyPayload $requestBodyPayload): PostContentTranslation201EmptyResponse.php|PostContentTranslation400ApplicationJsonResponse.php|PostContentTranslation409ApplicationJsonResponse.php;
+    public function patchContentTranslationFromPatchContentTranslationApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(string $pContentTranslationId, PatchContentTranslationApplicationJsonRequestBodyPayload $requestBodyPayload): PatchContentTranslation200EmptyResponse.php|PatchContentTranslation400ApplicationJsonResponse.php|PatchContentTranslation404ApplicationJsonResponse.php|PatchContentTranslation409ApplicationJsonResponse.php;
+    public function getContentTranslationFromEmptyPayloadToApplicationJsonContent(string $pContentTranslationId): GetContentTranslation200ApplicationJsonResponse.php|GetContentTranslation404ApplicationJsonResponse.php;
+    public function getContentTranslationDataVersionsFromEmptyPayloadToApplicationJsonContent(string $pContentTranslationId, int $qPageNumber, int $qPageSize): GetContentTranslationDataVersions200ApplicationJsonResponse.php;
+    public function publishContentTranslationFromPublishContentTranslationApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(string $pContentTranslationId, PublishContentTranslationApplicationJsonRequestBodyPayload $requestBodyPayload): PublishContentTranslation200EmptyResponse.php|PublishContentTranslation400ApplicationJsonResponse.php|PublishContentTranslation404ApplicationJsonResponse.php|PublishContentTranslation409ApplicationJsonResponse.php;
+    public function withdrawContentTranslationFromWithdrawContentTranslationApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(string $pContentTranslationId, WithdrawContentTranslationApplicationJsonRequestBodyPayload $requestBodyPayload): WithdrawContentTranslation200EmptyResponse.php|WithdrawContentTranslation400ApplicationJsonResponse.php|WithdrawContentTranslation404ApplicationJsonResponse.php|WithdrawContentTranslation409ApplicationJsonResponse.php;
 }

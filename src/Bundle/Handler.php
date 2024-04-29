@@ -2,7 +2,13 @@
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\Builder\Method;
+use PhpParser\Builder\Param;
+use PhpParser\Builder\Use_;
+use PhpParser\BuilderFactory;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Namespace_;
+use PhpParser\Node\UnionType;
 
 class Handler implements File
 {
@@ -105,11 +111,41 @@ class Handler implements File
 
     public function hasNamespaceAst(): bool
     {
-        return false;
+        return true;
     }
 
     public function getNamespaceAst(): Namespace_
     {
-        throw new \RuntimeException();
+        $f = new BuilderFactory();
+
+        $interface = $f->interface("{$this->aggregateName}Handler")
+            ->addStmts(array_merge(...array_map(
+                static fn (Action $action): array => array_map(
+                    static fn (ActionCase $actionCase): Method => $f->method($actionCase->getName())
+                        ->makePublic()
+                        ->addParams(array_merge(
+                            array_map(
+                                static fn (ActionParameter $param): Param => $f->param($param->getVariableName())->setType(sprintf('%s%s', $param->isNullable() ? '?' : '', $param->getPhpType())),
+                                $actionCase->getParameters(),
+                            ),
+                            $actionCase->hasRequestBodyPayloadParameter() ? [$f->param('requestBodyPayload')->setType($actionCase->getRequestBodyPayloadParameterPhpType())] : [],
+                        ))
+                        ->setReturnType(new UnionType(array_map(
+                            static fn (ActionResponse $response) => new Name($response->getName()),
+                            $actionCase->getResponses(),
+                        ))),
+                    $action->getCases(),
+                ),
+                $this->actions,
+            )));
+
+        $namespace = $f->namespace("{$this->bundleNamespace}\Api\\{$this->aggregateName}")
+            ->addStmts(array_map(
+                fn (string $modelName): Use_ => $f->use("{$this->bundleNamespace}\Model\\{$modelName}"),
+                $this->usedModelNames,
+            ))
+            ->addStmt($interface);
+
+        return $namespace->getNode();
     }
 }
