@@ -2,6 +2,7 @@
 
 namespace Zol\Ogen\Tests\TestOpenApiServer\Api\ContentTranslation;
 
+use Zol\Ogen\Tests\TestOpenApiServer\Model\ContentTranslation;
 class GetContentTranslation200ApplicationJsonResponse
 {
     public const CODE = '200';
@@ -17,4 +18,3 @@ class GetContentTranslation200ApplicationJsonResponse
         return ['content-type' => self::CONTENT_TYPE];
     }
 }
-use Zol\Ogen\Tests\TestOpenApiServer\Model\{ContentTranslation};

@@ -205,11 +205,8 @@ class ActionResponse implements File
         }
 
         $namespace = $f->namespace("{$this->bundleNamespace}\Api\\{$this->aggregateName}")
+            ->addStmts($this->usedModelName !== null ? [$f->use("{$this->bundleNamespace }\Model\\{$this->usedModelName}")] : [])
             ->addStmt($class);
-
-        if ($this->usedModelName !== null) {
-            $namespace->addStmt($f->use("{$this->bundleNamespace }\Model\{$this->usedModelName}"));
-        }
 
         return (new Standard)->prettyPrintFile([$namespace->getNode()]);
     }

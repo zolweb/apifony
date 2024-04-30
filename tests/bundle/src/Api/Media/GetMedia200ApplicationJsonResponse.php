@@ -2,6 +2,7 @@
 
 namespace Zol\Ogen\Tests\TestOpenApiServer\Api\Media;
 
+use Zol\Ogen\Tests\TestOpenApiServer\Model\Media;
 class GetMedia200ApplicationJsonResponse
 {
     public const CODE = '200';
@@ -17,4 +18,3 @@ class GetMedia200ApplicationJsonResponse
         return ['content-type' => self::CONTENT_TYPE];
     }
 }
-use Zol\Ogen\Tests\TestOpenApiServer\Model\{Media};

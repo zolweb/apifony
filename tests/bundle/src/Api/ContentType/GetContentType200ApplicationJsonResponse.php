@@ -2,6 +2,7 @@
 
 namespace Zol\Ogen\Tests\TestOpenApiServer\Api\ContentType;
 
+use Zol\Ogen\Tests\TestOpenApiServer\Model\ContentType;
 class GetContentType200ApplicationJsonResponse
 {
     public const CODE = '200';
@@ -17,4 +18,3 @@ class GetContentType200ApplicationJsonResponse
         return ['content-type' => self::CONTENT_TYPE];
     }
 }
-use Zol\Ogen\Tests\TestOpenApiServer\Model\{ContentType};

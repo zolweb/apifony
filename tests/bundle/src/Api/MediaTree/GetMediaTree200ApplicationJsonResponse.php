@@ -2,6 +2,7 @@
 
 namespace Zol\Ogen\Tests\TestOpenApiServer\Api\MediaTree;
 
+use Zol\Ogen\Tests\TestOpenApiServer\Model\MediaTree;
 class GetMediaTree200ApplicationJsonResponse
 {
     public const CODE = '200';
@@ -17,4 +18,3 @@ class GetMediaTree200ApplicationJsonResponse
         return ['content-type' => self::CONTENT_TYPE];
     }
 }
-use Zol\Ogen\Tests\TestOpenApiServer\Model\{MediaTree};
