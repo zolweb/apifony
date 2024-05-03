@@ -14,3 +14,6 @@ test:
 	@$(RUNNER_DOCKER_EXEC) 'rm -rf /var/www/html/tests/bundle/*'
 	@$(RUNNER_DOCKER_EXEC) './ogen TestOpenApiServer Zol\\Ogen\\Tests\\TestOpenApiServer zol/test-openapi-server /var/www/html/tests/openapi.yaml /var/www/html/tests/bundle'
 	@$(RUNNER_DOCKER_EXEC) 'php vendor/bin/phpunit'
+
+phpstan-bundle:
+	@$(RUNNER_DOCKER_EXEC) 'php vendor/bin/phpstan analyse -c phpstan-bundle.neon'

@@ -1,10 +1,7 @@
 parameters:
     level: max
     paths:
-        - src
-        - tests
-    excludePaths:
-        - tests/bundle/*
+        - tests/bundle
     exceptions:
         check:
             missingCheckedExceptionInThrows: true
