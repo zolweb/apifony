@@ -38,6 +38,9 @@ abstract class AbstractController
         if ($value === null) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
         }
+        if (!is_string($value)) {
+            throw new \RuntimeException('Unexpected non string value.');
+        }
         return $value;
     }
     /**
@@ -61,6 +64,9 @@ abstract class AbstractController
         }
         if ($value === null) {
             return null;
+        }
+        if (!is_string($value)) {
+            throw new \RuntimeException('Unexpected non string value.');
         }
         return $value;
     }
@@ -89,6 +95,9 @@ abstract class AbstractController
         if ($value === null) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
         }
+        if (!is_string($value)) {
+            throw new \RuntimeException('Unexpected non string value.');
+        }
         if (!ctype_digit($value)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be an integer.");
         }
@@ -115,6 +124,9 @@ abstract class AbstractController
         }
         if ($value === null) {
             return null;
+        }
+        if (!is_string($value)) {
+            throw new \RuntimeException('Unexpected non string value.');
         }
         if (!ctype_digit($value)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be an integer.");
@@ -146,6 +158,9 @@ abstract class AbstractController
         if ($value === null) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
         }
+        if (!is_string($value)) {
+            throw new \RuntimeException('Unexpected non string value.');
+        }
         if (!is_numeric($value)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a numeric.");
         }
@@ -172,6 +187,9 @@ abstract class AbstractController
         }
         if ($value === null) {
             return null;
+        }
+        if (!is_string($value)) {
+            throw new \RuntimeException('Unexpected non string value.');
         }
         if (!is_numeric($value)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a numeric.");
@@ -203,6 +221,9 @@ abstract class AbstractController
         if ($value === null) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
         }
+        if (!is_string($value)) {
+            throw new \RuntimeException('Unexpected non string value.');
+        }
         if (!in_array($value, ['true', 'false'], true)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a boolean.");
         }
@@ -229,6 +250,9 @@ abstract class AbstractController
         }
         if ($value === null) {
             return null;
+        }
+        if (!is_string($value)) {
+            throw new \RuntimeException('Unexpected non string value.');
         }
         if (!in_array($value, ['true', 'false'], true)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a boolean.");

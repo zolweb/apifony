@@ -20,7 +20,3 @@ services:
       - ./phpstan.neon:/var/www/html/phpstan.neon:delegated
       - ./phpstan-bundle.neon:/var/www/html/phpstan-bundle.neon:delegated
       - ./.php-cs-fixer.dist.php:/var/www/html/.php-cs-fixer.dist.php:delegated
-      # - ./.php-cs-fixer.dist.php:/var/www/html/.php-cs-fixer.dist.php:delegated
-      # - ./openapi:/var/www/html/openapi:delegated
-      # - ./var/logs/php-fpm:/var/log/php:cached
-      # - ./var/symfony:/var/www/html/var:delegated

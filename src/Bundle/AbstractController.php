@@ -164,6 +164,9 @@ class AbstractController implements File
                             new Return_($f->val(null)) :
                             new Expression(new Throw_($f->new('DenormalizationException', [new InterpolatedString([new InterpolatedStringPart('Parameter \''), $f->var('name'), new InterpolatedStringPart('\' in \''), $f->var('in'), new InterpolatedStringPart('\' must not be null.')])]))),
                     ]]))
+                    ->addStmt(new If_(new BooleanNot($f->funcCall('is_string', [$f->var('value')])), ['stmts' => [
+                        new Expression(new Throw_($f->new('\RuntimeException', [$f->val('Unexpected non string value.')]))),
+                    ]]))
                     ->addStmts(match ($type) {
                         'string' => [
                             new Return_($f->var('value')),
