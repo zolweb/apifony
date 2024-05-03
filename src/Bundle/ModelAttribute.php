@@ -28,7 +28,7 @@ class ModelAttribute
         ?Components $components,
     ): self {
         $usedModelName = null;
-        $variableName = u($rawName)->camel();
+        $variableName = u($rawName)->camel()->toString();
         $className = "{$modelClassName}_{$variableName}";
         if ($property instanceof Reference) {
             if ($components === null || !isset($components->schemas[$property->getName()])) {
@@ -36,7 +36,7 @@ class ModelAttribute
             }
             $property = $components->schemas[$className = $usedModelName = $property->getName()];
         }
-        $className = u($className)->camel()->title();
+        $className = u($className)->camel()->title()->toString();
         $type = TypeFactory::build($className, $property, $components);
         if ($type instanceof ArrayType) {
             $usedModelName = $type->getUsedModel();

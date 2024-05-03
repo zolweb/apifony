@@ -24,7 +24,7 @@ class Action
         ?Components $components,
     ): self {
         return new self(
-            $className = u($operation->operationId)->camel(),
+            $className = u($operation->operationId)->camel()->toString(),
             $route,
             $method,
             $parameters = self::buildParameters($className, $operation, $components),
@@ -70,7 +70,7 @@ class Action
 
     public function getServiceName(): string
     {
-        return u($this->name)->snake();
+        return u($this->name)->snake()->toString();
     }
 
     public function getRoute(): string

@@ -12,7 +12,7 @@ class Format
         string $bundleNamespace,
         string $rawName,
     ): self {
-        $name = u($rawName)->camel()->title();
+        $name = u($rawName)->camel()->title()->toString();
 
         return new self(
             FormatDefinition::build($bundleNamespace, $name),

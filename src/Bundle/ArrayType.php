@@ -50,7 +50,7 @@ class ArrayType implements Type
                 throw new Exception('Reference not found in schemas components.');
             }
             $items = $components->schemas[$className = $usedModel = $items->getName()];
-            $className = u($className)->camel()->title();
+            $className = u($className)->camel()->title()->toString();
         }
 
         $this->schema = $schema;

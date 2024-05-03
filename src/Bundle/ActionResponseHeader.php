@@ -60,7 +60,7 @@ class ActionResponseHeader
 
     public function getVariableName(): string
     {
-        return u($this->name)->camel();
+        return u($this->name)->camel()->toString();
     }
 
     public function getPhpType(): string

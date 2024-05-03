@@ -37,7 +37,7 @@ class Bundle implements File
         OpenApi $openApi,
     ): self {
         return new self(
-            u($rawName)->camel()->title(),
+            u($rawName)->camel()->title()->toString(),
             $namespace,
             $formats = self::buildFormats($namespace, $openApi),
             self::buildModels($namespace, $openApi->components),
@@ -274,7 +274,7 @@ class Bundle implements File
 
     public function getServiceName(): string
     {
-        return u($this->name)->snake();
+        return u($this->name)->snake()->toString();
     }
 
     /**

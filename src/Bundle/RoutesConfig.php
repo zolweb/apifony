@@ -58,7 +58,7 @@ class RoutesConfig implements File
 
     public function getServiceNamespace(): string
     {
-        return u($this->namespace)->snake();
+        return u($this->namespace)->snake()->toString();
     }
 
     /**

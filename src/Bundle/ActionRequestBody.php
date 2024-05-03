@@ -28,7 +28,7 @@ class ActionRequestBody
             throw new Exception('Request bodies with mime types other than \'application/json\' are not supported.');
         }
 
-        $className = u(sprintf('%s_%s_RequestBodyPayload', $actionName, $mimeType ?? 'empty'))->camel()->title();
+        $className = u(sprintf('%s_%s_RequestBodyPayload', $actionName, $mimeType ?? 'empty'))->camel()->title()->toString();
 
         $payloadModels = [];
         $payloadType = null;

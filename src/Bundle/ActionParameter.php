@@ -36,7 +36,7 @@ class ActionParameter
         }
         $variableName = sprintf('%s%s', $parameter->in[0], u($parameter->name)->camel()->title());
         $className = "{$actionClassName}_{$parameter->name}";
-        $className = u($className)->camel()->title();
+        $className = u($className)->camel()->title()->toString();
 
         return new self(
             $variableName,

@@ -22,7 +22,7 @@ class Aggregate
         array $operations,
         ?Components $components,
     ): self {
-        $name = u($tag)->camel()->title();
+        $name = u($tag)->camel()->title()->toString();
 
         $actions = [];
         foreach ($operations as $operation) {
@@ -69,7 +69,7 @@ class Aggregate
 
     public function getTag(): string
     {
-        return u($this->name)->snake();
+        return u($this->name)->snake()->toString();
     }
 
     public function getController(): Controller

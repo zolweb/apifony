@@ -28,7 +28,7 @@ class Model implements File
         ?Components $components,
         bool $isComponent,
     ): self {
-        $className = u($rawName)->camel()->title();
+        $className = u($rawName)->camel()->title()->toString();
 
         $ordinal = 0;
         $ordinals = [];

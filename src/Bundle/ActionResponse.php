@@ -36,7 +36,7 @@ class ActionResponse implements File
             throw new Exception('Responses with content type other thant \'application/json\' are not supported.');
         }
 
-        $className = u(sprintf('%s_%s_%s_ResponsePayload', $actionName, $code, $contentType ?? 'empty'))->camel()->title();
+        $className = u(sprintf('%s_%s_%s_ResponsePayload', $actionName, $code, $contentType ?? 'empty'))->camel()->title()->toString();
 
         $payloadModels = [];
         $payloadType = null;
@@ -91,7 +91,7 @@ class ActionResponse implements File
         return new self(
             $bundleNamespace,
             $aggregateName,
-            u(sprintf('%s_%s_%s_Response', $actionName, $code, $contentType ?? 'Empty'))->camel()->title(),
+            u(sprintf('%s_%s_%s_Response', $actionName, $code, $contentType ?? 'Empty'))->camel()->title()->toString(),
             $code,
             $contentType,
             $payloadType,
