@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
@@ -9,12 +11,13 @@ use PhpParser\Node\Attribute;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Identifier;
+
 use function Symfony\Component\String\u;
 
 class Constraint
 {
     /**
-     * @param array<string, string|int|float|bool|null|array<string|int|float|bool|null|self>> $parameters
+     * @param array<string, string|int|float|bool|array<string|int|float|bool|self|null>|null> $parameters
      */
     public function __construct(
         private readonly string $name,
@@ -36,13 +39,13 @@ class Constraint
         $formatConstraintNames = [];
 
         if ($this->formatName !== null) {
-            $formatConstraintNames[] =  (string) u($this->formatName)->camel()->title();
+            $formatConstraintNames[] = (string) u($this->formatName)->camel()->title();
         }
 
         foreach ($this->parameters as $parameter) {
-            if (is_array($parameter)) {
+            if (\is_array($parameter)) {
                 foreach ($parameter as $value) {
-                    if ($value instanceof Constraint && $value->formatName !== null) {
+                    if ($value instanceof self && $value->formatName !== null) {
                         $formatConstraintNames[] = (string) u($value->formatName)->camel()->title();
                     }
                 }
@@ -64,66 +67,57 @@ class Constraint
 
     public function format(int $indentation): string
     {
-        return count($this->parameters) > 0 ?
+        return \count($this->parameters) > 0 ?
             sprintf(
-                "(%s%s%s)",
-                count($this->parameters) > 1 ?
+                '(%s%s%s)',
+                \count($this->parameters) > 1 ?
                     sprintf(
                         "\n%s",
                         str_repeat(' ', ($indentation + 1) * 4),
                     ) : '',
                 implode(
-                    array_map(
+                    '', array_map(
                         fn ($name) => sprintf(
-                            "%s: %s%s",
+                            '%s: %s%s',
                             $name,
                             match (true) {
-                                is_string($this->parameters[$name]) =>
-                                    sprintf(
-                                        $this->name === 'Assert\Regex' && $name === 'pattern' ? '\'/%s/\'' : '\'%s\'',
-                                        str_replace('\'', '\\\'', $this->parameters[$name]),
-                                    ),
-                                is_int($this->parameters[$name]) || is_float($this->parameters[$name]) =>
-                                    strval($this->parameters[$name]),
-                                is_bool($this->parameters[$name]) =>
-                                    $this->parameters[$name] ? 'true' : 'false',
-                                is_array($this->parameters[$name]) =>
-                                    sprintf(
-                                        "[\n%s%s]",
-                                        implode(
-                                            array_map(
-                                                fn ($item) => sprintf(
-                                                    "%s%s,\n",
-                                                    $item instanceOf self ? '' : str_repeat(' ', ($indentation + 1) * 4),
-                                                    match (true) {
-                                                        is_string($item) =>
-                                                            sprintf(
-                                                                '\'%s\'',
-                                                                str_replace('\'', '\\\'', $item),
-                                                            ),
-                                                        is_int($item) || is_float($item) =>
-                                                            strval($item),
-                                                        is_bool($item) =>
-                                                            $item ? 'true' : 'false',
-                                                        is_null($item) =>
-                                                            'null',
-                                                        $item instanceOf self =>
-                                                            $item->getInstantiation($indentation + 1),
-                                                    }
-                                                ),
-                                                $this->parameters[$name],
+                                \is_string($this->parameters[$name]) => sprintf(
+                                    $this->name === 'Assert\Regex' && $name === 'pattern' ? '\'/%s/\'' : '\'%s\'',
+                                    str_replace('\'', '\\\'', $this->parameters[$name]),
+                                ),
+                                \is_int($this->parameters[$name]) || \is_float($this->parameters[$name]) => (string) $this->parameters[$name],
+                                \is_bool($this->parameters[$name]) => $this->parameters[$name] ? 'true' : 'false',
+                                \is_array($this->parameters[$name]) => sprintf(
+                                    "[\n%s%s]",
+                                    implode(
+                                        '', array_map(
+                                            static fn ($item) => sprintf(
+                                                "%s%s,\n",
+                                                $item instanceof self ? '' : str_repeat(' ', ($indentation + 1) * 4),
+                                                match (true) {
+                                                    \is_string($item) => sprintf(
+                                                        '\'%s\'',
+                                                        str_replace('\'', '\\\'', $item),
+                                                    ),
+                                                    \is_int($item) || \is_float($item) => (string) $item,
+                                                    \is_bool($item) => $item ? 'true' : 'false',
+                                                    null === $item => 'null',
+                                                    $item instanceof self => $item->getInstantiation($indentation + 1),
+                                                }
                                             ),
+                                            $this->parameters[$name],
                                         ),
-                                        str_repeat(' ', ($indentation) * 4),
                                     ),
+                                    str_repeat(' ', $indentation * 4),
+                                ),
                                 default => throw new \RuntimeException('Unexpected parameter type'),
                             },
-                            count($this->parameters) > 1 ? ",\n" : '',
+                            \count($this->parameters) > 1 ? ",\n" : '',
                         ),
                         array_keys($this->parameters),
                     ),
                 ),
-                count($this->parameters) > 1 ? str_repeat(' ', ($indentation) * 4) : '',
+                \count($this->parameters) > 1 ? str_repeat(' ', $indentation * 4) : '',
             ) : '';
     }
 
@@ -158,8 +152,8 @@ class Constraint
             fn (string $parameterName) => new Arg(
                 match (true) {
                     // todo s'occuper d'ajouter les / des regex dans une boucle en amont (constucteur ?)
-                    is_string($this->parameters[$parameterName]) && $this->name === 'Assert\Regex' && $parameterName === 'pattern' => $f->val("/{$this->parameters[$parameterName]}/"),
-                    is_array($this->parameters[$parameterName]) => new Array_(
+                    \is_string($this->parameters[$parameterName]) && $this->name === 'Assert\Regex' && $parameterName === 'pattern' => $f->val("/{$this->parameters[$parameterName]}/"),
+                    \is_array($this->parameters[$parameterName]) => new Array_(
                         array_map(
                             static fn ($item) => new ArrayItem(
                                 match (true) {

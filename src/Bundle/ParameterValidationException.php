@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\PrettyPrinter\Standard;
 
 class ParameterValidationException implements File
@@ -46,15 +47,18 @@ class ParameterValidationException implements File
                  * @param string[] $messages
                  */
                 COMMENT
-            );
+            )
+        ;
 
         $class = $f->class('ParameterValidationException')
             ->extend('\Exception')
-            ->addStmt($constructor);
+            ->addStmt($constructor)
+        ;
 
-        $namespace = $f->namespace("{$this->bundleNamespace}\Api")
-            ->addStmt($class);
+        $namespace = $f->namespace("{$this->bundleNamespace}\\Api")
+            ->addStmt($class)
+        ;
 
-        return (new Standard)->prettyPrintFile([$namespace->getNode()]);
+        return (new Standard())->prettyPrintFile([$namespace->getNode()]);
     }
 }

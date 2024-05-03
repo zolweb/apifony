@@ -1,12 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\PrettyPrinter\Standard;
 
 class FormatValidator implements File
@@ -29,7 +30,7 @@ class FormatValidator implements File
 
     public function getNamespace(): string
     {
-        return "{$this->bundleNamespace}\Format";
+        return "{$this->bundleNamespace}\\Format";
     }
 
     public function getClassName(): string
@@ -65,7 +66,8 @@ class FormatValidator implements File
             ->makePublic()
             ->addParam($f->param('formatDefinition')->setType("{$this->formatName}Definition"))
             ->setReturnType('void')
-            ->addStmt(new Assign($f->propertyFetch($f->var('this'), 'formatDefinition'), $f->var('formatDefinition')));
+            ->addStmt(new Assign($f->propertyFetch($f->var('this'), 'formatDefinition'), $f->var('formatDefinition')))
+        ;
 
         $validateMethod = $f->method('validate')
             ->makePublic()
@@ -74,19 +76,22 @@ class FormatValidator implements File
             ->setReturnType('void')
             ->addStmt(new Foreach_($f->methodCall($f->propertyFetch($f->var('this'), 'formatDefinition'), 'validate', [$f->var('value')]), $f->var('violation'), ['stmts' => [
                 new Expression($f->methodCall($f->methodCall($f->propertyFetch($f->var('this'), 'context'), 'buildViolation', [$f->var('violation')]), 'addViolation')),
-            ]]));
+            ]]))
+        ;
 
         $class = $f->class("{$this->formatName}Validator")
             ->extend('ConstraintValidator')
             ->addStmt($f->property('formatDefinition')->setType("{$this->formatName}Definition")->makePrivate())
             ->addStmt($setFormatDefinitionMethod)
-            ->addStmt($validateMethod);
+            ->addStmt($validateMethod)
+        ;
 
-        $namespace = $f->namespace("{$this->bundleNamespace}\Format")
+        $namespace = $f->namespace("{$this->bundleNamespace}\\Format")
             ->addStmt($f->use('Symfony\Component\Validator\Constraint'))
             ->addStmt($f->use('Symfony\Component\Validator\ConstraintValidator'))
-            ->addStmt($class);
+            ->addStmt($class)
+        ;
 
-        return (new Standard)->prettyPrintFile([$namespace->getNode()]);
+        return (new Standard())->prettyPrintFile([$namespace->getNode()]);
     }
 }

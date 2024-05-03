@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\Node\Expr;
@@ -7,6 +9,7 @@ use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Parameter;
 use Zol\Ogen\OpenApi\Reference;
 use Zol\Ogen\OpenApi\Schema;
+
 use function Symfony\Component\String\u;
 
 class ActionParameter

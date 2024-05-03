@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
@@ -10,7 +12,6 @@ use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\PrettyPrinter\Standard;
 use Zol\Ogen\OpenApi\Components;
@@ -21,6 +22,7 @@ use Zol\Ogen\OpenApi\Reference;
 use Zol\Ogen\OpenApi\RequestBody;
 use Zol\Ogen\OpenApi\Response;
 use Zol\Ogen\OpenApi\Schema;
+
 use function Symfony\Component\String\u;
 
 class Bundle implements File
@@ -48,7 +50,7 @@ class Bundle implements File
 
     /**
      * @param array<string, Format> $formats
-     * @param array<Model> $models
+     * @param array<Model>          $models
      */
     private function __construct(
         private readonly string $name,
@@ -84,7 +86,7 @@ class Bundle implements File
             $files[] = $model;
         }
 
-        foreach ($this->api->getFiles() as $file){
+        foreach ($this->api->getFiles() as $file) {
             $files[] = $file;
         }
 
@@ -93,13 +95,14 @@ class Bundle implements File
 
     /**
      * @return array<string, Format>
+     *
      * @throws Exception
      */
     private static function buildFormats(string $namespace, OpenApi $openApi): array
     {
         $rawFormatNames = [];
 
-        $addSchemaFormats = function (Reference|Schema $schema) use (&$addSchemaFormats, &$rawFormatNames) {
+        $addSchemaFormats = static function (Reference|Schema $schema) use (&$addSchemaFormats, &$rawFormatNames): void {
             if ($schema instanceof Schema) {
                 if ($schema->format !== null) {
                     $rawFormatNames[$schema->format] = null;
@@ -219,7 +222,7 @@ class Bundle implements File
         /**
          * @throws Exception
          */
-        $addModels = function(string $rawName, Reference|Schema $schema) use (&$addModels, &$models, $namespace, $components) {
+        $addModels = static function (string $rawName, Reference|Schema $schema) use (&$addModels, &$models, $namespace, $components): void {
             if ($schema instanceof Reference) {
                 if ($components === null || !isset($components->schemas[$schema->getName()])) {
                     throw new Exception('Reference not found in schemas components.');
@@ -232,8 +235,8 @@ class Bundle implements File
                     if (!($schema->extensions['x-raw'] ?? false)) {
                         $models[$rawName] = Model::build(
                             $namespace,
-                            "{$namespace}\Model",
-                            "src/Model",
+                            "{$namespace}\\Model",
+                            'src/Model',
                             $rawName,
                             $schema,
                             $components,
@@ -328,7 +331,7 @@ class Bundle implements File
                         ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [sprintf('%s.handler', u($this->name)->snake())]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
                             new Foreach_($f->var('tags'), $f->var('tag'), ['stmts' => [
                                 new Switch_(new ArrayDimFetch($f->var('tag'), $f->val('controller')), array_map(
-                                    fn (Aggregate $aggregate) => new Case_($f->val($aggregate->getTag()), [
+                                    static fn (Aggregate $aggregate) => new Case_($f->val($aggregate->getTag()), [
                                         new Expression($f->methodCall($f->methodCall($f->var('container'), 'findDefinition', [sprintf('%s\%s', $aggregate->getController()->getNamespace(), $aggregate->getController()->getClassName())]), 'addMethodCall', [$f->val('setHandler'), new Array_([new \PhpParser\Node\ArrayItem($f->new('Reference', [$f->var('id')]))])])),
                                         new Break_(),
                                     ]),
@@ -349,7 +352,8 @@ class Bundle implements File
                         ]])),
                     )->getNode(),
                 ),
-            ]));
+            ]))
+        ;
 
         $loadExtensionMethod = $f->method('loadExtension')
             ->makePublic()
@@ -363,12 +367,14 @@ class Bundle implements File
                  */
                 COMMENT
             )
-            ->addStmt($f->methodCall($f->var('container'), 'import', [$f->val('../config/services.yaml')]));
+            ->addStmt($f->methodCall($f->var('container'), 'import', [$f->val('../config/services.yaml')]))
+        ;
 
         $class = $f->class("{$this->name}Bundle")
             ->extend('AbstractBundle')
             ->addStmt($buildMethod)
-            ->addStmt($loadExtensionMethod);
+            ->addStmt($loadExtensionMethod)
+        ;
 
         $namespace = $f->namespace($this->namespace)
             ->addStmt($f->use('Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface'))
@@ -376,8 +382,9 @@ class Bundle implements File
             ->addStmt($f->use('Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator'))
             ->addStmt($f->use('Symfony\Component\DependencyInjection\Reference'))
             ->addStmt($f->use('Symfony\Component\HttpKernel\Bundle\AbstractBundle'))
-            ->addStmt($class);
+            ->addStmt($class)
+        ;
 
-        return (new Standard)->prettyPrintFile([$namespace->getNode()]);
+        return (new Standard())->prettyPrintFile([$namespace->getNode()]);
     }
 }

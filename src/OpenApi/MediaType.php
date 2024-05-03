@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\OpenApi;
 
 class MediaType
@@ -11,13 +13,13 @@ class MediaType
      */
     public static function build(array $data): self
     {
-        if (isset($data['schema']) && !is_array($data['schema'])) {
+        if (isset($data['schema']) && !\is_array($data['schema'])) {
             throw new Exception('MediaType object schema attribute must be an array.');
         }
 
         $extensions = [];
         foreach ($data as $key => $extension) {
-            if (is_string($key) && str_starts_with($key, 'x-')) {
+            if (\is_string($key) && str_starts_with($key, 'x-')) {
                 $extensions[$key] = $extension;
             }
         }
@@ -36,7 +38,7 @@ class MediaType
      * @param array<mixed> $extensions
      */
     private function __construct(
-        public readonly null|Reference|Schema $schema,
+        public readonly Reference|Schema|null $schema,
         public readonly array $extensions,
     ) {
     }

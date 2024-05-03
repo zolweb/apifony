@@ -1,15 +1,17 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\PrettyPrinter\Standard;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Printer\Printer;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Schema;
+
 use function Symfony\Component\String\u;
 
 class Model implements File
@@ -39,7 +41,8 @@ class Model implements File
         usort(
             $attributes,
             static function (ModelAttribute $attr1, ModelAttribute $attr2) use ($ordinals) {
-                $diff = (int)$attr1->hasDefault() - (int)$attr2->hasDefault();
+                $diff = (int) $attr1->hasDefault() - (int) $attr2->hasDefault();
+
                 return $diff !== 0 ? $diff : $ordinals[$attr1->getRawName()] - $ordinals[$attr2->getRawName()];
             }
         );
@@ -48,7 +51,7 @@ class Model implements File
         foreach ($attributes as $attribute) {
             foreach ($attribute->getConstraints() as $constraint) {
                 foreach ($constraint->getFormatConstraintClassNames() as $constraintName) {
-                    $usedFormatConstraintNames[$constraintName] = true ;
+                    $usedFormatConstraintNames[$constraintName] = true;
                 }
             }
         }
@@ -75,8 +78,8 @@ class Model implements File
 
     /**
      * @param array<ModelAttribute> $attributes
-     * @param array<string> $usedFormatConstraintNames
-     * @param array<string> $usedModelNames
+     * @param array<string>         $usedFormatConstraintNames
+     * @param array<string>         $usedModelNames
      */
     private function __construct(
         private readonly string $bundleNamespace,
@@ -89,9 +92,6 @@ class Model implements File
     ) {
     }
 
-    /**
-     * @return string
-     */
     public function getBundleNamespace(): string
     {
         return $this->bundleNamespace;
@@ -167,13 +167,14 @@ class Model implements File
         $f = new BuilderFactory();
 
         $constructor = $f->method('__construct')
-            ->makePublic();
+            ->makePublic()
+        ;
 
         foreach ($this->attributes as $attribute) {
             $constructor->addParam($attribute->getParamAst());
         }
 
-        if (count($this->getArrayAttributes()) > 0) {
+        if (\count($this->getArrayAttributes()) > 0) {
             $comment = new PhpDocNode(array_map(
                 static fn (ModelAttribute $attribute): PhpDocTagNode => $attribute->getDocAst(),
                 $this->getArrayAttributes(),
@@ -182,21 +183,23 @@ class Model implements File
         }
 
         $class = $f->class($this->className)
-            ->addStmt($constructor);
+            ->addStmt($constructor)
+        ;
 
         $namespace = $f->namespace($this->namespace)
-            ->addStmt($f->use('Symfony\Component\Validator\Constraints')->as('Assert'));
+            ->addStmt($f->use('Symfony\Component\Validator\Constraints')->as('Assert'))
+        ;
 
         foreach ($this->usedFormatConstraintNames as $constraintName) {
-            $namespace->addStmt($f->use("{$this->bundleNamespace}\Format\\{$constraintName}")->as("Assert{$constraintName}"));
+            $namespace->addStmt($f->use("{$this->bundleNamespace}\\Format\\{$constraintName}")->as("Assert{$constraintName}"));
         }
 
         foreach ($this->usedModelNames as $modelName) {
-            $namespace->addStmt($f->use("{$this->bundleNamespace}\Model\\{$modelName}"));
+            $namespace->addStmt($f->use("{$this->bundleNamespace}\\Model\\{$modelName}"));
         }
 
         $namespace->addStmt($class);
 
-        return (new Standard)->prettyPrintFile([$namespace->getNode()]);
+        return (new Standard())->prettyPrintFile([$namespace->getNode()]);
     }
 }

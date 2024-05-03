@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
@@ -19,7 +21,6 @@ use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\Node\Stmt\TryCatch;
@@ -40,7 +41,7 @@ class Controller implements File
         Handler $handler,
         array $usedModelNames,
     ): self {
-        # todo maybe import all formats and models and let php-cs-fixer remove unused
+        // todo maybe import all formats and models and let php-cs-fixer remove unused
         $usedFormatConstraintNames = [];
         foreach ($actions as $action) {
             foreach ($action->getParameters() as $parameter) {
@@ -108,7 +109,7 @@ class Controller implements File
 
     public function getNamespace(): string
     {
-        return "{$this->bundleNamespace}\Api\\{$this->aggregateName}";
+        return "{$this->bundleNamespace}\\Api\\{$this->aggregateName}";
     }
 
     public function getClassName(): string
@@ -144,24 +145,28 @@ class Controller implements File
             ->addParam($f->param('handler')->setType($this->handler->getClassName()))
             ->setReturnType('void')
             ->makePublic()
-            ->addStmt(new Assign($f->propertyFetch($f->var('this'), 'handler'), $f->var('handler')));
+            ->addStmt(new Assign($f->propertyFetch($f->var('this'), 'handler'), $f->var('handler')))
+        ;
 
         $class = $f->class("{$this->aggregateName}Controller")
             ->extend('AbstractController')
             ->addStmt($f->property('handler')->setType($this->handler->getClassName())->makePrivate())
-            ->addStmt($setHandlerMethod);
+            ->addStmt($setHandlerMethod)
+        ;
 
         foreach ($this->actions as $action) {
             $actionMethod = $f->method($action->getName())
                 ->makePublic()
-                ->addParam($f->param('request')->setType('Request'));
+                ->addParam($f->param('request')->setType('Request'))
+            ;
 
             foreach ($action->getParameters(['path']) as $parameter) {
                 $actionMethod->addParam($f->param($parameter->getRawName())->setType($parameter->getPhpType()));
             }
 
             $actionMethod->setReturnType('Response')
-                ->addStmt(new Expression(new Assign($f->var('errors'), $f->val([]))));
+                ->addStmt(new Expression(new Assign($f->var('errors'), $f->val([]))))
+            ;
 
             foreach ($action->getParameters(['path']) as $parameter) {
                 $actionMethod->addStmt(new Expression(new Assign($f->var($parameter->getVariableName()), $f->var($parameter->getRawName()))))
@@ -177,12 +182,13 @@ class Controller implements File
                         new Catch_([new Name('ParameterValidationException')], $f->var('e'), [
                             new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($parameter->getIn())), $f->val($parameter->getRawName())), $f->propertyFetch($f->var('e'), 'messages'))),
                         ]),
-                    ]));
+                    ]))
+                ;
             }
 
             foreach ($action->getParameters(['query', 'header', 'cookie']) as $parameter) {
                 $actionMethod->addStmt(new Expression(new Assign($f->var($parameter->getVariableName()), $parameter->getInitValueAst())))
-                    -> addStmt(new TryCatch([
+                    ->addStmt(new TryCatch([
                         new Expression(new Assign($f->var($parameter->getVariableName()), $f->methodCall($f->var('this'), sprintf('get%s%sParameter', ucfirst($parameter->getPhpType()), $parameter->isNullable() ? 'OrNull' : ''), array_merge([$f->var('request'), $parameter->getRawName(), $parameter->getIn(), $parameter->isRequired()], $parameter->hasDefault() ? [$parameter->getDefault()] : [])))),
                         new Expression($f->methodCall($f->var('this'), 'validateParameter', [
                             $f->var($parameter->getVariableName()),
@@ -197,40 +203,41 @@ class Controller implements File
                         ]),
                         new Catch_([new Name('ParameterValidationException')], $f->var('e'), [
                             new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($parameter->getIn())), $f->val($parameter->getRawName())), $f->propertyFetch($f->var('e'), 'messages'))),
-                        ])
-                    ]));
+                        ]),
+                    ]))
+                ;
             }
 
-            if (count($action->getRequestBodies()) > 0) {
+            if (\count($action->getRequestBodies()) > 0) {
                 $actionMethod->addStmt(new Expression(new Assign($f->var('requestBodyPayload'), $f->val(null))))
                     ->addStmt(new Switch_(new Assign($f->var('requestBodyPayloadContentType'), $f->methodCall($f->propertyFetch($f->var('request'), 'headers'), 'get', [$f->val('content-type'), $f->val('')])), array_merge(array_map(
-                            static fn (ActionRequestBody $actionRequestBody): Case_ => new Case_($f->val($actionRequestBody->getMimeType() ?? ''), array_merge(
-                                match ($actionRequestBody->getMimeType()) {
-                                    'application/json' => [
-                                        new TryCatch([
-                                            new Expression(new Assign($f->var('requestBodyPayload'), $f->methodCall($f->var('this'), sprintf('get%sJsonRequestBody', ucfirst($actionRequestBody->getPayloadBuiltInPhpType())), array_merge([$f->var('request')], $actionRequestBody->getPayloadBuiltInPhpType() === 'object' ? [$f->classConstFetch($actionRequestBody->getPayloadPhpType(), 'class')] : [])))),
-                                            new Expression($f->methodCall($f->var('this'), 'validateRequestBody', [
-                                                $f->var('requestBodyPayload'),
-                                                array_map(
-                                                    static fn (Constraint $constraint): New_ => $constraint->getInstantiationAst(),
-                                                    $actionRequestBody->getConstraints(),
-                                                ),
-                                            ])),
-                                        ], [
+                        static fn (ActionRequestBody $actionRequestBody): Case_ => new Case_($f->val($actionRequestBody->getMimeType() ?? ''), array_merge(
+                            match ($actionRequestBody->getMimeType()) {
+                                'application/json' => [
+                                    new TryCatch([
+                                        new Expression(new Assign($f->var('requestBodyPayload'), $f->methodCall($f->var('this'), sprintf('get%sJsonRequestBody', ucfirst($actionRequestBody->getPayloadBuiltInPhpType())), array_merge([$f->var('request')], $actionRequestBody->getPayloadBuiltInPhpType() === 'object' ? [$f->classConstFetch($actionRequestBody->getPayloadPhpType(), 'class')] : [])))),
+                                        new Expression($f->methodCall($f->var('this'), 'validateRequestBody', [
+                                            $f->var('requestBodyPayload'),
+                                            array_map(
+                                                static fn (Constraint $constraint): New_ => $constraint->getInstantiationAst(),
+                                                $actionRequestBody->getConstraints(),
+                                            ),
+                                        ])),
+                                    ], [
                                             new Catch_([new Name('DenormalizationException')], $f->var('e'), [
-                                                new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), new Array_([new ArrayItem($f->methodCall($f->var('e'), 'getMessage'))]))),
+                                            new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), new Array_([new ArrayItem($f->methodCall($f->var('e'), 'getMessage'))]))),
                                             ]),
                                             new Catch_([new Name('RequestBodyValidationException')], $f->var('e'), [
-                                                new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), $f->propertyFetch($f->var('e'), 'messages'))),
-                                            ])
+                                            new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), $f->propertyFetch($f->var('e'), 'messages'))),
+                                            ]),
                                         ]),
-                                    ],
-                                    default => [],
-                                },
-                                [new Break_()],
-                            )),
-                            $action->getRequestBodies(),
-                        ),
+                                ],
+                                default => [],
+                            },
+                            [new Break_()],
+                        )),
+                        $action->getRequestBodies(),
+                    ),
                         [new Case_(null, [
                             new Return_($f->new('JsonResponse', [
                                 new Array_([
@@ -238,9 +245,10 @@ class Controller implements File
                                     new ArrayItem(new InterpolatedString([new InterpolatedStringPart('The value \''), $f->var('requestBodyPayloadContentType'), new InterpolatedStringPart('\' received in content-type header is not a supported format.')]), $f->val('message')),
                                 ]),
                                 $f->classConstFetch('Response', 'HTTP_UNSUPPORTED_MEDIA_TYPE'),
-                            ]))
+                            ])),
                         ])]
-                    )));
+                    )))
+                ;
             }
 
             $actionMethod->addStmt(new If_(new Greater($f->funcCall('count', [$f->var('errors')]), $f->val(0)), ['stmts' => [
@@ -251,7 +259,7 @@ class Controller implements File
                         new ArrayItem($f->var('errors'), $f->val('errors')),
                     ]),
                     $f->classConstFetch('Response', 'HTTP_BAD_REQUEST'),
-                ]))
+                ])),
             ]]))
                 ->addStmt(new Expression(new Assign($f->var('responsePayloadContentType'), $f->methodCall($f->propertyFetch($f->var('request'), 'headers'), 'get', [$f->val('accept'), $f->val('application/json')]))))
                 ->addStmt(new If_($f->funcCall('str_contains', [$f->var('responsePayloadContentType'), $f->val('*/*')]), ['stmts' => [
@@ -299,31 +307,33 @@ class Controller implements File
                         $action->getResponseContentTypes(),
                     ),
                     [new Case_(null, [new Expression(new Throw_($f->new('\RuntimeException')))])],
-                )));
+                )))
+            ;
 
             $class->addStmt($actionMethod);
         }
 
-        $namespace = $f->namespace("{$this->bundleNamespace}\Api\\{$this->aggregateName}")
-            ->addStmt($f->use("{$this->bundleNamespace}\Api\DenormalizationException"))
-            ->addStmt($f->use("{$this->bundleNamespace}\Api\ParameterValidationException"))
-            ->addStmt($f->use("{$this->bundleNamespace}\Api\RequestBodyValidationException"))
-            ->addStmt($f->use("{$this->bundleNamespace}\Api\AbstractController"))
+        $namespace = $f->namespace("{$this->bundleNamespace}\\Api\\{$this->aggregateName}")
+            ->addStmt($f->use("{$this->bundleNamespace}\\Api\\DenormalizationException"))
+            ->addStmt($f->use("{$this->bundleNamespace}\\Api\\ParameterValidationException"))
+            ->addStmt($f->use("{$this->bundleNamespace}\\Api\\RequestBodyValidationException"))
+            ->addStmt($f->use("{$this->bundleNamespace}\\Api\\AbstractController"))
             ->addStmt($f->use('Symfony\Component\HttpFoundation\JsonResponse'))
             ->addStmt($f->use('Symfony\Component\HttpFoundation\Request'))
             ->addStmt($f->use('Symfony\Component\HttpFoundation\Response'))
-            ->addStmt(new Use_([new UseItem(new Name('Symfony\Component\Validator\Constraints'), 'Assert')]));
+            ->addStmt(new Use_([new UseItem(new Name('Symfony\Component\Validator\Constraints'), 'Assert')]))
+        ;
 
         foreach ($this->usedFormatConstraintNames as $usedFormatConstraintName) {
-            $namespace->addStmt(new Use_([new UseItem(new Name("{$this->bundleNamespace}\Format\\{$usedFormatConstraintName}"), "Assert{$usedFormatConstraintName}")]));
+            $namespace->addStmt(new Use_([new UseItem(new Name("{$this->bundleNamespace}\\Format\\{$usedFormatConstraintName}"), "Assert{$usedFormatConstraintName}")]));
         }
 
         foreach ($this->usedModelNames as $usedModelName) {
-            $namespace->addStmt($f->use("{$this->bundleNamespace}\Model\\{$usedModelName}"));
+            $namespace->addStmt($f->use("{$this->bundleNamespace}\\Model\\{$usedModelName}"));
         }
 
         $namespace->addStmt($class);
 
-        return (new Standard)->prettyPrintFile([$namespace->getNode()]);
+        return (new Standard())->prettyPrintFile([$namespace->getNode()]);
     }
 }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\OpenApi;
 
 class Responses
@@ -24,12 +26,12 @@ class Responses
         $responses = [];
         $extensions = [];
         foreach ($data as $key => $elementData) {
-            if (in_array($key, self::CODES, true)) {
-                if (!is_array($elementData)) {
+            if (\in_array($key, self::CODES, true)) {
+                if (!\is_array($elementData)) {
                     throw new Exception('Responses object array elements must be objects.');
                 }
                 $responses[$key] = isset($elementData['$ref']) ? Reference::build($elementData) : Response::build($elementData);
-            } elseif (is_string($key) && str_starts_with($key, 'x-')) {
+            } elseif (\is_string($key) && str_starts_with($key, 'x-')) {
                 $extensions[$key] = $elementData;
             }
         }
@@ -39,7 +41,7 @@ class Responses
 
     /**
      * @param array<string|int, Reference|Response> $responses
-     * @param array<string, mixed> $extensions
+     * @param array<string, mixed>                  $extensions
      */
     private function __construct(
         public readonly array $responses,

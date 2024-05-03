@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\OpenApi;
 
 class Reference
@@ -14,7 +16,7 @@ class Reference
         if (!isset($data['$ref'])) {
             throw new Exception('Reference object $ref attribute is mandatory.');
         }
-        if (!is_string($data['$ref'])) {
+        if (!\is_string($data['$ref'])) {
             throw new Exception('Reference object $ref attribute must be a string.');
         }
 

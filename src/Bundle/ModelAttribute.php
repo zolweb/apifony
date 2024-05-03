@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
@@ -11,6 +13,7 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Reference;
 use Zol\Ogen\OpenApi\Schema;
+
 use function Symfony\Component\String\u;
 
 class ModelAttribute
@@ -127,7 +130,8 @@ class ModelAttribute
         $param = $f->param($this->variableName)
             ->setType(($this->type->isNullable() ? '?' : '').$this->getPhpType())
             ->makePublic()
-            ->makeReadonly();
+            ->makeReadonly()
+        ;
 
         if ($this->schema->default !== null) {
             $param->setDefault($this->schema->default);

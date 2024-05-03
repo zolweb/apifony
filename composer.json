@@ -16,7 +16,8 @@
         "symfony/filesystem": "7.0.*",
         "symfony/framework-bundle": "7.0.*",
         "symfony/test-pack": "^1.1",
-        "zol/test-openapi-server": "dev-main"
+        "zol/test-openapi-server": "dev-main",
+        "friendsofphp/php-cs-fixer": "^3.54"
     },
     "autoload": {
         "psr-4": {

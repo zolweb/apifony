@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\PrettyPrinter\Standard;
 
 class DenormalizationException implements File
@@ -40,15 +41,18 @@ class DenormalizationException implements File
         $constructor = $f->method('__construct')
             ->makePublic()
             ->addParam($f->param('message')->setType('string'))
-            ->addStmt($f->staticCall('parent', '__construct', [$f->var('message')]));
+            ->addStmt($f->staticCall('parent', '__construct', [$f->var('message')]))
+        ;
 
         $class = $f->class('DenormalizationException')
             ->extend('\Exception')
-            ->addStmt($constructor);
+            ->addStmt($constructor)
+        ;
 
-        $namespace = $f->namespace("{$this->bundleNamespace}\Api")
-            ->addStmt($class);
+        $namespace = $f->namespace("{$this->bundleNamespace}\\Api")
+            ->addStmt($class)
+        ;
 
-        return (new Standard)->prettyPrintFile([$namespace->getNode()]);
+        return (new Standard())->prettyPrintFile([$namespace->getNode()]);
     }
 }

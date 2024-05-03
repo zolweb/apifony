@@ -1,13 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen;
 
-use RuntimeException;
+use Symfony\Component\Yaml\Yaml;
 use Zol\Ogen\Bundle\Bundle;
 use Zol\Ogen\Bundle\Exception as BundleException;
 use Zol\Ogen\OpenApi\Exception as OpenApiException;
 use Zol\Ogen\OpenApi\OpenApi;
-use Symfony\Component\Yaml\Yaml;
 
 class Ogen
 {
@@ -19,8 +20,8 @@ class Ogen
     {
         $spec = Yaml::parseFile($openApiSpecPath);
 
-        if (!is_array($spec)) {
-            throw new RuntimeException('Yaml content must be an array');
+        if (!\is_array($spec)) {
+            throw new \RuntimeException('Yaml content must be an array');
         }
 
         $openApi = OpenApi::build($spec);

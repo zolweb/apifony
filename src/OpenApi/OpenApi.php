@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\OpenApi;
 
 class OpenApi
@@ -11,16 +13,16 @@ class OpenApi
      */
     public static function build(array $data): self
     {
-        if (isset($data['components']) && !is_array($data['components'])) {
+        if (isset($data['components']) && !\is_array($data['components'])) {
             throw new Exception('OpenApi object components attribute must be an array.');
         }
-        if (isset($data['paths']) && !is_array($data['paths'])) {
+        if (isset($data['paths']) && !\is_array($data['paths'])) {
             throw new Exception('OpenApi object paths attribute must be an array.');
         }
 
         $extensions = [];
         foreach ($data as $key => $extension) {
-            if (is_string($key) && str_starts_with($key, 'x-')) {
+            if (\is_string($key) && str_starts_with($key, 'x-')) {
                 $extensions[$key] = $extension;
             }
         }

@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\PrettyPrinter\Standard;
 
 class FormatDefinition implements File
@@ -57,14 +58,17 @@ class FormatDefinition implements File
                  * @return string[]
                  */
                 COMMENT
-            );
+            )
+        ;
 
         $interface = $f->interface("{$this->formatName}Definition")
-            ->addStmt($methodValidate);
+            ->addStmt($methodValidate)
+        ;
 
-        $namespace = $f->namespace("{$this->bundleNamespace}\Format")
-            ->addStmt($interface);
+        $namespace = $f->namespace("{$this->bundleNamespace}\\Format")
+            ->addStmt($interface)
+        ;
 
-        return (new Standard)->prettyPrintFile([$namespace->getNode()]);
+        return (new Standard())->prettyPrintFile([$namespace->getNode()]);
     }
 }

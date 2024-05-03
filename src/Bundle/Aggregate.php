@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Operation;
+
 use function Symfony\Component\String\u;
 
 class Aggregate

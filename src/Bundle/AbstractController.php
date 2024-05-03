@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
@@ -8,9 +10,9 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\Greater;
 use PhpParser\Node\Expr\BinaryOp\Identical;
-use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Expr\Match_;
@@ -23,7 +25,6 @@ use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\TryCatch;
 use PhpParser\PrettyPrinter\Standard;
@@ -42,7 +43,7 @@ class AbstractController implements File
 
     public function getNamespace(): string
     {
-        return "{$this->bundleNamespace}\Api";
+        return "{$this->bundleNamespace}\\Api";
     }
 
     public function getFolder(): string
@@ -72,7 +73,8 @@ class AbstractController implements File
         $constructor = $f->method('__construct')
             ->makePublic()
             ->addParam($f->param('serializer')->setType('SerializerInterface')->makeProtected()->makeReadonly())
-            ->addParam($f->param('validator')->setType('ValidatorInterface')->makeProtected()->makeReadonly());
+            ->addParam($f->param('validator')->setType('ValidatorInterface')->makeProtected()->makeReadonly())
+        ;
 
         $validateParameter = $f->method('validateParameter')
             ->makePublic()
@@ -95,7 +97,8 @@ class AbstractController implements File
                         $f->funcCall('iterator_to_array', [$f->var('violations')]),
                     ]),
                 ]))),
-            ]]));
+            ]]))
+        ;
 
         $validateRequestBody = $f->method('validateRequestBody')
             ->makePublic()
@@ -121,11 +124,13 @@ class AbstractController implements File
                     new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->var('path'))), new String_($f->methodCall($f->var('violation'), 'getMessage')))),
                 ]]),
                 new Expression(new Throw_($f->new('RequestBodyValidationException', [$f->var('errors')]))),
-            ]]));
+            ]]))
+        ;
 
         $class = $f->class('AbstractController')
             ->makeAbstract()
-            ->addStmt($constructor);
+            ->addStmt($constructor)
+        ;
 
         foreach (['string', 'int', 'float', 'bool'] as $type) {
             foreach ([false, true] as $nullable) {
@@ -159,7 +164,6 @@ class AbstractController implements File
                             [] :
                             [new If_(new Identical($f->var('default'), $f->val(null)), ['stmts' => [
                                 new Expression(new Throw_($f->new('DenormalizationException', [new InterpolatedString([new InterpolatedStringPart('Parameter \''), $f->var('name'), new InterpolatedStringPart('\' in \''), $f->var('in'), new InterpolatedStringPart('\' must not be null.')])]))),
-
                             ]])],
                         [new Return_($f->var('default'))],
                     )]))
@@ -168,7 +172,7 @@ class AbstractController implements File
                             new Return_($f->val(null)) :
                             new Expression(new Throw_($f->new('DenormalizationException', [new InterpolatedString([new InterpolatedStringPart('Parameter \''), $f->var('name'), new InterpolatedStringPart('\' in \''), $f->var('in'), new InterpolatedStringPart('\' must not be null.')])]))),
                     ]]))
-                    ->addStmts(match($type) {
+                    ->addStmts(match ($type) {
                         'string' => [
                             new Return_($f->var('value')),
                         ],
@@ -190,7 +194,8 @@ class AbstractController implements File
                             ]]),
                             new Return_(new ArrayDimFetch(new Array_([new ArrayItem($f->val(true), $f->val('true')), new ArrayItem($f->val(false), $f->val('false'))]), $f->var('value'))),
                         ],
-                    });
+                    })
+                ;
 
                 $class->addStmt($getParameterMethod);
             }
@@ -226,7 +231,7 @@ class AbstractController implements File
                             ]])] :
                             [],
                     )
-                    ->addStmts(match($type) {
+                    ->addStmts(match ($type) {
                         'string' => [
                             new If_(new BooleanNot($f->funcCall('is_string', [$f->var('value')])), ['stmts' => [
                                 new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body must be a string.')]))),
@@ -251,7 +256,8 @@ class AbstractController implements File
                             ]]),
                             new Return_($f->var('value')),
                         ],
-                    });
+                    })
+                ;
 
                 $class->addStmt($getParameterMethod);
             }
@@ -262,8 +268,8 @@ class AbstractController implements File
                 ->makePublic()
                 ->addParam($f->param('request')->setType('Request'))
                 ->addParam($f->param('class')->setType('string'))
-                ->addParam($f->param('default')->setType("?object")->setDefault(null))
-                ->setReturnType(sprintf("%sobject", $nullable ? '?' : ''))
+                ->addParam($f->param('default')->setType('?object')->setDefault(null))
+                ->setReturnType(sprintf('%sobject', $nullable ? '?' : ''))
                 ->setDocComment(<<<'COMMENT'
                     /**
                      * @throws DenormalizationException
@@ -290,19 +296,21 @@ class AbstractController implements File
                     [
                         new Return_($f->methodCall($f->propertyFetch($f->var('this'), 'serializer'), 'deserialize', [$f->var('value'), $f->var('class'), $f->classConstFetch('JsonEncoder', 'FORMAT')])),
                     ], [
-                       new Catch_([new Name('ExceptionInterface')], $f->var('e'), [
-                           new Expression(new Throw_($f->new('DenormalizationException', [new InterpolatedString([new InterpolatedStringPart('Request body could not be deserialized: '), $f->methodCall($f->var('e'), 'getMessage')])]))),
-                       ])
+                        new Catch_([new Name('ExceptionInterface')], $f->var('e'), [
+                            new Expression(new Throw_($f->new('DenormalizationException', [new InterpolatedString([new InterpolatedStringPart('Request body could not be deserialized: '), $f->methodCall($f->var('e'), 'getMessage')])]))),
+                        ]),
                     ]),
-                );
+                )
+            ;
 
             $class->addStmt($getParameterMethod);
         }
 
         $class->addStmt($validateParameter)
-            ->addStmt($validateRequestBody);
+            ->addStmt($validateRequestBody)
+        ;
 
-        $namespace = $f->namespace("{$this->bundleNamespace}\Api")
+        $namespace = $f->namespace("{$this->bundleNamespace}\\Api")
             ->addStmt($f->use('Symfony\Component\HttpFoundation\Request'))
             ->addStmt($f->use('Symfony\Component\Serializer\Encoder\JsonEncoder'))
             ->addStmt($f->use('Symfony\Component\Serializer\SerializerInterface'))
@@ -310,8 +318,9 @@ class AbstractController implements File
             ->addStmt($f->use('Symfony\Component\Validator\ConstraintViolationInterface'))
             ->addStmt($f->use('Symfony\Component\Validator\Validator\ValidatorInterface'))
             ->addStmt($f->use('Symfony\Component\Serializer\Exception\ExceptionInterface'))
-            ->addStmt($class);
+            ->addStmt($class)
+        ;
 
-        return (new Standard)->prettyPrintFile([$namespace->getNode()]);
+        return (new Standard())->prettyPrintFile([$namespace->getNode()]);
     }
 }

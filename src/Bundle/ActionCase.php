@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Operation;
 use Zol\Ogen\OpenApi\Reference;
+
 use function Symfony\Component\String\u;
 
 class ActionCase
@@ -32,7 +35,7 @@ class ActionCase
                 }
                 $response = $components->responses[$response->getName()];
             }
-            if (count($response->content) === 0) {
+            if (\count($response->content) === 0) {
                 $responses[] = ActionResponse::build(
                     $bundleNamespace,
                     $aggregateName,
@@ -76,7 +79,7 @@ class ActionCase
 
     /**
      * @param array<ActionParameter> $parameters
-     * @param array<ActionResponse> $responses
+     * @param array<ActionResponse>  $responses
      */
     private function __construct(
         private readonly ?Type $requestBodyPayloadType,

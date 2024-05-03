@@ -1,14 +1,15 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
-use PhpParser\Node\Stmt\Namespace_;
 use Symfony\Component\Yaml\Yaml;
+
 use function Symfony\Component\String\u;
 
 class RoutesConfig implements File
 {
-
     // /**
     //  * @return array<Operation>
     //  */
@@ -97,9 +98,9 @@ class RoutesConfig implements File
                 $routes["{$this->getServiceNamespace()}_{$action->getServiceName()}"] = [
                     'path' => $action->getRoute(),
                     'methods' => $action->getMethod(),
-                    'controller' => "{$controller->getNamespace()}\\{$controller->getClassName()}::{$action->getName()}"
+                    'controller' => "{$controller->getNamespace()}\\{$controller->getClassName()}::{$action->getName()}",
                 ];
-                if (count($action->getParameters(['path'])) > 0) {
+                if (\count($action->getParameters(['path'])) > 0) {
                     $routes["{$this->getServiceNamespace()}_{$action->getServiceName()}"]['requirements'] = [];
                     foreach ($action->getParameters(['path']) as $parameter) {
                         $routes["{$this->getServiceNamespace()}_{$action->getServiceName()}"]['requirements'][$parameter->getRawName()] = $parameter->getRouteRequirementPattern();

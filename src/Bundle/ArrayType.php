@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
@@ -13,6 +15,7 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Reference;
 use Zol\Ogen\OpenApi\Schema;
+
 use function Symfony\Component\String\u;
 
 class ArrayType implements Type
@@ -72,7 +75,7 @@ class ArrayType implements Type
 
     public function getMethodParameterDefault(): Expr
     {
-       return new ConstFetch(new Name('null'));
+        return new ConstFetch(new Name('null'));
     }
 
     /**
@@ -143,7 +146,7 @@ class ArrayType implements Type
             }
         }
 
-        if (count($itemConstraints) > 0) {
+        if (\count($itemConstraints) > 0) {
             $constraints[] = new Constraint('Assert\All', ['constraints' => $itemConstraints]);
         }
 

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\Builder\Method;
@@ -7,7 +9,6 @@ use PhpParser\Builder\Param;
 use PhpParser\Builder\Use_;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Name;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\UnionType;
 use PhpParser\PrettyPrinter\Standard;
 
@@ -82,7 +83,7 @@ class Handler implements File
 
     public function getNamespace(): string
     {
-        return "{$this->bundleNamespace}\Api\\{$this->aggregateName}";
+        return "{$this->bundleNamespace}\\Api\\{$this->aggregateName}";
     }
 
     public function getClassName(): string
@@ -138,15 +139,17 @@ class Handler implements File
                     $action->getCases(),
                 ),
                 $this->actions,
-            )));
+            )))
+        ;
 
-        $namespace = $f->namespace("{$this->bundleNamespace}\Api\\{$this->aggregateName}")
+        $namespace = $f->namespace("{$this->bundleNamespace}\\Api\\{$this->aggregateName}")
             ->addStmts(array_map(
-                fn (string $modelName): Use_ => $f->use("{$this->bundleNamespace}\Model\\{$modelName}"),
+                fn (string $modelName): Use_ => $f->use("{$this->bundleNamespace}\\Model\\{$modelName}"),
                 $this->usedModelNames,
             ))
-            ->addStmt($interface);
+            ->addStmt($interface)
+        ;
 
-        return (new Standard)->prettyPrintFile([$namespace->getNode()]);
+        return (new Standard())->prettyPrintFile([$namespace->getNode()]);
     }
 }

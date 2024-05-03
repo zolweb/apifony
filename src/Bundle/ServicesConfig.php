@@ -1,9 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
-use PhpParser\Node\Stmt\Namespace_;
 use Symfony\Component\Yaml\Yaml;
+
 use function Symfony\Component\String\u;
 
 class ServicesConfig implements File
@@ -34,7 +36,7 @@ class ServicesConfig implements File
     }
 
     /**
-     * @param array<Controller> $controllers
+     * @param array<Controller>      $controllers
      * @param array<FormatValidator> $formatValidators
      */
     private function __construct(
@@ -104,7 +106,7 @@ class ServicesConfig implements File
             $config['services']["{$formatValidator->getNamespace()}\\{$formatValidator->getClassName()}"] = [
                 'class' => "{$formatValidator->getNamespace()}\\{$formatValidator->getClassName()}",
                 'public' => true,
-                'tags' => ['validator.constraint_validator']
+                'tags' => ['validator.constraint_validator'],
             ];
         }
 

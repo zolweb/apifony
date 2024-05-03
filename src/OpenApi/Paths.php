@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\OpenApi;
 
 class Paths
@@ -14,9 +16,9 @@ class Paths
         $pathItems = [];
         $extensions = [];
         foreach ($data as $key => $elementData) {
-            if (is_string($key)) {
+            if (\is_string($key)) {
                 if (str_starts_with($key, '/')) {
-                    if (!is_array($elementData)) {
+                    if (!\is_array($elementData)) {
                         throw new Exception('Paths object array elements must be objects.');
                     }
                     $pathItems[$key] = PathItem::build($elementData, $components);
@@ -31,7 +33,7 @@ class Paths
 
     /**
      * @param array<string, PathItem> $pathItems
-     * @param array<string, mixed> $extensions
+     * @param array<string, mixed>    $extensions
      */
     private function __construct(
         public readonly array $pathItems,

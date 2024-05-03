@@ -1,9 +1,10 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\PrettyPrinter\Standard;
 
 class FormatConstraint implements File
@@ -50,12 +51,14 @@ class FormatConstraint implements File
 
         $class = $f->class($this->formatName)
             ->extend('Constraint')
-            ->addAttribute($f->attribute('\Attribute'));
+            ->addAttribute($f->attribute('\Attribute'))
+        ;
 
-        $namespace = $f->namespace("{$this->bundleNamespace}\Format")
+        $namespace = $f->namespace("{$this->bundleNamespace}\\Format")
             ->addStmt($f->use('Symfony\Component\Validator\Constraint'))
-            ->addStmt($class);
+            ->addStmt($class)
+        ;
 
-        return (new Standard)->prettyPrintFile([$namespace->getNode()]);
+        return (new Standard())->prettyPrintFile([$namespace->getNode()]);
     }
 }

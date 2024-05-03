@@ -1,8 +1,8 @@
 <?php
 
-namespace Zol\Ogen\Bundle;
+declare(strict_types=1);
 
-use PhpParser\Node\Stmt\Namespace_;
+namespace Zol\Ogen\Bundle;
 
 class ComposerJson implements File
 {
@@ -57,14 +57,14 @@ class ComposerJson implements File
                     'symfony/serializer' => '7.0.*',
                     'symfony/validator' => '7.0.*',
                     'symfony/property-access' => '7.0.*',
-                    'symfony/property-info' => '7.0.*'
+                    'symfony/property-info' => '7.0.*',
                 ],
                 'autoload' => [
                     'psr-4' => [
-                        "{$this->namespace}\\" => 'src/'
+                        "{$this->namespace}\\" => 'src/',
                     ],
                 ],
-            ], JSON_PRETTY_PRINT | JSON_THROW_ON_ERROR | JSON_UNESCAPED_SLASHES);
+            ], \JSON_PRETTY_PRINT | \JSON_THROW_ON_ERROR | \JSON_UNESCAPED_SLASHES);
         } catch (\JsonException) {
             throw new \RuntimeException();
         }

@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
@@ -11,6 +13,7 @@ use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use Zol\Ogen\OpenApi\Schema;
+
 use function Symfony\Component\String\u;
 
 class IntegerType implements Type
@@ -46,7 +49,7 @@ class IntegerType implements Type
             return new ConstFetch(new Name('null'));
         }
 
-        if (!is_int($this->schema->default)) {
+        if (!\is_int($this->schema->default)) {
             throw new \RuntimeException();
         }
 
@@ -112,7 +115,7 @@ class IntegerType implements Type
             $constraints[] = new Constraint('Assert\LessThan', ['value' => $this->schema->exclusiveMaximum]);
         }
 
-        if (count($this->schema->enum) > 0) {
+        if (\count($this->schema->enum) > 0) {
             $constraints[] = new Constraint('Assert\Choice', ['choices' => $this->schema->enum]);
         }
 

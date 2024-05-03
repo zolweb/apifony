@@ -1,15 +1,11 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Comment\Doc;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\PrettyPrinter\Standard;
-use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
-use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
-use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
-use PHPStan\PhpDocParser\Ast\Type\ArrayTypeNode;
 
 class RequestBodyValidationException implements File
 {
@@ -51,15 +47,18 @@ class RequestBodyValidationException implements File
                  * @param array<string, string[]> $messages
                  */
                 COMMENT
-            );
+            )
+        ;
 
         $class = $f->class('RequestBodyValidationException')
             ->extend('\Exception')
-            ->addStmt($constructor);
+            ->addStmt($constructor)
+        ;
 
-        $namespace = $f->namespace("{$this->bundleNamespace}\Api")
-            ->addStmt($class);
+        $namespace = $f->namespace("{$this->bundleNamespace}\\Api")
+            ->addStmt($class)
+        ;
 
-        return (new Standard)->prettyPrintFile([$namespace->getNode()]);
+        return (new Standard())->prettyPrintFile([$namespace->getNode()]);
     }
 }

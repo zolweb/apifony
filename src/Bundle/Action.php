@@ -1,10 +1,13 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Operation;
 use Zol\Ogen\OpenApi\Reference;
+
 use function Symfony\Component\String\u;
 
 class Action
@@ -42,11 +45,11 @@ class Action
     }
 
     /**
-     * @param array<ActionParameter> $parameters
+     * @param array<ActionParameter>   $parameters
      * @param array<ActionRequestBody> $requestBodies
-     * @param array<?Type> $requestBodyPayloadTypes
-     * @param array<?string> $responseContentTypes
-     * @param array<ActionCase> $cases
+     * @param array<?Type>             $requestBodyPayloadTypes
+     * @param array<?string>           $responseContentTypes
+     * @param array<ActionCase>        $cases
      */
     private function __construct(
         private readonly string $name,
@@ -89,7 +92,7 @@ class Action
     {
         return array_filter(
             $this->parameters,
-            static fn (ActionParameter $param) => in_array($param->getIn(), $in, true),
+            static fn (ActionParameter $param) => \in_array($param->getIn(), $in, true),
         );
     }
 
@@ -129,9 +132,8 @@ class Action
     {
         return array_values(
             array_filter(
-                $this->cases, static fn (ActionCase $case) =>
-                    $case->getRequestBodyPayloadType() === $requestBodyPayloadType &&
-                    $case->getResponseContentType() === $responseContentType,
+                $this->cases, static fn (ActionCase $case) => $case->getRequestBodyPayloadType() === $requestBodyPayloadType
+                    && $case->getResponseContentType() === $responseContentType,
             ),
         )[0];
     }
@@ -191,7 +193,8 @@ class Action
         usort(
             $parameters,
             static function (ActionParameter $param1, ActionParameter $param2) use ($ordinals) {
-                $diff = (int)$param1->hasDefault() - (int)$param2->hasDefault();
+                $diff = (int) $param1->hasDefault() - (int) $param2->hasDefault();
+
                 return $diff !== 0 ? $diff : $ordinals[$param1->getRawName()] - $ordinals[$param2->getRawName()];
             }
         );
@@ -222,7 +225,7 @@ class Action
         }
 
         // Due to StopLight not allowing to declare required on requestBodies, a requestBody is always required
-        if ($requestBody === null || count($requestBody->content) === 0 /* || !$requestBody->required */) {
+        if ($requestBody === null || \count($requestBody->content) === 0 /* || !$requestBody->required */) {
             $requestBodies[] = ActionRequestBody::build(
                 $bundleNamespace,
                 $aggregateName,
@@ -273,7 +276,7 @@ class Action
      */
     private static function buildResponseContentTypes(
         Operation $operation,
-    ?Components $components,
+        ?Components $components,
     ): array {
         $responseContentTypes = [];
 
@@ -284,7 +287,7 @@ class Action
                 }
                 $response = $components->responses[$response->getName()];
             }
-            if (count($response->content) === 0 && $code >= 200 && $code < 400) {
+            if (\count($response->content) === 0 && $code >= 200 && $code < 400) {
                 $responseContentTypes['Empty'] = null;
             }
             foreach ($response->content as $type => $mediaType) {
@@ -297,8 +300,8 @@ class Action
 
     /**
      * @param array<ActionParameter> $parameters
-     * @param array<?Type> $requestBodyPayloadTypes
-     * @param array<?string> $responseContentTypes
+     * @param array<?Type>           $requestBodyPayloadTypes
+     * @param array<?string>         $responseContentTypes
      *
      * @return array<ActionCase>
      *

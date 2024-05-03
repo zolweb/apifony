@@ -1,18 +1,20 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Stmt\Namespace_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\PrettyPrinter\Standard;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Reference;
 use Zol\Ogen\OpenApi\Response;
 use Zol\Ogen\OpenApi\Schema;
+
 use function Symfony\Component\String\u;
 
 class ActionResponse implements File
@@ -27,10 +29,10 @@ class ActionResponse implements File
         string $code,
         Response $response,
         ?string $contentType,
-        null|Reference|Schema $payload,
+        Reference|Schema|null $payload,
         ?Components $components,
     ): self {
-        if (!in_array($contentType, [null, 'application/json'], true)) {
+        if (!\in_array($contentType, [null, 'application/json'], true)) {
             throw new Exception('Responses with content type other thant \'application/json\' are not supported.');
         }
 
@@ -55,14 +57,14 @@ class ActionResponse implements File
             }
 
             if ($hasModel) {
-                $addModels = function(string $rawName, Reference|Schema $schema) use (&$addModels, &$payloadModels, $bundleNamespace, $aggregateName, $components) {
+                $addModels = static function (string $rawName, Reference|Schema $schema) use (&$addModels, &$payloadModels, $bundleNamespace, $aggregateName, $components): void {
                     if (!$schema instanceof Reference) {
                         $type = TypeFactory::build('', $schema, $components);
                         if ($type instanceof ObjectType) {
                             if (!($schema->extensions['x-raw'] ?? false)) {
                                 $payloadModels[$rawName] = Model::build(
                                     $bundleNamespace,
-                                    "{$bundleNamespace}\Api\\{$aggregateName}",
+                                    "{$bundleNamespace}\\Api\\{$aggregateName}",
                                     "src/Api/{$aggregateName}",
                                     $rawName,
                                     $schema,
@@ -94,8 +96,7 @@ class ActionResponse implements File
             $contentType,
             $payloadType,
             array_map(
-                static fn (string $name) =>
-                    ActionResponseHeader::build($name, $response->headers[$name], $components),
+                static fn (string $name) => ActionResponseHeader::build($name, $response->headers[$name], $components),
                 array_keys($response->headers),
             ),
             $payloadModels,
@@ -105,7 +106,7 @@ class ActionResponse implements File
 
     /**
      * @param array<ActionResponseHeader> $headers
-     * @param array<Model> $payloadModels
+     * @param array<Model>                $payloadModels
      */
     private function __construct(
         private readonly string $bundleNamespace,
@@ -163,10 +164,11 @@ class ActionResponse implements File
         $f = new BuilderFactory();
 
         $constructor = $f->method('__construct')
-            ->makePublic();
+            ->makePublic()
+        ;
 
         if ($this->contentType !== null) {
-            if ($this->payloadType === null) { # todo code smell
+            if ($this->payloadType === null) { // todo code smell
                 throw new \RuntimeException();
             }
             $constructor->addParam($f->param('payload')->setType($this->payloadType->getMethodParameterType())->makePublic()->makeReadonly());
@@ -192,22 +194,25 @@ class ActionResponse implements File
             ->addStmt(new Return_(new Array_(array_merge(
                 array_map(static fn (ActionResponseHeader $header) => new ArrayItem($f->funcCall('strval', [$f->propertyFetch($f->var('this'), $header->getVariableName())]), $f->val($header->getName())), $this->headers),
                 [new ArrayItem($f->classConstFetch('self', 'CONTENT_TYPE'), $f->val('content-type'))],
-            ))));
+            ))))
+        ;
 
         $class = $f->class($this->name)
             ->addStmt($f->classConst('CODE', $this->code)->makePublic())
             ->addStmt($f->classConst('CONTENT_TYPE', $this->contentType)->makePublic())
             ->addStmt($constructor)
-            ->addStmt($getHeadersMethod);
+            ->addStmt($getHeadersMethod)
+        ;
 
         if ($this->contentType === null) {
             $class->addStmt($f->property('payload')->setType('string')->makePublic()->makeReadonly());
         }
 
-        $namespace = $f->namespace("{$this->bundleNamespace}\Api\\{$this->aggregateName}")
-            ->addStmts($this->usedModelName !== null ? [$f->use("{$this->bundleNamespace }\Model\\{$this->usedModelName}")] : [])
-            ->addStmt($class);
+        $namespace = $f->namespace("{$this->bundleNamespace}\\Api\\{$this->aggregateName}")
+            ->addStmts($this->usedModelName !== null ? [$f->use("{$this->bundleNamespace }\\Model\\{$this->usedModelName}")] : [])
+            ->addStmt($class)
+        ;
 
-        return (new Standard)->prettyPrintFile([$namespace->getNode()]);
+        return (new Standard())->prettyPrintFile([$namespace->getNode()]);
     }
 }

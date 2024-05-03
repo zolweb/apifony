@@ -1,11 +1,14 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\Bundle;
 
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\MediaType;
 use Zol\Ogen\OpenApi\Reference;
 use Zol\Ogen\OpenApi\Schema;
+
 use function Symfony\Component\String\u;
 
 class ActionRequestBody
@@ -21,7 +24,7 @@ class ActionRequestBody
         ?MediaType $mediaType,
         ?Components $components,
     ): self {
-        if (!in_array($mimeType, [null, 'application/json'], true)) {
+        if (!\in_array($mimeType, [null, 'application/json'], true)) {
             throw new Exception('Request bodies with mime types other than \'application/json\' are not supported.');
         }
 
@@ -49,14 +52,14 @@ class ActionRequestBody
             }
 
             if ($hasModel) {
-                $addModels = function(string $rawName, Reference|Schema $schema) use (&$addModels, &$payloadModels, $bundleNamespace, $aggregateName, $components) {
+                $addModels = static function (string $rawName, Reference|Schema $schema) use (&$addModels, &$payloadModels, $bundleNamespace, $aggregateName, $components): void {
                     if (!$schema instanceof Reference) {
                         $type = TypeFactory::build('', $schema, $components);
                         if ($type instanceof ObjectType) {
                             if (!($schema->extensions['x-raw'] ?? false)) {
                                 $payloadModels[$rawName] = Model::build(
                                     $bundleNamespace,
-                                    "{$bundleNamespace}\Api\\{$aggregateName}",
+                                    "{$bundleNamespace}\\Api\\{$aggregateName}",
                                     "src/Api/{$aggregateName}",
                                     $rawName,
                                     $schema,

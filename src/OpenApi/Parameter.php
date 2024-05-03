@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Zol\Ogen\OpenApi;
 
 class Parameter
@@ -14,22 +16,22 @@ class Parameter
         if (!isset($data['name'])) {
             throw new Exception('Parameter object name attribute is mandatory.');
         }
-        if (!is_string($data['name'])) {
+        if (!\is_string($data['name'])) {
             throw new Exception('Parameter object name attribute must be a string.');
         }
         if (!isset($data['in'])) {
             throw new Exception('Parameter object in attribute is mandatory.');
         }
-        if (!is_string($data['in'])) {
+        if (!\is_string($data['in'])) {
             throw new Exception('Parameter object in attribute must be a string.');
         }
-        if (isset($data['required']) && !is_bool($data['required'])) {
+        if (isset($data['required']) && !\is_bool($data['required'])) {
             throw new Exception('Parameter object required attribute must be a boolean.');
         }
 
         $extensions = [];
         foreach ($data as $key => $extension) {
-            if (is_string($key) && str_starts_with($key, 'x-')) {
+            if (\is_string($key) && str_starts_with($key, 'x-')) {
                 $extensions[$key] = $extension;
             }
         }
@@ -54,7 +56,7 @@ class Parameter
         public readonly string $name,
         public readonly string $in,
         public readonly bool $required,
-        public readonly null|Reference|Schema $schema,
+        public readonly Reference|Schema|null $schema,
         public readonly array $extensions,
     ) {
     }
