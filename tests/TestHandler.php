@@ -4,26 +4,41 @@ declare(strict_types=1);
 
 namespace Zol\Ogen\Tests;
 
-use Zol\Ogen\Tests\TestOpenApiServer\Api\Atom\AtomHandler;
-use Zol\Ogen\Tests\TestOpenApiServer\Api\Atom\GetAtom200ApplicationJsonResponse;
-use Zol\Ogen\Tests\TestOpenApiServer\Api\Atom\GetAtom200ApplicationJsonResponsePayload;
-use Zol\Ogen\Tests\TestOpenApiServer\Api\Atom\PostAtom201EmptyResponse;
-use Zol\Ogen\Tests\TestOpenApiServer\Api\Atom\PostAtom400ApplicationJsonResponse;
-use Zol\Ogen\Tests\TestOpenApiServer\Api\Atom\PostAtomApplicationJsonRequestBodyPayload;
+use Zol\Ogen\Tests\TestOpenApiServer\Api\Tag\FirstOperation200ApplicationJsonResponse;
+use Zol\Ogen\Tests\TestOpenApiServer\Api\Tag\FirstOperation200ApplicationJsonResponsePayload;
+use Zol\Ogen\Tests\TestOpenApiServer\Api\Tag\TagHandler;
+use Zol\Ogen\Tests\TestOpenApiServer\Model\Schema;
 
-class TestHandler implements AtomHandler
+class TestHandler implements TagHandler
 {
-    public function getAtomFromEmptyPayloadToApplicationJsonContent(string $pAtomId): GetAtom200ApplicationJsonResponse
+    public function firstOperationFromSchemaPayloadToApplicationJsonContent(string $pPathParamString, float $pPathParamNumber, int $pPathParamInteger, bool $pPathParamBoolean, string $qQueryParamString, float $qQueryParamNumber, int $qQueryParamInteger, bool $qQueryParamBoolean, string $hHeaderParamString, float $hHeaderParamNumber, int $hHeaderParamInteger, bool $hHeaderParamBoolean, string $cCookieParamString, float $cCookieParamNumber, int $cCookieParamInteger, bool $cCookieParamBoolean, Schema $requestBodyPayload): FirstOperation200ApplicationJsonResponse
     {
-        return new GetAtom200ApplicationJsonResponse(
-            new GetAtom200ApplicationJsonResponsePayload(
-                $pAtomId,
+        return new FirstOperation200ApplicationJsonResponse(
+            new FirstOperation200ApplicationJsonResponsePayload(
+                json_encode([
+                    'pathParamString' => $pPathParamString,
+                    'pathParamNumber' => $pPathParamNumber,
+                    'pathParamInteger' => $pPathParamInteger,
+                    'pathParamBoolean' => $pPathParamBoolean,
+                    'queryParamString' => $qQueryParamString,
+                    'queryParamNumber' => $qQueryParamNumber,
+                    'queryParamInteger' => $qQueryParamInteger,
+                    'queryParamBoolean' => $qQueryParamBoolean,
+                    'headerParamString' => $hHeaderParamString,
+                    'headerParamNumber' => $hHeaderParamNumber,
+                    'headerParamInteger' => $hHeaderParamInteger,
+                    'headerParamBoolean' => $hHeaderParamBoolean,
+                    'cookieParamString' => $cCookieParamString,
+                    'cookieParamNumber' => $cCookieParamNumber,
+                    'cookieParamInteger' => $cCookieParamInteger,
+                    'cookieParamBoolean' => $cCookieParamBoolean,
+                    'requestBodyPayload' => $requestBodyPayload,
+                ]),
             ),
+            'string',
+            .1,
+            1,
+            true,
         );
-    }
-
-    public function postAtomFromPostAtomApplicationJsonRequestBodyPayloadPayloadToApplicationJsonContent(PostAtomApplicationJsonRequestBodyPayload $requestBodyPayload): PostAtom201EmptyResponse|PostAtom400ApplicationJsonResponse
-    {
-        return new PostAtom201EmptyResponse();
     }
 }
