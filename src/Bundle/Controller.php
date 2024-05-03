@@ -226,13 +226,13 @@ class Controller implements File
                                             ),
                                         ])),
                                     ], [
-                                            new Catch_([new Name('DenormalizationException')], $f->var('e'), [
+                                        new Catch_([new Name('DenormalizationException')], $f->var('e'), [
                                             new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), new Array_([new ArrayItem($f->methodCall($f->var('e'), 'getMessage'))]))),
-                                            ]),
-                                            new Catch_([new Name('RequestBodyValidationException')], $f->var('e'), [
-                                            new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), $f->propertyFetch($f->var('e'), 'messages'))),
-                                            ]),
                                         ]),
+                                        new Catch_([new Name('RequestBodyValidationException')], $f->var('e'), [
+                                            new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), $f->propertyFetch($f->var('e'), 'messages'))),
+                                        ]),
+                                    ]),
                                 ],
                                 default => [],
                             },
