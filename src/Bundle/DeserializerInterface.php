@@ -26,16 +26,6 @@ readonly class DeserializerInterface implements File
         return "DeserializerInterface.php";
     }
 
-    public function getTemplate(): string
-    {
-        return 'deserializer-interface.php.twig';
-    }
-
-    public function getParametersRootName(): string
-    {
-        return 'deserializer-interface';
-    }
-
     public function getContent(): string
     {
         $f = new BuilderFactory();

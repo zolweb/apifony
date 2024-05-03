@@ -77,16 +77,6 @@ class ServicesConfig implements File
         return 'services.yaml';
     }
 
-    public function getTemplate(): string
-    {
-        return 'services.yaml.twig';
-    }
-
-    public function getParametersRootName(): string
-    {
-        return 'services';
-    }
-
     public function getContent(): string
     {
         $config = ['services' => []];

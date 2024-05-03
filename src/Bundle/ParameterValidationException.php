@@ -26,16 +26,6 @@ class ParameterValidationException implements File
         return 'ParameterValidationException.php';
     }
 
-    public function getTemplate(): string
-    {
-        return 'parameter-validation-exception.php.twig';
-    }
-
-    public function getParametersRootName(): string
-    {
-        return 'exception';
-    }
-
     public function getContent(): string
     {
         $f = new BuilderFactory();

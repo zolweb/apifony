@@ -37,16 +37,6 @@ class FormatConstraint implements File
         return "{$this->formatName}.php";
     }
 
-    public function getTemplate(): string
-    {
-        return 'format-constraint.php.twig';
-    }
-
-    public function getParametersRootName(): string
-    {
-        return 'constraint';
-    }
-
     public function getContent(): string
     {
         $f = new BuilderFactory();

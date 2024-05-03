@@ -58,16 +58,6 @@ class AbstractController implements File
         return 'AbstractController.php';
     }
 
-    public function getTemplate(): string
-    {
-        return 'abstract-controller.php.twig';
-    }
-
-    public function getParametersRootName(): string
-    {
-        return 'abstractController';
-    }
-
     public function getContent(): string
     {
         $f = new BuilderFactory();

@@ -103,16 +103,6 @@ class Handler implements File
         return "{$this->aggregateName}Handler.php";
     }
 
-    public function getTemplate(): string
-    {
-        return 'handler.php.twig';
-    }
-
-    public function getParametersRootName(): string
-    {
-        return 'handler';
-    }
-
     public function hasNamespaceAst(): bool
     {
         return true;

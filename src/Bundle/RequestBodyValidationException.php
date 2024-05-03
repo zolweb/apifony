@@ -26,16 +26,6 @@ class RequestBodyValidationException implements File
         return 'RequestBodyValidationException.php';
     }
 
-    public function getTemplate(): string
-    {
-        return 'request-body-validation-exception.php.twig';
-    }
-
-    public function getParametersRootName(): string
-    {
-        return 'exception';
-    }
-
     public function getContent(): string
     {
         $f = new BuilderFactory();

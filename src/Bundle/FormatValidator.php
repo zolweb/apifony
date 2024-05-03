@@ -50,16 +50,6 @@ class FormatValidator implements File
         return "{$this->formatName}Validator.php";
     }
 
-    public function getTemplate(): string
-    {
-        return 'format-validator.php.twig';
-    }
-
-    public function getParametersRootName(): string
-    {
-        return 'validator';
-    }
-
     public function getContent(): string
     {
         $f = new BuilderFactory();

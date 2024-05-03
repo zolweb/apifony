@@ -37,16 +37,6 @@ class FormatDefinition implements File
         return "{$this->formatName}Definition.php";
     }
 
-    public function getTemplate(): string
-    {
-        return 'format-definition.php.twig';
-    }
-
-    public function getParametersRootName(): string
-    {
-        return 'definition';
-    }
-
     public function getContent(): string
     {
         $f = new BuilderFactory();

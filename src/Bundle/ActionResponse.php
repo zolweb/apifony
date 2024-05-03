@@ -151,16 +151,6 @@ class ActionResponse implements File
         return "{$this->name}.php";
     }
 
-    public function getTemplate(): string
-    {
-        return 'response.php.twig';
-    }
-
-    public function getParametersRootName(): string
-    {
-        return 'response';
-    }
-
     public function getContent(): string
     {
         $f = new BuilderFactory();

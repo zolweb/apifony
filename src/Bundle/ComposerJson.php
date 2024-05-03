@@ -32,16 +32,6 @@ class ComposerJson implements File
         return 'composer.json';
     }
 
-    public function getTemplate(): string
-    {
-        return 'composer.json.twig';
-    }
-
-    public function getParametersRootName(): string
-    {
-        return 'composer';
-    }
-
     public function getContent(): string
     {
         try {

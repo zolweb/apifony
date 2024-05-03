@@ -26,16 +26,6 @@ class DenormalizationException implements File
         return 'DenormalizationException.php';
     }
 
-    public function getTemplate(): string
-    {
-        return 'denormalization-exception.php.twig';
-    }
-
-    public function getParametersRootName(): string
-    {
-        return 'exception';
-    }
-
     public function getContent(): string
     {
         $f = new BuilderFactory();

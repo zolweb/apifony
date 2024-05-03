@@ -129,16 +129,6 @@ class Controller implements File
         return "{$this->aggregateName}Controller.php";
     }
 
-    public function getTemplate(): string
-    {
-        return 'controller.php.twig';
-    }
-
-    public function getParametersRootName(): string
-    {
-        return 'controller';
-    }
-
     public function getContent(): string
     {
         $f = new BuilderFactory();

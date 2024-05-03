@@ -311,16 +311,6 @@ class Bundle implements File
         return "{$this->name}Bundle.php";
     }
 
-    public function getTemplate(): string
-    {
-        return 'bundle.php.twig';
-    }
-
-    public function getParametersRootName(): string
-    {
-        return 'bundle';
-    }
-
     public function getContent(): string
     {
         $f = new BuilderFactory();

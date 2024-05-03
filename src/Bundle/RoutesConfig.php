@@ -79,16 +79,6 @@ class RoutesConfig implements File
         return 'routes.yaml';
     }
 
-    public function getTemplate(): string
-    {
-        return 'routes.yaml.twig';
-    }
-
-    public function getParametersRootName(): string
-    {
-        return 'routes';
-    }
-
     public function getContent(): string
     {
         $routes = [];

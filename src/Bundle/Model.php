@@ -154,16 +154,6 @@ class Model implements File
         return "{$this->className}.php";
     }
 
-    public function getParametersRootName(): string
-    {
-        return 'model';
-    }
-
-    public function getTemplate(): string
-    {
-        return 'model.php.twig';
-    }
-
     public function getContent(): string
     {
         $f = new BuilderFactory();

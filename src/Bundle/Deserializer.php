@@ -33,16 +33,6 @@ readonly class Deserializer implements File
         return "Deserializer.php";
     }
 
-    public function getTemplate(): string
-    {
-        return 'deserializer.php.twig';
-    }
-
-    public function getParametersRootName(): string
-    {
-        return 'deserializer';
-    }
-
     public function getContent(): string
     {
         $f = new BuilderFactory();
