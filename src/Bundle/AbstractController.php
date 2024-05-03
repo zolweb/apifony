@@ -74,7 +74,7 @@ class AbstractController implements File
 
         $constructor = $f->method('__construct')
             ->makePublic()
-            ->addParam($f->param('serializer')->setType('SerializerInterface')->makeProtected()->makeReadonly())
+            ->addParam($f->param('deserializer')->setType('DeserializerInterface')->makeProtected()->makeReadonly())
             ->addParam($f->param('validator')->setType('ValidatorInterface')->makeProtected()->makeReadonly())
         ;
 
@@ -296,7 +296,7 @@ class AbstractController implements File
                 )
                 ->addStmt(new TryCatch(
                     [
-                        new Return_($f->methodCall($f->propertyFetch($f->var('this'), 'serializer'), 'deserialize', [$f->var('value'), $f->var('class'), $f->classConstFetch('JsonEncoder', 'FORMAT')])),
+                        new Return_($f->methodCall($f->propertyFetch($f->var('this'), 'deserializer'), 'deserialize', [$f->var('value'), $f->var('class')])),
                     ], [
                         new Catch_([new Name('ExceptionInterface')], $f->var('e'), [
                             new Expression(new Throw_($f->new('DenormalizationException', [new InterpolatedString([new InterpolatedStringPart('Request body could not be deserialized: '), $f->methodCall($f->var('e'), 'getMessage')])]))),
@@ -314,8 +314,6 @@ class AbstractController implements File
 
         $namespace = $f->namespace("{$this->bundleNamespace}\\Api")
             ->addStmt($f->use('Symfony\Component\HttpFoundation\Request'))
-            ->addStmt($f->use('Symfony\Component\Serializer\Encoder\JsonEncoder'))
-            ->addStmt($f->use('Symfony\Component\Serializer\SerializerInterface'))
             ->addStmt($f->use('Symfony\Component\Validator\Constraint'))
             ->addStmt($f->use('Symfony\Component\Validator\ConstraintViolationInterface'))
             ->addStmt($f->use('Symfony\Component\Validator\Validator\ValidatorInterface'))

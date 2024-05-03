@@ -47,6 +47,8 @@ class Bundle implements File
             RoutesConfig::build($namespace, $api),
             ServicesConfig::build($namespace, $api, $formats),
             new ComposerJson($packageName, $namespace),
+            new DeserializerInterface($namespace),
+            new Deserializer($namespace),
         );
     }
 
@@ -63,6 +65,8 @@ class Bundle implements File
         private readonly RoutesConfig $routesConfig,
         private readonly ServicesConfig $servicesConfig,
         private readonly ComposerJson $composerJson,
+        private readonly DeserializerInterface $deserializerInterface,
+        private readonly Deserializer $deserializer,
     ) {
     }
 
@@ -76,6 +80,8 @@ class Bundle implements File
             $this->routesConfig,
             $this->servicesConfig,
             $this->composerJson,
+            $this->deserializerInterface,
+            $this->deserializer,
         ];
 
         foreach ($this->formats as $format) {

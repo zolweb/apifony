@@ -98,11 +98,12 @@ final class OgenTest extends WebTestCase
                     ],
                     'arrayProperty' => ['string'],
                     'objectArrayProperty' => [
-                        ['stringProperty' => 'string'],
+                        [
+                            'stringProperty' => 'string',
+                        ],
                     ],
                     'recursiveObjectArray' => [
                         [
-
                             'stringProperty' => 'string',
                             'numberProperty' => 0.1,
                             'integerProperty' => 1,
@@ -112,7 +113,9 @@ final class OgenTest extends WebTestCase
                             ],
                             'arrayProperty' => ['string'],
                             'objectArrayProperty' => [
-                                ['stringProperty' => 'string'],
+                                [
+                                    'stringProperty' => 'string',
+                                ],
                             ],
                             'recursiveObjectArray' => [],
                         ],

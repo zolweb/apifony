@@ -48,15 +48,14 @@ class ComposerJson implements File
             return json_encode([
                 'name' => $this->packageName,
                 'require' => [
-                    'doctrine/annotations' => '^2.0',
-                    'phpdocumentor/reflection-docblock' => '^5.3',
-                    'phpstan/phpdoc-parser' => '^1.24',
+                    'phpdocumentor/type-resolver' => '^1.8', // Required by PhpStanExtractor
+                    'phpstan/phpdoc-parser' => '^1.13', // Required by PhpStanExtractor
                     'symfony/dependency-injection' => '7.0.*',
                     'symfony/http-foundation' => '7.0.*',
                     'symfony/http-kernel' => '7.0.*',
                     'symfony/serializer' => '7.0.*',
                     'symfony/validator' => '7.0.*',
-                    'symfony/property-access' => '7.0.*',
+                    'symfony/property-access' => '7.0.*', // Required by ObjectNormalizer
                     'symfony/property-info' => '7.0.*',
                 ],
                 'autoload' => [

@@ -4,15 +4,13 @@ declare (strict_types=1);
 namespace Zol\Ogen\Tests\TestOpenApiServer\Api;
 
 use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Symfony\Component\Serializer\Exception\ExceptionInterface;
 abstract class AbstractController
 {
-    public function __construct(protected readonly SerializerInterface $serializer, protected readonly ValidatorInterface $validator)
+    public function __construct(protected readonly DeserializerInterface $deserializer, protected readonly ValidatorInterface $validator)
     {
     }
     /**
@@ -391,7 +389,7 @@ abstract class AbstractController
             return $default;
         }
         try {
-            return $this->serializer->deserialize($value, $class, JsonEncoder::FORMAT);
+            return $this->deserializer->deserialize($value, $class);
         } catch (ExceptionInterface $e) {
             throw new DenormalizationException("Request body could not be deserialized: {$e->getMessage()}");
         }
@@ -409,7 +407,7 @@ abstract class AbstractController
             return null;
         }
         try {
-            return $this->serializer->deserialize($value, $class, JsonEncoder::FORMAT);
+            return $this->deserializer->deserialize($value, $class);
         } catch (ExceptionInterface $e) {
             throw new DenormalizationException("Request body could not be deserialized: {$e->getMessage()}");
         }

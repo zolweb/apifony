@@ -2,44 +2,8 @@ services:
     Zol\Ogen\Tests\TestOpenApiServer\Api\Tag\TagController:
         class: Zol\Ogen\Tests\TestOpenApiServer\Api\Tag\TagController
         arguments:
-            $serializer: '@zol_ogen_tests_test_open_api_server.serializer_interface'
+            $deserializer: '@zol_ogen_tests_test_open_api_server.deserializer_interface'
             $validator: '@validator'
         public: true
-    zol_ogen_tests_test_open_api_server.json_encoder:
-        class: Symfony\Component\Serializer\Encoder\JsonEncoder
-    zol_ogen_tests_test_open_api_server.php_stan_extractor:
-        class: Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor
-    zol_ogen_tests_test_open_api_server.reflection_extractor:
-        class: Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor
-    zol_ogen_tests_test_open_api_server.property_info_extractor:
-        class: Symfony\Component\PropertyInfo\PropertyInfoExtractor
-        arguments:
-            $typeExtractors:
-                - '@zol_ogen_tests_test_open_api_server.php_stan_extractor'
-                - '@zol_ogen_tests_test_open_api_server.reflection_extractor'
-    zol_ogen_tests_test_open_api_server.attribute_loader:
-        class: Symfony\Component\Serializer\Mapping\Loader\AttributeLoader
-    zol_ogen_tests_test_open_api_server.class_metadata_factory:
-        class: Symfony\Component\Serializer\Mapping\Factory\ClassMetadataFactory
-        arguments:
-            $loader: '@zol_ogen_tests_test_open_api_server.attribute_loader'
-    zol_ogen_tests_test_open_api_server.metadata_aware_name_converter:
-        class: Symfony\Component\Serializer\NameConverter\MetadataAwareNameConverter
-        arguments:
-            $metadataFactory: '@zol_ogen_tests_test_open_api_server.class_metadata_factory'
-    zol_ogen_tests_test_open_api_server.object_normalizer:
-        class: Symfony\Component\Serializer\Normalizer\ObjectNormalizer
-        arguments:
-            $propertyTypeExtractor: '@zol_ogen_tests_test_open_api_server.property_info_extractor'
-            $classMetadataFactory: '@zol_ogen_tests_test_open_api_server.class_metadata_factory'
-            $nameConverter: '@zol_ogen_tests_test_open_api_server.metadata_aware_name_converter'
-    zol_ogen_tests_test_open_api_server.array_denormalizer:
-        class: Symfony\Component\Serializer\Normalizer\ArrayDenormalizer
-    zol_ogen_tests_test_open_api_server.serializer_interface:
-        class: Symfony\Component\Serializer\Serializer
-        arguments:
-            $encoders:
-                - '@zol_ogen_tests_test_open_api_server.json_encoder'
-            $normalizers:
-                - '@zol_ogen_tests_test_open_api_server.object_normalizer'
-                - '@zol_ogen_tests_test_open_api_server.array_denormalizer'
+    zol_ogen_tests_test_open_api_server.deserializer_interface:
+        class: Zol\Ogen\Tests\TestOpenApiServer\Api\Deserializer
