@@ -8,7 +8,9 @@ use PhpParser\Builder\Method;
 use PhpParser\Builder\Param;
 use PhpParser\Builder\Use_;
 use PhpParser\BuilderFactory;
+use PhpParser\Node\DeclareItem;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\UnionType;
 use PhpParser\PrettyPrinter\Standard;
 
@@ -150,6 +152,9 @@ class Handler implements File
             ->addStmt($interface)
         ;
 
-        return (new Standard())->prettyPrintFile([$namespace->getNode()]);
+        return (new Standard())->prettyPrintFile([
+            new Declare_([new DeclareItem('strict_types', $f->val(1))]),
+            $namespace->getNode(),
+        ]);
     }
 }

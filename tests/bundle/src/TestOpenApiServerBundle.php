@@ -1,5 +1,6 @@
 <?php
 
+declare (strict_types=1);
 namespace Zol\Ogen\Tests\TestOpenApiServer;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;

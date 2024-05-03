@@ -6,6 +6,7 @@ namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\ArrayItem;
+use PhpParser\Node\DeclareItem;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
@@ -19,6 +20,7 @@ use PhpParser\Node\Scalar\InterpolatedString;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Catch_;
+use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
@@ -334,6 +336,9 @@ class Controller implements File
 
         $namespace->addStmt($class);
 
-        return (new Standard())->prettyPrintFile([$namespace->getNode()]);
+        return (new Standard())->prettyPrintFile([
+            new Declare_([new DeclareItem('strict_types', $f->val(1))]),
+            $namespace->getNode(),
+        ]);
     }
 }

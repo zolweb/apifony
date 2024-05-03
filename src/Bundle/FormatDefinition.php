@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
+use PhpParser\Node\DeclareItem;
+use PhpParser\Node\Stmt\Declare_;
 use PhpParser\PrettyPrinter\Standard;
 
 class FormatDefinition implements File
@@ -69,6 +71,9 @@ class FormatDefinition implements File
             ->addStmt($interface)
         ;
 
-        return (new Standard())->prettyPrintFile([$namespace->getNode()]);
+        return (new Standard())->prettyPrintFile([
+            new Declare_([new DeclareItem('strict_types', $f->val(1))]),
+            $namespace->getNode(),
+        ]);
     }
 }

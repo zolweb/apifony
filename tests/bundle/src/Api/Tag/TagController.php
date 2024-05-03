@@ -1,5 +1,6 @@
 <?php
 
+declare (strict_types=1);
 namespace Zol\Ogen\Tests\TestOpenApiServer\Api\Tag;
 
 use Zol\Ogen\Tests\TestOpenApiServer\Api\DenormalizationException;

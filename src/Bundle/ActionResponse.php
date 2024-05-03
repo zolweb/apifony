@@ -6,8 +6,10 @@ namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\ArrayItem;
+use PhpParser\Node\DeclareItem;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\PrettyPrinter\Standard;
 use Zol\Ogen\OpenApi\Components;
@@ -26,7 +28,7 @@ class ActionResponse implements File
         string $bundleNamespace,
         string $aggregateName,
         string $actionName,
-        string $code,
+        int $code,
         Response $response,
         ?string $contentType,
         Reference|Schema|null $payload,
@@ -112,7 +114,7 @@ class ActionResponse implements File
         private readonly string $bundleNamespace,
         private readonly string $aggregateName,
         private readonly string $name,
-        private readonly string $code,
+        private readonly int $code,
         private readonly ?string $contentType,
         private readonly ?Type $payloadType,
         private readonly array $headers,
@@ -213,6 +215,9 @@ class ActionResponse implements File
             ->addStmt($class)
         ;
 
-        return (new Standard())->prettyPrintFile([$namespace->getNode()]);
+        return (new Standard())->prettyPrintFile([
+            new Declare_([new DeclareItem('strict_types', $f->val(1))]),
+            $namespace->getNode(),
+        ]);
     }
 }
