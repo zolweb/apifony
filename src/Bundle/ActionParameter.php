@@ -5,6 +5,9 @@ declare(strict_types=1);
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Name;
+use PhpParser\Node\Param;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Parameter;
 use Zol\Ogen\OpenApi\Reference;
@@ -59,11 +62,6 @@ class ActionParameter
         return $this->parameter->in;
     }
 
-    public function isArray(): bool
-    {
-        return $this->type instanceof ArrayType;
-    }
-
     public function hasDefault(): bool
     {
         return $this->schema->hasDefault;
@@ -102,21 +100,6 @@ class ActionParameter
         return $this->type->getMethodParameterType();
     }
 
-    public function getPhpStanType(): string
-    {
-        return $this->type->getPhpDocParameterAnnotationType();
-    }
-
-    public function getCastFunction(): string
-    {
-        return $this->type->getStringToTypeCastFunction();
-    }
-
-    public function getRequestCollection(): string
-    {
-        return ['query' => 'query', 'header' => 'headers', 'cookie' => 'cookies'][$this->parameter->in];
-    }
-
     public function isRequired(): bool
     {
         return $this->parameter->required;
@@ -130,5 +113,18 @@ class ActionParameter
     public function getInitValueAst(): Expr
     {
         return $this->type->getInitValue();
+    }
+
+    public function asVar(): Variable
+    {
+        return new Variable($this->variableName);
+    }
+
+    public function asParam(bool $rawName = false): Param
+    {
+        return new Param(
+            var: new Variable($rawName ? $this->parameter->name : $this->variableName),
+            type: $this->type->asName(),
+        );
     }
 }

@@ -118,4 +118,9 @@ class BooleanType implements Type
 
         return $type;
     }
+
+    public function asName(): Name
+    {
+        return new Name($this->nullable ? '?bool' : 'bool');
+    }
 }

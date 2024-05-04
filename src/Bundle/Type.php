@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\Node\Expr;
+use PhpParser\Node\Name;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 
 interface Type
@@ -40,4 +41,6 @@ interface Type
     public function getUsedModel(): ?string;
 
     public function getDocAst(): TypeNode;
+
+    public function asName(): Name;
 }

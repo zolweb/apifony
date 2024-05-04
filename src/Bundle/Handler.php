@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\Builder\Method;
-use PhpParser\Builder\Param;
 use PhpParser\Builder\Use_;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\DeclareItem;
 use PhpParser\Node\Name;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\UnionType;
 use PhpParser\PrettyPrinter\Standard;
@@ -119,7 +119,7 @@ class Handler implements File
                         ->makePublic()
                         ->addParams(array_merge(
                             array_map(
-                                static fn (ActionParameter $param): Param => $f->param($param->getVariableName())->setType(sprintf('%s%s', $param->isNullable() ? '?' : '', $param->getPhpType())),
+                                static fn (ActionParameter $param): Param => $param->asParam(),
                                 $actionCase->getParameters(),
                             ),
                             $actionCase->hasRequestBodyPayloadParameter() ? [$f->param('requestBodyPayload')->setType($actionCase->getRequestBodyPayloadParameterPhpType())] : [],
