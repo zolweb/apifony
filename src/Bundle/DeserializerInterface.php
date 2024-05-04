@@ -39,7 +39,7 @@ readonly class DeserializerInterface implements File
                             /**
                              * @template T of object
                              *
-                             * @param class-string<T>
+                             * @param class-string<T> $type
                              *
                              * @return T
                              */

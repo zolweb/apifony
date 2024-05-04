@@ -377,6 +377,8 @@ abstract class AbstractController
         return $value;
     }
     /**
+     * @param class-string $class
+     *
      * @throws DenormalizationException
      */
     public function getObjectJsonRequestBody(Request $request, string $class, ?object $default = null): object
@@ -395,6 +397,8 @@ abstract class AbstractController
         }
     }
     /**
+     * @param class-string $class
+     *
      * @throws DenormalizationException
      */
     public function getObjectOrNullJsonRequestBody(Request $request, string $class, ?object $default = null): ?object

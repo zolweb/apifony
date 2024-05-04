@@ -264,6 +264,8 @@ class AbstractController implements File
                 ->setReturnType(sprintf('%sobject', $nullable ? '?' : ''))
                 ->setDocComment(<<<'COMMENT'
                     /**
+                     * @param class-string $class
+                     *
                      * @throws DenormalizationException
                      */
                     COMMENT
