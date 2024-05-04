@@ -6,8 +6,8 @@ namespace Zol\Ogen\Bundle;
 
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Variable;
-use PhpParser\Node\Name;
 use PhpParser\Node\Param;
+use PhpParser\Node\Scalar\String_;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Parameter;
 use Zol\Ogen\OpenApi\Reference;
@@ -118,9 +118,14 @@ class ActionParameter
         return $this->type->getInitValue();
     }
 
-    public function asVar(): Variable
+    public function asString(): String_
     {
-        return new Variable($this->variableName);
+        return new String_($this->parameter->name);
+    }
+
+    public function asVariable(bool $rawName = false): Variable
+    {
+        return new Variable($rawName ? $this->parameter->name : $this->variableName);
     }
 
     public function asParam(bool $rawName = false): Param

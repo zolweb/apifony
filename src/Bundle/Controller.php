@@ -161,10 +161,10 @@ class Controller implements File
             ;
 
             foreach ($action->getParameters(['path']) as $parameter) {
-                $actionMethod->addStmt(new Expression(new Assign($parameter->asVar(), $f->var($parameter->getRawName()))))
+                $actionMethod->addStmt(new Expression(new Assign($parameter->asVariable(), $parameter->asVariable(true))))
                     ->addStmt(new TryCatch([
                         new Expression($f->methodCall($f->var('this'), 'validateParameter', [
-                            $parameter->asVar(),
+                            $parameter->asVariable(),
                             array_map(
                                 static fn (Constraint $constraint): New_ => $constraint->getInstantiationAst(),
                                 $parameter->getConstraints(),
@@ -172,18 +172,18 @@ class Controller implements File
                         ])),
                     ], [
                         new Catch_([new Name('ParameterValidationException')], $f->var('e'), [
-                            new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($parameter->getIn())), $f->val($parameter->getRawName())), $f->propertyFetch($f->var('e'), 'messages'))),
+                            new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($parameter->getIn())), $parameter->asString()), $f->propertyFetch($f->var('e'), 'messages'))),
                         ]),
                     ]))
                 ;
             }
 
             foreach ($action->getParameters(['query', 'header', 'cookie']) as $parameter) {
-                $actionMethod->addStmt(new Expression(new Assign($parameter->asVar(), $parameter->getInitValueAst())))
+                $actionMethod->addStmt(new Expression(new Assign($parameter->asVariable(), $parameter->getInitValueAst())))
                     ->addStmt(new TryCatch([
-                        new Expression(new Assign($parameter->asVar(), $f->methodCall($f->var('this'), sprintf('get%s%sParameter', ucfirst($parameter->getPhpType()), $parameter->isNullable() ? 'OrNull' : ''), array_merge([$f->var('request'), $parameter->getRawName(), $parameter->getIn(), $parameter->isRequired()], $parameter->hasDefault() ? [$parameter->getDefault()] : [])))),
+                        new Expression(new Assign($parameter->asVariable(), $f->methodCall($f->var('this'), sprintf('get%s%sParameter', ucfirst($parameter->getPhpType()), $parameter->isNullable() ? 'OrNull' : ''), array_merge([$f->var('request'), $parameter->asString(), $parameter->getIn(), $parameter->isRequired()], $parameter->hasDefault() ? [$parameter->getDefault()] : [])))),
                         new Expression($f->methodCall($f->var('this'), 'validateParameter', [
-                            $parameter->asVar(),
+                            $parameter->asVariable(),
                             array_map(
                                 static fn (Constraint $constraint): New_ => $constraint->getInstantiationAst(),
                                 $parameter->getConstraints(),
@@ -191,10 +191,10 @@ class Controller implements File
                         ])),
                     ], [
                         new Catch_([new Name('DenormalizationException')], $f->var('e'), [
-                            new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($parameter->getIn())), $f->val($parameter->getRawName())), new Array_([new ArrayItem($f->methodCall($f->var('e'), 'getMessage'))]))),
+                            new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($parameter->getIn())), $parameter->asString()), new Array_([new ArrayItem($f->methodCall($f->var('e'), 'getMessage'))]))),
                         ]),
                         new Catch_([new Name('ParameterValidationException')], $f->var('e'), [
-                            new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($parameter->getIn())), $f->val($parameter->getRawName())), $f->propertyFetch($f->var('e'), 'messages'))),
+                            new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($parameter->getIn())), $parameter->asString()), $f->propertyFetch($f->var('e'), 'messages'))),
                         ]),
                     ]))
                 ;
@@ -266,7 +266,7 @@ class Controller implements File
                                         // todo move in Action
                                         new Case_($f->val($action->getCase($requestBodyPayloadType, $responseContentType)->getResponseContentType()), [
                                             new Expression(new Assign($f->var('response'), $f->methodCall($f->propertyFetch($f->var('this'), 'handler'), $action->getCase($requestBodyPayloadType, $responseContentType)->getName(), array_merge(
-                                                array_map(static fn (ActionParameter $parameter): Variable => $parameter->asVar(), $action->getCase($requestBodyPayloadType, $responseContentType)->getParameters()),
+                                                array_map(static fn (ActionParameter $parameter): Variable => $parameter->asVariable(), $action->getCase($requestBodyPayloadType, $responseContentType)->getParameters()),
                                                 $action->getCase($requestBodyPayloadType, $responseContentType)->hasRequestBodyPayloadParameter() ? [$f->var('requestBodyPayload')] : [],
                                             )))),
                                             new Break_(),
