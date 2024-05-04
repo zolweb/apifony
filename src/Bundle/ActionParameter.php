@@ -80,11 +80,6 @@ class ActionParameter
         return $this->parameter->name;
     }
 
-    public function getVariableName(): string
-    {
-        return $this->variableName;
-    }
-
     /**
      * @return array<Constraint>
      */
