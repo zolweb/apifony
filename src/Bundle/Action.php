@@ -177,7 +177,6 @@ class Action
         ?Components $components,
     ): array {
         $ordinal = 0;
-        $ordinals = [];
         $parameters = [];
         foreach ($operation->parameters as $parameter) {
             if ($parameter instanceof Reference) {
@@ -186,16 +185,13 @@ class Action
                 }
                 $parameter = $components->parameters[$parameter->getName()];
             }
-            $ordinals[$parameter->name] = ++$ordinal;
-            $parameters[] = ActionParameter::build($actionClassName, $parameter, $components);
+            $parameters[] = ActionParameter::build($actionClassName, $parameter, $components, ++$ordinal);
         }
 
         usort(
             $parameters,
-            static function (ActionParameter $param1, ActionParameter $param2) use ($ordinals) {
-                $diff = (int) $param1->hasDefault() - (int) $param2->hasDefault();
-
-                return $diff !== 0 ? $diff : $ordinals[$param1->getRawName()] - $ordinals[$param2->getRawName()];
+            static function (ActionParameter $param1, ActionParameter $param2): int {
+                return $param1->shouldBePositionedBefore($param2) ? -1 : 1;
             }
         );
 

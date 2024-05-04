@@ -24,6 +24,7 @@ class ActionParameter
         string $actionClassName,
         Reference|Parameter $parameter,
         ?Components $components,
+        int $ordinal,
     ): self {
         if ($parameter instanceof Reference) {
             if ($components === null || !isset($components->parameters[$parameter->getName()])) {
@@ -46,6 +47,7 @@ class ActionParameter
             $parameter,
             TypeFactory::build($className, $parameter->schema, $components),
             $parameter->schema,
+            $ordinal,
         );
     }
 
@@ -54,6 +56,7 @@ class ActionParameter
         private readonly Parameter $parameter,
         private readonly Type $type,
         private readonly Schema $schema,
+        private readonly int $ordinal,
     ) {
     }
 
@@ -126,5 +129,14 @@ class ActionParameter
             var: new Variable($rawName ? $this->parameter->name : $this->variableName),
             type: $this->type->asName(),
         );
+    }
+
+    public function shouldBePositionedBefore(self $other): bool
+    {
+        if ($this->schema->hasDefault !== $other->schema->hasDefault) {
+            return $other->schema->hasDefault;
+        }
+
+        return $this->ordinal < $other->ordinal;
     }
 }
