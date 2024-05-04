@@ -85,7 +85,7 @@ class AbstractController implements File
             ->addStmt(new If_(new Greater($f->funcCall('count', [$f->var('violations')]), $f->val(0)), ['stmts' => [
                 new Expression(new Throw_($f->new('ParameterValidationException', [
                     $f->funcCall('array_map', [
-                        new ArrowFunction(['static' => true, 'params' => [$f->param('violation')->setType('ConstraintViolationInterface')->getNode()], 'expr' => $f->methodCall($f->var('violation'), 'getMessage')]),
+                        new ArrowFunction(['static' => true, 'params' => [$f->param('violation')->setType('ConstraintViolationInterface')->getNode()], 'expr' => new String_($f->methodCall($f->var('violation'), 'getMessage'))]),
                         $f->funcCall('iterator_to_array', [$f->var('violations')]),
                     ]),
                 ]))),
@@ -163,8 +163,7 @@ class AbstractController implements File
                         $nullable ?
                             new Return_($f->val(null)) :
                             new Expression(new Throw_($f->new('DenormalizationException', [new InterpolatedString([new InterpolatedStringPart('Parameter \''), $f->var('name'), new InterpolatedStringPart('\' in \''), $f->var('in'), new InterpolatedStringPart('\' must not be null.')])]))),
-                    ]]))
-                    ->addStmt(new If_(new BooleanNot($f->funcCall('is_string', [$f->var('value')])), ['stmts' => [
+                    ]])) ->addStmt(new If_(new BooleanNot($f->funcCall('is_string', [$f->var('value')])), ['stmts' => [
                         new Expression(new Throw_($f->new('\RuntimeException', [$f->val('Unexpected non string value.')]))),
                     ]]))
                     ->addStmts(match ($type) {

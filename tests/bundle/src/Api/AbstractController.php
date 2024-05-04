@@ -445,7 +445,7 @@ abstract class AbstractController
     {
         $violations = $this->validator->validate($value, $constraints);
         if (count($violations) > 0) {
-            throw new ParameterValidationException(array_map(static fn(ConstraintViolationInterface $violation) => $violation->getMessage(), iterator_to_array($violations)));
+            throw new ParameterValidationException(array_map(static fn(ConstraintViolationInterface $violation) => (string) $violation->getMessage(), iterator_to_array($violations)));
         }
     }
     /**
