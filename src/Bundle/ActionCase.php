@@ -127,7 +127,7 @@ class ActionCase
 
         return new Case_(new BooleanAnd($this->requestBodyPayloadType === null ? $f->funcCall('is_null', [$f->var('requestBodyPayload')]) : $this->requestBodyPayloadType->getRequestBodyPayloadTypeCheckingAst(), new Identical($f->var('responsePayloadContentType'), $f->val($this->responseContentType))), [
             new Expression(new Assign($f->var('response'), $f->methodCall($f->propertyFetch($f->var('this'), 'handler'), $this->name, array_merge(
-                array_map(fn (ActionParameter $parameter): Variable => $parameter->asVariable(), $this->parameters),
+                array_map(static fn (ActionParameter $parameter): Variable => $parameter->asVariable(), $this->parameters),
                 $this->requestBodyPayloadType !== null ? [$f->var('requestBodyPayload')] : [],
             )))),
             new Break_(),
@@ -150,6 +150,7 @@ class ActionCase
             ->setReturnType(new UnionType(array_map(
                 static fn (ActionResponse $response) => new Name($response->getClassName()),
                 $this->responses,
-            )))->getNode();
+            )))->getNode()
+        ;
     }
 }
