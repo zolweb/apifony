@@ -94,17 +94,6 @@ class Model implements File
     ) {
     }
 
-    /**
-     * @return array<ModelAttribute>
-     */
-    public function getArrayAttributes(): array
-    {
-        return array_filter(
-            $this->attributes,
-            static fn (ModelAttribute $attribute) => $attribute->isArray(),
-        );
-    }
-
     public function getFolder(): string
     {
         return $this->folder;
@@ -127,10 +116,15 @@ class Model implements File
             $constructor->addParam($attribute->getParamAst());
         }
 
-        if (\count($this->getArrayAttributes()) > 0) {
+        $arrayAttributes = array_filter(
+            $this->attributes,
+            static fn (ModelAttribute $attribute) => $attribute->isArray(),
+        );
+
+        if (\count($arrayAttributes) > 0) {
             $comment = new PhpDocNode(array_map(
                 static fn (ModelAttribute $attribute): PhpDocTagNode => $attribute->getDocAst(),
-                $this->getArrayAttributes(),
+                $arrayAttributes,
             ));
             $constructor->setDocComment((new Printer())->print($comment));
         }
