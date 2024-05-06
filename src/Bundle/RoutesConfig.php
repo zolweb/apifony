@@ -56,11 +56,6 @@ class RoutesConfig implements File
     ) {
     }
 
-    public function getServiceNamespace(): string
-    {
-        return u($this->namespace)->snake()->toString();
-    }
-
     public function getFolder(): string
     {
         return 'config';
@@ -75,9 +70,11 @@ class RoutesConfig implements File
     {
         $routes = [];
 
+        $serviceNamespace = u($this->namespace)->snake()->toString();
+
         foreach ($this->controllers as $controller) {
             foreach ($controller->actions as $action) {
-                $routes["{$this->getServiceNamespace()}_{$action->getServiceName()}"] = $action->getRoute("{$controller->getNamespace()}\\{$controller->getClassName()}");
+                $routes["{$serviceNamespace}_{$action->getServiceName()}"] = $action->getRoute("{$controller->getNamespace()}\\{$controller->getClassName()}");
             }
         }
 

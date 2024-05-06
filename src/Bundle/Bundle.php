@@ -6,13 +6,9 @@ namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\DeclareItem;
-use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\New_;
-use PhpParser\Node\Stmt\Break_;
-use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Declare_;
-use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\PrettyPrinter\Standard;
@@ -270,14 +266,6 @@ class Bundle implements File
         return $models;
     }
 
-    /**
-     * @return array<string, Format>
-     */
-    public function getFormats(): array
-    {
-        return $this->formats;
-    }
-
     public function getFolder(): string
     {
         return 'src';
@@ -314,11 +302,8 @@ class Bundle implements File
                         ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [sprintf('%s.format_definition', u($this->name)->snake())]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
                             new Foreach_($f->var('tags'), $f->var('tag'), ['stmts' => [
                                 new Switch_(new ArrayDimFetch($f->var('tag'), $f->val('format')), array_map(
-                                    fn (string $formatName) => new Case_($f->val($formatName), [
-                                        new Expression($f->methodCall($f->methodCall($f->var('container'), 'findDefinition', [sprintf('%s\%s', $this->getFormats()[$formatName]->getValidator()->getNamespace(), $this->getFormats()[$formatName]->getValidator()->getClassName())]), 'addMethodCall', [$f->val('setFormatDefinition'), new Array_([new \PhpParser\Node\ArrayItem($f->new('Reference', [$f->var('id')]))])])),
-                                        new Break_(),
-                                    ]),
-                                    array_keys($this->getFormats()),
+                                    static fn (Format $format) => $format->getCase(),
+                                    $this->formats,
                                 )),
                             ]]),
                         ]])),
