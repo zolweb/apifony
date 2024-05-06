@@ -349,43 +349,11 @@ class Action
         ;
 
         foreach ($this->getParameters(['path']) as $parameter) {
-            $actionMethod->addStmt(new Expression(new Assign($parameter->asVariable(), $parameter->asVariable(true))))
-                ->addStmt(new TryCatch([
-                    new Expression($f->methodCall($f->var('this'), 'validateParameter', [
-                        $parameter->asVariable(),
-                        array_map(
-                            static fn (Constraint $constraint): New_ => $constraint->getInstantiationAst(),
-                            $parameter->getConstraints(),
-                        ),
-                    ])),
-                ], [
-                    new Catch_([new Name('ParameterValidationException')], $f->var('e'), [
-                        new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($parameter->getIn())), $parameter->asString()), $f->propertyFetch($f->var('e'), 'messages'))),
-                    ]),
-                ]))
-            ;
+            $actionMethod->addStmts($parameter->getPathSanitizationStmts());
         }
 
         foreach ($this->getParameters(['query', 'header', 'cookie']) as $parameter) {
-            $actionMethod->addStmt(new Expression(new Assign($parameter->asVariable(), $parameter->getInitValueAst())))
-                ->addStmt(new TryCatch([
-                    new Expression(new Assign($parameter->asVariable(), $f->methodCall($f->var('this'), sprintf('get%s%sParameter', ucfirst($parameter->getPhpType()), $parameter->isNullable() ? 'OrNull' : ''), array_merge([$f->var('request'), $parameter->asString(), $parameter->getIn(), $parameter->isRequired()], $parameter->hasDefault() ? [$parameter->getDefault()] : [])))),
-                    new Expression($f->methodCall($f->var('this'), 'validateParameter', [
-                        $parameter->asVariable(),
-                        array_map(
-                            static fn (Constraint $constraint): New_ => $constraint->getInstantiationAst(),
-                            $parameter->getConstraints(),
-                        ),
-                    ])),
-                ], [
-                    new Catch_([new Name('DenormalizationException')], $f->var('e'), [
-                        new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($parameter->getIn())), $parameter->asString()), new Array_([new ArrayItem($f->methodCall($f->var('e'), 'getMessage'))]))),
-                    ]),
-                    new Catch_([new Name('ParameterValidationException')], $f->var('e'), [
-                        new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($parameter->getIn())), $parameter->asString()), $f->propertyFetch($f->var('e'), 'messages'))),
-                    ]),
-                ]))
-            ;
+            $actionMethod->addStmts($parameter->getNonPathSanitizationStmts());
         }
 
         if (\count($this->requestBodies) > 0) {

@@ -4,10 +4,21 @@ declare(strict_types=1);
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\BuilderFactory;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\Variable;
+use PhpParser\Node\Name;
 use PhpParser\Node\Param;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\Catch_;
+use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\TryCatch;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Parameter;
 use Zol\Ogen\OpenApi\Reference;
@@ -65,16 +76,6 @@ class ActionParameter
         return $this->parameter->in;
     }
 
-    public function hasDefault(): bool
-    {
-        return $this->schema->hasDefault;
-    }
-
-    public function getDefault(): Expr
-    {
-        return $this->type->getDefaultExpr();
-    }
-
     public function getRawName(): string
     {
         return $this->parameter->name;
@@ -88,39 +89,14 @@ class ActionParameter
         return $this->type->getConstraints();
     }
 
-    public function isNullable(): bool
-    {
-        return $this->type->isNullable();
-    }
-
-    public function getPhpType(): string
-    {
-        return $this->type->asName()->toString();
-    }
-
-    public function isRequired(): bool
-    {
-        return $this->parameter->required;
-    }
-
     public function getRouteRequirementPattern(): string
     {
         return $this->type->getRouteRequirementPattern();
     }
 
-    public function getInitValueAst(): Expr
+    public function asVariable(): Variable
     {
-        return $this->type->getInitValue();
-    }
-
-    public function asString(): String_
-    {
-        return new String_($this->parameter->name);
-    }
-
-    public function asVariable(bool $rawName = false): Variable
-    {
-        return new Variable($rawName ? $this->parameter->name : $this->variableName);
+        return new Variable($this->variableName);
     }
 
     public function asParam(bool $rawName = false): Param
@@ -138,5 +114,59 @@ class ActionParameter
         }
 
         return $this->ordinal < $other->ordinal;
+    }
+
+    /**
+     * @return Stmt[]
+     */
+    public function getPathSanitizationStmts(): array
+    {
+        $f = new BuilderFactory();
+
+        return [
+            new Expression(new Assign(new Variable($this->variableName), new Variable($this->parameter->name))),
+            new TryCatch([
+                new Expression($f->methodCall($f->var('this'), 'validateParameter', [
+                    new Variable($this->variableName),
+                    array_map(
+                        static fn (Constraint $constraint): New_ => $constraint->getInstantiationAst(),
+                        $this->getConstraints(),
+                    ),
+                ])),
+            ], [
+                new Catch_([new Name('ParameterValidationException')], $f->var('e'), [
+                    new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($this->parameter->in)), new String_($this->parameter->name)), $f->propertyFetch($f->var('e'), 'messages'))),
+                ]),
+            ])
+        ];
+    }
+
+    /**
+     * @return Stmt[]
+     */
+    public function getNonPathSanitizationStmts(): array
+    {
+        $f = new BuilderFactory();
+
+        return [
+            new Expression(new Assign(new Variable($this->variableName), $this->type->getInitValue())),
+            new TryCatch([
+                new Expression(new Assign(new Variable($this->variableName), $f->methodCall($f->var('this'), sprintf('get%s%sParameter', ucfirst($this->type->asName()->toString()), $this->type->isNullable() ? 'OrNull' : ''), array_merge([$f->var('request'), new String_($this->parameter->name), $this->parameter->in, $this->parameter->required], $this->schema->hasDefault ? [$this->type->getDefaultExpr()] : [])))),
+                new Expression($f->methodCall($f->var('this'), 'validateParameter', [
+                    new Variable($this->variableName),
+                    array_map(
+                        static fn (Constraint $constraint): New_ => $constraint->getInstantiationAst(),
+                        $this->getConstraints(),
+                    ),
+                ])),
+            ], [
+                new Catch_([new Name('DenormalizationException')], $f->var('e'), [
+                    new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($this->parameter->in)), new String_($this->parameter->name)), new Array_([new ArrayItem($f->methodCall($f->var('e'), 'getMessage'))]))),
+                ]),
+                new Catch_([new Name('ParameterValidationException')], $f->var('e'), [
+                    new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($this->parameter->in)), new String_($this->parameter->name)), $f->propertyFetch($f->var('e'), 'messages'))),
+                ]),
+            ]),
+        ];
     }
 }
