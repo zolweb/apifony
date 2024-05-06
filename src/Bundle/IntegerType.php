@@ -29,11 +29,6 @@ class IntegerType implements Type
         return $this->nullable;
     }
 
-    public function getPhpDocParameterAnnotationType(): string
-    {
-        return 'int';
-    }
-
     public function getMethodParameterType(): string
     {
         return 'int';

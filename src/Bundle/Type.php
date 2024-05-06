@@ -12,8 +12,6 @@ interface Type
 {
     public function isNullable(): bool;
 
-    public function getPhpDocParameterAnnotationType(): string;
-
     public function getMethodParameterType(): string;
 
     public function getMethodParameterDefault(): Expr;

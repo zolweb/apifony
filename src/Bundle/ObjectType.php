@@ -33,11 +33,6 @@ class ObjectType implements Type
         return $this->nullable;
     }
 
-    public function getPhpDocParameterAnnotationType(): string
-    {
-        return $this->isRaw ? 'array<mixed>|\stdClass' : $this->name;
-    }
-
     public function getMethodParameterType(): string
     {
         return $this->isRaw ? 'array|\stdClass' : $this->name;

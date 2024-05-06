@@ -68,11 +68,6 @@ class ArrayType implements Type
         return 'array';
     }
 
-    public function getPhpDocParameterAnnotationType(): string
-    {
-        return "array<{$this->itemType->getPhpDocParameterAnnotationType()}>";
-    }
-
     public function getMethodParameterDefault(): Expr
     {
         return new ConstFetch(new Name('null'));

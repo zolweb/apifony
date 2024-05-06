@@ -108,11 +108,6 @@ class ModelAttribute
         return $this->type->getMethodParameterType();
     }
 
-    public function getPhpStanType(): string
-    {
-        return $this->type->getPhpDocParameterAnnotationType();
-    }
-
     public function getTypeDocAst(): TypeNode
     {
         return $this->type->getDocAst();

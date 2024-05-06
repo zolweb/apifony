@@ -29,11 +29,6 @@ class NumberType implements Type
         return $this->nullable;
     }
 
-    public function getPhpDocParameterAnnotationType(): string
-    {
-        return 'float';
-    }
-
     public function getMethodParameterType(): string
     {
         return 'float';

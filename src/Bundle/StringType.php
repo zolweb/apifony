@@ -29,11 +29,6 @@ class StringType implements Type
         return $this->nullable;
     }
 
-    public function getPhpDocParameterAnnotationType(): string
-    {
-        return 'string';
-    }
-
     public function getMethodParameterType(): string
     {
         return 'string';

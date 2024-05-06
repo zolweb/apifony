@@ -28,11 +28,6 @@ class BooleanType implements Type
         return $this->nullable;
     }
 
-    public function getPhpDocParameterAnnotationType(): string
-    {
-        return 'bool';
-    }
-
     public function getMethodParameterType(): string
     {
         return 'bool';
