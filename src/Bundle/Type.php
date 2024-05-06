@@ -18,8 +18,6 @@ interface Type
 
     public function getNormalizedType(): string;
 
-    public function getRequestBodyPayloadTypeChecking(): string;
-
     // todo take ast variable in parameter
     public function getRequestBodyPayloadTypeCheckingAst(): Expr;
 

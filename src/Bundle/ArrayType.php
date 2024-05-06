@@ -81,11 +81,6 @@ class ArrayType implements Type
         return "{$this->itemType->getNormalizedType()}Array";
     }
 
-    public function getRequestBodyPayloadTypeChecking(): string
-    {
-        return "is_array(\$requestBodyPayload) && {$this->itemType->getRequestBodyPayloadTypeChecking()}";
-    }
-
     public function getRequestBodyPayloadTypeCheckingAst(): Expr
     {
         $f = new BuilderFactory();

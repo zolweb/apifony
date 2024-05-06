@@ -56,11 +56,6 @@ class IntegerType implements Type
         return 'Integer';
     }
 
-    public function getRequestBodyPayloadTypeChecking(): string
-    {
-        return 'is_int($requestBodyPayload)';
-    }
-
     public function getRequestBodyPayloadTypeCheckingAst(): Expr
     {
         $f = new BuilderFactory();

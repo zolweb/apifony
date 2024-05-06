@@ -56,11 +56,6 @@ class NumberType implements Type
         return 'Float';
     }
 
-    public function getRequestBodyPayloadTypeChecking(): string
-    {
-        return 'is_float($requestBodyPayload)';
-    }
-
     public function getRequestBodyPayloadTypeCheckingAst(): Expr
     {
         $f = new BuilderFactory();

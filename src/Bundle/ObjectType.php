@@ -51,11 +51,6 @@ class ObjectType implements Type
         return $this->isRaw ? 'array<mixed>|\stdClass' : $this->name;
     }
 
-    public function getRequestBodyPayloadTypeChecking(): string
-    {
-        return $this->isRaw ? 'is_array($requestBodyPayload)' : "\$requestBodyPayload instanceOf {$this->name}";
-    }
-
     public function getRequestBodyPayloadTypeCheckingAst(): Expr
     {
         $f = new BuilderFactory();

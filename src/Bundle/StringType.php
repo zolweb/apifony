@@ -66,11 +66,6 @@ class StringType implements Type
         return 'String';
     }
 
-    public function getRequestBodyPayloadTypeChecking(): string
-    {
-        return 'is_string($requestBodyPayload)';
-    }
-
     public function getRequestBodyPayloadTypeCheckingAst(): Expr
     {
         $f = new BuilderFactory();
