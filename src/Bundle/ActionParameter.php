@@ -95,7 +95,7 @@ class ActionParameter
 
     public function getPhpType(): string
     {
-        return $this->type->getMethodParameterType();
+        return $this->type->asName()->toString();
     }
 
     public function isRequired(): bool

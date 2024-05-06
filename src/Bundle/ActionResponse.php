@@ -163,11 +163,11 @@ class ActionResponse implements File
             if ($this->payloadType === null) { // todo code smell
                 throw new \RuntimeException();
             }
-            $constructor->addParam($f->param('payload')->setType($this->payloadType->getMethodParameterType())->makePublic()->makeReadonly());
+            $constructor->addParam($f->param('payload')->setType($this->payloadType->asName())->makePublic()->makeReadonly());
         }
 
         foreach ($this->headers as $header) {
-            $constructor->addParam($f->param($header->getVariableName())->setType($header->getPhpType())->makePublic()->makeReadonly());
+            $constructor->addParam($f->param($header->getVariableName())->setType($header->getTypeName())->makePublic()->makeReadonly());
         }
 
         if ($this->contentType === null) {

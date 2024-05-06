@@ -63,11 +63,6 @@ class ArrayType implements Type
         return $this->nullable;
     }
 
-    public function getMethodParameterType(): string
-    {
-        return 'array';
-    }
-
     public function getMethodParameterDefault(): Expr
     {
         return new ConstFetch(new Name('null'));

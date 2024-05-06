@@ -29,11 +29,6 @@ class NumberType implements Type
         return $this->nullable;
     }
 
-    public function getMethodParameterType(): string
-    {
-        return 'float';
-    }
-
     public function getMethodParameterDefault(): Expr
     {
         if (!$this->schema->hasDefault) {

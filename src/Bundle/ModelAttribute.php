@@ -103,11 +103,6 @@ class ModelAttribute
         return $this->type->isNullable();
     }
 
-    public function getPhpType(): string
-    {
-        return $this->type->getMethodParameterType();
-    }
-
     public function getTypeDocAst(): TypeNode
     {
         return $this->type->getDocAst();

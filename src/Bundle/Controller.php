@@ -207,7 +207,7 @@ class Controller implements File
                             match ($actionRequestBody->getMimeType()) {
                                 'application/json' => [
                                     new TryCatch([
-                                        new Expression(new Assign($f->var('requestBodyPayload'), $f->methodCall($f->var('this'), sprintf('get%sJsonRequestBody', ucfirst($actionRequestBody->getPayloadBuiltInPhpType())), array_merge([$f->var('request')], $actionRequestBody->getPayloadBuiltInPhpType() === 'object' ? [$f->classConstFetch($actionRequestBody->getPayloadPhpType(), 'class')] : [])))),
+                                        new Expression(new Assign($f->var('requestBodyPayload'), $f->methodCall($f->var('this'), sprintf('get%sJsonRequestBody', ucfirst($actionRequestBody->getPayloadBuiltInPhpType())), array_merge([$f->var('request')], $actionRequestBody->getPayloadBuiltInPhpType() === 'object' ? [$f->classConstFetch($actionRequestBody->getPayloadTypeName(), 'class')] : [])))),
                                         new Expression($f->methodCall($f->var('this'), 'validateRequestBody', [
                                             $f->var('requestBodyPayload'),
                                             array_map(

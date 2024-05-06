@@ -28,11 +28,6 @@ class BooleanType implements Type
         return $this->nullable;
     }
 
-    public function getMethodParameterType(): string
-    {
-        return 'bool';
-    }
-
     public function getMethodParameterDefault(): Expr
     {
         if (!$this->schema->hasDefault) {

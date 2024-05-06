@@ -29,11 +29,6 @@ class IntegerType implements Type
         return $this->nullable;
     }
 
-    public function getMethodParameterType(): string
-    {
-        return 'int';
-    }
-
     public function getMethodParameterDefault(): Expr
     {
         if (!$this->schema->hasDefault) {

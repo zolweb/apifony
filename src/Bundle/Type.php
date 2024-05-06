@@ -12,8 +12,6 @@ interface Type
 {
     public function isNullable(): bool;
 
-    public function getMethodParameterType(): string;
-
     public function getMethodParameterDefault(): Expr;
 
     public function getRouteRequirementPattern(): string;

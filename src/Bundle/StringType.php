@@ -29,11 +29,6 @@ class StringType implements Type
         return $this->nullable;
     }
 
-    public function getMethodParameterType(): string
-    {
-        return 'string';
-    }
-
     public function getMethodParameterDefault(): Expr
     {
         if (!$this->schema->hasDefault) {

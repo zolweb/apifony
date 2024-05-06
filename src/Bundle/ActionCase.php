@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\Node\Name;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Operation;
 use Zol\Ogen\OpenApi\Reference;
@@ -113,9 +114,9 @@ class ActionCase
         return $this->requestBodyPayloadType;
     }
 
-    public function getRequestBodyPayloadParameterPhpType(): string
+    public function getRequestBodyPayloadTypeName(): Name
     {
-        $type = $this->requestBodyPayloadType?->getMethodParameterType();
+        $type = $this->requestBodyPayloadType?->asName();
 
         if ($type === null) {
             throw new \RuntimeException();

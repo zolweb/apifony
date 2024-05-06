@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\Node\Name;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Header;
 use Zol\Ogen\OpenApi\Reference;
@@ -63,8 +64,8 @@ class ActionResponseHeader
         return u($this->name)->camel()->toString();
     }
 
-    public function getPhpType(): string
+    public function getTypeName(): Name
     {
-        return $this->type->getMethodParameterType();
+        return $this->type->asName();
     }
 }

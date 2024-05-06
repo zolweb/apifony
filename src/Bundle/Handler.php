@@ -122,7 +122,7 @@ class Handler implements File
                                 static fn (ActionParameter $param): Param => $param->asParam(),
                                 $actionCase->getParameters(),
                             ),
-                            $actionCase->hasRequestBodyPayloadParameter() ? [$f->param('requestBodyPayload')->setType($actionCase->getRequestBodyPayloadParameterPhpType())] : [],
+                            $actionCase->hasRequestBodyPayloadParameter() ? [$f->param('requestBodyPayload')->setType($actionCase->getRequestBodyPayloadTypeName())] : [],
                         ))
                         ->setReturnType(new UnionType(array_map(
                             static fn (ActionResponse $response) => new Name($response->getClassName()),
