@@ -49,7 +49,6 @@ class Action
             $method,
             $parameters = self::buildParameters($className, $operation, $components),
             $requestBodies = self::buildRequestBodies($bundleNamespace, $aggregateName, $className, $operation, $components),
-            $requestBodyPayloadTypes = self::buildRequestBodyPayloadTypes($requestBodies),
             $responseContentTypes = self::buildResponseContentTypes($operation, $components),
             self::buildCases(
                 $bundleNamespace,
@@ -58,7 +57,7 @@ class Action
                 $operation,
                 $components,
                 $parameters,
-                $requestBodyPayloadTypes,
+                self::buildRequestBodyPayloadTypes($requestBodies),
                 $responseContentTypes,
             ),
         );
@@ -67,7 +66,6 @@ class Action
     /**
      * @param array<ActionParameter>   $parameters
      * @param array<ActionRequestBody> $requestBodies
-     * @param array<?Type>             $requestBodyPayloadTypes
      * @param array<?string>           $responseContentTypes
      * @param array<ActionCase>        $cases
      */
@@ -77,7 +75,6 @@ class Action
         private readonly string $method,
         private readonly array $parameters,
         private readonly array $requestBodies,
-        private readonly array $requestBodyPayloadTypes,
         private readonly array $responseContentTypes,
         private readonly array $cases,
     ) {
@@ -115,16 +112,6 @@ class Action
     public function getCases(): array
     {
         return $this->cases;
-    }
-
-    public function getCase(?Type $requestBodyPayloadType, ?string $responseContentType): ActionCase
-    {
-        return array_values(
-            array_filter(
-                $this->cases, static fn (ActionCase $case) => $case->getRequestBodyPayloadType() === $requestBodyPayloadType
-                    && $case->getResponseContentType() === $responseContentType,
-            ),
-        )[0];
     }
 
     /**
@@ -459,28 +446,16 @@ class Action
                 new Expression(new Assign($f->var('responsePayloadContentType'), $f->val('application/json'))),
             ]]))
             ->addStmt(new Switch_($f->val(true), array_merge(
-                array_map(
-                    fn (?Type $requestBodyPayloadType): Case_ => new Case_($requestBodyPayloadType === null ? $f->funcCall('is_null', [$f->var('requestBodyPayload')]) : $requestBodyPayloadType->getRequestBodyPayloadTypeCheckingAst(), [
-                        new Switch_($f->var('responsePayloadContentType'), array_merge(
-                            array_map(
-                                fn (?string $responseContentType): Case_ => $this->getCase($requestBodyPayloadType, $responseContentType)->getCase(),
-                                array_filter($this->responseContentTypes),
-                            ),
-                            [new Case_(null, [
-                                new Return_($f->new('JsonResponse', [
-                                    new Array_([
-                                        new ArrayItem($f->val('unsupported_response_type'), $f->val('code')),
-                                        new ArrayItem(new InterpolatedString([new InterpolatedStringPart('The value \''), $f->var('responsePayloadContentType'), new InterpolatedStringPart('\' received in accept header is not a supported format.')]), $f->val('message')),
-                                    ]),
-                                    $f->classConstFetch('Response', 'HTTP_UNSUPPORTED_MEDIA_TYPE'),
-                                ])),
-                            ])],
-                        )),
-                        new Break_(),
-                    ]),
-                    $this->requestBodyPayloadTypes,
-                ),
-                [new Case_(null, [new Expression(new Throw_($f->new('\RuntimeException')))])],
+                array_map(static fn (ActionCase $case) => $case->getCase(), $this->cases),
+                [new Case_(null, [
+                    new Return_($f->new('JsonResponse', [
+                        new Array_([
+                            new ArrayItem($f->val('unsupported_response_type'), $f->val('code')),
+                            new ArrayItem(new InterpolatedString([new InterpolatedStringPart('The value \''), $f->var('responsePayloadContentType'), new InterpolatedStringPart('\' received in accept header is not a supported format.')]), $f->val('message')),
+                        ]),
+                        $f->classConstFetch('Response', 'HTTP_UNSUPPORTED_MEDIA_TYPE'),
+                    ])),
+                ])],
             )))
             ->addStmt(new Switch_($f->classConstFetch($f->var('response'), 'CONTENT_TYPE'), array_merge(
                 array_map(

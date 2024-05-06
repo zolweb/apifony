@@ -6,6 +6,8 @@ namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
+use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
@@ -100,11 +102,6 @@ class ActionCase
     ) {
     }
 
-    public function getRequestBodyPayloadType(): ?Type
-    {
-        return $this->requestBodyPayloadType;
-    }
-
     public function getRequestBodyPayloadTypeName(): Name
     {
         $type = $this->requestBodyPayloadType?->asName();
@@ -114,11 +111,6 @@ class ActionCase
         }
 
         return $type;
-    }
-
-    public function getResponseContentType(): ?string
-    {
-        return $this->responseContentType;
     }
 
     /**
@@ -133,7 +125,7 @@ class ActionCase
     {
         $f = new BuilderFactory();
 
-        return new Case_($f->val($this->responseContentType), [
+        return new Case_(new BooleanAnd($this->requestBodyPayloadType === null ? $f->funcCall('is_null', [$f->var('requestBodyPayload')]) : $this->requestBodyPayloadType->getRequestBodyPayloadTypeCheckingAst(), new Identical($f->var('responsePayloadContentType'), $f->val($this->responseContentType))), [
             new Expression(new Assign($f->var('response'), $f->methodCall($f->propertyFetch($f->var('this'), 'handler'), $this->name, array_merge(
                 array_map(fn (ActionParameter $parameter): Variable => $parameter->asVariable(), $this->parameters),
                 $this->requestBodyPayloadType !== null ? [$f->var('requestBodyPayload')] : [],

@@ -177,17 +177,11 @@ class TagController extends AbstractController
             $responsePayloadContentType = 'application/json';
         }
         switch (true) {
-            case $requestBodyPayload instanceof Schema:
-                switch ($responsePayloadContentType) {
-                    case 'application/json':
-                        $response = $this->handler->firstOperationFromSchemaPayloadToApplicationJsonContent($pPathParamString, $pPathParamNumber, $pPathParamInteger, $pPathParamBoolean, $qQueryParamString, $qQueryParamNumber, $qQueryParamInteger, $qQueryParamBoolean, $hHeaderParamString, $hHeaderParamNumber, $hHeaderParamInteger, $hHeaderParamBoolean, $cCookieParamString, $cCookieParamNumber, $cCookieParamInteger, $cCookieParamBoolean, $requestBodyPayload);
-                        break;
-                    default:
-                        return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
-                }
+            case $requestBodyPayload instanceof Schema && $responsePayloadContentType === 'application/json':
+                $response = $this->handler->firstOperationFromSchemaPayloadToApplicationJsonContent($pPathParamString, $pPathParamNumber, $pPathParamInteger, $pPathParamBoolean, $qQueryParamString, $qQueryParamNumber, $qQueryParamInteger, $qQueryParamBoolean, $hHeaderParamString, $hHeaderParamNumber, $hHeaderParamInteger, $hHeaderParamBoolean, $cCookieParamString, $cCookieParamNumber, $cCookieParamInteger, $cCookieParamBoolean, $requestBodyPayload);
                 break;
             default:
-                throw new \RuntimeException();
+                return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
         }
         switch ($response::CONTENT_TYPE) {
             case 'application/json':
