@@ -457,15 +457,7 @@ class Action
                     fn (?Type $requestBodyPayloadType): Case_ => new Case_($requestBodyPayloadType === null ? $f->funcCall('is_null', [$f->var('requestBodyPayload')]) : $requestBodyPayloadType->getRequestBodyPayloadTypeCheckingAst(), [
                         new Switch_($f->var('responsePayloadContentType'), array_merge(
                             array_map(
-                                fn (?string $responseContentType): Case_ =>
-                                    // todo move in ActionCase ?
-                                    new Case_($f->val($this->getCase($requestBodyPayloadType, $responseContentType)->getResponseContentType()), [
-                                        new Expression(new Assign($f->var('response'), $f->methodCall($f->propertyFetch($f->var('this'), 'handler'), $this->getCase($requestBodyPayloadType, $responseContentType)->getName(), array_merge(
-                                            array_map(fn (ActionParameter $parameter): Variable => $parameter->asVariable(), $this->getCase($requestBodyPayloadType, $responseContentType)->getParameters()),
-                                            $this->getCase($requestBodyPayloadType, $responseContentType)->hasRequestBodyPayloadParameter() ? [$f->var('requestBodyPayload')] : [],
-                                        )))),
-                                        new Break_(),
-                                    ]),
+                                fn (?string $responseContentType): Case_ => $this->getCase($requestBodyPayloadType, $responseContentType)->getCase(),
                                 array_filter($this->responseContentTypes),
                             ),
                             [new Case_(null, [

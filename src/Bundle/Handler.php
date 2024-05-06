@@ -81,6 +81,7 @@ class Handler implements File
     {
         $f = new BuilderFactory();
 
+        // TODO Move in action and actioncase
         $interface = $f->interface("{$this->aggregateName}Handler")
             ->addStmts(array_merge(...array_map(
                 static fn (Action $action): array => array_map(

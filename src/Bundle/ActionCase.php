@@ -4,7 +4,13 @@ declare(strict_types=1);
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\BuilderFactory;
+use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt\Break_;
+use PhpParser\Node\Stmt\Case_;
+use PhpParser\Node\Stmt\Expression;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Operation;
 use Zol\Ogen\OpenApi\Reference;
@@ -136,5 +142,18 @@ class ActionCase
     public function getResponses(): array
     {
         return $this->responses;
+    }
+
+    public function getCase(): Case_
+    {
+        $f = new BuilderFactory();
+
+        return new Case_($f->val($this->responseContentType), [
+            new Expression(new Assign($f->var('response'), $f->methodCall($f->propertyFetch($f->var('this'), 'handler'), $this->name, array_merge(
+                array_map(fn (ActionParameter $parameter): Variable => $parameter->asVariable(), $this->parameters),
+                $this->requestBodyPayloadType !== null ? [$f->var('requestBodyPayload')] : [],
+            )))),
+            new Break_(),
+        ]);
     }
 }
