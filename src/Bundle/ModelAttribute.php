@@ -128,7 +128,7 @@ class ModelAttribute
         $f = new BuilderFactory();
 
         $param = $f->param($this->variableName)
-            ->setType(($this->type->isNullable() ? '?' : '').$this->getPhpType())
+            ->setType($this->type->asName())
             ->makePublic()
             ->makeReadonly()
         ;
