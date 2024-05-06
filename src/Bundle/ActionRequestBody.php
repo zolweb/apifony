@@ -4,7 +4,18 @@ declare(strict_types=1);
 
 namespace Zol\Ogen\Bundle;
 
+use PhpParser\BuilderFactory;
+use PhpParser\Node\ArrayItem;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt\Break_;
+use PhpParser\Node\Stmt\Case_;
+use PhpParser\Node\Stmt\Catch_;
+use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\TryCatch;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\MediaType;
 use Zol\Ogen\OpenApi\Reference;
@@ -108,22 +119,9 @@ class ActionRequestBody
         return $this->usedModelName;
     }
 
-    public function getMimeType(): ?string
-    {
-        return $this->mimeType;
-    }
-
     public function getPayloadType(): ?Type
     {
         return $this->payloadType;
-    }
-
-    /**
-     * @return array<Constraint>
-     */
-    public function getConstraints(): array
-    {
-        return $this->payloadType?->getConstraints() ?? [];
     }
 
     public function getPayloadNormalizedType(): string
@@ -159,5 +157,36 @@ class ActionRequestBody
     public function getPayloadModels(): array
     {
         return $this->payloadModels;
+    }
+
+    public function getCase(): Case_
+    {
+        $f = new BuilderFactory();
+
+        return new Case_($f->val($this->mimeType ?? ''), array_merge(
+            match ($this->mimeType) {
+                'application/json' => [
+                    new TryCatch([
+                        new Expression(new Assign($f->var('requestBodyPayload'), $f->methodCall($f->var('this'), sprintf('get%sJsonRequestBody', ucfirst($this->getPayloadBuiltInPhpType())), array_merge([$f->var('request')], $this->getPayloadBuiltInPhpType() === 'object' ? [$f->classConstFetch($this->getPayloadTypeName(), 'class')] : [])))),
+                        new Expression($f->methodCall($f->var('this'), 'validateRequestBody', [
+                            $f->var('requestBodyPayload'),
+                            array_map(
+                                static fn (Constraint $constraint): New_ => $constraint->getInstantiationAst(),
+                                $this->payloadType?->getConstraints() ?? [],
+                            ),
+                        ])),
+                    ], [
+                        new Catch_([new Name('DenormalizationException')], $f->var('e'), [
+                            new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), new Array_([new ArrayItem($f->methodCall($f->var('e'), 'getMessage'))]))),
+                        ]),
+                        new Catch_([new Name('RequestBodyValidationException')], $f->var('e'), [
+                            new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), $f->propertyFetch($f->var('e'), 'messages'))),
+                        ]),
+                    ]),
+                ],
+                default => [],
+            },
+            [new Break_()],
+        ));
     }
 }

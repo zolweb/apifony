@@ -6,7 +6,6 @@ namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\ArrayItem;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
@@ -137,7 +136,7 @@ class ActionParameter
                 new Catch_([new Name('ParameterValidationException')], $f->var('e'), [
                     new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($this->parameter->in)), new String_($this->parameter->name)), $f->propertyFetch($f->var('e'), 'messages'))),
                 ]),
-            ])
+            ]),
         ];
     }
 

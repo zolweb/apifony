@@ -7,23 +7,17 @@ namespace Zol\Ogen\Bundle;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Greater;
-use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\InterpolatedStringPart;
-use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\InterpolatedString;
-use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
-use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\Switch_;
-use PhpParser\Node\Stmt\TryCatch;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Operation;
 use Zol\Ogen\OpenApi\Reference;
@@ -359,31 +353,7 @@ class Action
         if (\count($this->requestBodies) > 0) {
             $actionMethod->addStmt(new Expression(new Assign($f->var('requestBodyPayload'), $f->val(null))))
                 ->addStmt(new Switch_(new Assign($f->var('requestBodyPayloadContentType'), $f->methodCall($f->propertyFetch($f->var('request'), 'headers'), 'get', [$f->val('content-type'), $f->val('')])), array_merge(array_map(
-                    static fn (ActionRequestBody $actionRequestBody): Case_ => new Case_($f->val($actionRequestBody->getMimeType() ?? ''), array_merge(
-                        match ($actionRequestBody->getMimeType()) {
-                            'application/json' => [
-                                new TryCatch([
-                                    new Expression(new Assign($f->var('requestBodyPayload'), $f->methodCall($f->var('this'), sprintf('get%sJsonRequestBody', ucfirst($actionRequestBody->getPayloadBuiltInPhpType())), array_merge([$f->var('request')], $actionRequestBody->getPayloadBuiltInPhpType() === 'object' ? [$f->classConstFetch($actionRequestBody->getPayloadTypeName(), 'class')] : [])))),
-                                    new Expression($f->methodCall($f->var('this'), 'validateRequestBody', [
-                                        $f->var('requestBodyPayload'),
-                                        array_map(
-                                            static fn (Constraint $constraint): New_ => $constraint->getInstantiationAst(),
-                                            $actionRequestBody->getConstraints(),
-                                        ),
-                                    ])),
-                                ], [
-                                    new Catch_([new Name('DenormalizationException')], $f->var('e'), [
-                                        new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), new Array_([new ArrayItem($f->methodCall($f->var('e'), 'getMessage'))]))),
-                                    ]),
-                                    new Catch_([new Name('RequestBodyValidationException')], $f->var('e'), [
-                                        new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), $f->propertyFetch($f->var('e'), 'messages'))),
-                                    ]),
-                                ]),
-                            ],
-                            default => [],
-                        },
-                        [new Break_()],
-                    )),
+                    static fn (ActionRequestBody $actionRequestBody): Case_ => $actionRequestBody->getCase(),
                     $this->requestBodies,
                 ),
                     [new Case_(null, [
