@@ -4,14 +4,12 @@ declare(strict_types=1);
 
 namespace Zol\Ogen\Bundle;
 
-use PhpParser\Builder\Method;
 use PhpParser\Builder\Use_;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\DeclareItem;
-use PhpParser\Node\Name;
 use PhpParser\Node\Param;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
-use PhpParser\Node\UnionType;
 use PhpParser\PrettyPrinter\Standard;
 
 class Handler implements File
@@ -81,23 +79,10 @@ class Handler implements File
     {
         $f = new BuilderFactory();
 
-        // TODO Move in action and actioncase
         $interface = $f->interface("{$this->aggregateName}Handler")
             ->addStmts(array_merge(...array_map(
                 static fn (Action $action): array => array_map(
-                    static fn (ActionCase $actionCase): Method => $f->method($actionCase->getName())
-                        ->makePublic()
-                        ->addParams(array_merge(
-                            array_map(
-                                static fn (ActionParameter $param): Param => $param->asParam(),
-                                $actionCase->getParameters(),
-                            ),
-                            $actionCase->hasRequestBodyPayloadParameter() ? [$f->param('requestBodyPayload')->setType($actionCase->getRequestBodyPayloadTypeName())] : [],
-                        ))
-                        ->setReturnType(new UnionType(array_map(
-                            static fn (ActionResponse $response) => new Name($response->getClassName()),
-                            $actionCase->getResponses(),
-                        ))),
+                    static fn (ActionCase $actionCase): ClassMethod => $actionCase->getHandlerMethod(),
                     $action->getCases(),
                 ),
                 $this->actions,

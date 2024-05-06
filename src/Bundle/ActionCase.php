@@ -8,9 +8,12 @@ use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
+use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\UnionType;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Operation;
 use Zol\Ogen\OpenApi\Reference;
@@ -97,24 +100,6 @@ class ActionCase
     ) {
     }
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    /**
-     * @return array<ActionParameter>
-     */
-    public function getParameters(): array
-    {
-        return $this->parameters;
-    }
-
-    public function hasRequestBodyPayloadParameter(): bool
-    {
-        return $this->requestBodyPayloadType !== null;
-    }
-
     public function getRequestBodyPayloadType(): ?Type
     {
         return $this->requestBodyPayloadType;
@@ -155,5 +140,24 @@ class ActionCase
             )))),
             new Break_(),
         ]);
+    }
+
+    public function getHandlerMethod(): ClassMethod
+    {
+        $f = new BuilderFactory();
+
+        return $f->method($this->name)
+            ->makePublic()
+            ->addParams(array_merge(
+                array_map(
+                    static fn (ActionParameter $param): Param => $param->asParam(),
+                    $this->parameters,
+                ),
+                $this->requestBodyPayloadType !== null ? [$f->param('requestBodyPayload')->setType($this->getRequestBodyPayloadTypeName())] : [],
+            ))
+            ->setReturnType(new UnionType(array_map(
+                static fn (ActionResponse $response) => new Name($response->getClassName()),
+                $this->responses,
+            )))->getNode();
     }
 }
