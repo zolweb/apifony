@@ -12,7 +12,6 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Greater;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\Throw_;
-use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\InterpolatedStringPart;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\InterpolatedString;
@@ -84,24 +83,9 @@ class Action
     ) {
     }
 
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
     public function getServiceName(): string
     {
         return u($this->name)->snake()->toString();
-    }
-
-    public function getRoute(): string
-    {
-        return $this->route;
-    }
-
-    public function getMethod(): string
-    {
-        return $this->method;
     }
 
     /**
@@ -336,6 +320,28 @@ class Action
         }
 
         return $cases;
+    }
+
+    /**
+     * @return mixed[]
+     */
+    // todo pass controllerClassName in constructor
+    public function getRoute(string $controllerClassName): array
+    {
+        $route = [
+            'path' => $this->route,
+            'methods' => $this->method,
+            'controller' => "{$controllerClassName}::{$this->name}",
+        ];
+
+        if (\count($this->getParameters(['path'])) > 0) {
+            $route['requirements'] = [];
+            foreach ($this->getParameters(['path']) as $parameter) {
+                $route['requirements'][$parameter->getRawName()] = $parameter->getRouteRequirementPattern();
+            }
+        }
+
+        return $route;
     }
 
     public function getClassMethod(): ClassMethod

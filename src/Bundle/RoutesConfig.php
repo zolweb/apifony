@@ -75,20 +75,9 @@ class RoutesConfig implements File
     {
         $routes = [];
 
-        // TODO move in action ?
         foreach ($this->controllers as $controller) {
             foreach ($controller->actions as $action) {
-                $routes["{$this->getServiceNamespace()}_{$action->getServiceName()}"] = [
-                    'path' => $action->getRoute(),
-                    'methods' => $action->getMethod(),
-                    'controller' => "{$controller->getNamespace()}\\{$controller->getClassName()}::{$action->getName()}",
-                ];
-                if (\count($action->getParameters(['path'])) > 0) {
-                    $routes["{$this->getServiceNamespace()}_{$action->getServiceName()}"]['requirements'] = [];
-                    foreach ($action->getParameters(['path']) as $parameter) {
-                        $routes["{$this->getServiceNamespace()}_{$action->getServiceName()}"]['requirements'][$parameter->getRawName()] = $parameter->getRouteRequirementPattern();
-                    }
-                }
+                $routes["{$this->getServiceNamespace()}_{$action->getServiceName()}"] = $action->getRoute("{$controller->getNamespace()}\\{$controller->getClassName()}");
             }
         }
 
