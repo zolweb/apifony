@@ -190,9 +190,7 @@ class Action
 
         usort(
             $parameters,
-            static function (ActionParameter $param1, ActionParameter $param2): int {
-                return $param1->shouldBePositionedBefore($param2) ? -1 : 1;
-            }
+            static fn (ActionParameter $param1, ActionParameter $param2): int => $param1->shouldBePositionedBefore($param2) ? -1 : 1
         );
 
         return $parameters;

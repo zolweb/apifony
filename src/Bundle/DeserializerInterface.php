@@ -23,7 +23,7 @@ readonly class DeserializerInterface implements File
 
     public function getName(): string
     {
-        return "DeserializerInterface.php";
+        return 'DeserializerInterface.php';
     }
 
     public function getContent(): string
@@ -51,7 +51,7 @@ readonly class DeserializerInterface implements File
                         ->setReturnType('object'),
                     ),
                 )
-                ->getNode()
+                ->getNode(),
         ]);
     }
 }

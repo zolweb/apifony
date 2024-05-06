@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Zol\Ogen;
 
-use Symfony\Component\Serializer\Serializer;
 use Symfony\Component\Yaml\Yaml;
 use Zol\Ogen\Bundle\Bundle;
 use Zol\Ogen\Bundle\Exception as BundleException;

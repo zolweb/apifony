@@ -1,6 +1,6 @@
 <?php
 
-$finder = (new PhpCsFixer\Finder())->in([__DIR__.'/src', __DIR__.'/tests']);
+$finder = (new PhpCsFixer\Finder())->in(__DIR__.'/src')->append((new PhpCsFixer\Finder())->in(__DIR__.'/tests')->exclude('bundle'));
 
 return (new PhpCsFixer\Config())
     ->setRiskyAllowed(true)

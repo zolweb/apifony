@@ -34,7 +34,7 @@ class TestHandler implements TagHandler
                         'cookieParamInteger' => $cCookieParamInteger,
                         'cookieParamBoolean' => $cCookieParamBoolean,
                         'requestBodyPayload' => $requestBodyPayload,
-                    ], JSON_THROW_ON_ERROR),
+                    ], \JSON_THROW_ON_ERROR),
                 ),
                 'string',
                 .1,

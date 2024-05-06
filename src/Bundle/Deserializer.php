@@ -30,7 +30,7 @@ readonly class Deserializer implements File
 
     public function getName(): string
     {
-        return "Deserializer.php";
+        return 'Deserializer.php';
     }
 
     public function getContent(): string
@@ -69,7 +69,7 @@ readonly class Deserializer implements File
                         ->addStmt(new Return_($f->methodCall($f->propertyFetch($f->var('this'), 'serializer'), 'deserialize', $f->args([$f->var('json'), $f->var('type'), $f->classConstFetch('JsonEncoder', 'FORMAT')]))))
                     )
                 )
-                ->getNode()
+                ->getNode(),
         ]);
     }
 }

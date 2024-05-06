@@ -7,6 +7,9 @@ namespace Zol\Ogen\Tests\Zol\Ogen;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
 
+/**
+ * @internal
+ */
 final class OgenTest extends WebTestCase
 {
     public function testA(): void
@@ -36,7 +39,6 @@ final class OgenTest extends WebTestCase
                 ],
                 'recursiveObjectArray' => [
                     [
-
                         'stringProperty' => 'string',
                         'numberProperty' => 0.1,
                         'integerProperty' => 1,
@@ -49,8 +51,8 @@ final class OgenTest extends WebTestCase
                             ['stringProperty' => 'string'],
                         ],
                         'recursiveObjectArray' => [],
-                    ]
-                ]
+                    ],
+                ],
             ],
             server: [
                 'HTTP_HEADERPARAMSTRING' => 'string',

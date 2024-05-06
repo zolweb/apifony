@@ -109,6 +109,6 @@ class ObjectType implements Type
 
     public function asName(): Name
     {
-        return new Name(($this->nullable ? '?' : '') . ($this->isRaw ? 'array|\stdClass' : $this->name));
+        return new Name(($this->nullable ? '?' : '').($this->isRaw ? 'array|\stdClass' : $this->name));
     }
 }
