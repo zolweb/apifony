@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Zol\Ogen\Bundle;
 
-use PhpParser\Node\Name;
+use PhpParser\BuilderFactory;
+use PhpParser\Node\ArrayItem;
+use PhpParser\Node\Expr\Cast\String_;
+use PhpParser\Node\Param;
 use Zol\Ogen\OpenApi\Components;
 use Zol\Ogen\OpenApi\Header;
 use Zol\Ogen\OpenApi\Reference;
@@ -54,18 +57,17 @@ class ActionResponseHeader
     ) {
     }
 
-    public function getName(): string
+    public function getArrayItem(): ArrayItem
     {
-        return $this->name;
+        $f = new BuilderFactory();
+
+        return new ArrayItem(new String_($f->propertyFetch($f->var('this'), u($this->name)->camel()->toString())), $f->val($this->name));
     }
 
-    public function getVariableName(): string
+    public function getParam(): Param
     {
-        return u($this->name)->camel()->toString();
-    }
+        $f = new BuilderFactory();
 
-    public function getTypeName(): Name
-    {
-        return $this->type->asName();
+        return $f->param(u($this->name)->camel()->toString())->setType($this->type->asName())->makePublic()->makeReadonly()->getNode();
     }
 }

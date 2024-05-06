@@ -9,7 +9,6 @@ use PhpParser\Node\ArrayItem;
 use PhpParser\Node\DeclareItem;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\PrettyPrinter\Standard;
@@ -168,7 +167,7 @@ class ActionResponse implements File
         }
 
         foreach ($this->headers as $header) {
-            $constructor->addParam($f->param($header->getVariableName())->setType($header->getTypeName())->makePublic()->makeReadonly());
+            $constructor->addParam($header->getParam());
         }
 
         if ($this->contentType === null) {
@@ -185,7 +184,7 @@ class ActionResponse implements File
                 COMMENT
             )
             ->addStmt(new Return_(new Array_(array_merge(
-                array_map(static fn (ActionResponseHeader $header) => new ArrayItem(new String_($f->propertyFetch($f->var('this'), $header->getVariableName())), $f->val($header->getName())), $this->headers),
+                array_map(static fn (ActionResponseHeader $header) => $header->getArrayItem(), $this->headers),
                 [new ArrayItem($f->classConstFetch('self', 'CONTENT_TYPE'), $f->val('content-type'))],
             ))))
         ;
