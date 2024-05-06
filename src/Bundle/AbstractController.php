@@ -33,12 +33,7 @@ use PhpParser\PrettyPrinter\Standard;
 
 class AbstractController implements File
 {
-    public static function build(string $bundleNamespace): self
-    {
-        return new self($bundleNamespace);
-    }
-
-    private function __construct(
+    public function __construct(
         private readonly string $bundleNamespace,
     ) {
     }
