@@ -60,11 +60,6 @@ class Handler implements File
         return $files;
     }
 
-    public function getClassName(): string
-    {
-        return "{$this->aggregateName}Handler";
-    }
-
     public function getFolder(): string
     {
         return "src/Api/{$this->aggregateName}";

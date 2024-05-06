@@ -88,7 +88,7 @@ class Controller implements File
         $f = new BuilderFactory();
 
         $setHandlerMethod = $f->method('setHandler')
-            ->addParam($f->param('handler')->setType($this->handler->getClassName()))
+            ->addParam($f->param('handler')->setType("{$this->aggregateName}Handler"))
             ->setReturnType('void')
             ->makePublic()
             ->addStmt(new Assign($f->propertyFetch($f->var('this'), 'handler'), $f->var('handler')))
@@ -96,7 +96,7 @@ class Controller implements File
 
         $class = $f->class("{$this->aggregateName}Controller")
             ->extend('AbstractController')
-            ->addStmt($f->property('handler')->setType($this->handler->getClassName())->makePrivate())
+            ->addStmt($f->property('handler')->setType("{$this->aggregateName}Handler")->makePrivate())
             ->addStmt($setHandlerMethod)
         ;
 
