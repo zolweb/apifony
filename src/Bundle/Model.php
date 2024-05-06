@@ -113,7 +113,7 @@ class Model implements File
         ;
 
         foreach ($this->attributes as $attribute) {
-            $constructor->addParam($attribute->getParamAst());
+            $constructor->addParam($attribute->getParam());
         }
 
         $arrayAttributes = array_filter(

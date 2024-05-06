@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
+use PhpParser\Comment;
+use PhpParser\Comment\Doc;
 use PhpParser\Node\Param;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
@@ -91,7 +93,7 @@ class ModelAttribute
         return new PhpDocTagNode('@param', new ParamTagValueNode($this->type->getDocAst(), false, "\${$this->variableName}", ''));
     }
 
-    public function getParamAst(): Param
+    public function getParam(): Param
     {
         $f = new BuilderFactory();
 
@@ -109,6 +111,10 @@ class ModelAttribute
             $param->addAttribute($constraint->getAttributeAst());
         }
 
-        return $param->getNode();
+        // Little hack making the printer print each attribute on a new line
+        $node = $param->getNode();
+        $node->setDocComment(new Doc(''));
+
+        return $node;
     }
 }
