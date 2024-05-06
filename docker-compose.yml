@@ -20,3 +20,4 @@ services:
       - ./phpstan.neon:/var/www/html/phpstan.neon:delegated
       - ./phpstan-bundle.neon:/var/www/html/phpstan-bundle.neon:delegated
       - ./.php-cs-fixer.dist.php:/var/www/html/.php-cs-fixer.dist.php:delegated
+      - ./.php-cs-fixer-bundle.dist.php:/var/www/html/.php-cs-fixer-bundle.dist.php:delegated

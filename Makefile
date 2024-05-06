@@ -17,3 +17,6 @@ test:
 
 phpstan-bundle:
 	@$(RUNNER_DOCKER_EXEC) 'php vendor/bin/phpstan analyse -c phpstan-bundle.neon'
+
+php-cs-fixer-fix-bundle:
+	@$(RUNNER_DOCKER_EXEC) 'php vendor/bin/php-cs-fixer -vv fix --diff --config=.php-cs-fixer-bundle.dist.php'

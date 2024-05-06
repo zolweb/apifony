@@ -431,7 +431,7 @@ class Action
             ;
         }
 
-        $actionMethod->addStmt(new If_(new Greater($f->funcCall('count', [$f->var('errors')]), $f->val(0)), ['stmts' => [
+        $actionMethod->addStmt(new If_(new Greater($f->funcCall('\count', [$f->var('errors')]), $f->val(0)), ['stmts' => [
             new Return_($f->new('JsonResponse', [
                 new Array_([
                     new ArrayItem($f->val('validation_failed'), $f->val('code')),

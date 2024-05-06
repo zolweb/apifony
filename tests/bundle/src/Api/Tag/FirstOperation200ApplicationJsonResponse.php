@@ -15,6 +15,6 @@ class FirstOperation200ApplicationJsonResponse
      */
     public function getHeaders(): array
     {
-        return ['headerString' => strval($this->headerString), 'headerNumber' => strval($this->headerNumber), 'headerInteger' => strval($this->headerInteger), 'headerBoolean' => strval($this->headerBoolean), 'content-type' => self::CONTENT_TYPE];
+        return ['headerString' => (string) $this->headerString, 'headerNumber' => (string) $this->headerNumber, 'headerInteger' => (string) $this->headerInteger, 'headerBoolean' => (string) $this->headerBoolean, 'content-type' => self::CONTENT_TYPE];
     }
 }

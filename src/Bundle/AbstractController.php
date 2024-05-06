@@ -15,6 +15,8 @@ use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\Greater;
 use PhpParser\Node\Expr\BinaryOp\Identical;
 use PhpParser\Node\Expr\BooleanNot;
+use PhpParser\Node\Expr\Cast\Double;
+use PhpParser\Node\Expr\Cast\Int_;
 use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\Throw_;
@@ -72,7 +74,7 @@ class AbstractController implements File
                 COMMENT
             )
             ->addStmt(new Assign($f->var('violations'), $f->methodCall($f->propertyFetch($f->var('this'), 'validator'), 'validate', [$f->var('value'), $f->var('constraints')])))
-            ->addStmt(new If_(new Greater($f->funcCall('count', [$f->var('violations')]), $f->val(0)), ['stmts' => [
+            ->addStmt(new If_(new Greater($f->funcCall('\count', [$f->var('violations')]), $f->val(0)), ['stmts' => [
                 new Expression(new Throw_($f->new('ParameterValidationException', [
                     $f->funcCall('array_map', [
                         new ArrowFunction(['static' => true, 'params' => [$f->param('violation')->setType('ConstraintViolationInterface')->getNode()], 'expr' => new String_($f->methodCall($f->var('violation'), 'getMessage'))]),
@@ -96,7 +98,7 @@ class AbstractController implements File
                 COMMENT
             )
             ->addStmt(new Assign($f->var('violations'), $f->methodCall($f->propertyFetch($f->var('this'), 'validator'), 'validate', [$f->var('value'), $f->var('constraints')])))
-            ->addStmt(new If_(new Greater($f->funcCall('count', [$f->var('violations')]), $f->val(0)), ['stmts' => [
+            ->addStmt(new If_(new Greater($f->funcCall('\count', [$f->var('violations')]), $f->val(0)), ['stmts' => [
                 new Expression(new Assign($f->var('errors'), $f->val([]))),
                 new Foreach_($f->var('violations'), $f->var('violation'), ['stmts' => [
                     new Expression(new Assign($f->var('path'), $f->methodCall($f->var('violation'), 'getPropertyPath'))),
@@ -162,16 +164,16 @@ class AbstractController implements File
                             new If_(new BooleanNot($f->funcCall('ctype_digit', [$f->var('value')])), ['stmts' => [
                                 new Expression(new Throw_($f->new('DenormalizationException', [new InterpolatedString([new InterpolatedStringPart('Parameter \''), $f->var('name'), new InterpolatedStringPart('\' in \''), $f->var('in'), new InterpolatedStringPart('\' must be an integer.')])]))),
                             ]]),
-                            new Return_($f->funcCall('intval', [$f->var('value')])),
+                            new Return_(new Int_($f->var('value'))),
                         ],
                         'float' => [
                             new If_(new BooleanNot($f->funcCall('is_numeric', [$f->var('value')])), ['stmts' => [
                                 new Expression(new Throw_($f->new('DenormalizationException', [new InterpolatedString([new InterpolatedStringPart('Parameter \''), $f->var('name'), new InterpolatedStringPart('\' in \''), $f->var('in'), new InterpolatedStringPart('\' must be a numeric.')])]))),
                             ]]),
-                            new Return_($f->funcCall('floatval', [$f->var('value')])),
+                            new Return_(new Double($f->var('value'), ['kind' => Double::KIND_FLOAT])),
                         ],
                         'bool' => [
-                            new If_(new BooleanNot($f->funcCall('in_array', [$f->var('value'), $f->val(['true', 'false']), $f->val(true)])), ['stmts' => [
+                            new If_(new BooleanNot($f->funcCall('\in_array', [$f->var('value'), $f->val(['true', 'false']), $f->val(true)])), ['stmts' => [
                                 new Expression(new Throw_($f->new('DenormalizationException', [new InterpolatedString([new InterpolatedStringPart('Parameter \''), $f->var('name'), new InterpolatedStringPart('\' in \''), $f->var('in'), new InterpolatedStringPart('\' must be a boolean.')])]))),
                             ]]),
                             new Return_(new ArrayDimFetch(new Array_([new ArrayItem($f->val(true), $f->val('true')), new ArrayItem($f->val(false), $f->val('false'))]), $f->var('value'))),
@@ -215,25 +217,25 @@ class AbstractController implements File
                     )
                     ->addStmts(match ($type) {
                         'string' => [
-                            new If_(new BooleanNot($f->funcCall('is_string', [$f->var('value')])), ['stmts' => [
+                            new If_(new BooleanNot($f->funcCall('\is_string', [$f->var('value')])), ['stmts' => [
                                 new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body must be a string.')]))),
                             ]]),
                             new Return_($f->var('value')),
                         ],
                         'int' => [
-                            new If_(new BooleanNot($f->funcCall('is_int', [$f->var('value')])), ['stmts' => [
+                            new If_(new BooleanNot($f->funcCall('\is_int', [$f->var('value')])), ['stmts' => [
                                 new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body must be an integer.')]))),
                             ]]),
                             new Return_($f->var('value')),
                         ],
                         'float' => [
-                            new If_(new BooleanAnd(new BooleanNot($f->funcCall('is_int', [$f->var('value')])), new BooleanNot($f->funcCall('is_float', [$f->var('value')]))), ['stmts' => [
+                            new If_(new BooleanAnd(new BooleanNot($f->funcCall('\is_int', [$f->var('value')])), new BooleanNot($f->funcCall('\is_float', [$f->var('value')]))), ['stmts' => [
                                 new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body must be a numeric.')]))),
                             ]]),
-                            new Return_($f->funcCall('floatval', [$f->var('value')])),
+                            new Return_(new Double($f->var('value'), ['kind' => Double::KIND_FLOAT])),
                         ],
                         'bool' => [
-                            new If_(new BooleanNot($f->funcCall('is_bool', [$f->var('value')])), ['stmts' => [
+                            new If_(new BooleanNot($f->funcCall('\is_bool', [$f->var('value')])), ['stmts' => [
                                 new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body must be a boolean.')]))),
                             ]]),
                             new Return_($f->var('value')),
@@ -296,10 +298,10 @@ class AbstractController implements File
 
         $namespace = $f->namespace("{$this->bundleNamespace}\\Api")
             ->addStmt($f->use('Symfony\Component\HttpFoundation\Request'))
+            ->addStmt($f->use('Symfony\Component\Serializer\Exception\ExceptionInterface'))
             ->addStmt($f->use('Symfony\Component\Validator\Constraint'))
             ->addStmt($f->use('Symfony\Component\Validator\ConstraintViolationInterface'))
             ->addStmt($f->use('Symfony\Component\Validator\Validator\ValidatorInterface'))
-            ->addStmt($f->use('Symfony\Component\Serializer\Exception\ExceptionInterface'))
             ->addStmt($class)
         ;
 

@@ -4,10 +4,10 @@ declare (strict_types=1);
 namespace Zol\Ogen\Tests\TestOpenApiServer\Api;
 
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-use Symfony\Component\Serializer\Exception\ExceptionInterface;
 abstract class AbstractController
 {
     public function __construct(protected readonly DeserializerInterface $deserializer, protected readonly ValidatorInterface $validator)
@@ -92,7 +92,7 @@ abstract class AbstractController
         if (!ctype_digit($value)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be an integer.");
         }
-        return intval($value);
+        return (int) $value;
     }
     /**
      * @throws DenormalizationException
@@ -119,7 +119,7 @@ abstract class AbstractController
         if (!ctype_digit($value)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be an integer.");
         }
-        return intval($value);
+        return (int) $value;
     }
     /**
      * @throws DenormalizationException
@@ -149,7 +149,7 @@ abstract class AbstractController
         if (!is_numeric($value)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a numeric.");
         }
-        return floatval($value);
+        return (float) $value;
     }
     /**
      * @throws DenormalizationException
@@ -176,7 +176,7 @@ abstract class AbstractController
         if (!is_numeric($value)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a numeric.");
         }
-        return floatval($value);
+        return (float) $value;
     }
     /**
      * @throws DenormalizationException
@@ -203,7 +203,7 @@ abstract class AbstractController
         if ($value === null) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
         }
-        if (!in_array($value, ['true', 'false'], true)) {
+        if (!\in_array($value, ['true', 'false'], true)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a boolean.");
         }
         return ['true' => true, 'false' => false][$value];
@@ -230,7 +230,7 @@ abstract class AbstractController
         if ($value === null) {
             return null;
         }
-        if (!in_array($value, ['true', 'false'], true)) {
+        if (!\in_array($value, ['true', 'false'], true)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a boolean.");
         }
         return ['true' => true, 'false' => false][$value];
@@ -248,7 +248,7 @@ abstract class AbstractController
             return $default;
         }
         $value = json_decode($value, true);
-        if (!is_string($value)) {
+        if (!\is_string($value)) {
             throw new DenormalizationException('Request body must be a string.');
         }
         return $value;
@@ -263,7 +263,7 @@ abstract class AbstractController
             return $default;
         }
         $value = json_decode($value, true);
-        if (!is_string($value)) {
+        if (!\is_string($value)) {
             throw new DenormalizationException('Request body must be a string.');
         }
         return $value;
@@ -281,7 +281,7 @@ abstract class AbstractController
             return $default;
         }
         $value = json_decode($value, true);
-        if (!is_int($value)) {
+        if (!\is_int($value)) {
             throw new DenormalizationException('Request body must be an integer.');
         }
         return $value;
@@ -299,7 +299,7 @@ abstract class AbstractController
         if ($value === null) {
             return null;
         }
-        if (!is_int($value)) {
+        if (!\is_int($value)) {
             throw new DenormalizationException('Request body must be an integer.');
         }
         return $value;
@@ -317,10 +317,10 @@ abstract class AbstractController
             return $default;
         }
         $value = json_decode($value, true);
-        if (!is_int($value) && !is_float($value)) {
+        if (!\is_int($value) && !\is_float($value)) {
             throw new DenormalizationException('Request body must be a numeric.');
         }
-        return floatval($value);
+        return (float) $value;
     }
     /**
      * @throws DenormalizationException
@@ -335,10 +335,10 @@ abstract class AbstractController
         if ($value === null) {
             return null;
         }
-        if (!is_int($value) && !is_float($value)) {
+        if (!\is_int($value) && !\is_float($value)) {
             throw new DenormalizationException('Request body must be a numeric.');
         }
-        return floatval($value);
+        return (float) $value;
     }
     /**
      * @throws DenormalizationException
@@ -353,7 +353,7 @@ abstract class AbstractController
             return $default;
         }
         $value = json_decode($value, true);
-        if (!is_bool($value)) {
+        if (!\is_bool($value)) {
             throw new DenormalizationException('Request body must be a boolean.');
         }
         return $value;
@@ -371,7 +371,7 @@ abstract class AbstractController
         if ($value === null) {
             return null;
         }
-        if (!is_bool($value)) {
+        if (!\is_bool($value)) {
             throw new DenormalizationException('Request body must be a boolean.');
         }
         return $value;
@@ -424,7 +424,7 @@ abstract class AbstractController
     public function validateParameter(mixed $value, array $constraints): void
     {
         $violations = $this->validator->validate($value, $constraints);
-        if (count($violations) > 0) {
+        if (\count($violations) > 0) {
             throw new ParameterValidationException(array_map(static fn(ConstraintViolationInterface $violation) => (string) $violation->getMessage(), iterator_to_array($violations)));
         }
     }
@@ -436,7 +436,7 @@ abstract class AbstractController
     public function validateRequestBody(mixed $value, array $constraints): void
     {
         $violations = $this->validator->validate($value, $constraints);
-        if (count($violations) > 0) {
+        if (\count($violations) > 0) {
             $errors = [];
             foreach ($violations as $violation) {
                 $path = $violation->getPropertyPath();
