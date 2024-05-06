@@ -61,14 +61,6 @@ class RoutesConfig implements File
         return u($this->namespace)->snake()->toString();
     }
 
-    /**
-     * @return array<Controller>
-     */
-    public function getControllers(): array
-    {
-        return $this->controllers;
-    }
-
     public function getFolder(): string
     {
         return 'config';

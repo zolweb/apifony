@@ -43,11 +43,6 @@ class AbstractController implements File
     ) {
     }
 
-    public function getNamespace(): string
-    {
-        return "{$this->bundleNamespace}\\Api";
-    }
-
     public function getFolder(): string
     {
         return 'src/Api';

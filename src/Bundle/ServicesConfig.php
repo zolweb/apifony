@@ -51,22 +51,6 @@ class ServicesConfig implements File
         return u($this->namespace)->snake()->toString();
     }
 
-    /**
-     * @return array<Controller>
-     */
-    public function getControllers(): array
-    {
-        return $this->controllers;
-    }
-
-    /**
-     * @return array<FormatValidator>
-     */
-    public function getFormatValidators(): array
-    {
-        return $this->formatValidators;
-    }
-
     public function getFolder(): string
     {
         return 'config';

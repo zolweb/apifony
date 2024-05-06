@@ -12,16 +12,6 @@ class ComposerJson implements File
     ) {
     }
 
-    public function getPackageName(): string
-    {
-        return $this->packageName;
-    }
-
-    public function getNamespace(): string
-    {
-        return $this->namespace;
-    }
-
     public function getFolder(): string
     {
         return '';

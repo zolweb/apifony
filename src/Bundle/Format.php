@@ -28,11 +28,6 @@ class Format
     ) {
     }
 
-    public function getConstraint(): FormatConstraint
-    {
-        return $this->constraint;
-    }
-
     public function getValidator(): FormatValidator
     {
         return $this->validator;

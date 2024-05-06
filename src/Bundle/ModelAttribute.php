@@ -79,27 +79,12 @@ class ModelAttribute
         return $this->rawName;
     }
 
-    public function getVariableName(): string
-    {
-        return $this->variableName;
-    }
-
     /**
      * @return array<Constraint>
      */
     public function getConstraints(): array
     {
         return $this->type->getConstraints();
-    }
-
-    public function isNullable(): bool
-    {
-        return $this->type->isNullable();
-    }
-
-    public function getTypeDocAst(): TypeNode
-    {
-        return $this->type->getDocAst();
     }
 
     public function getDocAst(): PhpDocTagNode

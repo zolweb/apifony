@@ -80,35 +80,6 @@ class Controller implements File
     ) {
     }
 
-    /**
-     * @return array<Action>
-     */
-    public function getActions(): array
-    {
-        return $this->actions;
-    }
-
-    public function getBundleNamespace(): string
-    {
-        return $this->bundleNamespace;
-    }
-
-    /**
-     * @return array<string>
-     */
-    public function getUsedFormatConstraintNames(): array
-    {
-        return $this->usedFormatConstraintNames;
-    }
-
-    /**
-     * @return array<string>
-     */
-    public function getUsedModelNames(): array
-    {
-        return $this->usedModelNames;
-    }
-
     public function getNamespace(): string
     {
         return "{$this->bundleNamespace}\\Api\\{$this->aggregateName}";

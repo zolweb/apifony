@@ -94,27 +94,6 @@ class Model implements File
     ) {
     }
 
-    public function getBundleNamespace(): string
-    {
-        return $this->bundleNamespace;
-    }
-
-    /**
-     * @return array<ModelAttribute>
-     */
-    public function getAttributes(): array
-    {
-        return $this->attributes;
-    }
-
-    /**
-     * @return array<string>
-     */
-    public function getUsedModelNames(): array
-    {
-        return $this->usedModelNames;
-    }
-
     /**
      * @return array<ModelAttribute>
      */
@@ -124,24 +103,6 @@ class Model implements File
             $this->attributes,
             static fn (ModelAttribute $attribute) => $attribute->isArray(),
         );
-    }
-
-    public function getNamespace(): string
-    {
-        return $this->namespace;
-    }
-
-    public function getClassName(): string
-    {
-        return $this->className;
-    }
-
-    /**
-     * @return array<string>
-     */
-    public function getUsedFormatConstraintNames(): array
-    {
-        return $this->usedFormatConstraintNames;
     }
 
     public function getFolder(): string

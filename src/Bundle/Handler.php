@@ -47,27 +47,6 @@ class Handler implements File
     }
 
     /**
-     * @return array<Action>
-     */
-    public function getActions(): array
-    {
-        return $this->actions;
-    }
-
-    public function getBundleNamespace(): string
-    {
-        return $this->bundleNamespace;
-    }
-
-    /**
-     * @return array<string>
-     */
-    public function getUsedModelNames(): array
-    {
-        return $this->usedModelNames;
-    }
-
-    /**
      * @return array<File>
      */
     public function getFiles(): array
@@ -83,11 +62,6 @@ class Handler implements File
         return $files;
     }
 
-    public function getNamespace(): string
-    {
-        return "{$this->bundleNamespace}\\Api\\{$this->aggregateName}";
-    }
-
     public function getClassName(): string
     {
         return "{$this->aggregateName}Handler";
@@ -101,11 +75,6 @@ class Handler implements File
     public function getName(): string
     {
         return "{$this->aggregateName}Handler.php";
-    }
-
-    public function hasNamespaceAst(): bool
-    {
-        return true;
     }
 
     public function getContent(): string

@@ -270,21 +270,6 @@ class Bundle implements File
         return $models;
     }
 
-    public function getClassName(): string
-    {
-        return "{$this->name}Bundle";
-    }
-
-    public function getNamespace(): string
-    {
-        return $this->namespace;
-    }
-
-    public function getServiceName(): string
-    {
-        return u($this->name)->snake()->toString();
-    }
-
     /**
      * @return array<Aggregate>
      */
