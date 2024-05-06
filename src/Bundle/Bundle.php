@@ -271,14 +271,6 @@ class Bundle implements File
     }
 
     /**
-     * @return array<Aggregate>
-     */
-    public function getAggregates(): array
-    {
-        return $this->api->getAggregates();
-    }
-
-    /**
      * @return array<string, Format>
      */
     public function getFormats(): array
@@ -314,11 +306,8 @@ class Bundle implements File
                         ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [sprintf('%s.handler', u($this->name)->snake())]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
                             new Foreach_($f->var('tags'), $f->var('tag'), ['stmts' => [
                                 new Switch_(new ArrayDimFetch($f->var('tag'), $f->val('controller')), array_map(
-                                    static fn (Aggregate $aggregate) => new Case_($f->val($aggregate->getTag()), [
-                                        new Expression($f->methodCall($f->methodCall($f->var('container'), 'findDefinition', [sprintf('%s\%s', $aggregate->getController()->getNamespace(), $aggregate->getController()->getClassName())]), 'addMethodCall', [$f->val('setHandler'), new Array_([new \PhpParser\Node\ArrayItem($f->new('Reference', [$f->var('id')]))])])),
-                                        new Break_(),
-                                    ]),
-                                    $this->getAggregates(),
+                                    static fn (Aggregate $aggregate) => $aggregate->getCase(),
+                                    $this->api->getAggregates(),
                                 )),
                             ]]),
                         ]]))
