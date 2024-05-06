@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Node\Expr;
 use PhpParser\Node\Param;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
@@ -73,11 +72,6 @@ class ModelAttribute
     public function hasDefault(): bool
     {
         return $this->schema->default !== null;
-    }
-
-    public function getDefault(): Expr
-    {
-        return $this->type->getMethodParameterDefault();
     }
 
     public function getRawName(): string

@@ -29,7 +29,7 @@ class IntegerType implements Type
         return $this->nullable;
     }
 
-    public function getMethodParameterDefault(): Expr
+    public function getDefaultExpr(): Expr
     {
         if (!$this->schema->hasDefault) {
             throw new \RuntimeException();
@@ -49,11 +49,6 @@ class IntegerType implements Type
     public function getRouteRequirementPattern(): string
     {
         return '-?(0|[1-9]\d*)';
-    }
-
-    public function getStringToTypeCastFunction(): string
-    {
-        return 'intval';
     }
 
     public function getNormalizedType(): string

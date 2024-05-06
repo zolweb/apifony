@@ -63,7 +63,7 @@ class ArrayType implements Type
         return $this->nullable;
     }
 
-    public function getMethodParameterDefault(): Expr
+    public function getDefaultExpr(): Expr
     {
         return new ConstFetch(new Name('null'));
     }
@@ -74,14 +74,6 @@ class ArrayType implements Type
     public function getRouteRequirementPattern(): string
     {
         throw new Exception('Array path parameters are not supported.');
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function getStringToTypeCastFunction(): string
-    {
-        throw new Exception('Array parameters are not supported.');
     }
 
     public function getNormalizedType(): string

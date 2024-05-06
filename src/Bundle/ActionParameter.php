@@ -72,7 +72,7 @@ class ActionParameter
 
     public function getDefault(): Expr
     {
-        return $this->type->getMethodParameterDefault();
+        return $this->type->getDefaultExpr();
     }
 
     public function getRawName(): string

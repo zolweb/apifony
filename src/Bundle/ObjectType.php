@@ -33,7 +33,7 @@ class ObjectType implements Type
         return $this->nullable;
     }
 
-    public function getMethodParameterDefault(): Expr
+    public function getDefaultExpr(): Expr
     {
         throw new \RuntimeException();
     }
@@ -44,14 +44,6 @@ class ObjectType implements Type
     public function getRouteRequirementPattern(): string
     {
         throw new Exception('Object path parameters are not supported.');
-    }
-
-    /**
-     * @throws Exception
-     */
-    public function getStringToTypeCastFunction(): string
-    {
-        throw new Exception('Object parameters are not supported.');
     }
 
     public function getNormalizedType(): string

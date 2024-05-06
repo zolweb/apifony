@@ -29,7 +29,7 @@ class StringType implements Type
         return $this->nullable;
     }
 
-    public function getMethodParameterDefault(): Expr
+    public function getDefaultExpr(): Expr
     {
         if (!$this->schema->hasDefault) {
             throw new \RuntimeException();
@@ -59,11 +59,6 @@ class StringType implements Type
         // The # character is written in the escaped sequence \x{0023} in order to prevent missing escape in regex at
         // line 180 in Symfony\Component\Routing\Generator\UrlGenerator.
         return $this->schema->pattern !== null ? $this->schema->pattern : '[^:/?\x{0023}[\\]@!$&\'\'()*+,;=]+'; // TODO Remove one of the \' and write a twig escaper for yaml strings
-    }
-
-    public function getStringToTypeCastFunction(): string
-    {
-        return 'strval';
     }
 
     public function getNormalizedType(): string

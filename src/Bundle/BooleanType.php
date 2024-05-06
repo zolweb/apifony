@@ -28,7 +28,7 @@ class BooleanType implements Type
         return $this->nullable;
     }
 
-    public function getMethodParameterDefault(): Expr
+    public function getDefaultExpr(): Expr
     {
         if (!$this->schema->hasDefault) {
             throw new \RuntimeException();
@@ -40,11 +40,6 @@ class BooleanType implements Type
     public function getRouteRequirementPattern(): string
     {
         return 'true|false';
-    }
-
-    public function getStringToTypeCastFunction(): string
-    {
-        return 'boolval';
     }
 
     public function getNormalizedType(): string

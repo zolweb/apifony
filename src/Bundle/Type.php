@@ -12,11 +12,9 @@ interface Type
 {
     public function isNullable(): bool;
 
-    public function getMethodParameterDefault(): Expr;
+    public function getDefaultExpr(): Expr;
 
     public function getRouteRequirementPattern(): string;
-
-    public function getStringToTypeCastFunction(): string;
 
     public function getNormalizedType(): string;
 
