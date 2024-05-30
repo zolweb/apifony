@@ -16,7 +16,7 @@ abstract class AbstractController
     /**
      * @throws DenormalizationException
      */
-    public function getStringParameter(Request $request, string $name, string $in, bool $required, ?string $default = null): string
+    public function getStringParameter(Request $request, string $name, string $in, bool $required, ?string $default = null) : string
     {
         $bag = match ($in) {
             'query' => $request->query,
@@ -43,7 +43,7 @@ abstract class AbstractController
     /**
      * @throws DenormalizationException
      */
-    public function getStringOrNullParameter(Request $request, string $name, string $in, bool $required, ?string $default = null): ?string
+    public function getStringOrNullParameter(Request $request, string $name, string $in, bool $required, ?string $default = null) : ?string
     {
         $bag = match ($in) {
             'query' => $request->query,
@@ -67,7 +67,7 @@ abstract class AbstractController
     /**
      * @throws DenormalizationException
      */
-    public function getIntParameter(Request $request, string $name, string $in, bool $required, ?int $default = null): int
+    public function getIntParameter(Request $request, string $name, string $in, bool $required, ?int $default = null) : int
     {
         $bag = match ($in) {
             'query' => $request->query,
@@ -97,7 +97,7 @@ abstract class AbstractController
     /**
      * @throws DenormalizationException
      */
-    public function getIntOrNullParameter(Request $request, string $name, string $in, bool $required, ?int $default = null): ?int
+    public function getIntOrNullParameter(Request $request, string $name, string $in, bool $required, ?int $default = null) : ?int
     {
         $bag = match ($in) {
             'query' => $request->query,
@@ -124,7 +124,7 @@ abstract class AbstractController
     /**
      * @throws DenormalizationException
      */
-    public function getFloatParameter(Request $request, string $name, string $in, bool $required, ?float $default = null): float
+    public function getFloatParameter(Request $request, string $name, string $in, bool $required, ?float $default = null) : float
     {
         $bag = match ($in) {
             'query' => $request->query,
@@ -154,7 +154,7 @@ abstract class AbstractController
     /**
      * @throws DenormalizationException
      */
-    public function getFloatOrNullParameter(Request $request, string $name, string $in, bool $required, ?float $default = null): ?float
+    public function getFloatOrNullParameter(Request $request, string $name, string $in, bool $required, ?float $default = null) : ?float
     {
         $bag = match ($in) {
             'query' => $request->query,
@@ -181,7 +181,7 @@ abstract class AbstractController
     /**
      * @throws DenormalizationException
      */
-    public function getBoolParameter(Request $request, string $name, string $in, bool $required, ?bool $default = null): bool
+    public function getBoolParameter(Request $request, string $name, string $in, bool $required, ?bool $default = null) : bool
     {
         $bag = match ($in) {
             'query' => $request->query,
@@ -203,15 +203,15 @@ abstract class AbstractController
         if ($value === null) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
         }
-        if (!\in_array($value, ['true', 'false'], true)) {
+        if (!\in_array($value, array('true', 'false'), true)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a boolean.");
         }
-        return ['true' => true, 'false' => false][$value];
+        return array('true' => true, 'false' => false)[$value];
     }
     /**
      * @throws DenormalizationException
      */
-    public function getBoolOrNullParameter(Request $request, string $name, string $in, bool $required, ?bool $default = null): ?bool
+    public function getBoolOrNullParameter(Request $request, string $name, string $in, bool $required, ?bool $default = null) : ?bool
     {
         $bag = match ($in) {
             'query' => $request->query,
@@ -230,15 +230,15 @@ abstract class AbstractController
         if ($value === null) {
             return null;
         }
-        if (!\in_array($value, ['true', 'false'], true)) {
+        if (!\in_array($value, array('true', 'false'), true)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a boolean.");
         }
-        return ['true' => true, 'false' => false][$value];
+        return array('true' => true, 'false' => false)[$value];
     }
     /**
      * @throws DenormalizationException
      */
-    public function getStringJsonRequestBody(Request $request, ?string $default = null): string
+    public function getStringJsonRequestBody(Request $request, ?string $default = null) : string
     {
         $value = $request->getContent();
         if ($value === '') {
@@ -256,7 +256,7 @@ abstract class AbstractController
     /**
      * @throws DenormalizationException
      */
-    public function getStringOrNullJsonRequestBody(Request $request, ?string $default = null): ?string
+    public function getStringOrNullJsonRequestBody(Request $request, ?string $default = null) : ?string
     {
         $value = $request->getContent();
         if ($value === '') {
@@ -271,7 +271,7 @@ abstract class AbstractController
     /**
      * @throws DenormalizationException
      */
-    public function getIntJsonRequestBody(Request $request, ?int $default = null): int
+    public function getIntJsonRequestBody(Request $request, ?int $default = null) : int
     {
         $value = $request->getContent();
         if ($value === '') {
@@ -289,7 +289,7 @@ abstract class AbstractController
     /**
      * @throws DenormalizationException
      */
-    public function getIntOrNullJsonRequestBody(Request $request, ?int $default = null): ?int
+    public function getIntOrNullJsonRequestBody(Request $request, ?int $default = null) : ?int
     {
         $value = $request->getContent();
         if ($value === '') {
@@ -307,7 +307,7 @@ abstract class AbstractController
     /**
      * @throws DenormalizationException
      */
-    public function getFloatJsonRequestBody(Request $request, ?float $default = null): float
+    public function getFloatJsonRequestBody(Request $request, ?float $default = null) : float
     {
         $value = $request->getContent();
         if ($value === '') {
@@ -325,7 +325,7 @@ abstract class AbstractController
     /**
      * @throws DenormalizationException
      */
-    public function getFloatOrNullJsonRequestBody(Request $request, ?float $default = null): ?float
+    public function getFloatOrNullJsonRequestBody(Request $request, ?float $default = null) : ?float
     {
         $value = $request->getContent();
         if ($value === '') {
@@ -343,7 +343,7 @@ abstract class AbstractController
     /**
      * @throws DenormalizationException
      */
-    public function getBoolJsonRequestBody(Request $request, ?bool $default = null): bool
+    public function getBoolJsonRequestBody(Request $request, ?bool $default = null) : bool
     {
         $value = $request->getContent();
         if ($value === '') {
@@ -361,7 +361,7 @@ abstract class AbstractController
     /**
      * @throws DenormalizationException
      */
-    public function getBoolOrNullJsonRequestBody(Request $request, ?bool $default = null): ?bool
+    public function getBoolOrNullJsonRequestBody(Request $request, ?bool $default = null) : ?bool
     {
         $value = $request->getContent();
         if ($value === '') {
@@ -381,7 +381,7 @@ abstract class AbstractController
      *
      * @throws DenormalizationException
      */
-    public function getObjectJsonRequestBody(Request $request, string $class, ?object $default = null): object
+    public function getObjectJsonRequestBody(Request $request, string $class, ?object $default = null) : object
     {
         $value = $request->getContent();
         if ($value === '') {
@@ -401,7 +401,7 @@ abstract class AbstractController
      *
      * @throws DenormalizationException
      */
-    public function getObjectOrNullJsonRequestBody(Request $request, string $class, ?object $default = null): ?object
+    public function getObjectOrNullJsonRequestBody(Request $request, string $class, ?object $default = null) : ?object
     {
         $value = $request->getContent();
         if ($value === '') {
@@ -421,7 +421,7 @@ abstract class AbstractController
      *
      * @throws ParameterValidationException
      */
-    public function validateParameter(mixed $value, array $constraints): void
+    public function validateParameter(mixed $value, array $constraints) : void
     {
         $violations = $this->validator->validate($value, $constraints);
         if (\count($violations) > 0) {
@@ -433,15 +433,15 @@ abstract class AbstractController
      *
      * @throws RequestBodyValidationException
      */
-    public function validateRequestBody(mixed $value, array $constraints): void
+    public function validateRequestBody(mixed $value, array $constraints) : void
     {
         $violations = $this->validator->validate($value, $constraints);
         if (\count($violations) > 0) {
-            $errors = [];
+            $errors = array();
             foreach ($violations as $violation) {
                 $path = $violation->getPropertyPath();
                 if (!isset($errors[$path])) {
-                    $errors[$path] = [];
+                    $errors[$path] = array();
                 }
                 $errors[$path][] = (string) $violation->getMessage();
             }

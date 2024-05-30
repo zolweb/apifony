@@ -13,8 +13,8 @@ class FirstOperation200ApplicationJsonResponse
     /**
      * @return array<string, ?string>
      */
-    public function getHeaders(): array
+    public function getHeaders() : array
     {
-        return ['headerString' => (string) $this->headerString, 'headerNumber' => (string) $this->headerNumber, 'headerInteger' => (string) $this->headerInteger, 'headerBoolean' => (string) $this->headerBoolean, 'content-type' => self::CONTENT_TYPE];
+        return array('headerString' => (string) $this->headerString, 'headerNumber' => (string) $this->headerNumber, 'headerInteger' => (string) $this->headerInteger, 'headerBoolean' => (string) $this->headerBoolean, 'content-type' => self::CONTENT_TYPE);
     }
 }

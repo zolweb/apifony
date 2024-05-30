@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Greater;
 use PhpParser\Node\Expr\Throw_;
-use PhpParser\Node\InterpolatedStringPart;
-use PhpParser\Node\Scalar\InterpolatedString;
+use PhpParser\Node\Scalar\Encapsed;
+use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
@@ -360,7 +360,7 @@ class Action
                         new Return_($f->new('JsonResponse', [
                             new Array_([
                                 new ArrayItem($f->val('unsupported_request_type'), $f->val('code')),
-                                new ArrayItem(new InterpolatedString([new InterpolatedStringPart('The value \''), $f->var('requestBodyPayloadContentType'), new InterpolatedStringPart('\' received in content-type header is not a supported format.')]), $f->val('message')),
+                                new ArrayItem(new Encapsed([new EncapsedStringPart('The value \''), $f->var('requestBodyPayloadContentType'), new EncapsedStringPart('\' received in content-type header is not a supported format.')]), $f->val('message')),
                             ]),
                             $f->classConstFetch('Response', 'HTTP_UNSUPPORTED_MEDIA_TYPE'),
                         ])),
@@ -389,7 +389,7 @@ class Action
                     new Return_($f->new('JsonResponse', [
                         new Array_([
                             new ArrayItem($f->val('unsupported_response_type'), $f->val('code')),
-                            new ArrayItem(new InterpolatedString([new InterpolatedStringPart('The value \''), $f->var('responsePayloadContentType'), new InterpolatedStringPart('\' received in accept header is not a supported format.')]), $f->val('message')),
+                            new ArrayItem(new Encapsed([new EncapsedStringPart('The value \''), $f->var('responsePayloadContentType'), new EncapsedStringPart('\' received in accept header is not a supported format.')]), $f->val('message')),
                         ]),
                         $f->classConstFetch('Response', 'HTTP_UNSUPPORTED_MEDIA_TYPE'),
                     ])),

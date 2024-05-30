@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Node\DeclareItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Declare_;
+use PhpParser\Node\Stmt\DeclareDeclare;
 use PhpParser\Node\Stmt\Use_;
-use PhpParser\Node\UseItem;
+use PhpParser\Node\Stmt\UseUse;
 use PhpParser\PrettyPrinter\Standard;
 
 class Controller implements File
@@ -112,11 +112,11 @@ class Controller implements File
             ->addStmt($f->use('Symfony\Component\HttpFoundation\JsonResponse'))
             ->addStmt($f->use('Symfony\Component\HttpFoundation\Request'))
             ->addStmt($f->use('Symfony\Component\HttpFoundation\Response'))
-            ->addStmt(new Use_([new UseItem(new Name('Symfony\Component\Validator\Constraints'), 'Assert')]))
+            ->addStmt(new Use_([new UseUse(new Name('Symfony\Component\Validator\Constraints'), 'Assert')]))
         ;
 
         foreach ($this->usedFormatConstraintNames as $usedFormatConstraintName) {
-            $namespace->addStmt(new Use_([new UseItem(new Name("{$this->bundleNamespace}\\Format\\{$usedFormatConstraintName}"), "Assert{$usedFormatConstraintName}")]));
+            $namespace->addStmt(new Use_([new UseUse(new Name("{$this->bundleNamespace}\\Format\\{$usedFormatConstraintName}"), "Assert{$usedFormatConstraintName}")]));
         }
 
         foreach ($this->usedModelNames as $usedModelName) {
@@ -126,7 +126,7 @@ class Controller implements File
         $namespace->addStmt($class);
 
         return (new Standard())->prettyPrintFile([
-            new Declare_([new DeclareItem('strict_types', $f->val(1))]),
+            new Declare_([new DeclareDeclare('strict_types', $f->val(1))]),
             $namespace->getNode(),
         ]);
     }

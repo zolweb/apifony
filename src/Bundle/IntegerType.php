@@ -8,7 +8,7 @@ use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
-use PhpParser\Node\Scalar\Int_;
+use PhpParser\Node\Scalar\LNumber;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -43,7 +43,7 @@ class IntegerType implements Type
             throw new \RuntimeException();
         }
 
-        return new Int_($this->schema->default);
+        return new LNumber($this->schema->default);
     }
 
     public function getRouteRequirementPattern(): string
@@ -109,7 +109,7 @@ class IntegerType implements Type
 
     public function getInitValue(): Expr
     {
-        return new Int_(0);
+        return new LNumber(0);
     }
 
     public function getUsedModel(): ?string

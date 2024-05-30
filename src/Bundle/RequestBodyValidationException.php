@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Node\DeclareItem;
 use PhpParser\Node\Stmt\Declare_;
+use PhpParser\Node\Stmt\DeclareDeclare;
 use PhpParser\PrettyPrinter\Standard;
 
 class RequestBodyValidationException implements File
@@ -52,7 +52,7 @@ class RequestBodyValidationException implements File
         ;
 
         return (new Standard())->prettyPrintFile([
-            new Declare_([new DeclareItem('strict_types', $f->val(1))]),
+            new Declare_([new DeclareDeclare('strict_types', $f->val(1))]),
             $namespace->getNode(),
         ]);
     }

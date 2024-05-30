@@ -6,9 +6,9 @@ namespace Zol\Ogen\Bundle;
 
 use PhpParser\Builder\Use_;
 use PhpParser\BuilderFactory;
-use PhpParser\Node\DeclareItem;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
+use PhpParser\Node\Stmt\DeclareDeclare;
 use PhpParser\PrettyPrinter\Standard;
 
 class Handler implements File
@@ -92,7 +92,7 @@ class Handler implements File
         ;
 
         return (new Standard())->prettyPrintFile([
-            new Declare_([new DeclareItem('strict_types', $f->val(1))]),
+            new Declare_([new DeclareDeclare('strict_types', $f->val(1))]),
             $namespace->getNode(),
         ]);
     }

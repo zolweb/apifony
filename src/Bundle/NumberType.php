@@ -8,7 +8,7 @@ use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
-use PhpParser\Node\Scalar\Float_;
+use PhpParser\Node\Scalar\DNumber;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -43,7 +43,7 @@ class NumberType implements Type
             throw new \RuntimeException();
         }
 
-        return new Float_($this->schema->default);
+        return new DNumber($this->schema->default);
     }
 
     public function getRouteRequirementPattern(): string
@@ -109,7 +109,7 @@ class NumberType implements Type
 
     public function getInitValue(): Expr
     {
-        return new Float_(.0);
+        return new DNumber(.0);
     }
 
     public function getUsedModel(): ?string

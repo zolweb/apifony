@@ -5,12 +5,12 @@ declare(strict_types=1);
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Node\DeclareItem;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Declare_;
+use PhpParser\Node\Stmt\DeclareDeclare;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\PrettyPrinter\Standard;
@@ -346,7 +346,7 @@ class Bundle implements File
         ;
 
         return (new Standard())->prettyPrintFile([
-            new Declare_([new DeclareItem('strict_types', $f->val(1))]),
+            new Declare_([new DeclareDeclare('strict_types', $f->val(1))]),
             $namespace->getNode(),
         ]);
     }

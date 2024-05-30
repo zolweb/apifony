@@ -5,11 +5,11 @@ declare(strict_types=1);
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Node\ArrayItem;
-use PhpParser\Node\DeclareItem;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Stmt\Declare_;
+use PhpParser\Node\Stmt\DeclareDeclare;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\PrettyPrinter\Standard;
 use Zol\Ogen\OpenApi\Components;
@@ -206,7 +206,7 @@ class ActionResponse implements File
         ;
 
         return (new Standard())->prettyPrintFile([
-            new Declare_([new DeclareItem('strict_types', $f->val(1))]),
+            new Declare_([new DeclareDeclare('strict_types', $f->val(1))]),
             $namespace->getNode(),
         ]);
     }

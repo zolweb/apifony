@@ -5,13 +5,13 @@ declare(strict_types=1);
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Node\ArrayItem;
-use PhpParser\Node\DeclareItem;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Declare_;
+use PhpParser\Node\Stmt\DeclareDeclare;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\PrettyPrinter\Standard;
@@ -38,7 +38,7 @@ class Deserializer implements File
         $f = new BuilderFactory();
 
         return (new Standard())->prettyPrintFile([
-            new Declare_([new DeclareItem('strict_types', $f->val(1))]),
+            new Declare_([new DeclareDeclare('strict_types', $f->val(1))]),
             $f->namespace("{$this->bundleNamespace}\\Api")
                 ->addStmt($f->use('Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor'))
                 ->addStmt($f->use('Symfony\Component\Serializer\Encoder\JsonEncoder'))

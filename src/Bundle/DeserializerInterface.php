@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Node\DeclareItem;
 use PhpParser\Node\Stmt\Declare_;
+use PhpParser\Node\Stmt\DeclareDeclare;
 use PhpParser\PrettyPrinter\Standard;
 
 class DeserializerInterface implements File
@@ -31,7 +31,7 @@ class DeserializerInterface implements File
         $f = new BuilderFactory();
 
         return (new Standard())->prettyPrintFile([
-            new Declare_([new DeclareItem('strict_types', $f->val(1))]),
+            new Declare_([new DeclareDeclare('strict_types', $f->val(1))]),
             $f->namespace("{$this->bundleNamespace}\\Api")
                 ->addStmt($f->interface('DeserializerInterface')
                     ->addStmt($f->method('deserialize')

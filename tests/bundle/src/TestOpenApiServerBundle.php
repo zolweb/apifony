@@ -10,18 +10,18 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 class TestOpenApiServerBundle extends AbstractBundle
 {
-    public function build(ContainerBuilder $container): void
+    public function build(ContainerBuilder $container) : void
     {
         parent::build($container);
         $container->addCompilerPass(new class implements CompilerPassInterface
         {
-            public function process(ContainerBuilder $container): void
+            public function process(ContainerBuilder $container) : void
             {
                 foreach ($container->findTaggedServiceIds('test_open_api_server.handler') as $id => $tags) {
                     foreach ($tags as $tag) {
                         switch ($tag['controller']) {
                             case 'tag':
-                                $container->findDefinition('Zol\Ogen\Tests\TestOpenApiServer\Api\Tag\TagController')->addMethodCall('setHandler', [new Reference($id)]);
+                                $container->findDefinition('Zol\\Ogen\\Tests\\TestOpenApiServer\\Api\\Tag\\TagController')->addMethodCall('setHandler', array(new Reference($id)));
                                 break;
                         }
                     }
@@ -38,7 +38,7 @@ class TestOpenApiServerBundle extends AbstractBundle
     /**
      * @param array<mixed> $config
      */
-    public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder): void
+    public function loadExtension(array $config, ContainerConfigurator $container, ContainerBuilder $builder) : void
     {
         $container->import('../config/services.yaml');
     }

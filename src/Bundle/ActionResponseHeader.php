@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Node\ArrayItem;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Param;
 use Zol\Ogen\OpenApi\Components;
