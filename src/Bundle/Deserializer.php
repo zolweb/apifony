@@ -42,6 +42,7 @@ class Deserializer implements File
             $f->namespace("{$this->bundleNamespace}\\Api")
                 ->addStmt($f->use('Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor'))
                 ->addStmt($f->use('Symfony\Component\Serializer\Encoder\JsonEncoder'))
+                ->addStmt($f->use('Symfony\Component\Serializer\Normalizer\AbstractNormalizer'))
                 ->addStmt($f->use('Symfony\Component\Serializer\Normalizer\ArrayDenormalizer'))
                 ->addStmt($f->use('Symfony\Component\Serializer\Normalizer\ObjectNormalizer'))
                 ->addStmt($f->use('Symfony\Component\Serializer\Serializer'))
@@ -66,7 +67,7 @@ class Deserializer implements File
                         ->addParam($f->param('json')->setType('string'))
                         ->addParam($f->param('type')->setType('string'))
                         ->setReturnType('object')
-                        ->addStmt(new Return_($f->methodCall($f->propertyFetch($f->var('this'), 'serializer'), 'deserialize', $f->args([$f->var('json'), $f->var('type'), $f->classConstFetch('JsonEncoder', 'FORMAT')]))))
+                        ->addStmt(new Return_($f->methodCall($f->propertyFetch($f->var('this'), 'serializer'), 'deserialize', $f->args([$f->var('json'), $f->var('type'), $f->classConstFetch('JsonEncoder', 'FORMAT'), new Array_([new ArrayItem($f->val(true), $f->classConstFetch('AbstractNormalizer', 'REQUIRE_ALL_PROPERTIES'))])]))))
                     )
                 )
                 ->getNode(),

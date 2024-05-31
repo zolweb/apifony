@@ -5,6 +5,7 @@ namespace Zol\Ogen\Tests\TestOpenApiServer\Api;
 
 use Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
+use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\Normalizer\ObjectNormalizer;
 use Symfony\Component\Serializer\Serializer;
@@ -18,6 +19,6 @@ class Deserializer implements DeserializerInterface
     }
     public function deserialize(string $json, string $type) : object
     {
-        return $this->serializer->deserialize($json, $type, JsonEncoder::FORMAT);
+        return $this->serializer->deserialize($json, $type, JsonEncoder::FORMAT, array(AbstractNormalizer::REQUIRE_ALL_PROPERTIES => true));
     }
 }

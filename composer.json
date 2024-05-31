@@ -9,6 +9,7 @@
         "nikic/php-parser": "^4.16 || ^5.0",
         "phpstan/phpdoc-parser": "^1.21",
         "symfony/string": "^6.2 || ^7.0",
+        "symfony/uid": "^6.2 || ^7.0",
         "symfony/yaml": "^6.2 || ^7.0"
     },
     "require-dev": {
