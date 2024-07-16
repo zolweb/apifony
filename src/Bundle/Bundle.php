@@ -8,6 +8,8 @@ use PhpParser\BuilderFactory;
 use PhpParser\Node\DeclareItem;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Name;
+use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Switch_;
@@ -286,28 +288,29 @@ class Bundle implements File
             ->addParam($f->param('container')->setType('ContainerBuilder'))
             ->addStmt($f->staticCall('parent', 'build', [$f->var('container')]))
             ->addStmt($f->methodCall($f->var('container'), 'addCompilerPass', [
-                new New_($f->class('')->implement('CompilerPassInterface')
-                    ->addStmt($f->method('process')
-                        ->makePublic()
-                        ->addParam($f->param('container')->setType('ContainerBuilder'))
-                        ->setReturnType('void')
-                        ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [sprintf('%s.handler', u($this->name)->snake())]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
-                            new Foreach_($f->var('tags'), $f->var('tag'), ['stmts' => [
-                                new Switch_(new ArrayDimFetch($f->var('tag'), $f->val('controller')), array_map(
-                                    static fn (Aggregate $aggregate) => $aggregate->getCase(),
-                                    $this->api->getAggregates(),
-                                )),
-                            ]]),
-                        ]]))
-                        ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [sprintf('%s.format_definition', u($this->name)->snake())]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
-                            new Foreach_($f->var('tags'), $f->var('tag'), ['stmts' => [
-                                new Switch_(new ArrayDimFetch($f->var('tag'), $f->val('format')), array_map(
-                                    static fn (Format $format) => $format->getCase(),
-                                    $this->formats,
-                                )),
-                            ]]),
-                        ]])),
-                    )->getNode(),
+                new New_(
+                    new Class_(null, ['implements' => [new Name('CompilerPassInterface')], 'stmts' => [
+                        $f->method('process')
+                            ->makePublic()
+                            ->addParam($f->param('container')->setType('ContainerBuilder'))
+                            ->setReturnType('void')
+                            ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [sprintf('%s.handler', u($this->name)->snake())]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
+                                new Foreach_($f->var('tags'), $f->var('tag'), ['stmts' => [
+                                    new Switch_(new ArrayDimFetch($f->var('tag'), $f->val('controller')), array_map(
+                                        static fn (Aggregate $aggregate) => $aggregate->getCase(),
+                                        $this->api->getAggregates(),
+                                    )),
+                                ]]),
+                            ]]))
+                            ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [sprintf('%s.format_definition', u($this->name)->snake())]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
+                                new Foreach_($f->var('tags'), $f->var('tag'), ['stmts' => [
+                                    new Switch_(new ArrayDimFetch($f->var('tag'), $f->val('format')), array_map(
+                                        static fn (Format $format) => $format->getCase(),
+                                        $this->formats,
+                                    )),
+                                ]]),
+                            ]]))->getNode(),
+                    ]]),
                 ),
             ]))
         ;
