@@ -1,7 +1,7 @@
 build-job:
   parallel:
     matrix:
-      - PHP_VERSION: ['8.1', '8.2']
+      - PHP_VERSION: ['8.1', '8.2', '8.3']
   image: php:$PHP_VERSION-fpm
   script:
     - apt-get update
