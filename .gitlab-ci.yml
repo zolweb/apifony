@@ -1,8 +1,8 @@
 build-job:
   parallel:
     matrix:
-      - php-version: ['8.1', '8.2']
-  image: php:${php-version}-fpm
+      - PHP_VERSION: ['8.1', '8.2']
+  image: php:$PHP_VERSION-fpm
   script:
     - apt-get update
     - apt-get install -y zip unzip
