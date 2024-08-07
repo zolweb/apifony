@@ -13,5 +13,10 @@ parameters:
             - 'RuntimeException'
             - 'LogicException'
             - 'Error'
+    ignoreErrors:
+        - '#^Parameter \#1 \$declares of class PhpParser\\Node\\Stmt\\Declare_ constructor expects array\<PhpParser\\Node\\DeclareItem\>, array\<int, PhpParser\\Node\\Stmt\\DeclareDeclare\> given\.$#'
+        - '#^Parameter \#1 \$items of class PhpParser\\Node\\Expr\\Array_ constructor expects array\<PhpParser\\Node\\ArrayItem\>, array\<int, PhpParser\\Node\\Expr\\ArrayItem\> given\.$#'
+        - '#^Parameter \#1 \$uses of class PhpParser\\Node\\Stmt\\Use_ constructor expects array\<PhpParser\\Node\\UseItem\>, array\<int, PhpParser\\Node\\Stmt\\UseUse\> given\.$#'
+        - '#^Parameter \#1 \$items of class PhpParser\\Node\\Expr\\Array_ constructor expects array\<PhpParser\\Node\\ArrayItem\>, array\<PhpParser\\Node\\Expr\\ArrayItem\> given\.$#'
 includes:
     - vendor/phpstan/phpstan/conf/bleedingEdge.neon
