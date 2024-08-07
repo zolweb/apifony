@@ -8,3 +8,4 @@ build-job:
     - php -r "unlink('composer-setup.php');"
     - php composer.phar install
     - ./ogen TestOpenApiServer Zol\\Ogen\\Tests\\TestOpenApiServer zol/test-openapi-server tests/openapi.yaml tests/bundle
+    - php vendor/bin/phpunit
