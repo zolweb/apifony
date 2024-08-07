@@ -22,7 +22,7 @@
         "symfony/framework-bundle": "^6.2 || ^7.0",
         "symfony/phpunit-bridge": "^6.2 || ^7.0",
         "symfony/test-pack": "^1.1",
-        "zol/test-openapi-server": "dev-main"
+        "zol/test-openapi-server": "@dev"
     },
     "autoload": {
         "psr-4": {

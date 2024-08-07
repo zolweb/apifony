@@ -9,15 +9,4 @@ services:
       XDEBUG_TRIGGER: 'yes'
       DBGP_IDEKEY: 'ogen'
     volumes:
-      - ./ogen:/var/www/html/ogen:delegated
-      - ./src:/var/www/html/src:delegated
-      - ./vendor:/var/www/html/vendor:delegated
-      - ./composer.json:/var/www/html/composer.json:delegated
-      - ./composer.lock:/var/www/html/composer.lock:delegated
-      - ~/.composer:/var/www/.composer:cached
-      - ./tests:/var/www/html/tests:delegated
-      - ./phpunit.xml.dist:/var/www/html/phpunit.xml.dist:delegated
-      - ./phpstan.neon:/var/www/html/phpstan.neon:delegated
-      - ./phpstan-bundle.neon:/var/www/html/phpstan-bundle.neon:delegated
-      - ./.php-cs-fixer.dist.php:/var/www/html/.php-cs-fixer.dist.php:delegated
-      - ./.php-cs-fixer-bundle.dist.php:/var/www/html/.php-cs-fixer-bundle.dist.php:delegated
+      - .:/var/www/html:delegated
