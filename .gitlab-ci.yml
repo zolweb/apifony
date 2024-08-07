@@ -2,6 +2,7 @@ build-job:
   parallel:
     matrix:
       - PHP_VERSION: ['8.1', '8.2', '8.3']
+        COMPOSER_OPTIONS: ['', '--prefer-lowest --prefer-stable']
   image: php:$PHP_VERSION-fpm
   script:
     - apt-get update
@@ -10,5 +11,6 @@ build-job:
     - php composer-setup.php
     - php -r "unlink('composer-setup.php');"
     - php composer.phar install
+    - php composer.phar update $COMPOSER_OPTIONS
     - ./ogen TestOpenApiServer Zol\\Ogen\\Tests\\TestOpenApiServer zol/test-openapi-server tests/openapi.yaml tests/bundle
     - php vendor/bin/phpunit
