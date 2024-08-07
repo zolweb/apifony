@@ -24,8 +24,8 @@ phpstan:
         COMPOSER_OPTIONS: ['', '--prefer-lowest --prefer-stable']
   script:
     - ./ogen TestOpenApiServer Zol\\Ogen\\Tests\\TestOpenApiServer zol/test-openapi-server tests/openapi.yaml tests/bundle
-    - php vendor/bin/phpstan analyse
-    - php vendor/bin/phpstan analyse -c phpstan-bundle.neon
+    - php vendor/bin/phpstan analyse --memory-limit 1G --no-progress --error-format gitlab
+    - php vendor/bin/phpstan analyse --memory-limit 1G --no-progress --error-format gitlab -c phpstan-bundle.neon
 
 tests:
   parallel:
