@@ -1,4 +1,4 @@
-test-job:
+build-job:
+  image: php:8.2-fpm
   script:
-    - echo "LOL !"
-    - date
+    - composer -v
