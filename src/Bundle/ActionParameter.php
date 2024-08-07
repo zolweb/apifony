@@ -48,7 +48,7 @@ class ActionParameter
         if ($parameter->schema instanceof Reference) {
             throw new \RuntimeException();
         }
-        $variableName = sprintf('%s%s', $parameter->in[0], u($parameter->name)->camel()->title());
+        $variableName = \sprintf('%s%s', $parameter->in[0], u($parameter->name)->camel()->title());
         $className = "{$actionClassName}_{$parameter->name}";
         $className = u($className)->camel()->title()->toString();
 
@@ -150,7 +150,7 @@ class ActionParameter
         return [
             new Expression(new Assign(new Variable($this->variableName), $this->type->getInitValue())),
             new TryCatch([
-                new Expression(new Assign(new Variable($this->variableName), $f->methodCall($f->var('this'), sprintf('get%s%sParameter', ucfirst($this->type->getBuiltInPhpType()), $this->type->isNullable() ? 'OrNull' : ''), array_merge([$f->var('request'), new String_($this->parameter->name), $this->parameter->in, $this->parameter->required], $this->schema->hasDefault ? [$this->type->getDefaultExpr()] : [])))),
+                new Expression(new Assign(new Variable($this->variableName), $f->methodCall($f->var('this'), \sprintf('get%s%sParameter', ucfirst($this->type->getBuiltInPhpType()), $this->type->isNullable() ? 'OrNull' : ''), array_merge([$f->var('request'), new String_($this->parameter->name), $this->parameter->in, $this->parameter->required], $this->schema->hasDefault ? [$this->type->getDefaultExpr()] : [])))),
                 new Expression($f->methodCall($f->var('this'), 'validateParameter', [
                     new Variable($this->variableName),
                     array_map(

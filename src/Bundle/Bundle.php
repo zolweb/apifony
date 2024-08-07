@@ -294,7 +294,7 @@ class Bundle implements File
                             ->makePublic()
                             ->addParam($f->param('container')->setType('ContainerBuilder'))
                             ->setReturnType('void')
-                            ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [sprintf('%s.handler', u($this->name)->snake())]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
+                            ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [\sprintf('%s.handler', u($this->name)->snake())]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
                                 new Foreach_($f->var('tags'), $f->var('tag'), ['stmts' => [
                                     new Switch_(new ArrayDimFetch($f->var('tag'), $f->val('controller')), array_map(
                                         static fn (Aggregate $aggregate) => $aggregate->getCase(),
@@ -302,7 +302,7 @@ class Bundle implements File
                                     )),
                                 ]]),
                             ]]))
-                            ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [sprintf('%s.format_definition', u($this->name)->snake())]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
+                            ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [\sprintf('%s.format_definition', u($this->name)->snake())]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
                                 new Foreach_($f->var('tags'), $f->var('tag'), ['stmts' => [
                                     new Switch_(new ArrayDimFetch($f->var('tag'), $f->val('format')), array_map(
                                         static fn (Format $format) => $format->getCase(),

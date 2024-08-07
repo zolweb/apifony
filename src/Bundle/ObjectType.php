@@ -73,7 +73,7 @@ class ObjectType implements Type
         }
 
         if ($this->schema->format !== null) {
-            $constraints[] = new Constraint(sprintf('Assert%s', u($this->schema->format)->camel()->title()), [], $this->schema->format);
+            $constraints[] = new Constraint(\sprintf('Assert%s', u($this->schema->format)->camel()->title()), [], $this->schema->format);
         }
 
         return $constraints;

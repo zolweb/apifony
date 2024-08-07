@@ -24,7 +24,7 @@ return (new PhpCsFixer\Config())
         '@PHP71Migration:risky' => true,
         '@PHP74Migration:risky' => true,
         '@PHP80Migration:risky' => true,
-        // '@PHP82Migration' => true,
+        '@PHP82Migration' => true,
         '@PER-CS2.0' => true,
         '@PER-CS2.0:risky' => true,
         '@PSR12' => true,

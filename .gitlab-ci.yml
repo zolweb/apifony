@@ -1,10 +1,6 @@
-build-job:
-  parallel:
-    matrix:
-      - PHP_VERSION: ['8.1', '8.2', '8.3']
-        COMPOSER_OPTIONS: ['', '--prefer-lowest --prefer-stable']
+default:
   image: php:$PHP_VERSION-fpm
-  script:
+  before_script:
     - apt-get update
     - apt-get install -y zip unzip
     - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
@@ -12,6 +8,30 @@ build-job:
     - php -r "unlink('composer-setup.php');"
     - php composer.phar install
     - php composer.phar update $COMPOSER_OPTIONS
-    - ./ogen TestOpenApiServer Zol\\Ogen\\Tests\\TestOpenApiServer zol/test-openapi-server tests/openapi.yaml tests/bundle
+
+php-cs-fixer-check:
+  parallel:
+    matrix:
+      - PHP_VERSION: ['8.3']
+        COMPOSER_OPTIONS: ['']
+  script:
     - php vendor/bin/php-cs-fixer -vv fix --dry-run --diff
+
+phpstan:
+  parallel:
+    matrix:
+      - PHP_VERSION: ['8.1', '8.2', '8.3']
+        COMPOSER_OPTIONS: ['', '--prefer-lowest --prefer-stable']
+  script:
+    - ./ogen TestOpenApiServer Zol\\Ogen\\Tests\\TestOpenApiServer zol/test-openapi-server tests/openapi.yaml tests/bundle
+    - php vendor/bin/phpstan analyse
+    - php vendor/bin/phpstan analyse -c phpstan-bundle.neon
+
+tests:
+  parallel:
+    matrix:
+      - PHP_VERSION: ['8.1', '8.2', '8.3']
+        COMPOSER_OPTIONS: ['', '--prefer-lowest --prefer-stable']
+  script:
+    - ./ogen TestOpenApiServer Zol\\Ogen\\Tests\\TestOpenApiServer zol/test-openapi-server tests/openapi.yaml tests/bundle
     - php vendor/bin/phpunit

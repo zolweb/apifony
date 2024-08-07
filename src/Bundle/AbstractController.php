@@ -118,14 +118,14 @@ class AbstractController implements File
 
         foreach (['string', 'int', 'float', 'bool'] as $type) {
             foreach ([false, true] as $nullable) {
-                $getParameterMethod = $f->method(sprintf('get%s%sParameter', ucfirst($type), $nullable ? 'OrNull' : ''))
+                $getParameterMethod = $f->method(\sprintf('get%s%sParameter', ucfirst($type), $nullable ? 'OrNull' : ''))
                     ->makePublic()
                     ->addParam($f->param('request')->setType('Request'))
                     ->addParam($f->param('name')->setType('string'))
                     ->addParam($f->param('in')->setType('string'))
                     ->addParam($f->param('required')->setType('bool'))
                     ->addParam($f->param('default')->setType("?{$type}")->setDefault(null))
-                    ->setReturnType(sprintf("%s{$type}", $nullable ? '?' : ''))
+                    ->setReturnType(\sprintf("%s{$type}", $nullable ? '?' : ''))
                     ->setDocComment(<<<'COMMENT'
                         /**
                          * @throws DenormalizationException
@@ -187,11 +187,11 @@ class AbstractController implements File
 
         foreach (['string', 'int', 'float', 'bool'] as $type) {
             foreach ([false, true] as $nullable) {
-                $getParameterMethod = $f->method(sprintf('get%s%sJsonRequestBody', ucfirst($type), $nullable ? 'OrNull' : ''))
+                $getParameterMethod = $f->method(\sprintf('get%s%sJsonRequestBody', ucfirst($type), $nullable ? 'OrNull' : ''))
                     ->makePublic()
                     ->addParam($f->param('request')->setType('Request'))
                     ->addParam($f->param('default')->setType("?{$type}")->setDefault(null))
-                    ->setReturnType(sprintf("%s{$type}", $nullable ? '?' : ''))
+                    ->setReturnType(\sprintf("%s{$type}", $nullable ? '?' : ''))
                     ->setDocComment(<<<'COMMENT'
                         /**
                          * @throws DenormalizationException
@@ -248,12 +248,12 @@ class AbstractController implements File
         }
 
         foreach ([false, true] as $nullable) {
-            $getParameterMethod = $f->method(sprintf('getObject%sJsonRequestBody', $nullable ? 'OrNull' : ''))
+            $getParameterMethod = $f->method(\sprintf('getObject%sJsonRequestBody', $nullable ? 'OrNull' : ''))
                 ->makePublic()
                 ->addParam($f->param('request')->setType('Request'))
                 ->addParam($f->param('class')->setType('string'))
                 ->addParam($f->param('default')->setType('?object')->setDefault(null))
-                ->setReturnType(sprintf('%sobject', $nullable ? '?' : ''))
+                ->setReturnType(\sprintf('%sobject', $nullable ? '?' : ''))
                 ->setDocComment(<<<'COMMENT'
                     /**
                      * @param class-string $class

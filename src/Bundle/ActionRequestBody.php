@@ -40,7 +40,7 @@ class ActionRequestBody
             throw new Exception('Request bodies with mime types other than \'application/json\' are not supported.');
         }
 
-        $className = u(sprintf('%s_%s_RequestBodyPayload', $actionName, $mimeType ?? 'empty'))->camel()->title()->toString();
+        $className = u(\sprintf('%s_%s_RequestBodyPayload', $actionName, $mimeType ?? 'empty'))->camel()->title()->toString();
 
         $payloadModels = [];
         $payloadType = null;
@@ -167,7 +167,7 @@ class ActionRequestBody
             match ($this->mimeType) {
                 'application/json' => [
                     new TryCatch([
-                        new Expression(new Assign($f->var('requestBodyPayload'), $f->methodCall($f->var('this'), sprintf('get%sJsonRequestBody', ucfirst($this->getPayloadBuiltInPhpType())), array_merge([$f->var('request')], $this->getPayloadBuiltInPhpType() === 'object' ? [$f->classConstFetch($this->getPayloadTypeName(), 'class')] : [])))),
+                        new Expression(new Assign($f->var('requestBodyPayload'), $f->methodCall($f->var('this'), \sprintf('get%sJsonRequestBody', ucfirst($this->getPayloadBuiltInPhpType())), array_merge([$f->var('request')], $this->getPayloadBuiltInPhpType() === 'object' ? [$f->classConstFetch($this->getPayloadTypeName(), 'class')] : [])))),
                         new Expression($f->methodCall($f->var('this'), 'validateRequestBody', [
                             $f->var('requestBodyPayload'),
                             array_map(

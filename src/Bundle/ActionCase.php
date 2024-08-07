@@ -78,7 +78,7 @@ class ActionCase
         return new self(
             $requestBodyPayloadType,
             $responseContentType,
-            sprintf(
+            \sprintf(
                 '%sFrom%sPayloadTo%sContent',
                 u($operation->operationId)->camel(),
                 $requestBodyPayloadType?->getNormalizedType() ?? 'Empty',

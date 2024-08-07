@@ -58,7 +58,7 @@ class StringType implements Type
     {
         // The # character is written in the escaped sequence \x{0023} in order to prevent missing escape in regex at
         // line 180 in Symfony\Component\Routing\Generator\UrlGenerator.
-        return $this->schema->pattern !== null ? $this->schema->pattern : '[^:/?\x{0023}[\\]@!$&\'\'()*+,;=]+'; // TODO Remove one of the \' and write a twig escaper for yaml strings
+        return $this->schema->pattern !== null ? $this->schema->pattern : '[^:/?\x{0023}[\]@!$&\'\'()*+,;=]+'; // TODO Remove one of the \' and write a twig escaper for yaml strings
     }
 
     public function getNormalizedType(): string
@@ -82,7 +82,7 @@ class StringType implements Type
         }
 
         if ($this->schema->format !== null) {
-            $constraints[] = new Constraint(sprintf('Assert%s', u($this->schema->format)->camel()->title()), [], $this->schema->format);
+            $constraints[] = new Constraint(\sprintf('Assert%s', u($this->schema->format)->camel()->title()), [], $this->schema->format);
         }
 
         if ($this->schema->pattern !== null) {
