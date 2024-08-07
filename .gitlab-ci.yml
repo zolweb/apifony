@@ -2,7 +2,7 @@ build-job:
   image: php:8.2-fpm
   script:
     - apt-get update
-    - apt-get install -y zip unzip php-zip
+    - apt-get install -y zip unzip
     - php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
     - php composer-setup.php
     - php -r "unlink('composer-setup.php');"
