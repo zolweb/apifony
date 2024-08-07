@@ -7,5 +7,5 @@ build-job:
     - php composer-setup.php
     - php -r "unlink('composer-setup.php');"
     - php composer.phar install
-    - ls -la
+    - pwd
     - ./ogen TestOpenApiServer Zol\\Ogen\\Tests\\TestOpenApiServer zol/test-openapi-server /var/www/html/tests/openapi.yaml /var/www/html/tests/bundle
