@@ -2,3 +2,4 @@
 .zol/
 var/*
 vendor/
+composer.lock
