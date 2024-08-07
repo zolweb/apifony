@@ -13,4 +13,5 @@ build-job:
     - php composer.phar install
     - php composer.phar update $COMPOSER_OPTIONS
     - ./ogen TestOpenApiServer Zol\\Ogen\\Tests\\TestOpenApiServer zol/test-openapi-server tests/openapi.yaml tests/bundle
+    - php vendor/bin/php-cs-fixer -vv fix --dry-run --diff
     - php vendor/bin/phpunit
