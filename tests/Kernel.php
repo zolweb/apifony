@@ -31,6 +31,13 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
     {
         $container->extension('framework', [
             'http_method_override' => false,
+            'handle_all_throwables' => true,
+            'validation' => [
+                'email_validation_mode' => 'html5',
+            ],
+            'php_errors' => [
+                'log' => true,
+            ],
             'test' => true,
         ]);
 
