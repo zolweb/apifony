@@ -16,10 +16,10 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\PrettyPrinter\Standard;
 
-readonly class Deserializer implements File
+class Deserializer implements File
 {
     public function __construct(
-        private string $bundleNamespace,
+        private readonly string $bundleNamespace,
     ) {
     }
 

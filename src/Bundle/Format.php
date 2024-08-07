@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
@@ -62,7 +63,7 @@ class Format
         $f = new BuilderFactory();
 
         return new Case_($f->val($this->rawName), [
-            new Expression($f->methodCall($f->methodCall($f->var('container'), 'findDefinition', ["{$this->bundleNamespace}\\Format\\{$this->name}Validator"]), 'addMethodCall', [$f->val('setFormatDefinition'), new Array_([new \PhpParser\Node\ArrayItem($f->new('Reference', [$f->var('id')]))])])),
+            new Expression($f->methodCall($f->methodCall($f->var('container'), 'findDefinition', ["{$this->bundleNamespace}\\Format\\{$this->name}Validator"]), 'addMethodCall', [$f->val('setFormatDefinition'), new Array_([new ArrayItem($f->new('Reference', [$f->var('id')]))])])),
             new Break_(),
         ]);
     }

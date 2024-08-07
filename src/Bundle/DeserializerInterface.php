@@ -9,10 +9,10 @@ use PhpParser\Node\DeclareItem;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\PrettyPrinter\Standard;
 
-readonly class DeserializerInterface implements File
+class DeserializerInterface implements File
 {
     public function __construct(
-        private string $bundleNamespace,
+        private readonly string $bundleNamespace,
     ) {
     }
 

@@ -7,7 +7,6 @@ namespace Zol\Ogen\Bundle;
 use PhpParser\Builder\Use_;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\DeclareItem;
-use PhpParser\Node\Param;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\PrettyPrinter\Standard;

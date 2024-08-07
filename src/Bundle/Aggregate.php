@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
+use PhpParser\Node\ArrayItem;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
@@ -99,7 +100,7 @@ class Aggregate
         $f = new BuilderFactory();
 
         return new Case_($f->val(u($this->name)->snake()->toString()), [
-            new Expression($f->methodCall($f->methodCall($f->var('container'), 'findDefinition', [sprintf('%s\%s', $this->controller->getNamespace(), $this->controller->getClassName())]), 'addMethodCall', [$f->val('setHandler'), new Array_([new \PhpParser\Node\ArrayItem($f->new('Reference', [$f->var('id')]))])])),
+            new Expression($f->methodCall($f->methodCall($f->var('container'), 'findDefinition', [sprintf('%s\%s', $this->controller->getNamespace(), $this->controller->getClassName())]), 'addMethodCall', [$f->val('setHandler'), new Array_([new ArrayItem($f->new('Reference', [$f->var('id')]))])])),
             new Break_(),
         ]);
     }

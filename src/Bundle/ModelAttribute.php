@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Comment;
 use PhpParser\Comment\Doc;
 use PhpParser\Node\Param;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
