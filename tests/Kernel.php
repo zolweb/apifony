@@ -38,6 +38,10 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
             'php_errors' => [
                 'log' => true,
             ],
+            'uid' => [
+                'default_uuid_version' => 7,
+                'time_based_uuid_version' => 7,
+            ],
             'test' => true,
         ]);
 
