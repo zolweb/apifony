@@ -23,11 +23,11 @@ class Schema
         
         #[Assert\Valid] #[Assert\NotNull] public readonly SchemaObjectProperty $objectProperty,
         
-        #[Assert\NotNull] #[Assert\All(constraints: array(new Assert\NotNull()))] public readonly array $arrayProperty,
+        #[Assert\NotNull] #[Assert\All(constraints: [new Assert\NotNull()])] public readonly array $arrayProperty,
         
-        #[Assert\NotNull] #[Assert\Valid] #[Assert\All(constraints: array(new Assert\NotNull()))] public readonly array $objectArrayProperty,
+        #[Assert\NotNull] #[Assert\Valid] #[Assert\All(constraints: [new Assert\NotNull()])] public readonly array $objectArrayProperty,
         
-        #[Assert\NotNull] #[Assert\Valid] #[Assert\All(constraints: array(new Assert\NotNull()))] public readonly array $recursiveObjectArray
+        #[Assert\NotNull] #[Assert\Valid] #[Assert\All(constraints: [new Assert\NotNull()])] public readonly array $recursiveObjectArray
     )
     {
     }

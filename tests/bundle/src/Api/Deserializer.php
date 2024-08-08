@@ -15,10 +15,10 @@ class Deserializer implements DeserializerInterface
     private SerializerInterface $serializer;
     public function __construct()
     {
-        $this->serializer = new Serializer(normalizers: array(new ObjectNormalizer(propertyTypeExtractor: new PhpStanExtractor()), new ArrayDenormalizer()), encoders: array(new JsonEncoder()));
+        $this->serializer = new Serializer(normalizers: [new ObjectNormalizer(propertyTypeExtractor: new PhpStanExtractor()), new ArrayDenormalizer()], encoders: [new JsonEncoder()]);
     }
-    public function deserialize(string $json, string $type) : object
+    public function deserialize(string $json, string $type): object
     {
-        return $this->serializer->deserialize($json, $type, JsonEncoder::FORMAT, array(AbstractNormalizer::REQUIRE_ALL_PROPERTIES => true));
+        return $this->serializer->deserialize($json, $type, JsonEncoder::FORMAT, [AbstractNormalizer::REQUIRE_ALL_PROPERTIES => true]);
     }
 }

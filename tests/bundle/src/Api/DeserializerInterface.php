@@ -12,5 +12,5 @@ interface DeserializerInterface
      *
      * @return T
      */
-    public function deserialize(string $json, string $type) : object;
+    public function deserialize(string $json, string $type): object;
 }
