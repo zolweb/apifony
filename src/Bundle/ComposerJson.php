@@ -30,13 +30,13 @@ class ComposerJson implements File
                 'require' => [
                     'phpdocumentor/type-resolver' => '^1.8', // Required by PhpStanExtractor
                     'phpstan/phpdoc-parser' => '^1.13', // Required by PhpStanExtractor
-                    'symfony/dependency-injection' => '^6.2 || ^7.0',
-                    'symfony/http-foundation' => '^6.2 || ^7.0',
-                    'symfony/http-kernel' => '^6.2 || ^7.0',
-                    'symfony/serializer' => '^6.2 || ^7.0',
-                    'symfony/validator' => '^6.2 || ^7.0',
-                    'symfony/property-access' => '^6.2 || ^7.0', // Required by ObjectNormalizer
-                    'symfony/property-info' => '^6.2 || ^7.0',
+                    'symfony/dependency-injection' => '^6.3 || ^7.0',
+                    'symfony/http-foundation' => '^6.3 || ^7.0',
+                    'symfony/http-kernel' => '^6.3 || ^7.0',
+                    'symfony/serializer' => '^6.3 || ^7.0',
+                    'symfony/validator' => '^6.3 || ^7.0',
+                    'symfony/property-access' => '^6.3 || ^7.0', // Required by ObjectNormalizer
+                    'symfony/property-info' => '^6.3 || ^7.0',
                 ],
                 'autoload' => [
                     'psr-4' => [
