@@ -27,6 +27,7 @@ class ComposerJson implements File
         try {
             return json_encode([
                 'name' => $this->packageName,
+                'version' => '1.0.0',
                 'require' => [
                     'phpdocumentor/type-resolver' => '^1.8', // Required by PhpStanExtractor
                     'phpstan/phpdoc-parser' => '^1.13', // Required by PhpStanExtractor
