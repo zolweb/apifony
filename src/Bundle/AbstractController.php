@@ -186,13 +186,21 @@ class AbstractController implements File
                             new Return_($f->var('value')),
                         ],
                         'int' => [
-                            new If_(new BooleanNot($f->funcCall('ctype_digit', [$f->var('value')])), ['stmts' => [
+                            new Expression(new Assign($f->var('absValue'), $f->var('value'))),
+                            new If_($f->funcCall('str_starts_with', [$f->var('value'), '-']), ['stmts' => [
+                                new Expression(new Assign($f->var('absValue'), $f->funcCall('substr', [$f->var('value'), 1]))),
+                            ]]),
+                            new If_(new BooleanNot($f->funcCall('ctype_digit', [$f->var('absValue')])), ['stmts' => [
                                 new Expression(new Throw_($f->new('DenormalizationException', [new Encapsed([new EncapsedStringPart('Parameter \''), $f->var('name'), new EncapsedStringPart('\' in \''), $f->var('in'), new EncapsedStringPart('\' must be an integer.')])]))),
                             ]]),
                             new Return_(new Int_($f->var('value'))),
                         ],
                         'float' => [
-                            new If_(new BooleanNot($f->funcCall('is_numeric', [$f->var('value')])), ['stmts' => [
+                            new Expression(new Assign($f->var('absValue'), $f->var('value'))),
+                            new If_($f->funcCall('str_starts_with', [$f->var('value'), '-']), ['stmts' => [
+                                new Expression(new Assign($f->var('absValue'), $f->funcCall('substr', [$f->var('value'), 1]))),
+                            ]]),
+                            new If_(new BooleanNot($f->funcCall('is_numeric', [$f->var('absValue')])), ['stmts' => [
                                 new Expression(new Throw_($f->new('DenormalizationException', [new Encapsed([new EncapsedStringPart('Parameter \''), $f->var('name'), new EncapsedStringPart('\' in \''), $f->var('in'), new EncapsedStringPart('\' must be a numeric.')])]))),
                             ]]),
                             new Return_(new Double($f->var('value'), ['kind' => Double::KIND_FLOAT])),

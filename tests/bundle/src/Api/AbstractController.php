@@ -89,7 +89,11 @@ abstract class AbstractController
         if ($value === null) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
         }
-        if (!ctype_digit($value)) {
+        $absValue = $value;
+        if (str_starts_with($value, '-')) {
+            $absValue = substr($value, 1);
+        }
+        if (!ctype_digit($absValue)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be an integer.");
         }
         return (int) $value;
@@ -116,7 +120,11 @@ abstract class AbstractController
         if ($value === null) {
             return null;
         }
-        if (!ctype_digit($value)) {
+        $absValue = $value;
+        if (str_starts_with($value, '-')) {
+            $absValue = substr($value, 1);
+        }
+        if (!ctype_digit($absValue)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be an integer.");
         }
         return (int) $value;
@@ -146,7 +154,11 @@ abstract class AbstractController
         if ($value === null) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
         }
-        if (!is_numeric($value)) {
+        $absValue = $value;
+        if (str_starts_with($value, '-')) {
+            $absValue = substr($value, 1);
+        }
+        if (!is_numeric($absValue)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a numeric.");
         }
         return (float) $value;
@@ -173,7 +185,11 @@ abstract class AbstractController
         if ($value === null) {
             return null;
         }
-        if (!is_numeric($value)) {
+        $absValue = $value;
+        if (str_starts_with($value, '-')) {
+            $absValue = substr($value, 1);
+        }
+        if (!is_numeric($absValue)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a numeric.");
         }
         return (float) $value;
