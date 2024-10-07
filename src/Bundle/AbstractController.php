@@ -60,6 +60,31 @@ class AbstractController implements File
             ->addParam($f->param('validator')->setType('ValidatorInterface')->makeProtected()->makeReadonly())
         ;
 
+        $getObjectWwwFormUrlEncodedMethod = $f->method('getObjectWwwFormUrlEncodedRequestBody')
+            ->makePublic()
+            ->addParam($f->param('request')->setType('Request'))
+            ->addParam($f->param('class')->setType('string'))
+            ->setReturnType('object')
+            ->setDocComment(<<<'COMMENT'
+                /**
+                 * @param class-string $class
+                 *
+                 * @throws DenormalizationException
+                 */
+                COMMENT
+            )
+            ->addStmt(new Expression(new Assign($f->var('value'), $f->methodCall($f->propertyFetch($f->var('request'), 'request'), 'all'))))
+            ->addStmt(new TryCatch(
+                [
+                    new Return_($f->methodCall($f->propertyFetch($f->var('this'), 'deserializer'), 'denormalize', [$f->var('value'), $f->var('class')])),
+                ], [
+                    new Catch_([new Name('ExceptionInterface')], $f->var('e'), [
+                        new Expression(new Throw_($f->new('DenormalizationException', [new Encapsed([new EncapsedStringPart('Request body could not be deserialized: '), $f->methodCall($f->var('e'), 'getMessage')])]))),
+                    ]),
+                ]),
+            )
+        ;
+
         $validateParameter = $f->method('validateParameter')
             ->makePublic()
             ->addParam($f->param('value')->setType('mixed'))
@@ -291,6 +316,8 @@ class AbstractController implements File
 
             $class->addStmt($getParameterMethod);
         }
+
+        $class->addStmt($getObjectWwwFormUrlEncodedMethod);
 
         $class->addStmt($validateParameter)
             ->addStmt($validateRequestBody)

@@ -33,6 +33,7 @@ class DeserializerInterface implements File
         return (new Standard())->prettyPrintFile([
             new Declare_([new DeclareDeclare('strict_types', $f->val(1))]),
             $f->namespace("{$this->bundleNamespace}\\Api")
+                ->addStmt($f->use('Symfony\Component\Serializer\Exception\ExceptionInterface'))
                 ->addStmt($f->interface('DeserializerInterface')
                     ->addStmt($f->method('deserialize')
                         ->setDocComment(<<<'COMMENT'
@@ -47,6 +48,25 @@ class DeserializerInterface implements File
                         )
                         ->makePublic()
                         ->addParam($f->param('json')->setType('string'))
+                        ->addParam($f->param('type')->setType('string'))
+                        ->setReturnType('object'),
+                    )
+                    ->addStmt($f->method('denormalize')
+                        ->setDocComment(<<<'COMMENT'
+                            /**
+                             * @template T of object
+                             *
+                             * @param array<mixed> $data
+                             * @param class-string<T> $type
+                             *
+                             * @return T
+                             *
+                             * @throws ExceptionInterface
+                             */
+                            COMMENT
+                        )
+                        ->makePublic()
+                        ->addParam($f->param('data')->setType('array'))
                         ->addParam($f->param('type')->setType('string'))
                         ->setReturnType('object'),
                     ),

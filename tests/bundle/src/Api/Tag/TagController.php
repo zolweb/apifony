@@ -166,6 +166,16 @@ class TagController extends AbstractController
                     $errors['requestBody'] = $e->messages;
                 }
                 break;
+            case 'application/x-www-form-urlencoded':
+                try {
+                    $requestBodyPayload = $this->getObjectWwwFormUrlEncodedRequestBody($request, FirstOperationApplicationXWwwFormUrlencodedRequestBodyPayload::class);
+                    $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
+                } catch (DenormalizationException $e) {
+                    $errors['requestBody'] = [$e->getMessage()];
+                } catch (RequestBodyValidationException $e) {
+                    $errors['requestBody'] = $e->messages;
+                }
+                break;
             default:
                 return new JsonResponse(['code' => 'unsupported_request_type', 'message' => "The value '{$requestBodyPayloadContentType}' received in content-type header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);
         }
@@ -179,6 +189,9 @@ class TagController extends AbstractController
         switch (true) {
             case $requestBodyPayload instanceof Schema && $responsePayloadContentType === 'application/json':
                 $response = $this->handler->firstOperationFromSchemaPayloadToApplicationJsonContent($pPathParamString, $pPathParamNumber, $pPathParamInteger, $pPathParamBoolean, $qQueryParamString, $qQueryParamNumber, $qQueryParamInteger, $qQueryParamBoolean, $hHeaderParamString, $hHeaderParamNumber, $hHeaderParamInteger, $hHeaderParamBoolean, $cCookieParamString, $cCookieParamNumber, $cCookieParamInteger, $cCookieParamBoolean, $requestBodyPayload);
+                break;
+            case $requestBodyPayload instanceof FirstOperationApplicationXWwwFormUrlencodedRequestBodyPayload && $responsePayloadContentType === 'application/json':
+                $response = $this->handler->firstOperationFromFirstOperationApplicationXWwwFormUrlencodedRequestBodyPayloadPayloadToApplicationJsonContent($pPathParamString, $pPathParamNumber, $pPathParamInteger, $pPathParamBoolean, $qQueryParamString, $qQueryParamNumber, $qQueryParamInteger, $qQueryParamBoolean, $hHeaderParamString, $hHeaderParamNumber, $hHeaderParamInteger, $hHeaderParamBoolean, $cCookieParamString, $cCookieParamNumber, $cCookieParamInteger, $cCookieParamBoolean, $requestBodyPayload);
                 break;
             default:
                 return new JsonResponse(['code' => 'unsupported_response_type', 'message' => "The value '{$responsePayloadContentType}' received in accept header is not a supported format."], Response::HTTP_UNSUPPORTED_MEDIA_TYPE);

@@ -417,6 +417,20 @@ abstract class AbstractController
         }
     }
     /**
+     * @param class-string $class
+     *
+     * @throws DenormalizationException
+     */
+    public function getObjectWwwFormUrlEncodedRequestBody(Request $request, string $class): object
+    {
+        $value = $request->request->all();
+        try {
+            return $this->deserializer->denormalize($value, $class);
+        } catch (ExceptionInterface $e) {
+            throw new DenormalizationException("Request body could not be deserialized: {$e->getMessage()}");
+        }
+    }
+    /**
      * @param array<Constraint> $constraints
      *
      * @throws ParameterValidationException

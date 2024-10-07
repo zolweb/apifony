@@ -36,8 +36,8 @@ class ActionRequestBody
         ?MediaType $mediaType,
         ?Components $components,
     ): self {
-        if (!\in_array($mimeType, [null, 'application/json'], true)) {
-            throw new Exception('Request bodies with mime types other than \'application/json\' are not supported.');
+        if (!\in_array($mimeType, [null, 'application/json', 'application/x-www-form-urlencoded'], true)) {
+            throw new Exception('Request bodies with mime types other than \'application/json\' and \'application/x-www-form-urlencoded\' are not supported.');
         }
 
         $className = u(\sprintf('%s_%s_RequestBodyPayload', $actionName, $mimeType ?? 'empty'))->camel()->title()->toString();
@@ -168,6 +168,25 @@ class ActionRequestBody
                 'application/json' => [
                     new TryCatch([
                         new Expression(new Assign($f->var('requestBodyPayload'), $f->methodCall($f->var('this'), \sprintf('get%sJsonRequestBody', ucfirst($this->getPayloadBuiltInPhpType())), array_merge([$f->var('request')], $this->getPayloadBuiltInPhpType() === 'object' ? [$f->classConstFetch($this->getPayloadTypeName(), 'class')] : [])))),
+                        new Expression($f->methodCall($f->var('this'), 'validateRequestBody', [
+                            $f->var('requestBodyPayload'),
+                            array_map(
+                                static fn (Constraint $constraint): New_ => $constraint->getInstantiationAst(),
+                                $this->payloadType?->getConstraints() ?? [],
+                            ),
+                        ])),
+                    ], [
+                        new Catch_([new Name('DenormalizationException')], $f->var('e'), [
+                            new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), new Array_([new ArrayItem($f->methodCall($f->var('e'), 'getMessage'))]))),
+                        ]),
+                        new Catch_([new Name('RequestBodyValidationException')], $f->var('e'), [
+                            new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), $f->propertyFetch($f->var('e'), 'messages'))),
+                        ]),
+                    ]),
+                ],
+                'application/x-www-form-urlencoded' => [
+                    new TryCatch([
+                        new Expression(new Assign($f->var('requestBodyPayload'), $f->methodCall($f->var('this'), 'getObjectWwwFormUrlEncodedRequestBody', array_merge([$f->var('request')], $this->getPayloadBuiltInPhpType() === 'object' ? [$f->classConstFetch($this->getPayloadTypeName(), 'class')] : [])))),
                         new Expression($f->methodCall($f->var('this'), 'validateRequestBody', [
                             $f->var('requestBodyPayload'),
                             array_map(
