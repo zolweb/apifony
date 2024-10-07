@@ -104,6 +104,8 @@ paths:
                   type: 'integer'
                 booleanProperty:
                   type: 'boolean'
+                string_property:
+                  type: 'string'
       responses:
         200:
           headers:
@@ -129,6 +131,8 @@ paths:
                 type: 'object'
                 properties:
                   dump:
+                    type: 'string'
+                  string_string:
                     type: 'string'
 
 components:

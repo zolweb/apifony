@@ -146,6 +146,7 @@ final class OgenTest extends WebTestCase
                 'numberProperty' => '0.1',
                 'integerProperty' => '1',
                 'booleanProperty' => '1',
+                'string_property' => '_string',
             ],
             server: [
                 'HTTP_HEADERPARAMSTRING' => 'string',
@@ -163,6 +164,9 @@ final class OgenTest extends WebTestCase
         self::assertIsArray($content);
         self::assertArrayHasKey('dump', $content);
         self::assertIsString($content['dump']);
+        self::assertArrayHasKey('string_string', $content);
+        self::assertIsString($content['string_string']);
+        self::assertSame('string', $content['string_string']);
         $dump = json_decode($content['dump'], true);
 
         self::assertEqualsCanonicalizing(
@@ -188,6 +192,7 @@ final class OgenTest extends WebTestCase
                     'numberProperty' => 0.1,
                     'integerProperty' => 1,
                     'booleanProperty' => true,
+                    'string_property' => '_string',
                 ],
             ],
             $dump,

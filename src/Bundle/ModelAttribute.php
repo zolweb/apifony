@@ -27,8 +27,10 @@ class ModelAttribute
         ?Components $components,
     ): self {
         $usedModelName = null;
-        $variableName = u($rawName)->camel()->toString();
-        $className = "{$modelClassName}_{$variableName}";
+        if (preg_match('/[^A-Za-z0-9_]/', $rawName)) {
+            throw new Exception('Only [A-Za-z0-9_] are authorized chars in attribute names.');
+        }
+        $className = "{$modelClassName}_{$rawName}";
         if ($property instanceof Reference) {
             if ($components === null || !isset($components->schemas[$property->getName()])) {
                 throw new Exception('Reference not found in schemas components.');
@@ -43,7 +45,6 @@ class ModelAttribute
 
         return new self(
             $rawName,
-            $variableName,
             $property,
             $type,
             $usedModelName,
@@ -52,7 +53,6 @@ class ModelAttribute
 
     private function __construct(
         private readonly string $rawName,
-        private readonly string $variableName,
         private readonly Schema $schema,
         private readonly Type $type,
         private readonly ?string $usedModelName,
@@ -89,14 +89,14 @@ class ModelAttribute
 
     public function getDocAst(): PhpDocTagNode
     {
-        return new PhpDocTagNode('@param', new ParamTagValueNode($this->type->getDocAst(), false, "\${$this->variableName}", ''));
+        return new PhpDocTagNode('@param', new ParamTagValueNode($this->type->getDocAst(), false, "\${$this->rawName}", ''));
     }
 
     public function getParam(): Param
     {
         $f = new BuilderFactory();
 
-        $param = $f->param($this->variableName)
+        $param = $f->param($this->rawName)
             ->setType($this->type->asName())
             ->makePublic()
             ->makeReadonly()

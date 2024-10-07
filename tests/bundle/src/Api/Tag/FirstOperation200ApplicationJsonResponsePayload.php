@@ -8,7 +8,9 @@ class FirstOperation200ApplicationJsonResponsePayload
 {
     public function __construct(
         
-        #[Assert\NotNull] public readonly string $dump
+        #[Assert\NotNull] public readonly string $dump,
+        
+        #[Assert\NotNull] public readonly string $string_string
     )
     {
     }

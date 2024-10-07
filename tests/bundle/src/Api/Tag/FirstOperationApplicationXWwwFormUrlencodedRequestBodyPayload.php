@@ -14,7 +14,9 @@ class FirstOperationApplicationXWwwFormUrlencodedRequestBodyPayload
         
         #[Assert\NotNull] public readonly int $integerProperty,
         
-        #[Assert\NotNull] public readonly bool $booleanProperty
+        #[Assert\NotNull] public readonly bool $booleanProperty,
+        
+        #[Assert\NotNull] public readonly string $string_property
     )
     {
     }
