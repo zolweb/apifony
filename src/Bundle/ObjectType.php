@@ -48,7 +48,7 @@ class ObjectType implements Type
 
     public function getNormalizedType(): string
     {
-        return $this->isRaw ? 'array<mixed>|\stdClass' : $this->name;
+        return $this->isRaw ? 'mixed' : $this->name;
     }
 
     public function getRequestBodyPayloadTypeCheckingAst(): Expr
@@ -81,7 +81,7 @@ class ObjectType implements Type
 
     public function getBuiltInPhpType(): string
     {
-        return $this->isRaw ? 'array|\stdClass' : 'object';
+        return $this->isRaw ? 'mixed' : 'object';
     }
 
     public function getInitValue(): Expr
@@ -97,7 +97,7 @@ class ObjectType implements Type
     public function getDocAst(): TypeNode
     {
         $type = $this->isRaw ?
-            new UnionTypeNode([new GenericTypeNode(new IdentifierTypeNode('array'), [new IdentifierTypeNode('mixed')]), new IdentifierTypeNode('\stdClass')]) :
+            new IdentifierTypeNode('mixed') :
             new IdentifierTypeNode($this->name);
 
         if ($this->nullable) {
@@ -109,6 +109,6 @@ class ObjectType implements Type
 
     public function asName(): Name
     {
-        return new Name(($this->nullable ? '?' : '').($this->isRaw ? 'array|\stdClass' : $this->name));
+        return new Name(($this->nullable ? '?' : '').($this->isRaw ? 'mixed' : $this->name));
     }
 }
