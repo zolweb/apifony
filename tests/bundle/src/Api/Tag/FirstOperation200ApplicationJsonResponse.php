@@ -1,15 +1,18 @@
 <?php
 
-declare (strict_types=1);
+declare(strict_types=1);
+
 namespace Zol\Ogen\Tests\TestOpenApiServer\Api\Tag;
 
 class FirstOperation200ApplicationJsonResponse
 {
     public const CODE = 200;
     public const CONTENT_TYPE = 'application/json';
+
     public function __construct(public readonly FirstOperation200ApplicationJsonResponsePayload $payload, public readonly string $headerString, public readonly float $headerNumber, public readonly int $headerInteger, public readonly bool $headerBoolean)
     {
     }
+
     /**
      * @return array<string, ?string>
      */

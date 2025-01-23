@@ -147,7 +147,7 @@ class ArrayType implements Type
 
     public function getDocAst(): TypeNode
     {
-        $type = new GenericTypeNode(new IdentifierTypeNode('array'), [$this->itemType->getDocAst()]);
+        $type = new GenericTypeNode(new IdentifierTypeNode('list'), [$this->itemType->getDocAst()]);
 
         if ($this->nullable) {
             $type = new NullableTypeNode($type);

@@ -1,6 +1,7 @@
 <?php
 
-declare (strict_types=1);
+declare(strict_types=1);
+
 namespace Zol\Ogen\Tests\TestOpenApiServer;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -8,13 +9,13 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+
 class TestOpenApiServerBundle extends AbstractBundle
 {
     public function build(ContainerBuilder $container): void
     {
         parent::build($container);
-        $container->addCompilerPass(new class implements CompilerPassInterface
-        {
+        $container->addCompilerPass(new class implements CompilerPassInterface {
             public function process(ContainerBuilder $container): void
             {
                 foreach ($container->findTaggedServiceIds('test_open_api_server.handler') as $id => $tags) {
@@ -35,6 +36,7 @@ class TestOpenApiServerBundle extends AbstractBundle
             }
         });
     }
+
     /**
      * @param array<mixed> $config
      */

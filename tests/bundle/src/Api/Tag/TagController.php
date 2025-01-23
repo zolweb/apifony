@@ -1,24 +1,28 @@
 <?php
 
-declare (strict_types=1);
+declare(strict_types=1);
+
 namespace Zol\Ogen\Tests\TestOpenApiServer\Api\Tag;
 
-use Zol\Ogen\Tests\TestOpenApiServer\Api\DenormalizationException;
-use Zol\Ogen\Tests\TestOpenApiServer\Api\ParameterValidationException;
-use Zol\Ogen\Tests\TestOpenApiServer\Api\RequestBodyValidationException;
-use Zol\Ogen\Tests\TestOpenApiServer\Api\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
+use Zol\Ogen\Tests\TestOpenApiServer\Api\AbstractController;
+use Zol\Ogen\Tests\TestOpenApiServer\Api\DenormalizationException;
+use Zol\Ogen\Tests\TestOpenApiServer\Api\ParameterValidationException;
+use Zol\Ogen\Tests\TestOpenApiServer\Api\RequestBodyValidationException;
 use Zol\Ogen\Tests\TestOpenApiServer\Model\Schema;
+
 class TagController extends AbstractController
 {
     private TagHandler $handler;
+
     public function setHandler(TagHandler $handler): void
     {
         $this->handler = $handler;
     }
+
     public function firstOperation(Request $request, string $pathParamString, float $pathParamNumber, int $pathParamInteger, bool $pathParamBoolean): Response
     {
         $errors = [];
