@@ -43,6 +43,9 @@ class DeserializerInterface implements File
                              * @param class-string<T> $type
                              *
                              * @return T
+                             *
+                             * @throws ExceptionInterface
+                             * @throws \TypeError
                              */
                             COMMENT
                         )
@@ -62,6 +65,7 @@ class DeserializerInterface implements File
                              * @return T
                              *
                              * @throws ExceptionInterface
+                             * @throws \TypeError
                              */
                             COMMENT
                         )

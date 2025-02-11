@@ -78,7 +78,7 @@ class AbstractController implements File
                 [
                     new Return_($f->methodCall($f->propertyFetch($f->var('this'), 'deserializer'), 'denormalize', [$f->var('value'), $f->var('class')])),
                 ], [
-                    new Catch_([new Name('ExceptionInterface')], $f->var('e'), [
+                    new Catch_([new Name('ExceptionInterface'), new Name('\TypeError')], $f->var('e'), [
                         new Expression(new Throw_($f->new('DenormalizationException', [new Encapsed([new EncapsedStringPart('Request body could not be deserialized: '), $f->methodCall($f->var('e'), 'getMessage')])]))),
                     ]),
                 ]),
@@ -315,7 +315,7 @@ class AbstractController implements File
                     [
                         new Return_($f->methodCall($f->propertyFetch($f->var('this'), 'deserializer'), 'deserialize', [$f->var('value'), $f->var('class')])),
                     ], [
-                        new Catch_([new Name('ExceptionInterface')], $f->var('e'), [
+                        new Catch_([new Name('ExceptionInterface'), new Name('\TypeError')], $f->var('e'), [
                             new Expression(new Throw_($f->new('DenormalizationException', [new Encapsed([new EncapsedStringPart('Request body could not be deserialized: '), $f->methodCall($f->var('e'), 'getMessage')])]))),
                         ]),
                     ]),

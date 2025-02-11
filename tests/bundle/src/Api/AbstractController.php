@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Zol\Ogen\Tests\TestOpenApiServer\Api;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -9,13 +8,11 @@ use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-
 abstract class AbstractController
 {
     public function __construct(protected readonly DeserializerInterface $deserializer, protected readonly ValidatorInterface $validator)
     {
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -36,16 +33,13 @@ abstract class AbstractController
             if ($default === null) {
                 throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
             }
-
             return $default;
         }
         if ($value === null) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
         }
-
         return $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -63,16 +57,13 @@ abstract class AbstractController
             if ($required) {
                 throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
             }
-
             return $default;
         }
         if ($value === null) {
             return null;
         }
-
         return $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -93,7 +84,6 @@ abstract class AbstractController
             if ($default === null) {
                 throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
             }
-
             return $default;
         }
         if ($value === null) {
@@ -106,10 +96,8 @@ abstract class AbstractController
         if (!ctype_digit($absValue)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be an integer.");
         }
-
         return (int) $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -127,7 +115,6 @@ abstract class AbstractController
             if ($required) {
                 throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
             }
-
             return $default;
         }
         if ($value === null) {
@@ -140,10 +127,8 @@ abstract class AbstractController
         if (!ctype_digit($absValue)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be an integer.");
         }
-
         return (int) $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -164,7 +149,6 @@ abstract class AbstractController
             if ($default === null) {
                 throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
             }
-
             return $default;
         }
         if ($value === null) {
@@ -177,10 +161,8 @@ abstract class AbstractController
         if (!is_numeric($absValue)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a numeric.");
         }
-
         return (float) $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -198,7 +180,6 @@ abstract class AbstractController
             if ($required) {
                 throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
             }
-
             return $default;
         }
         if ($value === null) {
@@ -211,10 +192,8 @@ abstract class AbstractController
         if (!is_numeric($absValue)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a numeric.");
         }
-
         return (float) $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -235,7 +214,6 @@ abstract class AbstractController
             if ($default === null) {
                 throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
             }
-
             return $default;
         }
         if ($value === null) {
@@ -244,10 +222,8 @@ abstract class AbstractController
         if (!\in_array($value, ['true', 'false'], true)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a boolean.");
         }
-
         return ['true' => true, 'false' => false][$value];
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -265,7 +241,6 @@ abstract class AbstractController
             if ($required) {
                 throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
             }
-
             return $default;
         }
         if ($value === null) {
@@ -274,10 +249,8 @@ abstract class AbstractController
         if (!\in_array($value, ['true', 'false'], true)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a boolean.");
         }
-
         return ['true' => true, 'false' => false][$value];
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -288,17 +261,14 @@ abstract class AbstractController
             if ($default === null) {
                 throw new DenormalizationException('Request body must not be null.');
             }
-
             return $default;
         }
         $value = json_decode($value, true);
         if (!\is_string($value)) {
             throw new DenormalizationException('Request body must be a string.');
         }
-
         return $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -312,10 +282,8 @@ abstract class AbstractController
         if (!\is_string($value)) {
             throw new DenormalizationException('Request body must be a string.');
         }
-
         return $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -326,17 +294,14 @@ abstract class AbstractController
             if ($default === null) {
                 throw new DenormalizationException('Request body must not be null.');
             }
-
             return $default;
         }
         $value = json_decode($value, true);
         if (!\is_int($value)) {
             throw new DenormalizationException('Request body must be an integer.');
         }
-
         return $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -353,10 +318,8 @@ abstract class AbstractController
         if (!\is_int($value)) {
             throw new DenormalizationException('Request body must be an integer.');
         }
-
         return $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -367,17 +330,14 @@ abstract class AbstractController
             if ($default === null) {
                 throw new DenormalizationException('Request body must not be null.');
             }
-
             return $default;
         }
         $value = json_decode($value, true);
         if (!\is_int($value) && !\is_float($value)) {
             throw new DenormalizationException('Request body must be a numeric.');
         }
-
         return (float) $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -394,10 +354,8 @@ abstract class AbstractController
         if (!\is_int($value) && !\is_float($value)) {
             throw new DenormalizationException('Request body must be a numeric.');
         }
-
         return (float) $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -408,17 +366,14 @@ abstract class AbstractController
             if ($default === null) {
                 throw new DenormalizationException('Request body must not be null.');
             }
-
             return $default;
         }
         $value = json_decode($value, true);
         if (!\is_bool($value)) {
             throw new DenormalizationException('Request body must be a boolean.');
         }
-
         return $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -435,10 +390,8 @@ abstract class AbstractController
         if (!\is_bool($value)) {
             throw new DenormalizationException('Request body must be a boolean.');
         }
-
         return $value;
     }
-
     /**
      * @param class-string $class
      *
@@ -451,16 +404,14 @@ abstract class AbstractController
             if ($default === null) {
                 throw new DenormalizationException('Request body must not be null.');
             }
-
             return $default;
         }
         try {
             return $this->deserializer->deserialize($value, $class);
-        } catch (ExceptionInterface $e) {
+        } catch (ExceptionInterface|\TypeError $e) {
             throw new DenormalizationException("Request body could not be deserialized: {$e->getMessage()}");
         }
     }
-
     /**
      * @param class-string $class
      *
@@ -477,11 +428,10 @@ abstract class AbstractController
         }
         try {
             return $this->deserializer->deserialize($value, $class);
-        } catch (ExceptionInterface $e) {
+        } catch (ExceptionInterface|\TypeError $e) {
             throw new DenormalizationException("Request body could not be deserialized: {$e->getMessage()}");
         }
     }
-
     /**
      * @param class-string $class
      *
@@ -492,11 +442,10 @@ abstract class AbstractController
         $value = $request->request->all();
         try {
             return $this->deserializer->denormalize($value, $class);
-        } catch (ExceptionInterface $e) {
+        } catch (ExceptionInterface|\TypeError $e) {
             throw new DenormalizationException("Request body could not be deserialized: {$e->getMessage()}");
         }
     }
-
     /**
      * @param array<Constraint> $constraints
      *
@@ -506,10 +455,9 @@ abstract class AbstractController
     {
         $violations = $this->validator->validate($value, $constraints);
         if (\count($violations) > 0) {
-            throw new ParameterValidationException(array_map(static fn (ConstraintViolationInterface $violation) => (string) $violation->getMessage(), iterator_to_array($violations)));
+            throw new ParameterValidationException(array_map(static fn(ConstraintViolationInterface $violation) => (string) $violation->getMessage(), iterator_to_array($violations)));
         }
     }
-
     /**
      * @param array<Constraint> $constraints
      *
