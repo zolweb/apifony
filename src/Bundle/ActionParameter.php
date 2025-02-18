@@ -52,13 +52,17 @@ class ActionParameter
         $className = "{$actionClassName}_{$parameter->name}";
         $className = u($className)->camel()->title()->toString();
 
-        return new self(
-            $variableName,
-            $parameter,
-            TypeFactory::build($className, $parameter->schema, $components),
-            $parameter->schema,
-            $ordinal,
-        );
+        try {
+            return new self(
+                $variableName,
+                $parameter,
+                TypeFactory::build($className, $parameter->schema, $components),
+                $parameter->schema,
+                $ordinal,
+            );
+        } catch (Exception $e) {
+            throw new Exception(sprintf('Failed to build type for parameter %s. If you use Stoplight, make sure the schema is defined in the "code" section, as interface does not always show it.', $parameter->name, $e->getMessage()), 0, $e);
+        }
     }
 
     private function __construct(
