@@ -61,7 +61,7 @@ class ActionParameter
                 $ordinal,
             );
         } catch (Exception $e) {
-            throw new Exception(sprintf('Failed to build type for parameter %s. If you use Stoplight, make sure the schema is defined in the "code" section, as interface does not always show it.', $parameter->name, $e->getMessage()), 0, $e);
+            throw new Exception(\sprintf('Failed to build type for parameter %s. If you use Stoplight, make sure the schema is defined in the "code" section, as interface does not always show it.', $parameter->name), 0, $e);
         }
     }
 
