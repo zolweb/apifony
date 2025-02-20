@@ -41,6 +41,8 @@ class Deserializer implements File
             new Declare_([new DeclareDeclare('strict_types', $f->val(1))]),
             $f->namespace("{$this->bundleNamespace}\\Api")
                 ->addStmt($f->use('Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor'))
+                ->addStmt($f->use('Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor'))
+                ->addStmt($f->use('Symfony\Component\PropertyInfo\PropertyInfoExtractor'))
                 ->addStmt($f->use('Symfony\Component\Serializer\Encoder\JsonEncoder'))
                 ->addStmt($f->use('Symfony\Component\Serializer\Normalizer\AbstractNormalizer'))
                 ->addStmt($f->use('Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer'))
@@ -55,7 +57,7 @@ class Deserializer implements File
                         ->addStmt(new Expression(new Assign($f->propertyFetch($f->var('this'), 'serializer'), new New_(new Name('Serializer'), $f->args([
                             'normalizers' => new Array_([
                                 new ArrayItem(new New_(new Name('ObjectNormalizer'), $f->args([
-                                    'propertyTypeExtractor' => new New_(new Name('PhpStanExtractor')),
+                                    'propertyTypeExtractor' => new New_(new Name('PropertyInfoExtractor'), $f->args(['typeExtractors' => [new New_(new Name('PhpStanExtractor')), new New_(new Name('ReflectionExtractor'))]])),
                                 ]))),
                                 new ArrayItem(new New_(new Name('ArrayDenormalizer'))),
                             ]),
