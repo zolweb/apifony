@@ -134,6 +134,18 @@ paths:
                     type: 'string'
                   string_string:
                     type: 'string'
+                  abc1:
+                    $ref: '#/components/schemas/Abc'
+                  abc2:
+                    $ref: '#/components/schemas/Abc'
+                  abcList1:
+                    type: 'array'
+                    items:
+                      $ref: '#/components/schemas/Abc'
+                  abcList2:
+                    type: 'array'
+                    items:
+                      $ref: '#/components/schemas/Abc'
 
 components:
   schemas:
@@ -168,3 +180,8 @@ components:
           type: 'array'
           items:
             $ref: '#/components/schemas/Schema'
+    Abc:
+      type: 'object'
+      properties:
+        def:
+          type: 'string'

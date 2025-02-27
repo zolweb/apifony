@@ -1,34 +1,27 @@
 <?php
 
-declare (strict_types=1);
+declare(strict_types=1);
+
 namespace Zol\Ogen\Tests\TestOpenApiServer\Model;
 
 use Symfony\Component\Validator\Constraints as Assert;
+
 class Schema
 {
     /**
-     * @param list<string> $arrayProperty
+     * @param list<string>                    $arrayProperty
      * @param list<SchemaObjectArrayProperty> $objectArrayProperty
-     * @param list<Schema> $recursiveObjectArray
+     * @param list<Schema>                    $recursiveObjectArray
      */
     public function __construct(
-        
         #[Assert\NotNull] public readonly string $stringProperty,
-        
         #[Assert\NotNull] public readonly float $numberProperty,
-        
         #[Assert\NotNull] public readonly int $integerProperty,
-        
         #[Assert\NotNull] public readonly bool $booleanProperty,
-        
         #[Assert\Valid] #[Assert\NotNull] public readonly SchemaObjectProperty $objectProperty,
-        
         #[Assert\NotNull] #[Assert\All(constraints: [new Assert\NotNull()])] public readonly array $arrayProperty,
-        
         #[Assert\NotNull] #[Assert\Valid] #[Assert\All(constraints: [new Assert\NotNull()])] public readonly array $objectArrayProperty,
-        
         #[Assert\NotNull] #[Assert\Valid] #[Assert\All(constraints: [new Assert\NotNull()])] public readonly array $recursiveObjectArray
-    )
-    {
+    ) {
     }
 }

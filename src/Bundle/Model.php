@@ -62,7 +62,7 @@ class Model implements File
         if (!$isComponent) {
             foreach ($attributes as $attribute) {
                 if ($attribute->getUsedModelName() !== null) {
-                    $usedModelNames[] = $attribute->getUsedModelName();
+                    $usedModelNames[$attribute->getUsedModelName()] = true;
                 }
             }
         }
@@ -74,7 +74,7 @@ class Model implements File
             $className,
             $attributes,
             array_keys($usedFormatConstraintNames),
-            $usedModelNames,
+            array_keys($usedModelNames),
         );
     }
 

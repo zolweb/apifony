@@ -8,6 +8,7 @@ use Zol\Ogen\Tests\TestOpenApiServer\Api\Tag\FirstOperation200ApplicationJsonRes
 use Zol\Ogen\Tests\TestOpenApiServer\Api\Tag\FirstOperation200ApplicationJsonResponsePayload;
 use Zol\Ogen\Tests\TestOpenApiServer\Api\Tag\FirstOperationApplicationXWwwFormUrlencodedRequestBodyPayload;
 use Zol\Ogen\Tests\TestOpenApiServer\Api\Tag\TagHandler;
+use Zol\Ogen\Tests\TestOpenApiServer\Model\Abc;
 use Zol\Ogen\Tests\TestOpenApiServer\Model\Schema;
 
 class TestHandler implements TagHandler
@@ -37,6 +38,10 @@ class TestHandler implements TagHandler
                         'requestBodyPayload' => $requestBodyPayload,
                     ], \JSON_THROW_ON_ERROR),
                     'string',
+                    new Abc('abc1'),
+                    new Abc('abc2'),
+                    [new Abc('abc11'), new Abc('abc12')],
+                    [new Abc('abc21'), new Abc('abc22')],
                 ),
                 'string',
                 .1,
@@ -73,6 +78,10 @@ class TestHandler implements TagHandler
                         'requestBodyPayload' => $requestBodyPayload,
                     ], \JSON_THROW_ON_ERROR),
                     'string',
+                    new Abc('abc1'),
+                    new Abc('abc2'),
+                    [new Abc('abc11'), new Abc('abc12')],
+                    [new Abc('abc21'), new Abc('abc22')],
                 ),
                 'string',
                 .1,
