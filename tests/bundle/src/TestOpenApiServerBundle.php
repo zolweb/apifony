@@ -30,6 +30,12 @@ class TestOpenApiServerBundle extends AbstractBundle
                 foreach ($container->findTaggedServiceIds('test_open_api_server.format_definition') as $id => $tags) {
                     foreach ($tags as $tag) {
                         switch ($tag['format']) {
+                            case 'email':
+                                $container->findDefinition('Zol\Ogen\Tests\TestOpenApiServer\Format\EmailValidator')->addMethodCall('setFormatDefinition', [new Reference($id)]);
+                                break;
+                            case 'custom':
+                                $container->findDefinition('Zol\Ogen\Tests\TestOpenApiServer\Format\CustomValidator')->addMethodCall('setFormatDefinition', [new Reference($id)]);
+                                break;
                         }
                     }
                 }

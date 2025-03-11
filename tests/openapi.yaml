@@ -160,6 +160,12 @@ components:
           type: 'integer'
         booleanProperty:
           type: 'boolean'
+        emailProperty:
+          type: 'string'
+          format: 'email'
+        customProperty:
+          type: 'string'
+          format: 'custom'
         objectProperty:
           type: 'object'
           properties:

@@ -5,5 +5,15 @@ services:
             $deserializer: '@zol_ogen_tests_test_open_api_server.deserializer_interface'
             $validator: '@validator'
         public: true
+    Zol\Ogen\Tests\TestOpenApiServer\Format\EmailValidator:
+        class: Zol\Ogen\Tests\TestOpenApiServer\Format\EmailValidator
+        public: true
+        tags:
+            - validator.constraint_validator
+    Zol\Ogen\Tests\TestOpenApiServer\Format\CustomValidator:
+        class: Zol\Ogen\Tests\TestOpenApiServer\Format\CustomValidator
+        public: true
+        tags:
+            - validator.constraint_validator
     zol_ogen_tests_test_open_api_server.deserializer_interface:
         class: Zol\Ogen\Tests\TestOpenApiServer\Api\Deserializer

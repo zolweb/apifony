@@ -30,6 +30,8 @@ final class OgenTest extends WebTestCase
                 'numberProperty' => 0.1,
                 'integerProperty' => 1,
                 'booleanProperty' => true,
+                'emailProperty' => 'erwin.schrödinger@zol.fr',
+                'customProperty' => 'custom',
                 'objectProperty' => [
                     'stringProperty' => 'string',
                 ],
@@ -43,6 +45,8 @@ final class OgenTest extends WebTestCase
                         'numberProperty' => 0.1,
                         'integerProperty' => 1,
                         'booleanProperty' => true,
+                        'emailProperty' => 'erwin.schrödinger@zol.fr',
+                        'customProperty' => 'custom',
                         'objectProperty' => [
                             'stringProperty' => 'string',
                         ],
@@ -95,6 +99,8 @@ final class OgenTest extends WebTestCase
                     'numberProperty' => 0.1,
                     'integerProperty' => 1,
                     'booleanProperty' => true,
+                    'emailProperty' => 'erwin.schrödinger@zol.fr',
+                    'customProperty' => 'custom',
                     'objectProperty' => [
                         'stringProperty' => 'string',
                     ],
@@ -110,6 +116,8 @@ final class OgenTest extends WebTestCase
                             'numberProperty' => 0.1,
                             'integerProperty' => 1,
                             'booleanProperty' => true,
+                            'emailProperty' => 'erwin.schrödinger@zol.fr',
+                            'customProperty' => 'custom',
                             'objectProperty' => [
                                 'stringProperty' => 'string',
                             ],

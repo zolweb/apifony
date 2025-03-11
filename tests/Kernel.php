@@ -49,5 +49,10 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
             ->set(TestHandler::class)
             ->tag('test_open_api_server.handler', ['controller' => 'tag'])
         ;
+
+        $container->services()
+            ->set(CustomDefinition::class)
+            ->tag('test_open_api_server.format_definition', ['format' => 'custom'])
+        ;
     }
 }

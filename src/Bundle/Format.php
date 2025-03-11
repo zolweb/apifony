@@ -21,13 +21,18 @@ class Format
     ): self {
         $name = u($rawName)->camel()->title()->toString();
 
+        $validator = match ($rawName) {
+            'email' => EmailValidator::build($bundleNamespace),
+            default => FormatValidator::build($bundleNamespace, $name),
+        };
+
         return new self(
             $bundleNamespace,
             $rawName,
             $name,
-            FormatDefinition::build($bundleNamespace, $name),
+            $validator instanceof FormatValidator ? FormatDefinition::build($bundleNamespace, $name) : null,
             FormatConstraint::build($bundleNamespace, $name),
-            FormatValidator::build($bundleNamespace, $name),
+            $validator,
         );
     }
 
@@ -35,13 +40,13 @@ class Format
         private readonly string $bundleNamespace,
         private readonly string $rawName,
         private readonly string $name,
-        private readonly FormatDefinition $definition,
+        private readonly ?FormatDefinition $definition,
         private readonly FormatConstraint $constraint,
-        private readonly FormatValidator $validator,
+        private readonly FormatValidator|EmailValidator $validator,
     ) {
     }
 
-    public function getValidator(): FormatValidator
+    public function getValidator(): FormatValidator|EmailValidator
     {
         return $this->validator;
     }
@@ -51,11 +56,16 @@ class Format
      */
     public function getFiles(): array
     {
-        return [
-            $this->definition,
+        $files = [
             $this->constraint,
             $this->validator,
         ];
+
+        if ($this->definition !== null) {
+            $files[] = $this->definition;
+        }
+
+        return $files;
     }
 
     public function getCase(): Case_

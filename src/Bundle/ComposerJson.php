@@ -29,6 +29,7 @@ class ComposerJson implements File
                 'name' => $this->packageName,
                 'version' => '1.0.0',
                 'require' => [
+                    'egulias/email-validator' => '^2.1.10|^3|^4', // Required by Symfony Validator
                     'phpdocumentor/type-resolver' => '^1.8', // Required by PhpStanExtractor
                     'phpstan/phpdoc-parser' => '^1.13', // Required by PhpStanExtractor
                     'symfony/dependency-injection' => '^6.3 || ^7.0',
