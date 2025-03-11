@@ -7,6 +7,7 @@ namespace Zol\Ogen\Tests\TestOpenApiServer\Model;
 use Symfony\Component\Validator\Constraints as Assert;
 use Zol\Ogen\Tests\TestOpenApiServer\Format\Custom as AssertCustom;
 use Zol\Ogen\Tests\TestOpenApiServer\Format\Email as AssertEmail;
+use Zol\Ogen\Tests\TestOpenApiServer\Format\Uuid as AssertUuid;
 
 class Schema
 {
@@ -21,6 +22,7 @@ class Schema
         #[Assert\NotNull] public readonly int $integerProperty,
         #[Assert\NotNull] public readonly bool $booleanProperty,
         #[Assert\NotNull] #[AssertEmail] public readonly string $emailProperty,
+        #[Assert\NotNull] #[AssertUuid] public readonly string $uuidProperty,
         #[Assert\NotNull] #[AssertCustom] public readonly string $customProperty,
         #[Assert\Valid] #[Assert\NotNull] public readonly SchemaObjectProperty $objectProperty,
         #[Assert\NotNull] #[Assert\All(constraints: [new Assert\NotNull()])] public readonly array $arrayProperty,

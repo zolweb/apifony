@@ -33,6 +33,9 @@ class TestOpenApiServerBundle extends AbstractBundle
                             case 'email':
                                 $container->findDefinition('Zol\Ogen\Tests\TestOpenApiServer\Format\EmailValidator')->addMethodCall('setFormatDefinition', [new Reference($id)]);
                                 break;
+                            case 'uuid':
+                                $container->findDefinition('Zol\Ogen\Tests\TestOpenApiServer\Format\UuidValidator')->addMethodCall('setFormatDefinition', [new Reference($id)]);
+                                break;
                             case 'custom':
                                 $container->findDefinition('Zol\Ogen\Tests\TestOpenApiServer\Format\CustomValidator')->addMethodCall('setFormatDefinition', [new Reference($id)]);
                                 break;

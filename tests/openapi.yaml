@@ -163,6 +163,9 @@ components:
         emailProperty:
           type: 'string'
           format: 'email'
+        uuidProperty:
+          type: 'string'
+          format: 'uuid'
         customProperty:
           type: 'string'
           format: 'custom'

@@ -31,6 +31,7 @@ final class OgenTest extends WebTestCase
                 'integerProperty' => 1,
                 'booleanProperty' => true,
                 'emailProperty' => 'erwin.schrödinger@zol.fr',
+                'uuidProperty' => '83b23b90-9501-4da7-b35c-25134bdc45f8',
                 'customProperty' => 'custom',
                 'objectProperty' => [
                     'stringProperty' => 'string',
@@ -46,6 +47,7 @@ final class OgenTest extends WebTestCase
                         'integerProperty' => 1,
                         'booleanProperty' => true,
                         'emailProperty' => 'erwin.schrödinger@zol.fr',
+                        'uuidProperty' => '83b23b90-9501-4da7-b35c-25134bdc45f8',
                         'customProperty' => 'custom',
                         'objectProperty' => [
                             'stringProperty' => 'string',
@@ -100,6 +102,7 @@ final class OgenTest extends WebTestCase
                     'integerProperty' => 1,
                     'booleanProperty' => true,
                     'emailProperty' => 'erwin.schrödinger@zol.fr',
+                    'uuidProperty' => '83b23b90-9501-4da7-b35c-25134bdc45f8',
                     'customProperty' => 'custom',
                     'objectProperty' => [
                         'stringProperty' => 'string',
@@ -117,6 +120,7 @@ final class OgenTest extends WebTestCase
                             'integerProperty' => 1,
                             'booleanProperty' => true,
                             'emailProperty' => 'erwin.schrödinger@zol.fr',
+                            'uuidProperty' => '83b23b90-9501-4da7-b35c-25134bdc45f8',
                             'customProperty' => 'custom',
                             'objectProperty' => [
                                 'stringProperty' => 'string',

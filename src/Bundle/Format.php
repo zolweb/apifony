@@ -23,6 +23,7 @@ class Format
 
         $validator = match ($rawName) {
             'email' => EmailValidator::build($bundleNamespace),
+            'uuid' => UuidValidator::build($bundleNamespace),
             default => FormatValidator::build($bundleNamespace, $name),
         };
 
@@ -42,11 +43,11 @@ class Format
         private readonly string $name,
         private readonly ?FormatDefinition $definition,
         private readonly FormatConstraint $constraint,
-        private readonly FormatValidator|EmailValidator $validator,
+        private readonly FormatValidator|EmailValidator|UuidValidator $validator,
     ) {
     }
 
-    public function getValidator(): FormatValidator|EmailValidator
+    public function getValidator(): FormatValidator|EmailValidator|UuidValidator
     {
         return $this->validator;
     }

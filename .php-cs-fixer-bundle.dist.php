@@ -35,5 +35,10 @@ return (new PhpCsFixer\Config())
         '@Symfony:risky' => true,
         'yoda_style' => false,
         'php_unit_test_class_requires_covers' => false, // The rule inserted comments that are deprecated by phpunit
+        'class_attributes_separation' => false,
+        'declare_parentheses' => false,
+        'single_line_after_imports' => false,
+        'blank_lines_before_namespace' => false,
+        'single_blank_line_at_eof' => false,
     ])
     ->setFinder($finder);
