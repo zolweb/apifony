@@ -12,7 +12,7 @@ class EmailValidator extends ConstraintValidator
     public function validate(mixed $value, Constraint $constraint): void
     {
         if (\is_string($value)) {
-            $constraints = [new NotBlank(), new \Symfony\Component\Validator\Constraints\Email(mode: 'strict')];
+            $constraints = [new NotBlank(), new \Symfony\Component\Validator\Constraints\Email(['mode' => 'strict'])];
             $violations = Validation::createValidator()->validate($value, $constraints);
             foreach ($violations as $violation) {
                 $this->context->buildViolation((string) $violation->getMessage())->addViolation();
