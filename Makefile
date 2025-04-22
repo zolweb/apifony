@@ -20,3 +20,17 @@ phpstan-bundle:
 
 php-cs-fixer-fix-bundle:
 	@$(RUNNER_DOCKER_EXEC) 'php vendor/bin/php-cs-fixer -vv fix --diff --config=.php-cs-fixer-bundle.dist.php'
+
+composer-update-cli-lowest=php -d memory_limit=-1 /usr/bin/composer update $(composer_default_options) --prefer-dist --prefer-lowest --prefer-stable $(COMMAND_ARGS)
+
+composer-update-lowest:
+	@echo "$(step_start) Composer update lowest $(step_end)"
+	@$(COMPOSER_RUN) '$(composer-update-cli-lowest)'
+	@$(CHECK_COMPOSER_CACHE)
+
+composer-update-cli-highest=php -d memory_limit=-1 /usr/bin/composer update $(composer_default_options) --prefer-dist $(COMMAND_ARGS)
+
+composer-update-highest:
+	@echo "$(step_start) Composer update highest $(step_end)"
+	@$(COMPOSER_RUN) '$(composer-update-cli-highest)'
+	@$(CHECK_COMPOSER_CACHE)
