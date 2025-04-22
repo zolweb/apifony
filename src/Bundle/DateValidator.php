@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Zol\Ogen\Bundle;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Stmt\Declare_;

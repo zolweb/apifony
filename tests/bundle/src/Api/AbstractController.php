@@ -33,13 +33,11 @@ abstract class AbstractController
             if ($default === null) {
                 throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
             }
-
             return $default;
         }
         if ($value === null) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
         }
-
         return $value;
     }
     /**
@@ -59,13 +57,11 @@ abstract class AbstractController
             if ($required) {
                 throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
             }
-
             return $default;
         }
         if ($value === null) {
             return null;
         }
-
         return $value;
     }
     /**
@@ -88,7 +84,6 @@ abstract class AbstractController
             if ($default === null) {
                 throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
             }
-
             return $default;
         }
         if ($value === null) {
@@ -101,7 +96,6 @@ abstract class AbstractController
         if (!ctype_digit($absValue)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be an integer.");
         }
-
         return (int) $value;
     }
     /**
@@ -121,7 +115,6 @@ abstract class AbstractController
             if ($required) {
                 throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
             }
-
             return $default;
         }
         if ($value === null) {
@@ -134,7 +127,6 @@ abstract class AbstractController
         if (!ctype_digit($absValue)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be an integer.");
         }
-
         return (int) $value;
     }
     /**
@@ -157,7 +149,6 @@ abstract class AbstractController
             if ($default === null) {
                 throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
             }
-
             return $default;
         }
         if ($value === null) {
@@ -170,7 +161,6 @@ abstract class AbstractController
         if (!is_numeric($absValue)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a numeric.");
         }
-
         return (float) $value;
     }
     /**
@@ -190,7 +180,6 @@ abstract class AbstractController
             if ($required) {
                 throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
             }
-
             return $default;
         }
         if ($value === null) {
@@ -203,7 +192,6 @@ abstract class AbstractController
         if (!is_numeric($absValue)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a numeric.");
         }
-
         return (float) $value;
     }
     /**
@@ -226,7 +214,6 @@ abstract class AbstractController
             if ($default === null) {
                 throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
             }
-
             return $default;
         }
         if ($value === null) {
@@ -235,7 +222,6 @@ abstract class AbstractController
         if (!\in_array($value, ['true', 'false'], true)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a boolean.");
         }
-
         return ['true' => true, 'false' => false][$value];
     }
     /**
@@ -255,7 +241,6 @@ abstract class AbstractController
             if ($required) {
                 throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
             }
-
             return $default;
         }
         if ($value === null) {
@@ -264,7 +249,6 @@ abstract class AbstractController
         if (!\in_array($value, ['true', 'false'], true)) {
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a boolean.");
         }
-
         return ['true' => true, 'false' => false][$value];
     }
     /**
@@ -277,14 +261,12 @@ abstract class AbstractController
             if ($default === null) {
                 throw new DenormalizationException('Request body must not be null.');
             }
-
             return $default;
         }
         $value = json_decode($value, true);
         if (!\is_string($value)) {
             throw new DenormalizationException('Request body must be a string.');
         }
-
         return $value;
     }
     /**
@@ -300,7 +282,6 @@ abstract class AbstractController
         if (!\is_string($value)) {
             throw new DenormalizationException('Request body must be a string.');
         }
-
         return $value;
     }
     /**
@@ -313,14 +294,12 @@ abstract class AbstractController
             if ($default === null) {
                 throw new DenormalizationException('Request body must not be null.');
             }
-
             return $default;
         }
         $value = json_decode($value, true);
         if (!\is_int($value)) {
             throw new DenormalizationException('Request body must be an integer.');
         }
-
         return $value;
     }
     /**
@@ -339,7 +318,6 @@ abstract class AbstractController
         if (!\is_int($value)) {
             throw new DenormalizationException('Request body must be an integer.');
         }
-
         return $value;
     }
     /**
@@ -352,14 +330,12 @@ abstract class AbstractController
             if ($default === null) {
                 throw new DenormalizationException('Request body must not be null.');
             }
-
             return $default;
         }
         $value = json_decode($value, true);
         if (!\is_int($value) && !\is_float($value)) {
             throw new DenormalizationException('Request body must be a numeric.');
         }
-
         return (float) $value;
     }
     /**
@@ -378,7 +354,6 @@ abstract class AbstractController
         if (!\is_int($value) && !\is_float($value)) {
             throw new DenormalizationException('Request body must be a numeric.');
         }
-
         return (float) $value;
     }
     /**
@@ -391,14 +366,12 @@ abstract class AbstractController
             if ($default === null) {
                 throw new DenormalizationException('Request body must not be null.');
             }
-
             return $default;
         }
         $value = json_decode($value, true);
         if (!\is_bool($value)) {
             throw new DenormalizationException('Request body must be a boolean.');
         }
-
         return $value;
     }
     /**
@@ -417,7 +390,6 @@ abstract class AbstractController
         if (!\is_bool($value)) {
             throw new DenormalizationException('Request body must be a boolean.');
         }
-
         return $value;
     }
     /**
@@ -432,7 +404,6 @@ abstract class AbstractController
             if ($default === null) {
                 throw new DenormalizationException('Request body must not be null.');
             }
-
             return $default;
         }
         try {
@@ -484,7 +455,7 @@ abstract class AbstractController
     {
         $violations = $this->validator->validate($value, $constraints);
         if (\count($violations) > 0) {
-            throw new ParameterValidationException(array_map(static fn (ConstraintViolationInterface $violation) => (string) $violation->getMessage(), iterator_to_array($violations)));
+            throw new ParameterValidationException(array_map(static fn(ConstraintViolationInterface $violation) => (string) $violation->getMessage(), iterator_to_array($violations)));
         }
     }
     /**
