@@ -36,8 +36,8 @@ class ServicesConfig implements File
     }
 
     /**
-     * @param array<Controller>                                   $controllers
-     * @param array<FormatValidator|EmailValidator|UuidValidator> $formatValidators
+     * @param array<Controller>                                                                                 $controllers
+     * @param array<FormatValidator|EmailValidator|UuidValidator|DateTimeValidator|DateValidator|TimeValidator> $formatValidators
      */
     private function __construct(
         private readonly string $namespace,

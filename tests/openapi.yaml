@@ -166,6 +166,15 @@ components:
         uuidProperty:
           type: 'string'
           format: 'uuid'
+        dateTimeProperty:
+          type: 'string'
+          format: 'date-time'
+        dateProperty:
+          type: 'string'
+          format: 'date'
+        timeProperty:
+          type: 'string'
+          format: 'time'
         customProperty:
           type: 'string'
           format: 'custom'

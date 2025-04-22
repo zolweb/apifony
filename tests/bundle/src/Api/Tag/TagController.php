@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Zol\Ogen\Tests\TestOpenApiServer\Api\Tag;
 
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -13,16 +12,13 @@ use Zol\Ogen\Tests\TestOpenApiServer\Api\DenormalizationException;
 use Zol\Ogen\Tests\TestOpenApiServer\Api\ParameterValidationException;
 use Zol\Ogen\Tests\TestOpenApiServer\Api\RequestBodyValidationException;
 use Zol\Ogen\Tests\TestOpenApiServer\Model\Schema;
-
 class TagController extends AbstractController
 {
     private TagHandler $handler;
-
     public function setHandler(TagHandler $handler): void
     {
         $this->handler = $handler;
     }
-
     public function firstOperation(Request $request, string $pathParamString, float $pathParamNumber, int $pathParamInteger, bool $pathParamBoolean): Response
     {
         $errors = [];

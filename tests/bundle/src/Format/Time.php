@@ -5,6 +5,6 @@ namespace Zol\Ogen\Tests\TestOpenApiServer\Format;
 
 use Symfony\Component\Validator\Constraint;
 #[\Attribute]
-class Email extends Constraint
+class Time extends Constraint
 {
 }

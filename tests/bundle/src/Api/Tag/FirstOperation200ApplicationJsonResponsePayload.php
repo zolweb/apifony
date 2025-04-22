@@ -1,12 +1,10 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Zol\Ogen\Tests\TestOpenApiServer\Api\Tag;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use Zol\Ogen\Tests\TestOpenApiServer\Model\Abc;
-
 class FirstOperation200ApplicationJsonResponsePayload
 {
     /**

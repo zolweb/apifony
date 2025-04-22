@@ -1,11 +1,9 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Zol\Ogen\Tests\TestOpenApiServer\Api\Tag;
 
 use Symfony\Component\Validator\Constraints as Assert;
-
 class FirstOperationApplicationXWwwFormUrlencodedRequestBodyPayload
 {
     public function __construct(

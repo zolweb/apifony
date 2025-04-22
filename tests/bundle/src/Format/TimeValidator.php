@@ -7,12 +7,12 @@ use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Validation;
-class UuidValidator extends ConstraintValidator
+class TimeValidator extends ConstraintValidator
 {
     public function validate(mixed $value, Constraint $constraint): void
     {
         if (\is_string($value)) {
-            $constraints = [new NotBlank(), new \Symfony\Component\Validator\Constraints\Uuid()];
+            $constraints = [new NotBlank(), new \Symfony\Component\Validator\Constraints\DateTime(format: 'H:i:sP')];
             $violations = Validation::createValidator()->validate($value, $constraints);
             foreach ($violations as $violation) {
                 $this->context->buildViolation((string) $violation->getMessage())->addViolation();

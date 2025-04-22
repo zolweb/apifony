@@ -32,6 +32,9 @@ final class OgenTest extends WebTestCase
                 'booleanProperty' => true,
                 'emailProperty' => 'erwin.schrödinger@zol.fr',
                 'uuidProperty' => '83b23b90-9501-4da7-b35c-25134bdc45f8',
+                'dateTimeProperty' => '1969-07-21T03:56:20+01:00',
+                'dateProperty' => '1969-07-21',
+                'timeProperty' => '03:56:20+01:00',
                 'customProperty' => 'custom',
                 'objectProperty' => [
                     'stringProperty' => 'string',
@@ -48,6 +51,9 @@ final class OgenTest extends WebTestCase
                         'booleanProperty' => true,
                         'emailProperty' => 'erwin.schrödinger@zol.fr',
                         'uuidProperty' => '83b23b90-9501-4da7-b35c-25134bdc45f8',
+                        'dateTimeProperty' => '1969-07-21T03:56:20+01:00',
+                        'dateProperty' => '1969-07-21',
+                        'timeProperty' => '03:56:20+01:00',
                         'customProperty' => 'custom',
                         'objectProperty' => [
                             'stringProperty' => 'string',
@@ -103,6 +109,9 @@ final class OgenTest extends WebTestCase
                     'booleanProperty' => true,
                     'emailProperty' => 'erwin.schrödinger@zol.fr',
                     'uuidProperty' => '83b23b90-9501-4da7-b35c-25134bdc45f8',
+                    'dateTimeProperty' => '1969-07-21T03:56:20+01:00',
+                    'dateProperty' => '1969-07-21',
+                    'timeProperty' => '03:56:20+01:00',
                     'customProperty' => 'custom',
                     'objectProperty' => [
                         'stringProperty' => 'string',
@@ -121,6 +130,9 @@ final class OgenTest extends WebTestCase
                             'booleanProperty' => true,
                             'emailProperty' => 'erwin.schrödinger@zol.fr',
                             'uuidProperty' => '83b23b90-9501-4da7-b35c-25134bdc45f8',
+                            'dateTimeProperty' => '1969-07-21T03:56:20+01:00',
+                            'dateProperty' => '1969-07-21',
+                            'timeProperty' => '03:56:20+01:00',
                             'customProperty' => 'custom',
                             'objectProperty' => [
                                 'stringProperty' => 'string',

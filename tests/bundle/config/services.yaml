@@ -15,6 +15,21 @@ services:
         public: true
         tags:
             - validator.constraint_validator
+    Zol\Ogen\Tests\TestOpenApiServer\Format\DateTimeValidator:
+        class: Zol\Ogen\Tests\TestOpenApiServer\Format\DateTimeValidator
+        public: true
+        tags:
+            - validator.constraint_validator
+    Zol\Ogen\Tests\TestOpenApiServer\Format\DateValidator:
+        class: Zol\Ogen\Tests\TestOpenApiServer\Format\DateValidator
+        public: true
+        tags:
+            - validator.constraint_validator
+    Zol\Ogen\Tests\TestOpenApiServer\Format\TimeValidator:
+        class: Zol\Ogen\Tests\TestOpenApiServer\Format\TimeValidator
+        public: true
+        tags:
+            - validator.constraint_validator
     Zol\Ogen\Tests\TestOpenApiServer\Format\CustomValidator:
         class: Zol\Ogen\Tests\TestOpenApiServer\Format\CustomValidator
         public: true

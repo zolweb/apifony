@@ -1,14 +1,12 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Zol\Ogen\Tests\TestOpenApiServer\Format;
 
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Validation;
-
 class EmailValidator extends ConstraintValidator
 {
     public function validate(mixed $value, Constraint $constraint): void

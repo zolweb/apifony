@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Zol\Ogen\Tests\TestOpenApiServer;
 
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
@@ -9,7 +8,6 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
-
 class TestOpenApiServerBundle extends AbstractBundle
 {
     public function build(ContainerBuilder $container): void
@@ -36,6 +34,15 @@ class TestOpenApiServerBundle extends AbstractBundle
                             case 'uuid':
                                 $container->findDefinition('Zol\Ogen\Tests\TestOpenApiServer\Format\UuidValidator')->addMethodCall('setFormatDefinition', [new Reference($id)]);
                                 break;
+                            case 'date-time':
+                                $container->findDefinition('Zol\Ogen\Tests\TestOpenApiServer\Format\DateTimeValidator')->addMethodCall('setFormatDefinition', [new Reference($id)]);
+                                break;
+                            case 'date':
+                                $container->findDefinition('Zol\Ogen\Tests\TestOpenApiServer\Format\DateValidator')->addMethodCall('setFormatDefinition', [new Reference($id)]);
+                                break;
+                            case 'time':
+                                $container->findDefinition('Zol\Ogen\Tests\TestOpenApiServer\Format\TimeValidator')->addMethodCall('setFormatDefinition', [new Reference($id)]);
+                                break;
                             case 'custom':
                                 $container->findDefinition('Zol\Ogen\Tests\TestOpenApiServer\Format\CustomValidator')->addMethodCall('setFormatDefinition', [new Reference($id)]);
                                 break;
@@ -45,7 +52,6 @@ class TestOpenApiServerBundle extends AbstractBundle
             }
         });
     }
-
     /**
      * @param array<mixed> $config
      */

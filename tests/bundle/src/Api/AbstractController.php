@@ -1,7 +1,6 @@
 <?php
 
-declare(strict_types=1);
-
+declare (strict_types=1);
 namespace Zol\Ogen\Tests\TestOpenApiServer\Api;
 
 use Symfony\Component\HttpFoundation\Request;
@@ -9,13 +8,11 @@ use Symfony\Component\Serializer\Exception\ExceptionInterface;
 use Symfony\Component\Validator\Constraint;
 use Symfony\Component\Validator\ConstraintViolationInterface;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
-
 abstract class AbstractController
 {
     public function __construct(protected readonly DeserializerInterface $deserializer, protected readonly ValidatorInterface $validator)
     {
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -45,7 +42,6 @@ abstract class AbstractController
 
         return $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -72,7 +68,6 @@ abstract class AbstractController
 
         return $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -109,7 +104,6 @@ abstract class AbstractController
 
         return (int) $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -143,7 +137,6 @@ abstract class AbstractController
 
         return (int) $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -180,7 +173,6 @@ abstract class AbstractController
 
         return (float) $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -214,7 +206,6 @@ abstract class AbstractController
 
         return (float) $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -247,7 +238,6 @@ abstract class AbstractController
 
         return ['true' => true, 'false' => false][$value];
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -277,7 +267,6 @@ abstract class AbstractController
 
         return ['true' => true, 'false' => false][$value];
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -298,7 +287,6 @@ abstract class AbstractController
 
         return $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -315,7 +303,6 @@ abstract class AbstractController
 
         return $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -336,7 +323,6 @@ abstract class AbstractController
 
         return $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -356,7 +342,6 @@ abstract class AbstractController
 
         return $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -377,7 +362,6 @@ abstract class AbstractController
 
         return (float) $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -397,7 +381,6 @@ abstract class AbstractController
 
         return (float) $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -418,7 +401,6 @@ abstract class AbstractController
 
         return $value;
     }
-
     /**
      * @throws DenormalizationException
      */
@@ -438,7 +420,6 @@ abstract class AbstractController
 
         return $value;
     }
-
     /**
      * @param class-string $class
      *
@@ -460,7 +441,6 @@ abstract class AbstractController
             throw new DenormalizationException("Request body could not be deserialized: {$e->getMessage()}");
         }
     }
-
     /**
      * @param class-string $class
      *
@@ -481,7 +461,6 @@ abstract class AbstractController
             throw new DenormalizationException("Request body could not be deserialized: {$e->getMessage()}");
         }
     }
-
     /**
      * @param class-string $class
      *
@@ -496,7 +475,6 @@ abstract class AbstractController
             throw new DenormalizationException("Request body could not be deserialized: {$e->getMessage()}");
         }
     }
-
     /**
      * @param array<Constraint> $constraints
      *
@@ -509,7 +487,6 @@ abstract class AbstractController
             throw new ParameterValidationException(array_map(static fn (ConstraintViolationInterface $violation) => (string) $violation->getMessage(), iterator_to_array($violations)));
         }
     }
-
     /**
      * @param array<Constraint> $constraints
      *
