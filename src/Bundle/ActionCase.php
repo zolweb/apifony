@@ -25,7 +25,7 @@ use function Symfony\Component\String\u;
 class ActionCase
 {
     /**
-     * @param array<ActionParameter> $parameters
+     * @param list<ActionParameter> $parameters
      *
      * @throws Exception
      */
@@ -90,8 +90,8 @@ class ActionCase
     }
 
     /**
-     * @param array<ActionParameter> $parameters
-     * @param array<ActionResponse>  $responses
+     * @param list<ActionParameter> $parameters
+     * @param list<ActionResponse>  $responses
      */
     private function __construct(
         private readonly ?Type $requestBodyPayloadType,
@@ -114,7 +114,7 @@ class ActionCase
     }
 
     /**
-     * @return array<ActionResponse>
+     * @return list<ActionResponse>
      */
     public function getResponses(): array
     {

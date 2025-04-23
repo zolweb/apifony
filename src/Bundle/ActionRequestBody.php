@@ -98,13 +98,13 @@ class ActionRequestBody
         return new self(
             $mimeType,
             $payloadType,
-            $payloadModels,
+            array_values($payloadModels),
             $usedModelName,
         );
     }
 
     /**
-     * @param array<Model> $payloadModels
+     * @param list<Model> $payloadModels
      */
     private function __construct(
         private readonly ?string $mimeType,
@@ -152,7 +152,7 @@ class ActionRequestBody
     }
 
     /**
-     * @return array<Model>
+     * @return list<Model>
      */
     public function getPayloadModels(): array
     {

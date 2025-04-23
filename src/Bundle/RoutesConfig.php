@@ -11,7 +11,7 @@ use function Symfony\Component\String\u;
 class RoutesConfig implements File
 {
     // /**
-    //  * @return array<Operation>
+    //  * @return list<Operation>
     //  */
     // public function getAllSortedOperations(): array
     // {
@@ -48,7 +48,7 @@ class RoutesConfig implements File
     }
 
     /**
-     * @param array<Controller> $controllers
+     * @param list<Controller> $controllers
      */
     private function __construct(
         private readonly string $namespace,

@@ -101,6 +101,19 @@ class Schema
             }
         }
 
+        $required = [];
+        if (isset($data['required'])) {
+            if (!\is_array($data['required'])) {
+                throw new Exception('Schema objects required attribute must be a string.');
+            }
+            foreach ($data['required'] as $e) {
+                if (!\is_string($e)) {
+                    throw new Exception('Schema objects required attribute elements must be a string.');
+                }
+                $required[] = $e;
+            }
+        }
+
         $extensions = [];
         foreach ($data as $key => $extension) {
             if (\is_string($key) && str_starts_with($key, 'x-')) {
@@ -131,15 +144,17 @@ class Schema
             $data['maxItems'] ?? null,
             $data['uniqueItems'] ?? false,
             $properties,
+            $required,
             $extensions,
         );
     }
 
     /**
-     * @param string|array<string>              $type
-     * @param array<string|int|float|bool|null> $enum
-     * @param array<string, Reference|Schema>   $properties
-     * @param array<string, mixed>              $extensions
+     * @param string|list<string>              $type
+     * @param list<string|int|float|bool|null> $enum
+     * @param array<string, Reference|Schema>  $properties
+     * @param list<string>                     $required
+     * @param array<string, mixed>             $extensions
      */
     private function __construct(
         public readonly string|array $type,
@@ -160,6 +175,7 @@ class Schema
         public readonly ?int $maxItems,
         public readonly bool $uniqueItems,
         public readonly array $properties,
+        public readonly array $required,
         public readonly array $extensions,
     ) {
     }

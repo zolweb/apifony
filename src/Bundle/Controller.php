@@ -16,8 +16,8 @@ use PhpParser\PrettyPrinter\Standard;
 class Controller implements File
 {
     /**
-     * @param array<Action> $actions
-     * @param array<string> $usedModelNames
+     * @param list<Action> $actions
+     * @param list<string> $usedModelNames
      */
     public static function build(
         string $bundleNamespace,
@@ -49,9 +49,9 @@ class Controller implements File
     }
 
     /**
-     * @param array<Action> $actions
-     * @param array<string> $usedFormatConstraintNames
-     * @param array<string> $usedModelNames
+     * @param list<Action> $actions
+     * @param list<string> $usedFormatConstraintNames
+     * @param list<string> $usedModelNames
      */
     private function __construct(
         public readonly Handler $handler,

@@ -22,7 +22,7 @@ interface Type
     public function getRequestBodyPayloadTypeCheckingAst(): Expr;
 
     /**
-     * @return array<Constraint>
+     * @return list<Constraint>
      */
     public function getConstraints(): array;
 

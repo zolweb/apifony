@@ -14,8 +14,8 @@ use PhpParser\PrettyPrinter\Standard;
 class Handler implements File
 {
     /**
-     * @param array<Action> $actions
-     * @param array<string> $usedModelNames
+     * @param list<Action> $actions
+     * @param list<string> $usedModelNames
      */
     public static function build(
         string $bundleNamespace,
@@ -32,8 +32,8 @@ class Handler implements File
     }
 
     /**
-     * @param array<Action> $actions
-     * @param array<string> $usedModelNames
+     * @param list<Action> $actions
+     * @param list<string> $usedModelNames
      */
     private function __construct(
         private readonly array $actions,
@@ -44,7 +44,7 @@ class Handler implements File
     }
 
     /**
-     * @return array<File>
+     * @return list<File>
      */
     public function getFiles(): array
     {

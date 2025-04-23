@@ -47,7 +47,7 @@ class Api
 
     private function __construct(
         private readonly AbstractController $abstractController,
-        /** @var array<Aggregate> */
+        /** @var list<Aggregate> */
         private readonly array $aggregates,
         private readonly DenormalizationException $denormalizationException,
         private readonly ParameterValidationException $parameterValidationException,
@@ -56,7 +56,7 @@ class Api
     }
 
     /**
-     * @return array<Aggregate>
+     * @return list<Aggregate>
      */
     public function getAggregates(): array
     {
@@ -64,7 +64,7 @@ class Api
     }
 
     /**
-     * @return array<File>
+     * @return list<File>
      */
     public function getFiles(): array
     {

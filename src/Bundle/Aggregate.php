@@ -18,7 +18,7 @@ use function Symfony\Component\String\u;
 class Aggregate
 {
     /**
-     * @param array<array{route: string, method: string, operation: Operation}> $operations
+     * @param list<array{route: string, method: string, operation: Operation}> $operations
      *
      * @throws Exception
      */
@@ -79,7 +79,7 @@ class Aggregate
     }
 
     /**
-     * @return array<File>
+     * @return list<File>
      */
     public function getFiles(): array
     {

@@ -447,7 +447,7 @@ abstract class AbstractController
         }
     }
     /**
-     * @param array<Constraint> $constraints
+     * @param list<Constraint> $constraints
      *
      * @throws ParameterValidationException
      */
@@ -459,7 +459,7 @@ abstract class AbstractController
         }
     }
     /**
-     * @param array<Constraint> $constraints
+     * @param list<Constraint> $constraints
      *
      * @throws RequestBodyValidationException
      */

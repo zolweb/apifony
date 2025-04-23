@@ -24,6 +24,7 @@ class ModelAttribute
         string $modelClassName,
         string $rawName,
         Reference|Schema $property,
+        bool $required,
         ?Components $components,
     ): self {
         $usedModelName = null;
@@ -36,6 +37,12 @@ class ModelAttribute
                 throw new Exception('Reference not found in schemas components.');
             }
             $property = $components->schemas[$className = $usedModelName = $property->getName()];
+        }
+        if ($required && $property->hasDefault) {
+            throw new Exception('Every required property must not have a default value.');
+        }
+        if (!$required && !$property->hasDefault) {
+            throw new Exception('Every non required property must have a default value.');
         }
         $className = u($className)->camel()->title()->toString();
         $type = TypeFactory::build($className, $property, $components);
@@ -80,7 +87,7 @@ class ModelAttribute
     }
 
     /**
-     * @return array<Constraint>
+     * @return list<Constraint>
      */
     public function getConstraints(): array
     {

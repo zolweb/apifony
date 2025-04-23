@@ -45,7 +45,11 @@ class Schema
         
         #[Assert\NotNull] #[Assert\Valid] #[Assert\All(constraints: array(new Assert\NotNull()))] public readonly array $objectArrayProperty,
         
-        #[Assert\NotNull] #[Assert\Valid] #[Assert\All(constraints: array(new Assert\NotNull()))] public readonly array $recursiveObjectArray
+        #[Assert\NotNull] #[Assert\Valid] #[Assert\All(constraints: array(new Assert\NotNull()))] public readonly array $recursiveObjectArray,
+        
+        #[Assert\NotNull] public readonly string $defaultProperty = 'abc',
+        
+        #[Assert\NotNull] public readonly string $overriddenProperty = 'def'
     )
     {
     }

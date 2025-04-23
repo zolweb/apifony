@@ -32,7 +32,7 @@ class Constraint
     }
 
     /**
-     * @return array<string>
+     * @return list<string>
      */
     public function getFormatConstraintClassNames(): array
     {

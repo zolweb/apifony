@@ -56,7 +56,7 @@ class Format
     }
 
     /**
-     * @return array<File>
+     * @return list<File>
      */
     public function getFiles(): array
     {

@@ -48,6 +48,12 @@ class ActionParameter
         if ($parameter->schema instanceof Reference) {
             throw new \RuntimeException();
         }
+        if ($parameter->required && $parameter->schema->hasDefault) {
+            throw new Exception('Every required parameter must not have a default value.');
+        }
+        if (!$parameter->required && !$parameter->schema->hasDefault) {
+            throw new Exception('Every non required parameter must have a default value.');
+        }
         $variableName = \sprintf('%s%s', $parameter->in[0], u($parameter->name)->camel()->title());
         $className = "{$actionClassName}_{$parameter->name}";
         $className = u($className)->camel()->title()->toString();
@@ -85,7 +91,7 @@ class ActionParameter
     }
 
     /**
-     * @return array<Constraint>
+     * @return list<Constraint>
      */
     public function getConstraints(): array
     {

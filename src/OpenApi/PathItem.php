@@ -45,9 +45,9 @@ class PathItem
     }
 
     /**
-     * @param array<Reference|Parameter> $parameters
-     * @param array<string, Operation>   $operations
-     * @param array<string, mixed>       $extensions
+     * @param list<Reference|Parameter> $parameters
+     * @param array<string, Operation>  $operations
+     * @param array<string, mixed>      $extensions
      */
     private function __construct(
         public readonly array $parameters,

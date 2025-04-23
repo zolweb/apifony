@@ -7,7 +7,6 @@ use Symfony\Component\PropertyInfo\Extractor\PhpStanExtractor;
 use Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor;
 use Symfony\Component\PropertyInfo\PropertyInfoExtractor;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
-use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer;
 use Symfony\Component\Serializer\Normalizer\ArrayDenormalizer;
 use Symfony\Component\Serializer\Normalizer\DenormalizerInterface;
@@ -23,10 +22,10 @@ class Deserializer implements DeserializerInterface
     }
     public function deserialize(string $json, string $type) : object
     {
-        return $this->serializer->deserialize($json, $type, JsonEncoder::FORMAT, array(AbstractNormalizer::REQUIRE_ALL_PROPERTIES => true));
+        return $this->serializer->deserialize($json, $type, JsonEncoder::FORMAT);
     }
     public function denormalize(array $data, string $type) : object
     {
-        return $this->serializer->denormalize($data, $type, null, array(AbstractNormalizer::REQUIRE_ALL_PROPERTIES => true, AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true));
+        return $this->serializer->denormalize($data, $type, null, array(AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true));
     }
 }

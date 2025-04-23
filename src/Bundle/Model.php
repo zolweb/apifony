@@ -37,7 +37,13 @@ class Model implements File
         $attributes = [];
         foreach ($schema->properties as $rawPropertyName => $property) {
             $ordinals[$rawPropertyName] = ++$ordinal;
-            $attributes[$rawPropertyName] = ModelAttribute::build($className, $rawPropertyName, $property, $components);
+            $attributes[$rawPropertyName] = ModelAttribute::build(
+                $className,
+                $rawPropertyName,
+                $property,
+                \in_array($rawPropertyName, $schema->required, true),
+                $components,
+            );
         }
 
         usort(
@@ -79,9 +85,9 @@ class Model implements File
     }
 
     /**
-     * @param array<ModelAttribute> $attributes
-     * @param array<string>         $usedFormatConstraintNames
-     * @param array<string>         $usedModelNames
+     * @param list<ModelAttribute> $attributes
+     * @param list<string>         $usedFormatConstraintNames
+     * @param list<string>         $usedModelNames
      */
     private function __construct(
         private readonly string $bundleNamespace,

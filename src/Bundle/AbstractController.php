@@ -92,7 +92,7 @@ class AbstractController implements File
             ->setReturnType('void')
             ->setDocComment(<<<'COMMENT'
                 /**
-                 * @param array<Constraint> $constraints
+                 * @param list<Constraint> $constraints
                  *
                  * @throws ParameterValidationException
                  */
@@ -116,7 +116,7 @@ class AbstractController implements File
             ->setReturnType('void')
             ->setDocComment(<<<'COMMENT'
                 /**
-                 * @param array<Constraint> $constraints
+                 * @param list<Constraint> $constraints
                  *
                  * @throws RequestBodyValidationException
                  */

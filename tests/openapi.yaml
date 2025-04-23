@@ -106,6 +106,7 @@ paths:
                   type: 'boolean'
                 string_property:
                   type: 'string'
+              required: ['stringProperty', 'numberProperty', 'integerProperty', 'booleanProperty', 'string_property']
       responses:
         200:
           headers:
@@ -146,6 +147,7 @@ paths:
                     type: 'array'
                     items:
                       $ref: '#/components/schemas/Abc'
+                required: ['dump', 'string_string', 'abc1', 'abc2', 'abcList1', 'abcList2']
 
 components:
   schemas:
@@ -178,11 +180,18 @@ components:
         customProperty:
           type: 'string'
           format: 'custom'
+        defaultProperty:
+          type: 'string'
+          default: 'abc'
+        overriddenProperty:
+          type: 'string'
+          default: 'def'
         objectProperty:
           type: 'object'
           properties:
             stringProperty:
               type: 'string'
+          required: ['stringProperty']
         arrayProperty:
           type: 'array'
           items:
@@ -194,12 +203,15 @@ components:
             properties:
               stringProperty:
                 type: 'string'
+            required: ['stringProperty']
         recursiveObjectArray:
           type: 'array'
           items:
             $ref: '#/components/schemas/Schema'
+      required: ['stringProperty', 'numberProperty', 'integerProperty', 'booleanProperty', 'emailProperty', 'uuidProperty', 'dateTimeProperty', 'dateProperty', 'timeProperty', 'customProperty', 'objectProperty', 'arrayProperty', 'objectArrayProperty', 'recursiveObjectArray']
     Abc:
       type: 'object'
       properties:
         def:
           type: 'string'
+      required: ['def']

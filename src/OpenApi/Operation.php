@@ -7,8 +7,8 @@ namespace Zol\Ogen\OpenApi;
 class Operation
 {
     /**
-     * @param array<Reference|Parameter> $pathItemParameters
-     * @param array<mixed>               $data
+     * @param list<Reference|Parameter> $pathItemParameters
+     * @param array<mixed>              $data
      *
      * @throws Exception
      */
@@ -99,9 +99,9 @@ class Operation
     }
 
     /**
-     * @param array<Reference|Parameter> $parameters
-     * @param array<string>              $tags
-     * @param array<string, mixed>       $extensions
+     * @param list<Reference|Parameter> $parameters
+     * @param list<string>              $tags
+     * @param array<string, mixed>      $extensions
      */
     private function __construct(
         public readonly string $operationId,

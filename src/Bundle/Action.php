@@ -58,10 +58,10 @@ class Action
     }
 
     /**
-     * @param array<ActionParameter>   $parameters
-     * @param array<ActionRequestBody> $requestBodies
-     * @param array<?string>           $responseContentTypes
-     * @param array<ActionCase>        $cases
+     * @param list<ActionParameter>   $parameters
+     * @param list<ActionRequestBody> $requestBodies
+     * @param list<?string>           $responseContentTypes
+     * @param list<ActionCase>        $cases
      */
     private function __construct(
         private readonly string $name,
@@ -80,20 +80,22 @@ class Action
     }
 
     /**
-     * @param array<string> $in
+     * @param list<string> $in
      *
-     * @return array<ActionParameter>
+     * @return list<ActionParameter>
      */
     public function getParameters(array $in = ['path', 'query', 'header', 'cookie']): array
     {
-        return array_filter(
-            $this->parameters,
-            static fn (ActionParameter $param) => \in_array($param->getIn(), $in, true),
+        return array_values(
+            array_filter(
+                $this->parameters,
+                static fn (ActionParameter $param) => \in_array($param->getIn(), $in, true),
+            ),
         );
     }
 
     /**
-     * @return array<ActionRequestBody>
+     * @return list<ActionRequestBody>
      */
     public function getRequestBodies(): array
     {
@@ -101,7 +103,7 @@ class Action
     }
 
     /**
-     * @return array<ActionCase>
+     * @return list<ActionCase>
      */
     public function getCases(): array
     {
@@ -109,7 +111,7 @@ class Action
     }
 
     /**
-     * @return array<File>
+     * @return list<File>
      */
     public function getFiles(): array
     {
@@ -137,7 +139,7 @@ class Action
     }
 
     /**
-     * @return array<ActionParameter>
+     * @return list<ActionParameter>
      *
      * @throws Exception
      */
@@ -167,7 +169,7 @@ class Action
     }
 
     /**
-     * @return array<ActionRequestBody>
+     * @return list<ActionRequestBody>
      *
      * @throws Exception
      */
@@ -218,9 +220,9 @@ class Action
     }
 
     /**
-     * @param array<ActionRequestBody> $requestBodies
+     * @param list<ActionRequestBody> $requestBodies
      *
-     * @return array<?Type>
+     * @return list<?Type>
      */
     private static function buildRequestBodyPayloadTypes(array $requestBodies): array
     {
@@ -234,7 +236,7 @@ class Action
     }
 
     /**
-     * @return array<?string>
+     * @return list<?string>
      *
      * @throws Exception
      */
@@ -263,11 +265,11 @@ class Action
     }
 
     /**
-     * @param array<ActionParameter> $parameters
-     * @param array<?Type>           $requestBodyPayloadTypes
-     * @param array<?string>         $responseContentTypes
+     * @param list<ActionParameter> $parameters
+     * @param list<?Type>           $requestBodyPayloadTypes
+     * @param list<?string>         $responseContentTypes
      *
-     * @return array<ActionCase>
+     * @return list<ActionCase>
      *
      * @throws Exception
      */

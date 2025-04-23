@@ -36,6 +36,7 @@ final class OgenTest extends WebTestCase
                 'dateProperty' => '1969-07-21',
                 'timeProperty' => '03:56:20+01:00',
                 'customProperty' => 'custom',
+                'overriddenProperty' => 'abc',
                 'objectProperty' => [
                     'stringProperty' => 'string',
                 ],
@@ -55,6 +56,7 @@ final class OgenTest extends WebTestCase
                         'dateProperty' => '1969-07-21',
                         'timeProperty' => '03:56:20+01:00',
                         'customProperty' => 'custom',
+                        'overriddenProperty' => 'abc',
                         'objectProperty' => [
                             'stringProperty' => 'string',
                         ],
@@ -113,6 +115,8 @@ final class OgenTest extends WebTestCase
                     'dateProperty' => '1969-07-21',
                     'timeProperty' => '03:56:20+01:00',
                     'customProperty' => 'custom',
+                    'defaultProperty' => 'abc',
+                    'overriddenProperty' => 'abc',
                     'objectProperty' => [
                         'stringProperty' => 'string',
                     ],
@@ -134,6 +138,8 @@ final class OgenTest extends WebTestCase
                             'dateProperty' => '1969-07-21',
                             'timeProperty' => '03:56:20+01:00',
                             'customProperty' => 'custom',
+                            'defaultProperty' => 'abc',
+                            'overriddenProperty' => 'abc',
                             'objectProperty' => [
                                 'stringProperty' => 'string',
                             ],
