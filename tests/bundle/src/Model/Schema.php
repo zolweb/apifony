@@ -39,6 +39,8 @@ class Schema
         
         #[Assert\NotNull] #[AssertCustom] public readonly string $customProperty,
         
+        public readonly ?string $nullDefaultProperty,
+        
         #[Assert\Valid] #[Assert\NotNull] public readonly SchemaObjectProperty $objectProperty,
         
         #[Assert\NotNull] #[Assert\All(constraints: array(new Assert\NotNull()))] public readonly array $arrayProperty,

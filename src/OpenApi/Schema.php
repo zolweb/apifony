@@ -14,7 +14,7 @@ class Schema
     public static function build(array $data): self
     {
         $type = [];
-        if (isset($data['type'])) {
+        if (\array_key_exists('type', $data)) {
             if (\is_array($data['type'])) {
                 foreach ($data['type'] as $t) {
                     if (!\is_string($t)) {
@@ -28,11 +28,11 @@ class Schema
                 throw new Exception('Schema objects type attribute must be a string or an array of strings.');
             }
         }
-        if (isset($data['format']) && !\is_string($data['format'])) {
+        if (\array_key_exists('format', $data) && !\is_string($data['format'])) {
             throw new Exception('Schema objects format attribute must be a string.');
         }
         $enum = [];
-        if (isset($data['enum'])) {
+        if (\array_key_exists('enum', $data)) {
             if (!\is_array($data['enum'])) {
                 throw new Exception('Schema objects enum attribute must be a string.');
             }
@@ -43,50 +43,50 @@ class Schema
                 $enum[] = $e;
             }
         }
-        if (isset($data['default']) && !\is_string($data['default']) && !\is_int($data['default']) && !\is_float($data['default']) && !\is_bool($data['default'])) {
-            throw new Exception('Schema objects default attribute must be a string, an int, a float or a boolean.');
+        if (\array_key_exists('default', $data) && !\is_string($data['default']) && !\is_int($data['default']) && !\is_float($data['default']) && !\is_bool($data['default']) && null !== $data['default']) {
+            throw new Exception('Schema objects default attribute must be a string, an int, a float, a boolean or null.');
         }
-        if (isset($data['pattern']) && !\is_string($data['pattern'])) {
+        if (\array_key_exists('pattern', $data) && !\is_string($data['pattern'])) {
             throw new Exception('Schema objects pattern attribute must be a string.');
         }
-        if (isset($data['minLength']) && !\is_int($data['minLength'])) {
+        if (\array_key_exists('minLength', $data) && !\is_int($data['minLength'])) {
             throw new Exception('Schema objects minLength attribute must be an int.');
         }
-        if (isset($data['maxLength']) && !\is_int($data['maxLength'])) {
+        if (\array_key_exists('maxLength', $data) && !\is_int($data['maxLength'])) {
             throw new Exception('Schema objects maxLength attribute must be an int.');
         }
-        if (isset($data['multipleOf']) && !\is_int($data['multipleOf']) && !\is_float($data['multipleOf'])) {
+        if (\array_key_exists('multipleOf', $data) && !\is_int($data['multipleOf']) && !\is_float($data['multipleOf'])) {
             throw new Exception('Schema objects multipleOf attribute must be an int or a float.');
         }
-        if (isset($data['minimum']) && !\is_int($data['minimum']) && !\is_float($data['minimum'])) {
+        if (\array_key_exists('minimum', $data) && !\is_int($data['minimum']) && !\is_float($data['minimum'])) {
             throw new Exception('Schema objects minimum attribute must be an int or a float.');
         }
-        if (isset($data['maximum']) && !\is_int($data['maximum']) && !\is_float($data['maximum'])) {
+        if (\array_key_exists('maximum', $data) && !\is_int($data['maximum']) && !\is_float($data['maximum'])) {
             throw new Exception('Schema objects maximum attribute must be an int or a float.');
         }
-        if (isset($data['exclusiveMinimum']) && !\is_int($data['exclusiveMinimum']) && !\is_float($data['exclusiveMinimum'])) {
+        if (\array_key_exists('exclusiveMinimum', $data) && !\is_int($data['exclusiveMinimum']) && !\is_float($data['exclusiveMinimum'])) {
             throw new Exception('Schema objects exclusiveMinimum attribute must be an int or a float.');
         }
-        if (isset($data['exclusiveMaximum']) && !\is_int($data['exclusiveMaximum']) && !\is_float($data['exclusiveMaximum'])) {
+        if (\array_key_exists('exclusiveMaximum', $data) && !\is_int($data['exclusiveMaximum']) && !\is_float($data['exclusiveMaximum'])) {
             throw new Exception('Schema objects exclusiveMaximum attribute must be an int or a float.');
         }
-        if (isset($data['items']) && !\is_array($data['items'])) {
+        if (\array_key_exists('items', $data) && !\is_array($data['items'])) {
             throw new Exception('Schema objects items attribute must be an array.');
         }
-        if (isset($data['minItems']) && !\is_int($data['minItems'])) {
+        if (\array_key_exists('minItems', $data) && !\is_int($data['minItems'])) {
             throw new Exception('Schema objects minItems attribute must be an int.');
         }
-        if (isset($data['maxItems']) && !\is_int($data['maxItems'])) {
+        if (\array_key_exists('maxItems', $data) && !\is_int($data['maxItems'])) {
             throw new Exception('Schema objects maxItems attribute must be an int.');
         }
-        if (isset($data['uniqueItems']) && !\is_bool($data['uniqueItems'])) {
+        if (\array_key_exists('uniqueItems', $data) && !\is_bool($data['uniqueItems'])) {
             throw new Exception('Schema objects uniqueItems attribute must be a boolean.');
         }
-        if (isset($data['properties']) && !\is_array($data['properties'])) {
+        if (\array_key_exists('properties', $data) && !\is_array($data['properties'])) {
             throw new Exception('Schema objects properties attribute must be an array.');
         }
         $properties = [];
-        if (isset($data['properties'])) {
+        if (\array_key_exists('properties', $data)) {
             if (!\is_array($data['properties'])) {
                 throw new Exception('Schema objects properties attribute must be an array.');
             }
@@ -97,12 +97,12 @@ class Schema
                 if (!\is_string($name)) {
                     throw new Exception('Schema objects properties attribute keys must be strings.');
                 }
-                $properties[$name] = isset($propertyData['$ref']) ? Reference::build($propertyData) : self::build($propertyData);
+                $properties[$name] = \array_key_exists('$ref', $propertyData) ? Reference::build($propertyData) : self::build($propertyData);
             }
         }
 
         $required = [];
-        if (isset($data['required'])) {
+        if (\array_key_exists('required', $data)) {
             if (!\is_array($data['required'])) {
                 throw new Exception('Schema objects required attribute must be a string.');
             }
@@ -125,7 +125,7 @@ class Schema
             $type,
             $data['format'] ?? null,
             $enum,
-            isset($data['default']),
+            \array_key_exists('default', $data),
             $data['default'] ?? null,
             $data['pattern'] ?? null,
             $data['minLength'] ?? null,
@@ -136,8 +136,8 @@ class Schema
             $data['exclusiveMinimum'] ?? null,
             $data['exclusiveMaximum'] ?? null,
             match (true) {
-                isset($data['items']['$ref']) => Reference::build($data['items']),
-                isset($data['items']) => self::build($data['items']),
+                \array_key_exists('items', $data) && \array_key_exists('$ref', $data['items']) => Reference::build($data['items']),
+                \array_key_exists('items', $data) => self::build($data['items']),
                 default => null,
             },
             $data['minItems'] ?? null,

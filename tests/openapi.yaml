@@ -183,6 +183,11 @@ components:
         defaultProperty:
           type: 'string'
           default: 'abc'
+        nullDefaultProperty:
+          type:
+            - 'string'
+            - 'null'
+          default: null
         overriddenProperty:
           type: 'string'
           default: 'def'
