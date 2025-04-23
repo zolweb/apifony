@@ -8,5 +8,5 @@ interface CustomDefinition
     /**
      * @return string[]
      */
-    public function validate(mixed $value): array;
+    public function validate(mixed $value) : array;
 }

@@ -19,14 +19,14 @@ class Deserializer implements DeserializerInterface
     private SerializerInterface&DenormalizerInterface $serializer;
     public function __construct()
     {
-        $this->serializer = new Serializer(normalizers: [new ObjectNormalizer(propertyTypeExtractor: new PropertyInfoExtractor(typeExtractors: [new PhpStanExtractor(), new ReflectionExtractor()])), new ArrayDenormalizer()], encoders: [new JsonEncoder()]);
+        $this->serializer = new Serializer(normalizers: array(new ObjectNormalizer(propertyTypeExtractor: new PropertyInfoExtractor(typeExtractors: array(new PhpStanExtractor(), new ReflectionExtractor()))), new ArrayDenormalizer()), encoders: array(new JsonEncoder()));
     }
-    public function deserialize(string $json, string $type): object
+    public function deserialize(string $json, string $type) : object
     {
-        return $this->serializer->deserialize($json, $type, JsonEncoder::FORMAT, [AbstractNormalizer::REQUIRE_ALL_PROPERTIES => true]);
+        return $this->serializer->deserialize($json, $type, JsonEncoder::FORMAT, array(AbstractNormalizer::REQUIRE_ALL_PROPERTIES => true));
     }
-    public function denormalize(array $data, string $type): object
+    public function denormalize(array $data, string $type) : object
     {
-        return $this->serializer->denormalize($data, $type, null, [AbstractNormalizer::REQUIRE_ALL_PROPERTIES => true, AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true]);
+        return $this->serializer->denormalize($data, $type, null, array(AbstractNormalizer::REQUIRE_ALL_PROPERTIES => true, AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true));
     }
 }
