@@ -16,11 +16,11 @@ interface DeserializerInterface
      * @throws ExceptionInterface
      * @throws \TypeError
      */
-    public function deserialize(string $json, string $type) : object;
+    public function deserialize(string $json, string $type): object;
     /**
      * @template T of object
      *
-     * @param array<mixed> $data
+     * @param array<mixed>    $data
      * @param class-string<T> $type
      *
      * @return T
@@ -28,5 +28,5 @@ interface DeserializerInterface
      * @throws ExceptionInterface
      * @throws \TypeError
      */
-    public function denormalize(array $data, string $type) : object;
+    public function denormalize(array $data, string $type): object;
 }

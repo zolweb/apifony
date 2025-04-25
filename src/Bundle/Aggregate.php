@@ -44,16 +44,16 @@ class Aggregate
 
         $usedModelNames = [];
         foreach ($actions as $action) {
-            foreach ($action->getRequestBodies() as $requestBody) {
-                if ($requestBody->getUsedModelName() !== null) {
-                    $usedModelNames[$requestBody->getUsedModelName()] = true;
+            if ($action->getRequestBody() !== null) {
+                $usedModelName = $action->getRequestBody()->getUsedModelName();
+                if ($usedModelName !== null) {
+                    $usedModelNames[$usedModelName] = true;
                 }
             }
-            foreach ($action->getCases() as $case) {
-                foreach ($case->getResponses() as $response) {
-                    if ($response->getUsedModelName() !== null) {
-                        $usedModelNames[$response->getUsedModelName()] = true;
-                    }
+            foreach ($action->getResponses() as $response) {
+                $usedModelName = $response->getUsedModelName();
+                if ($usedModelName !== null) {
+                    $usedModelNames[$usedModelName] = true;
                 }
             }
         }

@@ -44,11 +44,6 @@ class ObjectType implements Type
         throw new Exception('Object path parameters are not supported.');
     }
 
-    public function getNormalizedType(): string
-    {
-        return $this->isRaw ? 'mixed' : $this->name;
-    }
-
     public function getRequestBodyPayloadTypeCheckingAst(): Expr
     {
         $f = new BuilderFactory();

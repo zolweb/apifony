@@ -4,9 +4,8 @@
 error_reporting(-1);
 ini_set('display_errors', 1);
 
-use Zol\Ogen\Bundle\Exception as BundleException;
-use Zol\Ogen\Ogen;
-use Zol\Ogen\OpenApi\Exception as OpenApiException;
+use Symfony\Component\Console\Application;
+use Zol\Ogen\GenerateBundleCommand;
 
 $autoloadLocations = [
    __DIR__.'/../autoload.php',
@@ -21,10 +20,12 @@ foreach ($autoloadLocations as $autoloadLocation) {
     }
 }
 
-try {
-    (new Ogen())->generate($argv[1], $argv[2], $argv[3], $argv[4], $argv[5]);
-} catch (BundleException|OpenApiException $e) {
-    throw new RuntimeException($e->getMessage(), 0, $e);
-}
+$application = new Application();
 
-return 0;
+$application->add(new GenerateBundleCommand());
+
+try {
+    $application->run();
+} catch (\Exception $e) {
+    throw new \RuntimeException($e->getMessage());
+}

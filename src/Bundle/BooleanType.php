@@ -42,11 +42,6 @@ class BooleanType implements Type
         return 'true|false';
     }
 
-    public function getNormalizedType(): string
-    {
-        return 'Boolean';
-    }
-
     public function getRequestBodyPayloadTypeCheckingAst(): Expr
     {
         $f = new BuilderFactory();

@@ -18,14 +18,14 @@ class Deserializer implements DeserializerInterface
     private SerializerInterface&DenormalizerInterface $serializer;
     public function __construct()
     {
-        $this->serializer = new Serializer(normalizers: array(new ObjectNormalizer(propertyTypeExtractor: new PropertyInfoExtractor(typeExtractors: array(new PhpStanExtractor(), new ReflectionExtractor()))), new ArrayDenormalizer()), encoders: array(new JsonEncoder()));
+        $this->serializer = new Serializer(normalizers: [new ObjectNormalizer(propertyTypeExtractor: new PropertyInfoExtractor(typeExtractors: [new PhpStanExtractor(), new ReflectionExtractor()])), new ArrayDenormalizer()], encoders: [new JsonEncoder()]);
     }
-    public function deserialize(string $json, string $type) : object
+    public function deserialize(string $json, string $type): object
     {
         return $this->serializer->deserialize($json, $type, JsonEncoder::FORMAT);
     }
-    public function denormalize(array $data, string $type) : object
+    public function denormalize(array $data, string $type): object
     {
-        return $this->serializer->denormalize($data, $type, null, array(AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true));
+        return $this->serializer->denormalize($data, $type, null, [AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true]);
     }
 }

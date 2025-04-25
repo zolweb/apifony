@@ -92,21 +92,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Schema'
-          application/x-www-form-urlencoded:
-            schema:
-              type: 'object'
-              properties:
-                stringProperty:
-                  type: 'string'
-                numberProperty:
-                  type: 'number'
-                integerProperty:
-                  type: 'integer'
-                booleanProperty:
-                  type: 'boolean'
-                string_property:
-                  type: 'string'
-              required: ['stringProperty', 'numberProperty', 'integerProperty', 'booleanProperty', 'string_property']
       responses:
         200:
           headers:

@@ -51,11 +51,6 @@ class NumberType implements Type
         return '-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?';
     }
 
-    public function getNormalizedType(): string
-    {
-        return 'Float';
-    }
-
     public function getRequestBodyPayloadTypeCheckingAst(): Expr
     {
         $f = new BuilderFactory();

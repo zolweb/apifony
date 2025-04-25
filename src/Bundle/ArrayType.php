@@ -76,11 +76,6 @@ class ArrayType implements Type
         throw new Exception('Array path parameters are not supported.');
     }
 
-    public function getNormalizedType(): string
-    {
-        return "{$this->itemType->getNormalizedType()}Array";
-    }
-
     public function getRequestBodyPayloadTypeCheckingAst(): Expr
     {
         $f = new BuilderFactory();

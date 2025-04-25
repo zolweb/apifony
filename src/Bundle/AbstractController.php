@@ -60,31 +60,6 @@ class AbstractController implements File
             ->addParam($f->param('validator')->setType('ValidatorInterface')->makeProtected()->makeReadonly())
         ;
 
-        $getObjectWwwFormUrlEncodedMethod = $f->method('getObjectWwwFormUrlEncodedRequestBody')
-            ->makePublic()
-            ->addParam($f->param('request')->setType('Request'))
-            ->addParam($f->param('class')->setType('string'))
-            ->setReturnType('object')
-            ->setDocComment(<<<'COMMENT'
-                /**
-                 * @param class-string $class
-                 *
-                 * @throws DenormalizationException
-                 */
-                COMMENT
-            )
-            ->addStmt(new Expression(new Assign($f->var('value'), $f->methodCall($f->propertyFetch($f->var('request'), 'request'), 'all'))))
-            ->addStmt(new TryCatch(
-                [
-                    new Return_($f->methodCall($f->propertyFetch($f->var('this'), 'deserializer'), 'denormalize', [$f->var('value'), $f->var('class')])),
-                ], [
-                    new Catch_([new Name('ExceptionInterface'), new Name('\TypeError')], $f->var('e'), [
-                        new Expression(new Throw_($f->new('DenormalizationException', [new Encapsed([new EncapsedStringPart('Request body could not be deserialized: '), $f->methodCall($f->var('e'), 'getMessage')])]))),
-                    ]),
-                ]),
-            )
-        ;
-
         $validateParameter = $f->method('validateParameter')
             ->makePublic()
             ->addParam($f->param('value')->setType('mixed'))
@@ -220,7 +195,7 @@ class AbstractController implements File
 
         foreach (['string', 'int', 'float', 'bool'] as $type) {
             foreach ([false, true] as $nullable) {
-                $getParameterMethod = $f->method(\sprintf('get%s%sJsonRequestBody', ucfirst($type), $nullable ? 'OrNull' : ''))
+                $getParameterMethod = $f->method(\sprintf('get%s%sRequestBody', ucfirst($type), $nullable ? 'OrNull' : ''))
                     ->makePublic()
                     ->addParam($f->param('request')->setType('Request'))
                     ->addParam($f->param('default')->setType("?{$type}")->setDefault(null))
@@ -281,15 +256,21 @@ class AbstractController implements File
         }
 
         foreach ([false, true] as $nullable) {
-            $getParameterMethod = $f->method(\sprintf('getObject%sJsonRequestBody', $nullable ? 'OrNull' : ''))
+            $questionMark = $nullable ? '?' : '';
+            $getParameterMethod = $f->method(\sprintf('getObject%sRequestBody', $nullable ? 'OrNull' : ''))
                 ->makePublic()
                 ->addParam($f->param('request')->setType('Request'))
                 ->addParam($f->param('class')->setType('string'))
                 ->addParam($f->param('default')->setType('?object')->setDefault(null))
                 ->setReturnType(\sprintf('%sobject', $nullable ? '?' : ''))
-                ->setDocComment(<<<'COMMENT'
+                ->setDocComment(<<<COMMENT
                     /**
-                     * @param class-string $class
+                     * @template T of object
+                     *
+                     * @param class-string<T> \$class
+                     * @param ?T \$default
+                     *
+                     * @return {$questionMark}T
                      *
                      * @throws DenormalizationException
                      */
@@ -324,8 +305,6 @@ class AbstractController implements File
 
             $class->addStmt($getParameterMethod);
         }
-
-        $class->addStmt($getObjectWwwFormUrlEncodedMethod);
 
         $class->addStmt($validateParameter)
             ->addStmt($validateRequestBody)

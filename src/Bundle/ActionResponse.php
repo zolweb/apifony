@@ -30,15 +30,10 @@ class ActionResponse implements File
         string $actionName,
         int $code,
         Response $response,
-        ?string $contentType,
         Reference|Schema|null $payload,
         ?Components $components,
     ): self {
-        if (!\in_array($contentType, [null, 'application/json'], true)) {
-            throw new Exception('Responses with content type other thant \'application/json\' are not supported.');
-        }
-
-        $className = u(\sprintf('%s_%s_%s_ResponsePayload', $actionName, $code, $contentType ?? 'empty'))->camel()->title()->toString();
+        $className = u(\sprintf('%s_%s_ResponsePayload', $actionName, $code))->camel()->title()->toString();
 
         $payloadModels = [];
         $payloadType = null;
@@ -54,8 +49,8 @@ class ActionResponse implements File
                 $hasModel = false;
             }
             $payloadType = TypeFactory::build($className, $schema, $components);
-            if ($payloadType instanceof ArrayType) {
-                throw new Exception('Responses with array schema are not supported.');
+            if (!$payloadType instanceof ObjectType) {
+                throw new Exception('Only object schemas are supported for responses.');
             }
 
             if ($hasModel) {
@@ -93,9 +88,8 @@ class ActionResponse implements File
         return new self(
             $bundleNamespace,
             $aggregateName,
-            u(\sprintf('%s_%s_%s_Response', $actionName, $code, $contentType ?? 'Empty'))->camel()->title()->toString(),
+            u(\sprintf('%s_%s_Response', $actionName, $code))->camel()->title()->toString(),
             $code,
-            $contentType,
             $payloadType,
             array_map(
                 static fn (string $name) => ActionResponseHeader::build($name, $response->headers[$name], $components),
@@ -115,8 +109,7 @@ class ActionResponse implements File
         private readonly string $aggregateName,
         private readonly string $name,
         private readonly int $code,
-        private readonly ?string $contentType,
-        private readonly ?Type $payloadType,
+        private readonly ?ObjectType $payloadType,
         private readonly array $headers,
         private readonly array $payloadModels,
         private readonly ?string $usedModelName,
@@ -159,10 +152,7 @@ class ActionResponse implements File
             ->makePublic()
         ;
 
-        if ($this->contentType !== null) {
-            if ($this->payloadType === null) { // todo code smell
-                throw new \RuntimeException();
-            }
+        if ($this->payloadType !== null) {
             $constructor->addParam($f->param('payload')->setType($this->payloadType->asName())->makePublic()->makeReadonly());
         }
 
@@ -170,7 +160,7 @@ class ActionResponse implements File
             $constructor->addParam($header->getParam());
         }
 
-        if ($this->contentType === null) {
+        if ($this->payloadType === null) {
             $constructor->addStmt(new Assign($f->propertyFetch($f->var('this'), 'payload'), $f->val('')));
         }
 
@@ -191,12 +181,12 @@ class ActionResponse implements File
 
         $class = $f->class($this->name)
             ->addStmt($f->classConst('CODE', $this->code)->makePublic())
-            ->addStmt($f->classConst('CONTENT_TYPE', $this->contentType)->makePublic())
+            ->addStmt($f->classConst('CONTENT_TYPE', $this->payloadType !== null ? 'application/json' : null)->makePublic())
             ->addStmt($constructor)
             ->addStmt($getHeadersMethod)
         ;
 
-        if ($this->contentType === null) {
+        if ($this->payloadType === null) {
             $class->addStmt($f->property('payload')->setType('string')->makePublic()->makeReadonly());
         }
 

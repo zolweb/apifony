@@ -74,13 +74,10 @@ class Handler implements File
         $f = new BuilderFactory();
 
         $interface = $f->interface("{$this->aggregateName}Handler")
-            ->addStmts(array_merge(...array_map(
-                static fn (Action $action): array => array_map(
-                    static fn (ActionCase $actionCase): ClassMethod => $actionCase->getHandlerMethod(),
-                    $action->getCases(),
-                ),
+            ->addStmts(array_map(
+                static fn (Action $action): ClassMethod => $action->getHandlerMethod(),
                 $this->actions,
-            )))
+            ))
         ;
 
         $namespace = $f->namespace("{$this->bundleNamespace}\\Api\\{$this->aggregateName}")

@@ -12,7 +12,7 @@ zol-common:
 
 test:
 	@$(RUNNER_DOCKER_EXEC) 'rm -rf /var/www/html/tests/bundle/*'
-	@$(RUNNER_DOCKER_EXEC) './ogen TestOpenApiServer Zol\\Ogen\\Tests\\TestOpenApiServer zol/test-openapi-server /var/www/html/tests/openapi.yaml /var/www/html/tests/bundle'
+	@$(RUNNER_DOCKER_EXEC) './ogen generate-bundle TestOpenApiServer Zol\\Ogen\\Tests\\TestOpenApiServer zol/test-openapi-server /var/www/html/tests/openapi.yaml /var/www/html/tests/bundle'
 	@$(RUNNER_DOCKER_EXEC) 'php vendor/bin/phpunit'
 
 phpstan-bundle:
@@ -34,3 +34,5 @@ composer-update-highest:
 	@echo "$(step_start) Composer update highest $(step_end)"
 	@$(COMPOSER_RUN) '$(composer-update-cli-highest)'
 	@$(CHECK_COMPOSER_CACHE)
+
+t: php-cs-fixer-fix phpstan test

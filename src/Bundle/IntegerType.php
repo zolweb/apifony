@@ -51,11 +51,6 @@ class IntegerType implements Type
         return '-?(0|[1-9]\d*)';
     }
 
-    public function getNormalizedType(): string
-    {
-        return 'Integer';
-    }
-
     public function getRequestBodyPayloadTypeCheckingAst(): Expr
     {
         $f = new BuilderFactory();

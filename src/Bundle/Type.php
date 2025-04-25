@@ -16,8 +16,6 @@ interface Type
 
     public function getRouteRequirementPattern(): string;
 
-    public function getNormalizedType(): string;
-
     // todo take ast variable in parameter
     public function getRequestBodyPayloadTypeCheckingAst(): Expr;
 
