@@ -35,19 +35,19 @@ class ArrayType implements Type
     ) {
         if ($schema instanceof Reference) {
             if ($components === null || !isset($components->schemas[$schema->getName()])) {
-                throw new Exception('Reference not found in schemas components.');
+                throw new Exception('Reference not found in schemas components.', $schema->path);
             }
             $schema = $components->schemas[$schema->getName()];
         }
 
         $items = $schema->items;
         if ($items === null) {
-            throw new Exception('Schema objects of array type without items attribute are not supported.');
+            throw new Exception('Schema objects of array type without items attribute are not supported.', $schema->path);
         }
         $usedModel = null;
         if ($items instanceof Reference) {
             if ($components === null || !isset($components->schemas[$items->getName()])) {
-                throw new Exception('Reference not found in schemas components.');
+                throw new Exception('Reference not found in schemas components.', $items->path);
             }
             $items = $components->schemas[$className = $usedModel = $items->getName()];
             $className = u($className)->camel()->title()->toString();
@@ -73,7 +73,7 @@ class ArrayType implements Type
      */
     public function getRouteRequirementPattern(): string
     {
-        throw new Exception('Array path parameters are not supported.');
+        throw new Exception('Array path parameters are not supported.', $this->schema->path);
     }
 
     public function getRequestBodyPayloadTypeCheckingAst(): Expr

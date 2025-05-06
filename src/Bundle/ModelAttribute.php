@@ -29,20 +29,20 @@ class ModelAttribute
     ): self {
         $usedModelName = null;
         if (preg_match('/[^A-Za-z0-9_]/', $rawName)) {
-            throw new Exception('Only [A-Za-z0-9_] are authorized chars in attribute names.');
+            throw new Exception('Only [A-Za-z0-9_] are authorized chars in attribute names.', $property->path);
         }
         $className = "{$modelClassName}_{$rawName}";
         if ($property instanceof Reference) {
             if ($components === null || !isset($components->schemas[$property->getName()])) {
-                throw new Exception('Reference not found in schemas components.');
+                throw new Exception('Reference not found in schemas components.', $property->path);
             }
             $property = $components->schemas[$className = $usedModelName = $property->getName()];
         }
         if ($required && $property->hasDefault) {
-            throw new Exception('Every required property must not have a default value.');
+            throw new Exception('Every required property must not have a default value.', $property->path);
         }
         if (!$required && !$property->hasDefault) {
-            throw new Exception('Every non required property must have a default value.');
+            throw new Exception('Every non required property must have a default value.', $property->path);
         }
         $className = u($className)->camel()->title()->toString();
         $type = TypeFactory::build($className, $property, $components);

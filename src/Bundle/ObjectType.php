@@ -41,7 +41,7 @@ class ObjectType implements Type
      */
     public function getRouteRequirementPattern(): string
     {
-        throw new Exception('Object path parameters are not supported.');
+        throw new Exception('Object path parameters are not supported.', $this->schema->path);
     }
 
     public function getRequestBodyPayloadTypeCheckingAst(): Expr

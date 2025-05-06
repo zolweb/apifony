@@ -133,7 +133,7 @@ class Action
         foreach ($operation->parameters as $parameter) {
             if ($parameter instanceof Reference) {
                 if ($components === null || !isset($components->parameters[$parameter->getName()])) {
-                    throw new Exception('Reference not found in parameters components.');
+                    throw new Exception('Reference not found in parameters components.', $parameter->path);
                 }
                 $parameter = $components->parameters[$parameter->getName()];
             }
@@ -161,7 +161,7 @@ class Action
         $requestBody = $operation->requestBody;
         if ($requestBody instanceof Reference) {
             if ($components === null || !isset($components->requestBodies[$requestBody->getName()])) {
-                throw new Exception('Reference not found in requestBodies components.');
+                throw new Exception('Reference not found in requestBodies components.', $requestBody->path);
             }
             $requestBody = $components->requestBodies[$requestBody->getName()];
         }
@@ -169,7 +169,7 @@ class Action
             return null;
         }
         if (\count(array_diff_key($requestBody->content, ['application/json' => null])) > 0) {
-            throw new Exception('Only application/json is supported by Ogen for response bodies.');
+            throw new Exception('Only application/json is supported by Ogen for response bodies.', $requestBody->path);
         }
 
         // Due to StopLight not allowing to declare required on requestBodies, a requestBody is always required
@@ -198,12 +198,12 @@ class Action
         foreach ($operation->responses->responses ?? [] as $code => $response) {
             if ($response instanceof Reference) {
                 if ($components === null || !isset($components->responses[$response->getName()])) {
-                    throw new Exception('Reference not found in responses components.');
+                    throw new Exception('Reference not found in responses components.', $response->path);
                 }
                 $response = $components->responses[$response->getName()];
             }
             if (\count(array_diff_key($response->content, ['application/json' => null])) > 0) {
-                throw new Exception('Only application/json is supported by Ogen for response bodies.');
+                throw new Exception('Only application/json is supported by Ogen for response bodies.', $response->path);
             }
             $responses[] = ActionResponse::build(
                 $bundleNamespace,

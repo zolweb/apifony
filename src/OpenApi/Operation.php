@@ -9,23 +9,29 @@ class Operation
     /**
      * @param list<Reference|Parameter> $pathItemParameters
      * @param array<mixed>              $data
+     * @param list<string>              $path
      *
      * @throws Exception
      */
-    public static function build(array $pathItemParameters, array $data, ?Components $components): self
+    public static function build(array $pathItemParameters, array $data, ?Components $components, array $path): self
     {
         $operationParameters = [];
         if (isset($data['parameters'])) {
             if (!\is_array($data['parameters'])) {
-                throw new Exception('Operation parameters must be an array.');
+                throw new Exception('Operation parameters must be an array.', $path);
             }
-            foreach ($data['parameters'] as $parameterData) {
-                if (!\is_array($parameterData)) {
-                    throw new Exception('Parameter or Reference objects must be arrays.');
+            foreach ($data['parameters'] as $parameterIndex => $parameterData) {
+                if (!\is_int($parameterIndex)) {
+                    throw new Exception('Parameter indexes must be integers.', $path);
                 }
+                if (!\is_array($parameterData)) {
+                    throw new Exception('Parameter or Reference objects must be arrays.', $path);
+                }
+                $parameterPath = $path;
+                $parameterPath[] = (string) $parameterIndex;
                 $operationParameters[] = isset($parameterData['$ref']) ?
-                    Reference::build($parameterData) :
-                    Parameter::build($parameterData);
+                    Reference::build($parameterData, $parameterPath) :
+                    Parameter::build($parameterData, $parameterPath);
             }
         }
 
@@ -34,7 +40,7 @@ class Operation
             $parameter = $parameterReference;
             if ($parameter instanceof Reference) {
                 if (!isset($components->parameters[$parameter->getName()])) {
-                    throw new Exception('All references to parameters must exist in components object parameters.');
+                    throw new Exception('All references to parameters must exist in components object parameters.', $path);
                 }
                 $parameter = $components->parameters[$parameter->getName()];
             }
@@ -47,7 +53,7 @@ class Operation
             $parameter = $parameterReference;
             if ($parameter instanceof Reference) {
                 if (!isset($components->parameters[$parameter->getName()])) {
-                    throw new Exception('All references to parameters must exist in components object parameters.');
+                    throw new Exception('All references to parameters must exist in components object parameters.', $path);
                 }
                 $parameter = $components->parameters[$parameter->getName()];
             }
@@ -58,21 +64,21 @@ class Operation
         $parameters = array_values(array_merge($indexedPathItemParameters, $indexedOperationParameters));
 
         if (!isset($data['operationId'])) {
-            throw new Exception('Operation operationId is mandatory.');
+            throw new Exception('Operation operationId is mandatory.', $path);
         }
         if (!\is_string($data['operationId'])) {
-            throw new Exception('Operation operationId attribute must be a string.');
+            throw new Exception('Operation operationId attribute must be a string.', $path);
         }
         if (isset($data['x-priority']) && !\is_int($data['x-priority'])) {
-            throw new Exception('Operation x-priority attribute must be a string.');
+            throw new Exception('Operation x-priority attribute must be a string.', $path);
         }
         if (isset($data['tags'])) {
             if (!\is_array($data['tags'])) {
-                throw new Exception('Operation tags attribute must be an array.');
+                throw new Exception('Operation tags attribute must be an array.', $path);
             }
             foreach ($data['tags'] as $tag) {
                 if (!\is_string($tag)) {
-                    throw new Exception('Operation tags array values must be strings.');
+                    throw new Exception('Operation tags array values must be strings.', $path);
                 }
             }
         }
@@ -84,17 +90,23 @@ class Operation
             }
         }
 
+        $requestBodyPath = $path;
+        $requestBodyPath[] = 'requestBody';
+        $responsesBodyPath = $path;
+        $responsesBodyPath[] = 'responses';
+
         return new self(
             $data['operationId'],
             $parameters,
             match (true) {
-                isset($data['requestBody']) && \is_array($data['requestBody']) && isset($data['requestBody']['$ref']) => Reference::build($data['requestBody']),
-                isset($data['requestBody']) => RequestBody::build($data['requestBody']),
+                isset($data['requestBody']) && \is_array($data['requestBody']) && isset($data['requestBody']['$ref']) => Reference::build($data['requestBody'], $responsesBodyPath),
+                isset($data['requestBody']) => RequestBody::build($data['requestBody'], $requestBodyPath),
                 default => null,
             },
-            isset($data['responses']) ? Responses::build($data['responses']) : null,
+            isset($data['responses']) ? Responses::build($data['responses'], $responsesBodyPath) : null,
             array_values($data['tags'] ?? []),
             $extensions,
+            $path,
         );
     }
 
@@ -102,6 +114,7 @@ class Operation
      * @param list<Reference|Parameter> $parameters
      * @param list<string>              $tags
      * @param array<string, mixed>      $extensions
+     * @param list<string>              $path
      */
     private function __construct(
         public readonly string $operationId,
@@ -110,6 +123,7 @@ class Operation
         public readonly ?Responses $responses,
         public readonly array $tags,
         public readonly array $extensions,
+        public readonly array $path,
     ) {
     }
 }

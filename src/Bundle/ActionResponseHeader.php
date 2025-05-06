@@ -26,26 +26,26 @@ class ActionResponseHeader
     ): self {
         if ($header instanceof Reference) {
             if ($components === null || !isset($components->headers[$header->getName()])) {
-                throw new Exception('Reference not found in headers components.');
+                throw new Exception('Reference not found in headers components.', $header->path);
             }
             $header = $components->headers[$header->getName()];
         }
         $schema = $header->schema;
         if ($schema === null) {
-            throw new Exception('Header objets without schema attribute are not supported.');
+            throw new Exception('Header objets without schema attribute are not supported.', $header->path);
         }
         if ($schema instanceof Reference) {
             if ($components === null || !isset($components->schemas[$schema->getName()])) {
-                throw new Exception('Reference not found in schemas components.');
+                throw new Exception('Reference not found in schemas components.', $schema->path);
             }
             $schema = $components->schemas[$schema->getName()];
         }
         $type = TypeFactory::build('', $schema, $components);
         if ($type instanceof ObjectType) {
-            throw new Exception('Headers of object type are not supported.');
+            throw new Exception('Headers of object type are not supported.', $schema->path);
         }
         if ($type instanceof ArrayType) {
-            throw new Exception('Headers of array type are not supported.');
+            throw new Exception('Headers of array type are not supported.', $schema->path);
         }
 
         return new self($name, $type);

@@ -72,7 +72,10 @@ class GenerateBundleCommand extends Command
 
             return Command::SUCCESS;
         } catch (BundleException|OpenApiException $e) {
-            $style->error($e->getMessage());
+            $style->error([
+                "{$e->getMessage()} 🤪",
+                \sprintf("Error location:\n  -> %s", implode("\n  -> ", $e->path)),
+            ]);
 
             return Command::FAILURE;
         }

@@ -8,28 +8,32 @@ class RequestBody
 {
     /**
      * @param array<mixed> $data
+     * @param list<string> $path
      *
      * @throws Exception
      */
-    public static function build(array $data): self
+    public static function build(array $data, array $path): self
     {
         if (isset($data['required']) && !\is_bool($data['required'])) {
-            throw new Exception('RequestBody object required attribute must be a boolean.');
+            throw new Exception('RequestBody object required attribute must be a boolean.', $path);
         }
 
         $content = [];
         if (isset($data['content'])) {
             if (!\is_array($data['content'])) {
-                throw new Exception('RequestBody object content attribute must be an array.');
+                throw new Exception('RequestBody object content attribute must be an array.', $path);
             }
             foreach ($data['content'] as $type => $contentData) {
                 if (!\is_string($type)) {
-                    throw new Exception('RequestBody object content attribute keys must be strings.');
+                    throw new Exception('RequestBody object content attribute keys must be strings.', $path);
                 }
                 if (!\is_array($contentData)) {
-                    throw new Exception('RequestBody object content attribute elements must be objects.');
+                    throw new Exception('RequestBody object content attribute elements must be objects.', $path);
                 }
-                $content[$type] = MediaType::build($contentData);
+                $mediaTypePath = $path;
+                $mediaTypePath[] = 'content';
+                $mediaTypePath[] = $type;
+                $content[$type] = MediaType::build($contentData, $mediaTypePath);
             }
         }
 
@@ -40,17 +44,19 @@ class RequestBody
             }
         }
 
-        return new self($data['required'] ?? false, $content, $extensions);
+        return new self($data['required'] ?? false, $content, $extensions, $path);
     }
 
     /**
      * @param array<string, MediaType> $content
      * @param array<string, mixed>     $extensions
+     * @param list<string>             $path
      */
     private function __construct(
         public readonly bool $required,
         public readonly array $content,
         public readonly array $extensions,
+        public readonly array $path,
     ) {
     }
 }

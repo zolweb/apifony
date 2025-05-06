@@ -43,14 +43,14 @@ class ActionResponse implements File
             $hasModel = true;
             if ($schema instanceof Reference) {
                 if ($components === null || !isset($components->schemas[$schema->getName()])) {
-                    throw new Exception('Reference not found in schemas components.');
+                    throw new Exception('Reference not found in schemas components.', $schema->path);
                 }
                 $schema = $components->schemas[$className = $usedModelName = $schema->getName()];
                 $hasModel = false;
             }
             $payloadType = TypeFactory::build($className, $schema, $components);
             if (!$payloadType instanceof ObjectType) {
-                throw new Exception('Only object schemas are supported for responses.');
+                throw new Exception('Only object schemas are supported for responses.', $schema->path);
             }
 
             if ($hasModel) {
@@ -74,7 +74,7 @@ class ActionResponse implements File
                             }
                         } elseif ($type instanceof ArrayType) {
                             if ($schema->items === null) {
-                                throw new Exception('Schema objects of array type without items attribute are not supported.');
+                                throw new Exception('Schema objects of array type without items attribute are not supported.', $schema->path);
                             }
                             $addModels($rawName, $schema->items);
                         }

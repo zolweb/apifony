@@ -8,23 +8,28 @@ class Reference
 {
     /**
      * @param array<mixed> $data
+     * @param list<string> $path
      *
      * @throws Exception
      */
-    public static function build(array $data): self
+    public static function build(array $data, array $path): self
     {
         if (!isset($data['$ref'])) {
-            throw new Exception('Reference object $ref attribute is mandatory.');
+            throw new Exception('Reference object $ref attribute is mandatory.', $path);
         }
         if (!\is_string($data['$ref'])) {
-            throw new Exception('Reference object $ref attribute must be a string.');
+            throw new Exception('Reference object $ref attribute must be a string.', $path);
         }
 
-        return new self($data['$ref']);
+        return new self($data['$ref'], $path);
     }
 
+    /**
+     * @param list<string> $path
+     */
     private function __construct(
         public readonly string $ref,
+        public readonly array $path,
     ) {
     }
 

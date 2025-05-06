@@ -38,37 +38,33 @@ class ActionParameter
     ): self {
         if ($parameter instanceof Reference) {
             if ($components === null || !isset($components->parameters[$parameter->getName()])) {
-                throw new Exception('Reference not found in parameters components.');
+                throw new Exception('Reference not found in parameters components.', $parameter->path);
             }
             $parameter = $components->parameters[$parameter->getName()];
         }
         if ($parameter->schema === null) {
-            throw new Exception('Parameter objects without schema attribute are not supported.');
+            throw new Exception('Parameter objects without schema attribute are not supported.', $parameter->path);
         }
         if ($parameter->schema instanceof Reference) {
             throw new \RuntimeException();
         }
         if ($parameter->required && $parameter->schema->hasDefault) {
-            throw new Exception('Every required parameter must not have a default value.');
+            throw new Exception('Every required parameter must not have a default value.', $parameter->path);
         }
         if (!$parameter->required && !$parameter->schema->hasDefault) {
-            throw new Exception('Every non required parameter must have a default value.');
+            throw new Exception('Every non required parameter must have a default value.', $parameter->path);
         }
         $variableName = \sprintf('%s%s', $parameter->in[0], u($parameter->name)->camel()->title());
         $className = "{$actionClassName}_{$parameter->name}";
         $className = u($className)->camel()->title()->toString();
 
-        try {
-            return new self(
-                $variableName,
-                $parameter,
-                TypeFactory::build($className, $parameter->schema, $components),
-                $parameter->schema,
-                $ordinal,
-            );
-        } catch (Exception $e) {
-            throw new Exception(\sprintf('Failed to build type for parameter %s. If you use Stoplight, make sure the schema is defined in the "code" section, as interface does not always show it.', $parameter->name), 0, $e);
-        }
+        return new self(
+            $variableName,
+            $parameter,
+            TypeFactory::build($className, $parameter->schema, $components),
+            $parameter->schema,
+            $ordinal,
+        );
     }
 
     private function __construct(

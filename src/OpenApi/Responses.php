@@ -18,34 +18,39 @@ class Responses
 
     /**
      * @param array<mixed> $data
+     * @param list<string> $path
      *
      * @throws Exception
      */
-    public static function build(array $data): self
+    public static function build(array $data, array $path): self
     {
         $responses = [];
         $extensions = [];
         foreach ($data as $key => $elementData) {
             if (\in_array($key, self::CODES, true)) {
                 if (!\is_array($elementData)) {
-                    throw new Exception('Responses object array elements must be objects.');
+                    throw new Exception('Responses object array elements must be objects.', $path);
                 }
-                $responses[$key] = isset($elementData['$ref']) ? Reference::build($elementData) : Response::build($elementData);
+                $responsePath = $path;
+                $responsePath[] = (string) $key;
+                $responses[$key] = isset($elementData['$ref']) ? Reference::build($elementData, $responsePath) : Response::build($elementData, $responsePath);
             } elseif (\is_string($key) && str_starts_with($key, 'x-')) {
                 $extensions[$key] = $elementData;
             }
         }
 
-        return new self($responses, $extensions);
+        return new self($responses, $extensions, $path);
     }
 
     /**
      * @param array<string|int, Reference|Response> $responses
      * @param array<string, mixed>                  $extensions
+     * @param list<string>                          $path
      */
     private function __construct(
         public readonly array $responses,
         public readonly array $extensions,
+        public readonly array $path,
     ) {
     }
 }

@@ -8,40 +8,47 @@ class Response
 {
     /**
      * @param array<mixed> $data
+     * @param list<string> $path
      *
      * @throws Exception
      */
-    public static function build(array $data): self
+    public static function build(array $data, array $path): self
     {
         $headers = [];
         if (isset($data['headers'])) {
             if (!\is_array($data['headers'])) {
-                throw new Exception('Response object headers attribute must be an array.');
+                throw new Exception('Response object headers attribute must be an array.', $path);
             }
             foreach ($data['headers'] as $name => $headerData) {
                 if (!\is_string($name)) {
-                    throw new Exception('Response object headers attribute keys must be strings.');
+                    throw new Exception('Response object headers attribute keys must be strings.', $path);
                 }
                 if (!\is_array($headerData)) {
-                    throw new Exception('Response object headers attribute elements must be objects.');
+                    throw new Exception('Response object headers attribute elements must be objects.', $path);
                 }
-                $headers[$name] = isset($headerData['$ref']) ? Reference::build($headerData) : Header::build($headerData);
+                $headerPath = $path;
+                $headerPath[] = 'headers';
+                $headerPath[] = $name;
+                $headers[$name] = isset($headerData['$ref']) ? Reference::build($headerData, $headerPath) : Header::build($headerData, $headerPath);
             }
         }
 
         $content = [];
         if (isset($data['content'])) {
             if (!\is_array($data['content'])) {
-                throw new Exception('Response object content attribute must be an array.');
+                throw new Exception('Response object content attribute must be an array.', $path);
             }
             foreach ($data['content'] as $type => $contentData) {
                 if (!\is_string($type)) {
-                    throw new Exception('Response object content attribute keys must be strings.');
+                    throw new Exception('Response object content attribute keys must be strings.', $path);
                 }
                 if (!\is_array($contentData)) {
-                    throw new Exception('Response object content attribute elements must be objects.');
+                    throw new Exception('Response object content attribute elements must be objects.', $path);
                 }
-                $content[$type] = MediaType::build($contentData);
+                $mediaTypePath = $path;
+                $mediaTypePath[] = 'content';
+                $mediaTypePath[] = $type;
+                $content[$type] = MediaType::build($contentData, $mediaTypePath);
             }
         }
 
@@ -52,18 +59,20 @@ class Response
             }
         }
 
-        return new self($headers, $content, $extensions);
+        return new self($headers, $content, $extensions, $path);
     }
 
     /**
      * @param array<string, Reference|Header> $headers
      * @param array<string, MediaType>        $content
      * @param array<string, mixed>            $extensions
+     * @param list<string>                    $path
      */
     private function __construct(
         public readonly array $headers,
         public readonly array $content,
         public readonly array $extensions,
+        public readonly array $path,
     ) {
     }
 }

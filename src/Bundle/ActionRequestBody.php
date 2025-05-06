@@ -39,20 +39,20 @@ class ActionRequestBody
         $payloadModels = [];
         $usedModelName = null;
         if ($mediaType->schema === null) {
-            throw new Exception('Mediatypes without schema are not supported.');
+            throw new Exception('Mediatypes without schema are not supported.', $mediaType->path);
         }
         $schema = $mediaType->schema;
         $hasModel = true;
         if ($schema instanceof Reference) {
             if ($components === null || !isset($components->schemas[$schema->getName()])) {
-                throw new Exception('Reference not found in schemas components.');
+                throw new Exception('Reference not found in schemas components.', $schema->path);
             }
             $schema = $components->schemas[$className = $usedModelName = $schema->getName()];
             $hasModel = false;
         }
         $payloadType = TypeFactory::build($className, $schema, $components);
         if (!$payloadType instanceof ObjectType) {
-            throw new Exception('Only object schema are supported for request bodies.');
+            throw new Exception('Only object schema are supported for request bodies.', $schema->path);
         }
 
         if ($hasModel) {
@@ -76,7 +76,7 @@ class ActionRequestBody
                         }
                     } elseif ($type instanceof ArrayType) {
                         if ($schema->items === null) {
-                            throw new Exception('Schema objects of array type without items attribute are not supported.');
+                            throw new Exception('Schema objects of array type without items attribute are not supported.', $schema->path);
                         }
                         $addModels($rawName, $schema->items);
                     }

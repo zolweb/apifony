@@ -127,14 +127,14 @@ class Bundle implements File
         }
         foreach ($openApi->components->parameters ?? [] as $parameter) {
             if ($parameter->schema === null) {
-                throw new Exception('Parameter objects without schema are not supported.');
+                throw new Exception('Parameter objects without schema are not supported.', $parameter->path);
             }
             $addSchemaFormats($parameter->schema);
         }
         foreach ($openApi->components->requestBodies ?? [] as $requestBody) {
             foreach ($requestBody->content as $mediaType) {
                 if ($mediaType->schema === null) {
-                    throw new Exception('Mediatype objects without schema are not supported.');
+                    throw new Exception('Mediatype objects without schema are not supported.', $mediaType->path);
                 }
                 $addSchemaFormats($mediaType->schema);
             }
@@ -143,21 +143,21 @@ class Bundle implements File
             foreach ($response->headers as $header) {
                 if ($header instanceof Header) {
                     if ($header->schema === null) {
-                        throw new Exception('Header objects without schema are not supported.');
+                        throw new Exception('Header objects without schema are not supported.', $header->path);
                     }
                     $addSchemaFormats($header->schema);
                 }
             }
             foreach ($response->content as $mediaType) {
                 if ($mediaType->schema === null) {
-                    throw new Exception('MediaType objects without schema are not supported.');
+                    throw new Exception('MediaType objects without schema are not supported.', $mediaType->path);
                 }
                 $addSchemaFormats($mediaType->schema);
             }
         }
         foreach ($openApi->components->headers ?? [] as $header) {
             if ($header->schema === null) {
-                throw new Exception('Header objects without schema are not supported.');
+                throw new Exception('Header objects without schema are not supported.', $header->path);
             }
             $addSchemaFormats($header->schema);
         }
@@ -165,7 +165,7 @@ class Bundle implements File
             foreach ($pathItem->parameters as $parameter) {
                 if ($parameter instanceof Parameter) {
                     if ($parameter->schema === null) {
-                        throw new Exception('Parameter objects without schema are not supported.');
+                        throw new Exception('Parameter objects without schema are not supported.', $parameter->path);
                     }
                     $addSchemaFormats($parameter->schema);
                 }
@@ -174,7 +174,7 @@ class Bundle implements File
                 foreach ($operation->parameters as $parameter) {
                     if ($parameter instanceof Parameter) {
                         if ($parameter->schema === null) {
-                            throw new Exception('Parameter objects without schema are not supported.');
+                            throw new Exception('Parameter objects without schema are not supported.', $parameter->path);
                         }
                         $addSchemaFormats($parameter->schema);
                     }
@@ -182,7 +182,7 @@ class Bundle implements File
                 if ($operation->requestBody instanceof RequestBody) {
                     foreach ($operation->requestBody->content as $mediaType) {
                         if ($mediaType->schema === null) {
-                            throw new Exception('MediaType objects without schema are not supported.');
+                            throw new Exception('MediaType objects without schema are not supported.', $mediaType->path);
                         }
                         $addSchemaFormats($mediaType->schema);
                     }
@@ -192,14 +192,14 @@ class Bundle implements File
                         foreach ($response->headers as $header) {
                             if ($header instanceof Header) {
                                 if ($header->schema === null) {
-                                    throw new Exception('Header objects without schema are not supported.');
+                                    throw new Exception('Header objects without schema are not supported.', $header->path);
                                 }
                                 $addSchemaFormats($header->schema);
                             }
                         }
                         foreach ($response->content as $mediaType) {
                             if ($mediaType->schema === null) {
-                                throw new Exception('Mediatype objects without schema are not supported.');
+                                throw new Exception('Mediatype objects without schema are not supported.', $mediaType->path);
                             }
                             $addSchemaFormats($mediaType->schema);
                         }
@@ -231,7 +231,7 @@ class Bundle implements File
         $addModels = static function (string $rawName, Reference|Schema $schema) use (&$addModels, &$models, $namespace, $components): void {
             if ($schema instanceof Reference) {
                 if ($components === null || !isset($components->schemas[$schema->getName()])) {
-                    throw new Exception('Reference not found in schemas components.');
+                    throw new Exception('Reference not found in schemas components.', $schema->path);
                 }
                 $schema = $components->schemas[$rawName = $schema->getName()];
             }
@@ -254,7 +254,7 @@ class Bundle implements File
                     }
                 } elseif ($type instanceof ArrayType) {
                     if ($schema->items === null) {
-                        throw new Exception('Schema objects of array type without items attribute are not supported.');
+                        throw new Exception('Schema objects of array type without items attribute are not supported.', $schema->path);
                     }
                     $addModels($rawName, $schema->items);
                 }
