@@ -9,10 +9,10 @@ use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Validation;
 class TimeValidator extends ConstraintValidator
 {
-    public function validate(mixed $value, Constraint $constraint): void
+    public function validate(mixed $value, Constraint $constraint) : void
     {
         if (\is_string($value)) {
-            $constraints = [new NotBlank(), new \Symfony\Component\Validator\Constraints\DateTime(format: 'H:i:sP')];
+            $constraints = array(new NotBlank(), new \Symfony\Component\Validator\Constraints\DateTime(format: 'H:i:sP'));
             $violations = Validation::createValidator()->validate($value, $constraints);
             foreach ($violations as $violation) {
                 $this->context->buildViolation((string) $violation->getMessage())->addViolation();

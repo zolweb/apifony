@@ -9,10 +9,10 @@ use Symfony\Component\Validator\ConstraintValidator;
 use Symfony\Component\Validator\Validation;
 class UuidValidator extends ConstraintValidator
 {
-    public function validate(mixed $value, Constraint $constraint): void
+    public function validate(mixed $value, Constraint $constraint) : void
     {
         if (\is_string($value)) {
-            $constraints = [new NotBlank(), new \Symfony\Component\Validator\Constraints\Uuid()];
+            $constraints = array(new NotBlank(), new \Symfony\Component\Validator\Constraints\Uuid());
             $violations = Validation::createValidator()->validate($value, $constraints);
             foreach ($violations as $violation) {
                 $this->context->buildViolation((string) $violation->getMessage())->addViolation();

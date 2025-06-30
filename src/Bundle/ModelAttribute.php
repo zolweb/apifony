@@ -96,7 +96,7 @@ class ModelAttribute
 
     public function getDocAst(): PhpDocTagNode
     {
-        return new PhpDocTagNode('@param', new ParamTagValueNode($this->type->getDocAst(), false, "\${$this->rawName}", ''));
+        return new PhpDocTagNode('@param', new ParamTagValueNode($this->type->getDocAst(), false, "\${$this->rawName}", '', false));
     }
 
     public function getParam(): Param

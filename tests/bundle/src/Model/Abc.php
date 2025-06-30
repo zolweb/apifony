@@ -8,8 +8,7 @@ class Abc
 {
     public function __construct(
         
-        #[Assert\NotNull]
-        public readonly string $def
+        #[Assert\NotNull] public readonly string $def
     )
     {
     }

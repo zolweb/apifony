@@ -13,29 +13,17 @@ class FirstOperation200ResponsePayload
      */
     public function __construct(
         
-        #[Assert\NotNull]
-        public readonly string $dump,
+        #[Assert\NotNull] public readonly string $dump,
         
-        #[Assert\NotNull]
-        public readonly string $string_string,
+        #[Assert\NotNull] public readonly string $string_string,
         
-        #[Assert\Valid]
-        #[Assert\NotNull]
-        public readonly Abc $abc1,
+        #[Assert\Valid] #[Assert\NotNull] public readonly Abc $abc1,
         
-        #[Assert\Valid]
-        #[Assert\NotNull]
-        public readonly Abc $abc2,
+        #[Assert\Valid] #[Assert\NotNull] public readonly Abc $abc2,
         
-        #[Assert\NotNull]
-        #[Assert\Valid]
-        #[Assert\All(constraints: [new Assert\NotNull()])]
-        public readonly array $abcList1,
+        #[Assert\NotNull] #[Assert\Valid] #[Assert\All(constraints: array(new Assert\NotNull()))] public readonly array $abcList1,
         
-        #[Assert\NotNull]
-        #[Assert\Valid]
-        #[Assert\All(constraints: [new Assert\NotNull()])]
-        public readonly array $abcList2
+        #[Assert\NotNull] #[Assert\Valid] #[Assert\All(constraints: array(new Assert\NotNull()))] public readonly array $abcList2
     )
     {
     }

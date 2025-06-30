@@ -19,67 +19,39 @@ class Schema
      */
     public function __construct(
         
-        #[Assert\NotNull]
-        public readonly string $stringProperty,
+        #[Assert\NotNull] public readonly string $stringProperty,
         
-        #[Assert\NotNull]
-        public readonly float $numberProperty,
+        #[Assert\NotNull] public readonly float $numberProperty,
         
-        #[Assert\NotNull]
-        public readonly int $integerProperty,
+        #[Assert\NotNull] public readonly int $integerProperty,
         
-        #[Assert\NotNull]
-        public readonly bool $booleanProperty,
+        #[Assert\NotNull] public readonly bool $booleanProperty,
         
-        #[Assert\NotNull]
-        #[AssertEmail]
-        public readonly string $emailProperty,
+        #[Assert\NotNull] #[AssertEmail] public readonly string $emailProperty,
         
-        #[Assert\NotNull]
-        #[AssertUuid]
-        public readonly string $uuidProperty,
+        #[Assert\NotNull] #[AssertUuid] public readonly string $uuidProperty,
         
-        #[Assert\NotNull]
-        #[AssertDateTime]
-        public readonly string $dateTimeProperty,
+        #[Assert\NotNull] #[AssertDateTime] public readonly string $dateTimeProperty,
         
-        #[Assert\NotNull]
-        #[AssertDate]
-        public readonly string $dateProperty,
+        #[Assert\NotNull] #[AssertDate] public readonly string $dateProperty,
         
-        #[Assert\NotNull]
-        #[AssertTime]
-        public readonly string $timeProperty,
+        #[Assert\NotNull] #[AssertTime] public readonly string $timeProperty,
         
-        #[Assert\NotNull]
-        #[AssertCustom]
-        public readonly string $customProperty,
+        #[Assert\NotNull] #[AssertCustom] public readonly string $customProperty,
         
         public readonly ?string $nullDefaultProperty,
         
-        #[Assert\Valid]
-        #[Assert\NotNull]
-        public readonly SchemaObjectProperty $objectProperty,
+        #[Assert\Valid] #[Assert\NotNull] public readonly SchemaObjectProperty $objectProperty,
         
-        #[Assert\NotNull]
-        #[Assert\All(constraints: [new Assert\NotNull()])]
-        public readonly array $arrayProperty,
+        #[Assert\NotNull] #[Assert\All(constraints: array(new Assert\NotNull()))] public readonly array $arrayProperty,
         
-        #[Assert\NotNull]
-        #[Assert\Valid]
-        #[Assert\All(constraints: [new Assert\NotNull()])]
-        public readonly array $objectArrayProperty,
+        #[Assert\NotNull] #[Assert\Valid] #[Assert\All(constraints: array(new Assert\NotNull()))] public readonly array $objectArrayProperty,
         
-        #[Assert\NotNull]
-        #[Assert\Valid]
-        #[Assert\All(constraints: [new Assert\NotNull()])]
-        public readonly array $recursiveObjectArray,
+        #[Assert\NotNull] #[Assert\Valid] #[Assert\All(constraints: array(new Assert\NotNull()))] public readonly array $recursiveObjectArray,
         
-        #[Assert\NotNull]
-        public readonly string $defaultProperty = 'abc',
+        #[Assert\NotNull] public readonly string $defaultProperty = 'abc',
         
-        #[Assert\NotNull]
-        public readonly string $overriddenProperty = 'def'
+        #[Assert\NotNull] public readonly string $overriddenProperty = 'def'
     )
     {
     }

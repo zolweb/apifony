@@ -8,8 +8,7 @@ class SchemaObjectProperty
 {
     public function __construct(
         
-        #[Assert\NotNull]
-        public readonly string $stringProperty
+        #[Assert\NotNull] public readonly string $stringProperty
     )
     {
     }
