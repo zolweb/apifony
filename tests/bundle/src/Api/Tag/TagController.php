@@ -3,14 +3,14 @@
 declare (strict_types=1);
 namespace Zol\Ogen\Tests\TestOpenApiServer\Api\Tag;
 
+use Zol\Ogen\Tests\TestOpenApiServer\Api\DenormalizationException;
+use Zol\Ogen\Tests\TestOpenApiServer\Api\ParameterValidationException;
+use Zol\Ogen\Tests\TestOpenApiServer\Api\RequestBodyValidationException;
+use Zol\Ogen\Tests\TestOpenApiServer\Api\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
-use Zol\Ogen\Tests\TestOpenApiServer\Api\AbstractController;
-use Zol\Ogen\Tests\TestOpenApiServer\Api\DenormalizationException;
-use Zol\Ogen\Tests\TestOpenApiServer\Api\ParameterValidationException;
-use Zol\Ogen\Tests\TestOpenApiServer\Api\RequestBodyValidationException;
 use Zol\Ogen\Tests\TestOpenApiServer\Model\Schema;
 class TagController extends AbstractController
 {
@@ -170,7 +170,6 @@ class TagController extends AbstractController
         if ($response::CONTENT_TYPE === 'application/json') {
             return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
         }
-
         return new Response('', $response::CODE, $response->getHeaders());
     }
 }

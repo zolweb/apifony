@@ -20,7 +20,7 @@ interface DeserializerInterface
     /**
      * @template T of object
      *
-     * @param array<mixed>    $data
+     * @param array<mixed> $data
      * @param class-string<T> $type
      *
      * @return T
