@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zol\Ogen\Bundle;
+namespace Zol\Apifony\Bundle;
 
 interface File
 {

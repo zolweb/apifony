@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zol\Ogen\Bundle;
+namespace Zol\Apifony\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr\ArrayDimFetch;
@@ -14,14 +14,14 @@ use PhpParser\Node\Stmt\DeclareDeclare;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\PrettyPrinter\Standard;
-use Zol\Ogen\OpenApi\Components;
-use Zol\Ogen\OpenApi\Header;
-use Zol\Ogen\OpenApi\OpenApi;
-use Zol\Ogen\OpenApi\Parameter;
-use Zol\Ogen\OpenApi\Reference;
-use Zol\Ogen\OpenApi\RequestBody;
-use Zol\Ogen\OpenApi\Response;
-use Zol\Ogen\OpenApi\Schema;
+use Zol\Apifony\OpenApi\Components;
+use Zol\Apifony\OpenApi\Header;
+use Zol\Apifony\OpenApi\OpenApi;
+use Zol\Apifony\OpenApi\Parameter;
+use Zol\Apifony\OpenApi\Reference;
+use Zol\Apifony\OpenApi\RequestBody;
+use Zol\Apifony\OpenApi\Response;
+use Zol\Apifony\OpenApi\Schema;
 
 use function Symfony\Component\String\u;
 

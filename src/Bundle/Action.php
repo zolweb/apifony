@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zol\Ogen\Bundle;
+namespace Zol\Apifony\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr\Array_;
@@ -18,9 +18,9 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\UnionType;
-use Zol\Ogen\OpenApi\Components;
-use Zol\Ogen\OpenApi\Operation;
-use Zol\Ogen\OpenApi\Reference;
+use Zol\Apifony\OpenApi\Components;
+use Zol\Apifony\OpenApi\Operation;
+use Zol\Apifony\OpenApi\Reference;
 
 use function Symfony\Component\String\u;
 
@@ -169,7 +169,7 @@ class Action
             return null;
         }
         if (\count(array_diff_key($requestBody->content, ['application/json' => null])) > 0) {
-            throw new Exception('Only application/json is supported by Ogen for response bodies.', $requestBody->path);
+            throw new Exception('Only application/json is supported by Apifony for response bodies.', $requestBody->path);
         }
 
         // Due to StopLight not allowing to declare required on requestBodies, a requestBody is always required
@@ -203,7 +203,7 @@ class Action
                 $response = $components->responses[$response->getName()];
             }
             if (\count(array_diff_key($response->content, ['application/json' => null])) > 0) {
-                throw new Exception('Only application/json is supported by Ogen for response bodies.', $response->path);
+                throw new Exception('Only application/json is supported by Apifony for response bodies.', $response->path);
             }
             $responses[] = ActionResponse::build(
                 $bundleNamespace,

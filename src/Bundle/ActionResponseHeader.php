@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Zol\Ogen\Bundle;
+namespace Zol\Apifony\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Param;
-use Zol\Ogen\OpenApi\Components;
-use Zol\Ogen\OpenApi\Header;
-use Zol\Ogen\OpenApi\Reference;
+use Zol\Apifony\OpenApi\Components;
+use Zol\Apifony\OpenApi\Header;
+use Zol\Apifony\OpenApi\Reference;
 
 use function Symfony\Component\String\u;
 

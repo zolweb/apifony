@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Zol\Ogen\Bundle;
+namespace Zol\Apifony\Bundle;
 
-use Zol\Ogen\OpenApi\OpenApi;
+use Zol\Apifony\OpenApi\OpenApi;
 
 class Api
 {

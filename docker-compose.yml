@@ -7,6 +7,6 @@ services:
       XDEBUG_MODE: 'develop,debug'
       XDEBUG_CONFIG: 'client_host=172.17.0.1'
       XDEBUG_TRIGGER: 'yes'
-      DBGP_IDEKEY: 'ogen'
+      DBGP_IDEKEY: 'apifony'
     volumes:
       - .:/var/www/html:delegated

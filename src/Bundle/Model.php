@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zol\Ogen\Bundle;
+namespace Zol\Apifony\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Stmt\Declare_;
@@ -11,8 +11,8 @@ use PhpParser\PrettyPrinter\Standard;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Printer\Printer;
-use Zol\Ogen\OpenApi\Components;
-use Zol\Ogen\OpenApi\Schema;
+use Zol\Apifony\OpenApi\Components;
+use Zol\Apifony\OpenApi\Schema;
 
 use function Symfony\Component\String\u;
 

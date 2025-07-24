@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zol\Ogen\OpenApi;
+namespace Zol\Apifony\OpenApi;
 
 class Schema
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zol\Ogen\Bundle;
+namespace Zol\Apifony\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr\Array_;
@@ -10,8 +10,8 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Expression;
-use Zol\Ogen\OpenApi\Components;
-use Zol\Ogen\OpenApi\Operation;
+use Zol\Apifony\OpenApi\Components;
+use Zol\Apifony\OpenApi\Operation;
 
 use function Symfony\Component\String\u;
 

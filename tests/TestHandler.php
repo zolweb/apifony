@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Zol\Ogen\Tests;
+namespace Zol\Apifony\Tests;
 
-use Zol\Ogen\Tests\TestOpenApiServer\Api\Tag\FirstOperation200Response;
-use Zol\Ogen\Tests\TestOpenApiServer\Api\Tag\FirstOperation200ResponsePayload;
-use Zol\Ogen\Tests\TestOpenApiServer\Api\Tag\TagHandler;
-use Zol\Ogen\Tests\TestOpenApiServer\Model\Abc;
-use Zol\Ogen\Tests\TestOpenApiServer\Model\Schema;
+use Zol\Apifony\Tests\TestOpenApiServer\Api\Tag\FirstOperation200Response;
+use Zol\Apifony\Tests\TestOpenApiServer\Api\Tag\FirstOperation200ResponsePayload;
+use Zol\Apifony\Tests\TestOpenApiServer\Api\Tag\TagHandler;
+use Zol\Apifony\Tests\TestOpenApiServer\Model\Abc;
+use Zol\Apifony\Tests\TestOpenApiServer\Model\Schema;
 
 class TestHandler implements TagHandler
 {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zol\Ogen\Tests\Zol\Ogen;
+namespace Zol\Apifony\Tests\Zol\Apifony;
 
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\BrowserKit\Cookie;
@@ -10,7 +10,7 @@ use Symfony\Component\BrowserKit\Cookie;
 /**
  * @internal
  */
-final class OgenTest extends WebTestCase
+final class ApifonyTest extends WebTestCase
 {
     public function testA(): void
     {

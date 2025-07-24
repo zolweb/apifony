@@ -23,7 +23,7 @@ phpstan:
       - PHP_VERSION: ['8.1', '8.2', '8.3']
         COMPOSER_OPTIONS: ['', '--prefer-lowest --prefer-stable']
   script:
-    - ./ogen generate-bundle TestOpenApiServer Zol\\Ogen\\Tests\\TestOpenApiServer zol/test-openapi-server tests/openapi.yaml tests/bundle
+    - ./apifony generate-bundle TestOpenApiServer Zol\\Apifony\\Tests\\TestOpenApiServer zol/test-openapi-server tests/openapi.yaml tests/bundle
     - php vendor/bin/phpstan analyse --memory-limit 1G --no-progress --error-format gitlab
     - php vendor/bin/phpstan analyse --memory-limit 1G --no-progress --error-format gitlab -c phpstan-bundle.neon
 
@@ -33,7 +33,7 @@ tests:
       - PHP_VERSION: ['8.1', '8.2', '8.3']
         COMPOSER_OPTIONS: ['', '--prefer-lowest --prefer-stable']
   script:
-    - ./ogen generate-bundle TestOpenApiServer Zol\\Ogen\\Tests\\TestOpenApiServer zol/test-openapi-server tests/openapi.yaml tests/bundle
+    - ./apifony generate-bundle TestOpenApiServer Zol\\Apifony\\Tests\\TestOpenApiServer zol/test-openapi-server tests/openapi.yaml tests/bundle
     - php vendor/bin/phpunit
 
 

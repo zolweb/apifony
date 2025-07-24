@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zol\Ogen\Bundle;
+namespace Zol\Apifony\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr\Array_;
@@ -12,10 +12,10 @@ use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\DeclareDeclare;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\PrettyPrinter\Standard;
-use Zol\Ogen\OpenApi\Components;
-use Zol\Ogen\OpenApi\Reference;
-use Zol\Ogen\OpenApi\Response;
-use Zol\Ogen\OpenApi\Schema;
+use Zol\Apifony\OpenApi\Components;
+use Zol\Apifony\OpenApi\Reference;
+use Zol\Apifony\OpenApi\Response;
+use Zol\Apifony\OpenApi\Schema;
 
 use function Symfony\Component\String\u;
 

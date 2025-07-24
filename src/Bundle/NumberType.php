@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zol\Ogen\Bundle;
+namespace Zol\Apifony\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr;
@@ -12,7 +12,7 @@ use PhpParser\Node\Scalar\DNumber;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
-use Zol\Ogen\OpenApi\Schema;
+use Zol\Apifony\OpenApi\Schema;
 
 use function Symfony\Component\String\u;
 

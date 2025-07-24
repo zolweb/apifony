@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zol\Ogen\Tests;
+namespace Zol\Apifony\Tests;
 
 class CustomDefinition implements TestOpenApiServer\Format\CustomDefinition
 {

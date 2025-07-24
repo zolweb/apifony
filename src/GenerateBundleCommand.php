@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Zol\Ogen;
+namespace Zol\Apifony;
 
 use Symfony\Component\Console\Attribute\AsCommand;
 use Symfony\Component\Console\Command\Command;
@@ -11,10 +11,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Yaml\Yaml;
-use Zol\Ogen\Bundle\Bundle;
-use Zol\Ogen\Bundle\Exception as BundleException;
-use Zol\Ogen\OpenApi\Exception as OpenApiException;
-use Zol\Ogen\OpenApi\OpenApi;
+use Zol\Apifony\Bundle\Bundle;
+use Zol\Apifony\Bundle\Exception as BundleException;
+use Zol\Apifony\OpenApi\Exception as OpenApiException;
+use Zol\Apifony\OpenApi\OpenApi;
 
 #[AsCommand(
     name: 'generate-bundle',

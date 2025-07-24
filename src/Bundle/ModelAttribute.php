@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Zol\Ogen\Bundle;
+namespace Zol\Apifony\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Comment\Doc;
 use PhpParser\Node\Param;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
-use Zol\Ogen\OpenApi\Components;
-use Zol\Ogen\OpenApi\Reference;
-use Zol\Ogen\OpenApi\Schema;
+use Zol\Apifony\OpenApi\Components;
+use Zol\Apifony\OpenApi\Reference;
+use Zol\Apifony\OpenApi\Schema;
 
 use function Symfony\Component\String\u;
 

@@ -2,13 +2,13 @@
 
 declare(strict_types=1);
 
-namespace Zol\Ogen\Tests;
+namespace Zol\Apifony\Tests;
 
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\Routing\Loader\Configurator\RoutingConfigurator;
-use Zol\Ogen\Tests\TestOpenApiServer\TestOpenApiServerBundle;
+use Zol\Apifony\Tests\TestOpenApiServer\TestOpenApiServerBundle;
 
 class Kernel extends \Symfony\Component\HttpKernel\Kernel
 {
