@@ -1,0 +1,39 @@
+services:
+    Zol\Apifony\Tests\TestOpenApiServer\Api\Tag\TagController:
+        class: Zol\Apifony\Tests\TestOpenApiServer\Api\Tag\TagController
+        arguments:
+            $deserializer: '@zol_apifony_tests_test_open_api_server.deserializer_interface'
+            $validator: '@validator'
+        public: true
+    Zol\Apifony\Tests\TestOpenApiServer\Format\EmailValidator:
+        class: Zol\Apifony\Tests\TestOpenApiServer\Format\EmailValidator
+        public: true
+        tags:
+            - validator.constraint_validator
+    Zol\Apifony\Tests\TestOpenApiServer\Format\UuidValidator:
+        class: Zol\Apifony\Tests\TestOpenApiServer\Format\UuidValidator
+        public: true
+        tags:
+            - validator.constraint_validator
+    Zol\Apifony\Tests\TestOpenApiServer\Format\DateTimeValidator:
+        class: Zol\Apifony\Tests\TestOpenApiServer\Format\DateTimeValidator
+        public: true
+        tags:
+            - validator.constraint_validator
+    Zol\Apifony\Tests\TestOpenApiServer\Format\DateValidator:
+        class: Zol\Apifony\Tests\TestOpenApiServer\Format\DateValidator
+        public: true
+        tags:
+            - validator.constraint_validator
+    Zol\Apifony\Tests\TestOpenApiServer\Format\TimeValidator:
+        class: Zol\Apifony\Tests\TestOpenApiServer\Format\TimeValidator
+        public: true
+        tags:
+            - validator.constraint_validator
+    Zol\Apifony\Tests\TestOpenApiServer\Format\CustomValidator:
+        class: Zol\Apifony\Tests\TestOpenApiServer\Format\CustomValidator
+        public: true
+        tags:
+            - validator.constraint_validator
+    zol_apifony_tests_test_open_api_server.deserializer_interface:
+        class: Zol\Apifony\Tests\TestOpenApiServer\Api\Deserializer
