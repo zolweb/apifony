@@ -1,0 +1,96 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  create:
+    tags:
+      - '*'
+
+jobs:
+  php-cs-fixer-check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: ['8.3']
+
+    container:
+      image: php:${{ matrix.php-version }}-fpm
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y zip unzip
+          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+          php composer-setup.php
+          php -r "unlink('composer-setup.php');"
+          php composer.phar install
+          php composer.phar update
+
+      - name: Run PHP CS Fixer
+        run: php vendor/bin/php-cs-fixer -vv fix --dry-run --diff
+
+  phpstan:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: ['8.1', '8.2', '8.3']
+        composer-options: ['', '--prefer-lowest --prefer-stable']
+
+    container:
+      image: php:${{ matrix.php-version }}-fpm
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y zip unzip
+          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+          php composer-setup.php
+          php -r "unlink('composer-setup.php');"
+          php composer.phar install
+          php composer.phar update ${{ matrix.composer-options }}
+
+      - name: Generate bundle
+        run: ./apifony generate-bundle TestOpenApiServer Zol\\Apifony\\Tests\\TestOpenApiServer zol/test-openapi-server tests/openapi.yaml tests/bundle
+
+      - name: Run PHPStan
+        run: |
+          php vendor/bin/phpstan analyse --memory-limit 1G --no-progress
+          php vendor/bin/phpstan analyse --memory-limit 1G --no-progress -c phpstan-bundle.neon
+
+  tests:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: ['8.1', '8.2', '8.3']
+        composer-options: ['', '--prefer-lowest --prefer-stable']
+
+    container:
+      image: php:${{ matrix.php-version }}-fpm
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install dependencies
+        run: |
+          apt-get update
+          apt-get install -y zip unzip
+          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+          php composer-setup.php
+          php -r "unlink('composer-setup.php');"
+          php composer.phar install
+          php composer.phar update ${{ matrix.composer-options }}
+
+      - name: Generate bundle
+        run: ./apifony generate-bundle TestOpenApiServer Zol\\Apifony\\Tests\\TestOpenApiServer zol/test-openapi-server tests/openapi.yaml tests/bundle
+
+      - name: Run PHPUnit
+        run: php vendor/bin/phpunit
