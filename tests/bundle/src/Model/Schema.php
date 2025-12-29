@@ -13,9 +13,25 @@ use Zol\Apifony\Tests\TestOpenApiServer\Format\Custom as AssertCustom;
 class Schema
 {
     /**
+     * @param string $stringProperty
+     * @param float $numberProperty
+     * @param int<-9223372036854775808,9223372036854775807> $integerProperty
+     * @param bool $booleanProperty
+     * @param 'abc'|'def'|'ghi' $enumStringProperty
+     * @param 'abc'|'def'|'ghi'|null $enumNullableStringProperty
+     * @param string $emailProperty
+     * @param string $uuidProperty
+     * @param string $dateTimeProperty
+     * @param string $dateProperty
+     * @param string $timeProperty
+     * @param string $customProperty
+     * @param ?string $nullDefaultProperty
+     * @param SchemaObjectProperty $objectProperty
      * @param list<string> $arrayProperty
      * @param list<SchemaObjectArrayProperty> $objectArrayProperty
      * @param list<Schema> $recursiveObjectArray
+     * @param string $defaultProperty
+     * @param string $overriddenProperty
      */
     public function __construct(
         
@@ -26,10 +42,19 @@ class Schema
         public readonly float $numberProperty,
         
         #[Assert\NotNull]
+        #[Assert\GreaterThanOrEqual(value: (-9223372036854775807-1))]
+        #[Assert\LessThanOrEqual(value: 9223372036854775807)]
         public readonly int $integerProperty,
         
         #[Assert\NotNull]
         public readonly bool $booleanProperty,
+        
+        #[Assert\NotNull]
+        #[Assert\Choice(choices: ['abc', 'def', 'ghi'])]
+        public readonly string $enumStringProperty,
+        
+        #[Assert\Choice(choices: ['abc', 'def', 'ghi', null])]
+        public readonly ?string $enumNullableStringProperty,
         
         #[Assert\NotNull]
         #[AssertEmail]

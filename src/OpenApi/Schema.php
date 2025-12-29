@@ -14,19 +14,20 @@ class Schema
      */
     public static function build(array $data, array $path): self
     {
-        $type = [];
+        $type = null;
         if (\array_key_exists('type', $data)) {
             if (\is_array($data['type'])) {
+                $type = [];
                 foreach ($data['type'] as $t) {
-                    if (!\is_string($t)) {
-                        throw new Exception('Schema objects type attribute must be a string or an array of strings.', $path);
+                    if (!\in_array($t, ['string', 'integer', 'number', 'boolean', 'array', 'object', 'null'], true)) {
+                        throw new Exception('Schema objects type attribute must be one of \'string\', \'integer\', \'number\', \'boolean\', \'array\', \'object\' or \'null\', or an array of some of these.', $path);
                     }
                     $type[] = $t;
                 }
-            } elseif (\is_string($data['type'])) {
+            } elseif (\in_array($data['type'], ['string', 'integer', 'number', 'boolean', 'array', 'object', 'null'], true)) {
                 $type = $data['type'];
             } else {
-                throw new Exception('Schema objects type attribute must be a string or an array of strings.', $path);
+                throw new Exception('Schema objects type attribute must be one of \'string\', \'integer\', \'number\', \'boolean\', \'array\', \'object\' or \'null\', or an array of some of these.', $path);
             }
         }
         if (\array_key_exists('format', $data) && !\is_string($data['format'])) {
@@ -37,9 +38,36 @@ class Schema
             if (!\is_array($data['enum'])) {
                 throw new Exception('Schema objects enum attribute must be a string.', $path);
             }
+            $types = \is_string($type) ? [$type] : $type;
             foreach ($data['enum'] as $e) {
-                if (!\is_string($e) && !\is_int($e) && !\is_float($e) && !\is_bool($e) && null !== $e) {
-                    throw new Exception('Schema objects enum attribute elements must be a string, an int, a float or a boolean.', $path);
+                switch (true) {
+                    case \is_string($e):
+                        if ($types !== null && !\in_array('string', $types, true)) {
+                            throw new Exception('Schema objects enum attribute elements must be compatible with type attribute.', $path);
+                        }
+                        break;
+                    case \is_int($e):
+                        if ($types !== null && !\in_array('integer', $types, true) && !\in_array('number', $types, true)) {
+                            throw new Exception('Schema objects enum attribute elements must be compatible with type attribute.', $path);
+                        }
+                        break;
+                    case \is_float($e):
+                        if ($types !== null && !\in_array('number', $types, true)) {
+                            throw new Exception('Schema objects enum attribute elements must be compatible with type attribute.', $path);
+                        }
+                        break;
+                    case \is_bool($e):
+                        if ($types !== null && !\in_array('boolean', $types, true)) {
+                            throw new Exception('Schema objects enum attribute elements must be compatible with type attribute.', $path);
+                        }
+                        break;
+                    case $e === null:
+                        if ($types !== null && !\in_array('null', $types, true)) {
+                            throw new Exception('Schema objects enum attribute elements must be compatible with type attribute.', $path);
+                        }
+                        break;
+                    default:
+                        throw new Exception('Only Schema objects enum attribute elements must be a string, an int, a float, a boolean or null.', $path);
                 }
                 $enum[] = $e;
             }
@@ -158,7 +186,7 @@ class Schema
     }
 
     /**
-     * @param string|list<string>              $type
+     * @param 'string'|'integer'|'number'|'boolean'|'array'|'object'|'null'|non-empty-list<'string'|'integer'|'number'|'boolean'|'array'|'object'|'null'>|null $type
      * @param list<string|int|float|bool|null> $enum
      * @param array<string, Reference|Schema>  $properties
      * @param list<string>                     $required
@@ -166,7 +194,7 @@ class Schema
      * @param list<string>                     $path
      */
     private function __construct(
-        public readonly string|array $type,
+        public readonly string|array|null $type,
         public readonly ?string $format,
         public readonly array $enum,
         public readonly bool $hasDefault,

@@ -23,10 +23,33 @@ class TypeFactory
         }
 
         $nullable = false;
-        if (\is_array($schema->type)) {
-            if (\count($schema->type) === 0) {
-                throw new Exception('Schemas without type are not supported.', $schema->path);
+        if ($schema->type === null) {
+            if (\count($schema->enum) === 0) {
+                throw new Exception('Schemas without type nor enum elements are not supported.', $schema->path);
             }
+            $types = [];
+            foreach ($schema->enum as $e) {
+                switch (true) {
+                    case \is_string($e):
+                        $types['string'] = true;
+                        break;
+                    case \is_int($e):
+                        $types['integer'] = true;
+                        break;
+                    case \is_float($e):
+                        $types['number'] = true;
+                        break;
+                    case \is_bool($e):
+                        $types['boolean'] = true;
+                        break;
+                    default:
+                        $nullable = true;
+                        break;
+                }
+            }
+            $types = array_keys($types);
+
+        } elseif (\is_array($schema->type)) {
             if (\count($schema->type) === 1) {
                 $type = $schema->type[0];
             } else {

@@ -6,6 +6,9 @@ namespace Zol\Apifony\Tests\TestOpenApiServer\Model;
 use Symfony\Component\Validator\Constraints as Assert;
 class Abc
 {
+    /**
+     * @param string $def
+     */
     public function __construct(
         
         #[Assert\NotNull]

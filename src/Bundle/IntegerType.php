@@ -12,6 +12,7 @@ use PhpParser\Node\Scalar\LNumber;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
+use Zol\Apifony\Narrow;
 use Zol\Apifony\OpenApi\Schema;
 
 use function Symfony\Component\String\u;
@@ -74,21 +75,8 @@ class IntegerType implements Type
             $constraints[] = new Constraint('Assert\DivisibleBy', ['value' => $this->schema->multipleOf]);
         }
 
-        if ($this->schema->minimum !== null) {
-            $constraints[] = new Constraint('Assert\GreaterThanOrEqual', ['value' => $this->schema->minimum]);
-        }
-
-        if ($this->schema->maximum !== null) {
-            $constraints[] = new Constraint('Assert\LessThanOrEqual', ['value' => $this->schema->maximum]);
-        }
-
-        if ($this->schema->exclusiveMinimum !== null) {
-            $constraints[] = new Constraint('Assert\GreaterThan', ['value' => $this->schema->exclusiveMinimum]);
-        }
-
-        if ($this->schema->exclusiveMaximum !== null) {
-            $constraints[] = new Constraint('Assert\LessThan', ['value' => $this->schema->exclusiveMaximum]);
-        }
+        $constraints[] = new Constraint('Assert\GreaterThanOrEqual', ['value' => $this->getMin()]);
+        $constraints[] = new Constraint('Assert\LessThanOrEqual', ['value' => $this->getMax()]);
 
         if (\count($this->schema->enum) > 0) {
             $constraints[] = new Constraint('Assert\Choice', ['choices' => $this->schema->enum]);
@@ -114,7 +102,15 @@ class IntegerType implements Type
 
     public function getDocAst(): TypeNode
     {
-        $type = new IdentifierTypeNode('int');
+        if (\count($this->schema->enum) > 0) {
+            return new IdentifierTypeNode(implode('|', $this->schema->enum));
+        }
+
+        $type = new IdentifierTypeNode(\sprintf(
+            'int<%d,%d>',
+            $this->getMin(),
+            $this->getMax(),
+        ));
 
         if ($this->nullable) {
             $type = new NullableTypeNode($type);
@@ -126,5 +122,23 @@ class IntegerType implements Type
     public function asName(): Name
     {
         return new Name($this->nullable ? '?int' : 'int');
+    }
+
+    private function getMin(): int
+    {
+        return Narrow::int(max(
+            \PHP_INT_MIN,
+            $this->schema->minimum ?? \PHP_INT_MIN,
+            $this->schema->exclusiveMinimum !== null ? $this->schema->exclusiveMinimum + 1 : \PHP_INT_MIN,
+        ));
+    }
+
+    private function getMax(): int
+    {
+        return Narrow::int(min(
+            \PHP_INT_MAX,
+            $this->schema->maximum ?? \PHP_INT_MAX,
+            $this->schema->exclusiveMaximum !== null ? $this->schema->exclusiveMaximum - 1 : \PHP_INT_MAX,
+        ));
     }
 }

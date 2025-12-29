@@ -8,6 +8,10 @@ use Zol\Apifony\Tests\TestOpenApiServer\Model\Abc;
 class FirstOperation200ResponsePayload
 {
     /**
+     * @param string $dump
+     * @param string $string_string
+     * @param Abc $abc1
+     * @param Abc $abc2
      * @param list<Abc> $abcList1
      * @param list<Abc> $abcList2
      */

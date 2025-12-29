@@ -116,6 +116,18 @@ class StringType implements Type
 
     public function getDocAst(): TypeNode
     {
+        if (\count($this->schema->enum) > 0) {
+            return new IdentifierTypeNode(
+                implode(
+                    '|',
+                    array_map(
+                        static fn (?string $value) => $value !== null ? "'{$value}'" : 'null',
+                        $this->schema->enum,
+                    ),
+                ),
+            );
+        }
+
         $type = new IdentifierTypeNode('string');
 
         if ($this->nullable) {

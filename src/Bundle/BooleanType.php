@@ -85,6 +85,10 @@ class BooleanType implements Type
 
     public function getDocAst(): TypeNode
     {
+        if (\count($this->schema->enum) > 0) {
+            return new IdentifierTypeNode(implode('|', $this->schema->enum));
+        }
+
         $type = new IdentifierTypeNode('bool');
 
         if ($this->nullable) {
