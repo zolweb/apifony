@@ -58,7 +58,7 @@ class ActionResponse implements File
                     if (!$schema instanceof Reference) {
                         $type = TypeFactory::build('', $schema, $components);
                         if ($type instanceof ObjectType) {
-                            if (!($schema->extensions['x-raw'] ?? false)) {
+                            if (!($schema->extensions['x-apifony-raw'] ?? false)) {
                                 $payloadModels[$rawName] = Model::build(
                                     $bundleNamespace,
                                     "{$bundleNamespace}\\Api\\{$aggregateName}",

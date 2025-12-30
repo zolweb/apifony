@@ -238,7 +238,7 @@ class Bundle implements File
             if (!isset($models[$rawName])) {
                 $type = TypeFactory::build('', $schema, $components);
                 if ($type instanceof ObjectType) {
-                    if (!($schema->extensions['x-raw'] ?? false)) {
+                    if (!($schema->extensions['x-apifony-raw'] ?? false)) {
                         $models[$rawName] = Model::build(
                             $namespace,
                             "{$namespace}\\Model",

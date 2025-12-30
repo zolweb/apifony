@@ -18,6 +18,14 @@ class Api
         $aggregatesData = [];
         foreach ($openApi->paths->pathItems ?? [] as $route => $pathItem) {
             foreach ($pathItem->operations as $method => $operation) {
+                if (\array_key_exists('x-apifony-ignore', $operation->extensions)) {
+                    if (!\is_bool($operation->extensions['x-apifony-ignore'])) {
+                        throw new Exception('Operation x-apifony-ignore attribute must be a bool.', $operation->path);
+                    }
+                    if ($operation->extensions['x-apifony-ignore']) {
+                        continue;
+                    }
+                }
                 $aggregatesData[$operation->tags[0] ?? 'default'][] = [
                     'route' => $route,
                     'method' => $method,

@@ -22,6 +22,21 @@ paths:
         required: true
         schema:
           type: 'boolean'
+    get:
+      tags:
+        - 'tag'
+      operationId: 'ignoredOperation'
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                required: ['message']
+      x-apifony-ignore: true
     post:
       tags:
         - 'tag'
