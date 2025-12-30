@@ -70,9 +70,6 @@ class Operation
         if (!\is_string($data['operationId'])) {
             throw new Exception('Operation operationId attribute must be a string.', $path);
         }
-        if (isset($data['x-priority']) && !\is_int($data['x-priority'])) {
-            throw new Exception('Operation x-priority attribute must be a string.', $path);
-        }
         if (isset($data['tags'])) {
             if (!\is_array($data['tags'])) {
                 throw new Exception('Operation tags attribute must be an array.', $path);

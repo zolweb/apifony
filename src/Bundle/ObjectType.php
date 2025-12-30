@@ -23,7 +23,7 @@ class ObjectType implements Type
         private readonly bool $nullable,
         private readonly string $name,
     ) {
-        $this->isRaw = ($this->schema->extensions['x-raw'] ?? false) === true;
+        $this->isRaw = ($this->schema->extensions['x-apifony-raw'] ?? false) === true;
     }
 
     public function isNullable(): bool
