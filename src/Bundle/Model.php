@@ -122,18 +122,12 @@ class Model implements File
             $constructor->addParam($attribute->getParam());
         }
 
-        $arrayAttributes = array_filter(
+        $comment = new PhpDocNode(array_map(
+            static fn (ModelAttribute $attribute): PhpDocTagNode => $attribute->getDocAst(),
             $this->attributes,
-            static fn (ModelAttribute $attribute) => $attribute->isArray(),
-        );
+        ));
 
-        if (\count($arrayAttributes) > 0) {
-            $comment = new PhpDocNode(array_map(
-                static fn (ModelAttribute $attribute): PhpDocTagNode => $attribute->getDocAst(),
-                $arrayAttributes,
-            ));
-            $constructor->setDocComment((new Printer())->print($comment));
-        }
+        $constructor->setDocComment((new Printer())->print($comment));
 
         $class = $f->class($this->className)
             ->addStmt($constructor)

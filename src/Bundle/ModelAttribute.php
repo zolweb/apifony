@@ -71,11 +71,6 @@ class ModelAttribute
         return $this->usedModelName;
     }
 
-    public function isArray(): bool
-    {
-        return $this->schema->type === 'array' || ($this->schema->type === 'object' && ($this->schema->extensions['x-raw'] ?? false));
-    }
-
     public function hasDefault(): bool
     {
         return $this->schema->default !== null;

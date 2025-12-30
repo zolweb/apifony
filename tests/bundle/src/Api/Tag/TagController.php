@@ -36,7 +36,7 @@ class TagController extends AbstractController
         }
         $pPathParamInteger = $pathParamInteger;
         try {
-            $this->validateParameter($pPathParamInteger, [new Assert\NotNull()]);
+            $this->validateParameter($pPathParamInteger, [new Assert\NotNull(), new Assert\GreaterThanOrEqual(value: (-9223372036854775807-1)), new Assert\LessThanOrEqual(value: 9223372036854775807)]);
         } catch (ParameterValidationException $e) {
             $errors['path']['pathParamInteger'] = $e->messages;
         }
@@ -67,7 +67,7 @@ class TagController extends AbstractController
         $qQueryParamInteger = 0;
         try {
             $qQueryParamInteger = $this->getIntParameter($request, 'queryParamInteger', 'query', true);
-            $this->validateParameter($qQueryParamInteger, [new Assert\NotNull()]);
+            $this->validateParameter($qQueryParamInteger, [new Assert\NotNull(), new Assert\GreaterThanOrEqual(value: (-9223372036854775807-1)), new Assert\LessThanOrEqual(value: 9223372036854775807)]);
         } catch (DenormalizationException $e) {
             $errors['query']['queryParamInteger'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
@@ -103,7 +103,7 @@ class TagController extends AbstractController
         $hHeaderParamInteger = 0;
         try {
             $hHeaderParamInteger = $this->getIntParameter($request, 'headerParamInteger', 'header', true);
-            $this->validateParameter($hHeaderParamInteger, [new Assert\NotNull()]);
+            $this->validateParameter($hHeaderParamInteger, [new Assert\NotNull(), new Assert\GreaterThanOrEqual(value: (-9223372036854775807-1)), new Assert\LessThanOrEqual(value: 9223372036854775807)]);
         } catch (DenormalizationException $e) {
             $errors['header']['headerParamInteger'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
@@ -139,7 +139,7 @@ class TagController extends AbstractController
         $cCookieParamInteger = 0;
         try {
             $cCookieParamInteger = $this->getIntParameter($request, 'cookieParamInteger', 'cookie', true);
-            $this->validateParameter($cCookieParamInteger, [new Assert\NotNull()]);
+            $this->validateParameter($cCookieParamInteger, [new Assert\NotNull(), new Assert\GreaterThanOrEqual(value: (-9223372036854775807-1)), new Assert\LessThanOrEqual(value: 9223372036854775807)]);
         } catch (DenormalizationException $e) {
             $errors['cookie']['cookieParamInteger'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
