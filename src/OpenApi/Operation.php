@@ -28,6 +28,7 @@ class Operation
                     throw new Exception('Parameter or Reference objects must be arrays.', $path);
                 }
                 $parameterPath = $path;
+                $parameterPath[] = 'parameters';
                 $parameterPath[] = (string) $parameterIndex;
                 $operationParameters[] = isset($parameterData['$ref']) ?
                     Reference::build($parameterData, $parameterPath) :
