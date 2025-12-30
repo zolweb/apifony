@@ -195,26 +195,31 @@ class Action
         ?Components $components,
     ): array {
         $responses = [];
-        foreach ($operation->responses->responses ?? [] as $code => $response) {
-            if ($response instanceof Reference) {
-                if ($components === null || !isset($components->responses[$response->getName()])) {
-                    throw new Exception('Reference not found in responses components.', $response->path);
+        if ($operation->responses !== null) {
+            foreach ($operation->responses->responses as $code => $response) {
+                if (\in_array($code, ['1XX', '2XX', '3XX', '4XX', '5XX'], true)) {
+                    throw new Exception('HTTP status code ranges are not supported by Apifony.', $response->path);
                 }
-                $response = $components->responses[$response->getName()];
+                if ($response instanceof Reference) {
+                    if ($components === null || !isset($components->responses[$response->getName()])) {
+                        throw new Exception('Reference not found in responses components.', $response->path);
+                    }
+                    $response = $components->responses[$response->getName()];
+                }
+                if (\count(array_diff_key($response->content, ['application/json' => null])) > 0) {
+                    throw new Exception('Only application/json is supported by Apifony for response bodies.', $response->path);
+                }
+                $responses[] = ActionResponse::build(
+                    $bundleNamespace,
+                    $aggregateName,
+                    $className,
+                    (int) $code,
+                    $response,
+                    \array_key_exists('application/json', $response->content) ?
+                        $response->content['application/json']->schema : null,
+                    $components,
+                );
             }
-            if (\count(array_diff_key($response->content, ['application/json' => null])) > 0) {
-                throw new Exception('Only application/json is supported by Apifony for response bodies.', $response->path);
-            }
-            $responses[] = ActionResponse::build(
-                $bundleNamespace,
-                $aggregateName,
-                $className,
-                (int) $code,
-                $response,
-                \array_key_exists('application/json', $response->content) ?
-                    $response->content['application/json']->schema : null,
-                $components,
-            );
         }
 
         return $responses;
