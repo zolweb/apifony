@@ -162,6 +162,12 @@ components:
             - 'def'
             - 'ghi'
             - null
+        integerRangeProperty:
+          type: 'integer'
+          minimum: -6
+          maximum: 5
+          exclusiveMinimum: -6
+          exclusiveMaximum: 7
         emailProperty:
           type: 'string'
           format: 'email'
@@ -213,7 +219,7 @@ components:
           type: 'array'
           items:
             $ref: '#/components/schemas/Schema'
-      required: ['stringProperty', 'numberProperty', 'integerProperty', 'booleanProperty', 'enumStringProperty', 'enumNullableStringProperty', 'emailProperty', 'uuidProperty', 'dateTimeProperty', 'dateProperty', 'timeProperty', 'customProperty', 'objectProperty', 'arrayProperty', 'objectArrayProperty', 'recursiveObjectArray']
+      required: ['stringProperty', 'numberProperty', 'integerProperty', 'booleanProperty', 'enumStringProperty', 'enumNullableStringProperty', 'integerRangeProperty', 'emailProperty', 'uuidProperty', 'dateTimeProperty', 'dateProperty', 'timeProperty', 'customProperty', 'objectProperty', 'arrayProperty', 'objectArrayProperty', 'recursiveObjectArray']
     Abc:
       type: 'object'
       properties:

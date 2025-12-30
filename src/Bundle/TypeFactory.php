@@ -22,33 +22,48 @@ class TypeFactory
             $schema = $components->schemas[$schema->getName()];
         }
 
+        $type = null;
         $nullable = false;
         if ($schema->type === null) {
             if (\count($schema->enum) === 0) {
                 throw new Exception('Schemas without type nor enum elements are not supported.', $schema->path);
             }
-            $types = [];
             foreach ($schema->enum as $e) {
                 switch (true) {
                     case \is_string($e):
-                        $types['string'] = true;
+                        if ($type !== null && $type !== 'null' && $type !== 'string') {
+                            throw new Exception('Schemas with multiple types (but \'null\') are not supported.', $schema->path);
+                        }
+                        $type = 'string';
                         break;
                     case \is_int($e):
-                        $types['integer'] = true;
+                        if ($type !== null && $type !== 'null' && $type !== 'integer' && $type !== 'number') {
+                            throw new Exception('Schemas with multiple types (but \'null\') are not supported.', $schema->path);
+                        }
+                        if ($type !== 'number') {
+                            $type = 'integer';
+                        }
                         break;
                     case \is_float($e):
-                        $types['number'] = true;
+                        if ($type !== null && $type !== 'null' && $type !== 'integer' && $type !== 'number') {
+                            throw new Exception('Schemas with multiple types (but \'null\') are not supported.', $schema->path);
+                        }
+                        $type = 'number';
                         break;
                     case \is_bool($e):
-                        $types['boolean'] = true;
+                        if ($type !== null && $type !== 'null' && $type !== 'boolean') {
+                            throw new Exception('Schemas with multiple types (but \'null\') are not supported.', $schema->path);
+                        }
+                        $type = 'boolean';
                         break;
                     default:
+                        if ($type === null) {
+                            $type = 'null';
+                        }
                         $nullable = true;
                         break;
                 }
             }
-            $types = array_keys($types);
-
         } elseif (\is_array($schema->type)) {
             if (\count($schema->type) === 1) {
                 $type = $schema->type[0];
@@ -74,7 +89,6 @@ class TypeFactory
             'boolean' => new BooleanType($schema, $nullable),
             'object' => new ObjectType($schema, $nullable, $className),
             'array' => new ArrayType($schema, $nullable, $className, $components),
-            default => throw new \RuntimeException('Unexpected type.'),
         };
     }
 }

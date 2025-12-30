@@ -14,4 +14,13 @@ abstract class Narrow
 
         return $value;
     }
+
+    public static function stringOrNull(mixed $value): ?string
+    {
+        if (!\is_string($value) && $value !== null) {
+            throw new \RuntimeException(\sprintf('Integer type expected, %s given.', \gettype($value)));
+        }
+
+        return $value;
+    }
 }

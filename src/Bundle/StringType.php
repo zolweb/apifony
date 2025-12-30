@@ -12,6 +12,7 @@ use PhpParser\Node\Scalar\String_;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
+use Zol\Apifony\Narrow;
 use Zol\Apifony\OpenApi\Schema;
 
 use function Symfony\Component\String\u;
@@ -117,14 +118,10 @@ class StringType implements Type
     public function getDocAst(): TypeNode
     {
         if (\count($this->schema->enum) > 0) {
+            $enum = array_map(static fn (mixed $e) => Narrow::stringOrNull($e), $this->schema->enum);
+
             return new IdentifierTypeNode(
-                implode(
-                    '|',
-                    array_map(
-                        static fn (?string $value) => $value !== null ? "'{$value}'" : 'null',
-                        $this->schema->enum,
-                    ),
-                ),
+                implode('|', array_map(static fn (?string $value) => $value !== null ? "'{$value}'" : 'null', $enum)),
             );
         }
 

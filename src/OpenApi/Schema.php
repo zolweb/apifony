@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Zol\Apifony\OpenApi;
 
+/**
+ * @phpstan-type JsonSchemaType 'string'|'integer'|'number'|'boolean'|'array'|'object'|'null'
+ */
 class Schema
 {
     /**
@@ -17,6 +20,9 @@ class Schema
         $type = null;
         if (\array_key_exists('type', $data)) {
             if (\is_array($data['type'])) {
+                if (\count($data['type']) === 0) {
+                    throw new Exception('Schema objects type attribute array must not be empty.', $path);
+                }
                 $type = [];
                 foreach ($data['type'] as $t) {
                     if (!\in_array($t, ['string', 'integer', 'number', 'boolean', 'array', 'object', 'null'], true)) {
@@ -186,12 +192,12 @@ class Schema
     }
 
     /**
-     * @param 'string'|'integer'|'number'|'boolean'|'array'|'object'|'null'|non-empty-list<'string'|'integer'|'number'|'boolean'|'array'|'object'|'null'>|null $type
-     * @param list<string|int|float|bool|null> $enum
-     * @param array<string, Reference|Schema>  $properties
-     * @param list<string>                     $required
-     * @param array<string, mixed>             $extensions
-     * @param list<string>                     $path
+     * @param JsonSchemaType|non-empty-list<JsonSchemaType>|null $type
+     * @param list<string|int|float|bool|null>                   $enum
+     * @param array<string, Reference|Schema>                    $properties
+     * @param list<string>                                       $required
+     * @param array<string, mixed>                               $extensions
+     * @param list<string>                                       $path
      */
     private function __construct(
         public readonly string|array|null $type,

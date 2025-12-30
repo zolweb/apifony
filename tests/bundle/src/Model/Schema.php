@@ -19,6 +19,7 @@ class Schema
      * @param bool $booleanProperty
      * @param 'abc'|'def'|'ghi' $enumStringProperty
      * @param 'abc'|'def'|'ghi'|null $enumNullableStringProperty
+     * @param int<-5,5> $integerRangeProperty
      * @param string $emailProperty
      * @param string $uuidProperty
      * @param string $dateTimeProperty
@@ -55,6 +56,11 @@ class Schema
         
         #[Assert\Choice(choices: ['abc', 'def', 'ghi', null])]
         public readonly ?string $enumNullableStringProperty,
+        
+        #[Assert\NotNull]
+        #[Assert\GreaterThanOrEqual(value: -5)]
+        #[Assert\LessThanOrEqual(value: 5)]
+        public readonly int $integerRangeProperty,
         
         #[Assert\NotNull]
         #[AssertEmail]
