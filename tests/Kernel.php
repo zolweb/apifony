@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Zol\Apifony\Tests;
 
+use Composer\InstalledVersions;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -29,7 +30,7 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
 
     protected function configureContainer(ContainerConfigurator $container): void
     {
-        $container->extension('framework', [
+        $frameworkConfig = [
             'http_method_override' => false,
             'handle_all_throwables' => true,
             'validation' => [
@@ -43,7 +44,22 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
                 'time_based_uuid_version' => 7,
             ],
             'test' => true,
-        ]);
+        ];
+
+        if (
+            InstalledVersions::isInstalled('symfony/framework-bundle')
+            && version_compare(
+                InstalledVersions::getVersion('symfony/framework-bundle') ?? throw new \RuntimeException(),
+                '7.0.0',
+                '>='
+            )
+        ) {
+            $frameworkConfig['property_info'] = [
+                'with_constructor_extractor' => true,
+            ];
+        }
+
+        $container->extension('framework', $frameworkConfig);
 
         $container->services()
             ->set(TestHandler::class)
