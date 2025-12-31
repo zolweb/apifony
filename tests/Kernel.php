@@ -29,7 +29,7 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
 
     protected function configureContainer(ContainerConfigurator $container): void
     {
-        $container->extension('framework', [
+        $frameworkConfig = [
             'http_method_override' => false,
             'handle_all_throwables' => true,
             'validation' => [
@@ -43,10 +43,15 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
                 'time_based_uuid_version' => 7,
             ],
             'test' => true,
-            'property_info' => [
+        ];
+
+        if (class_exists(\Symfony\Component\PropertyInfo\Extractor\ConstructorExtractor::class)) {
+            $frameworkConfig['property_info'] = [
                 'with_constructor_extractor' => true,
-            ],
-        ]);
+            ];
+        }
+
+        $container->extension('framework', $frameworkConfig);
 
         $container->services()
             ->set(TestHandler::class)
