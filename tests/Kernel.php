@@ -43,6 +43,9 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
                 'time_based_uuid_version' => 7,
             ],
             'test' => true,
+            'property_info' => [
+                'with_constructor_extractor' => true,
+            ],
         ]);
 
         $container->services()
