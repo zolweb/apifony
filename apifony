@@ -22,7 +22,7 @@ foreach ($autoloadLocations as $autoloadLocation) {
 
 $application = new Application();
 
-$application->add(new GenerateBundleCommand());
+$application->addCommands([new GenerateBundleCommand()]);
 
 try {
     $application->run();

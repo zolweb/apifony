@@ -9,6 +9,8 @@ use Symfony\Component\BrowserKit\Cookie;
 
 /**
  * @internal
+ *
+ * @coversNothing
  */
 final class ApifonyTest extends WebTestCase
 {

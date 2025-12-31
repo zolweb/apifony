@@ -9,7 +9,6 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Catch_;
@@ -139,14 +138,14 @@ class ActionRequestBody
                 new Expression(new Assign($f->var('requestBodyPayload'), $f->methodCall($f->var('this'), 'getObjectRequestBody', array_merge([$f->var('request')], $this->getPayloadBuiltInPhpType() === 'object' ? [$f->classConstFetch($this->getPayloadTypeName(), 'class')] : [])))),
                 new Expression($f->methodCall($f->var('this'), 'validateRequestBody', [
                     $f->var('requestBodyPayload'),
-                    array_map(
-                        static fn (Constraint $constraint): New_ => $constraint->getInstantiationAst(),
+                    new Array_(array_map(
+                        static fn (Constraint $constraint): ArrayItem => new ArrayItem($constraint->getInstantiationAst()),
                         $this->payloadType->getConstraints(),
-                    ),
+                    ), ['kind' => Array_::KIND_SHORT]),
                 ])),
             ], [
                 new Catch_([new Name('DenormalizationException')], $f->var('e'), [
-                    new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), new Array_([new ArrayItem($f->methodCall($f->var('e'), 'getMessage'))]))),
+                    new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), new Array_([new ArrayItem($f->methodCall($f->var('e'), 'getMessage'))], ['kind' => Array_::KIND_SHORT]))),
                 ]),
                 new Catch_([new Name('RequestBodyValidationException')], $f->var('e'), [
                     new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), $f->propertyFetch($f->var('e'), 'messages'))),

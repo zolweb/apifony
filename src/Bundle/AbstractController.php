@@ -99,11 +99,11 @@ class AbstractController implements File
             )
             ->addStmt(new Assign($f->var('violations'), $f->methodCall($f->propertyFetch($f->var('this'), 'validator'), 'validate', [$f->var('value'), $f->var('constraints')])))
             ->addStmt(new If_(new Greater($f->funcCall('\count', [$f->var('violations')]), $f->val(0)), ['stmts' => [
-                new Expression(new Assign($f->var('errors'), $f->val([]))),
+                new Expression(new Assign($f->var('errors'), $f->val(new Array_([], ['kind' => Array_::KIND_SHORT])))),
                 new Foreach_($f->var('violations'), $f->var('violation'), ['stmts' => [
                     new Expression(new Assign($f->var('path'), $f->methodCall($f->var('violation'), 'getPropertyPath'))),
                     new If_(new BooleanNot($f->funcCall('isset', [new ArrayDimFetch($f->var('errors'), $f->var('path'))])), ['stmts' => [
-                        new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->var('path')), $f->val([]))),
+                        new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->var('path')), $f->val(new Array_([], ['kind' => Array_::KIND_SHORT])))),
                     ]]),
                     new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->var('path'))), new String_($f->methodCall($f->var('violation'), 'getMessage')))),
                 ]]),
@@ -181,10 +181,10 @@ class AbstractController implements File
                             new Return_(new Double($f->var('value'), ['kind' => Double::KIND_FLOAT])),
                         ],
                         'bool' => [
-                            new If_(new BooleanNot($f->funcCall('\in_array', [$f->var('value'), $f->val(['true', 'false']), $f->val(true)])), ['stmts' => [
+                            new If_(new BooleanNot($f->funcCall('\in_array', [$f->var('value'), new Array_([new ArrayItem($f->val('true')), new ArrayItem($f->val('false'))], ['kind' => Array_::KIND_SHORT]), $f->val(true)])), ['stmts' => [
                                 new Expression(new Throw_($f->new('DenormalizationException', [new Encapsed([new EncapsedStringPart('Parameter \''), $f->var('name'), new EncapsedStringPart('\' in \''), $f->var('in'), new EncapsedStringPart('\' must be a boolean.')])]))),
                             ]]),
-                            new Return_(new ArrayDimFetch(new Array_([new ArrayItem($f->val(true), $f->val('true')), new ArrayItem($f->val(false), $f->val('false'))]), $f->var('value'))),
+                            new Return_(new ArrayDimFetch(new Array_([new ArrayItem($f->val(true), $f->val('true')), new ArrayItem($f->val(false), $f->val('false'))], ['kind' => Array_::KIND_SHORT]), $f->var('value'))),
                         ],
                     })
                 ;

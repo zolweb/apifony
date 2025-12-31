@@ -176,7 +176,7 @@ class ActionResponse implements File
             ->addStmt(new Return_(new Array_(array_merge(
                 array_map(static fn (ActionResponseHeader $header) => $header->getArrayItem(), $this->headers),
                 [new ArrayItem($f->classConstFetch('self', 'CONTENT_TYPE'), $f->val('content-type'))],
-            ))))
+            ), ['kind' => Array_::KIND_SHORT])))
         ;
 
         $class = $f->class($this->name)

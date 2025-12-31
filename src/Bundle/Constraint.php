@@ -92,11 +92,11 @@ class Constraint
                             static fn ($item) => new ArrayItem(
                                 match (true) {
                                     $item instanceof self => $item->getInstantiationAst(),
-                                    default => $f->val($item)
+                                    default => $f->val($item),
                                 },
                             ),
                             $this->parameters[$parameterName],
-                        ),
+                        ), ['kind' => Array_::KIND_SHORT],
                     ),
                     default => $f->val($this->parameters[$parameterName]),
                 },

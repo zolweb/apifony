@@ -77,7 +77,7 @@ class Format
         $f = new BuilderFactory();
 
         return new Case_($f->val($this->rawName), [
-            new Expression($f->methodCall($f->methodCall($f->var('container'), 'findDefinition', ["{$this->bundleNamespace}\\Format\\{$this->name}Validator"]), 'addMethodCall', [$f->val('setFormatDefinition'), new Array_([new ArrayItem($f->new('Reference', [$f->var('id')]))])])),
+            new Expression($f->methodCall($f->methodCall($f->var('container'), 'findDefinition', ["{$this->bundleNamespace}\\Format\\{$this->name}Validator"]), 'addMethodCall', [$f->val('setFormatDefinition'), new Array_([new ArrayItem($f->new('Reference', [$f->var('id')]))], ['kind' => Array_::KIND_SHORT])])),
             new Break_(),
         ]);
     }

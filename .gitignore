@@ -1,7 +1,7 @@
 .idea/
-.zol/
 var/*
 vendor/
+composer-cache/
 composer.lock
 .php-cs-fixer.cache
 .phpunit.result.cache
