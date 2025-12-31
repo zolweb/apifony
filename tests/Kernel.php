@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Zol\Apifony\Tests;
 
+use Composer\InstalledVersions;
 use Symfony\Bundle\FrameworkBundle\FrameworkBundle;
 use Symfony\Bundle\FrameworkBundle\Kernel\MicroKernelTrait;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
@@ -45,7 +46,14 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
             'test' => true,
         ];
 
-        if (class_exists(\Symfony\Component\PropertyInfo\Extractor\ConstructorExtractor::class)) {
+        if (
+            InstalledVersions::isInstalled('symfony/framework-bundle')
+            && version_compare(
+                InstalledVersions::getVersion('symfony/framework-bundle') ?? throw new \RuntimeException(),
+                '7.0.0',
+                '>='
+            )
+        ) {
             $frameworkConfig['property_info'] = [
                 'with_constructor_extractor' => true,
             ];
