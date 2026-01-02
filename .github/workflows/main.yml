@@ -90,4 +90,4 @@ jobs:
         run: ./apifony generate-bundle TestOpenApiServer Zol\\Apifony\\Tests\\TestOpenApiServer zol/test-openapi-server tests/openapi.yaml tests/bundle
 
       - name: Run PHPUnit
-        run: php vendor/bin/phpunit
+        run: SYMFONY_DEPRECATIONS_HELPER="max[direct]=0" php vendor/bin/phpunit
