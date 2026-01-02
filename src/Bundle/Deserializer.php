@@ -56,13 +56,13 @@ class Deserializer implements File
                         ->addStmt(new Expression(new Assign($f->propertyFetch($f->var('this'), 'serializer'), new New_(new Name('Serializer'), $f->args([
                             'normalizers' => new Array_([
                                 new ArrayItem(new New_(new Name('ObjectNormalizer'), $f->args([
-                                    'propertyTypeExtractor' => new New_(new Name('PropertyInfoExtractor'), $f->args(['typeExtractors' => [new New_(new Name('PhpStanExtractor')), new New_(new Name('ReflectionExtractor'))]])),
+                                    'propertyTypeExtractor' => new New_(new Name('PropertyInfoExtractor'), $f->args(['typeExtractors' => new Array_([new ArrayItem(new New_(new Name('PhpStanExtractor'))), new ArrayItem(new New_(new Name('ReflectionExtractor')))], ['kind' => Array_::KIND_SHORT])])),
                                 ]))),
                                 new ArrayItem(new New_(new Name('ArrayDenormalizer'))),
-                            ]),
+                            ], ['kind' => Array_::KIND_SHORT]),
                             'encoders' => new Array_([
                                 new ArrayItem(new New_(new Name('JsonEncoder'))),
-                            ]),
+                            ], ['kind' => Array_::KIND_SHORT]),
                         ]))))),
                     )
                     ->addStmt($f->method('deserialize')
@@ -77,7 +77,7 @@ class Deserializer implements File
                         ->addParam($f->param('data')->setType('array'))
                         ->addParam($f->param('type')->setType('string'))
                         ->setReturnType('object')
-                        ->addStmt(new Return_($f->methodCall($f->propertyFetch($f->var('this'), 'serializer'), 'denormalize', $f->args([$f->var('data'), $f->var('type'), $f->val(null), new Array_([new ArrayItem($f->val(true), $f->classConstFetch('AbstractObjectNormalizer', 'DISABLE_TYPE_ENFORCEMENT'))])]))))
+                        ->addStmt(new Return_($f->methodCall($f->propertyFetch($f->var('this'), 'serializer'), 'denormalize', $f->args([$f->var('data'), $f->var('type'), $f->val(null), new Array_([new ArrayItem($f->val(true), $f->classConstFetch('AbstractObjectNormalizer', 'DISABLE_TYPE_ENFORCEMENT'))], ['kind' => Array_::KIND_SHORT])]))))
                     )
                 )
                 ->getNode(),

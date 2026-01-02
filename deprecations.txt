@@ -1,1 +1,0 @@
-%The "loose" mode is deprecated\. It will be removed in 7\.0 and the default mode will be changed to "html5"\.%

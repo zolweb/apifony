@@ -100,7 +100,7 @@ class Aggregate
         $f = new BuilderFactory();
 
         return new Case_($f->val(u($this->name)->snake()->toString()), [
-            new Expression($f->methodCall($f->methodCall($f->var('container'), 'findDefinition', [\sprintf('%s\%s', $this->controller->getNamespace(), $this->controller->getClassName())]), 'addMethodCall', [$f->val('setHandler'), new Array_([new ArrayItem($f->new('Reference', [$f->var('id')]))])])),
+            new Expression($f->methodCall($f->methodCall($f->var('container'), 'findDefinition', [\sprintf('%s\%s', $this->controller->getNamespace(), $this->controller->getClassName())]), 'addMethodCall', [$f->val('setHandler'), new Array_([new ArrayItem($f->new('Reference', [$f->var('id')]))], ['kind' => Array_::KIND_SHORT])])),
             new Break_(),
         ]);
     }

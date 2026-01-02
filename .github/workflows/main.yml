@@ -12,12 +12,9 @@ on:
 jobs:
   php-cs-fixer-check:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        php-version: ['8.3']
 
     container:
-      image: php:${{ matrix.php-version }}-fpm
+      image: php:8.1-cli
 
     steps:
       - uses: actions/checkout@v4
@@ -39,11 +36,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: ['8.1', '8.2', '8.3']
+        php-version: ['8.1', '8.2', '8.3', '8.4', '8.5']
         composer-options: ['', '--prefer-lowest --prefer-stable']
 
     container:
-      image: php:${{ matrix.php-version }}-fpm
+      image: php:${{ matrix.php-version }}-cli
 
     steps:
       - uses: actions/checkout@v4
@@ -70,11 +67,11 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        php-version: ['8.1', '8.2', '8.3']
+        php-version: ['8.1', '8.2', '8.3', '8.4', '8.5']
         composer-options: ['', '--prefer-lowest --prefer-stable']
 
     container:
-      image: php:${{ matrix.php-version }}-fpm
+      image: php:${{ matrix.php-version }}-cli
 
     steps:
       - uses: actions/checkout@v4
@@ -93,4 +90,4 @@ jobs:
         run: ./apifony generate-bundle TestOpenApiServer Zol\\Apifony\\Tests\\TestOpenApiServer zol/test-openapi-server tests/openapi.yaml tests/bundle
 
       - name: Run PHPUnit
-        run: php vendor/bin/phpunit
+        run: SYMFONY_DEPRECATIONS_HELPER="max[direct]=0" php vendor/bin/phpunit

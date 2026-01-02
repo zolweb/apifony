@@ -271,7 +271,7 @@ class Action
         }
 
         $actionMethod->setReturnType('Response')
-            ->addStmt(new Expression(new Assign($f->var('errors'), $f->val([]))))
+            ->addStmt(new Expression(new Assign($f->var('errors'), $f->val(new Array_([], ['kind' => Array_::KIND_SHORT])))))
         ;
 
         foreach ($this->getParameters(['path']) as $parameter) {
@@ -292,7 +292,7 @@ class Action
                     new ArrayItem($f->val('validation_failed'), $f->val('code')),
                     new ArrayItem($f->val('Validation has failed.'), $f->val('message')),
                     new ArrayItem($f->var('errors'), $f->val('errors')),
-                ]),
+                ], ['kind' => Array_::KIND_SHORT]),
                 $f->classConstFetch('Response', 'HTTP_BAD_REQUEST'),
             ])),
         ]]))

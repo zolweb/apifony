@@ -61,7 +61,7 @@ class EmailValidator implements File
             ->addParam($f->param('constraint')->setType('Constraint'))
             ->setReturnType('void')
             ->addStmt(new If_($f->funcCall('\is_string', [$f->var('value')]), ['stmts' => [
-                new Expression(new Assign($f->var('constraints'), new Array_([new ArrayItem($f->new('NotBlank')), new ArrayItem($f->new('\Symfony\Component\Validator\Constraints\Email', ['mode' => $f->val('strict')]))]))),
+                new Expression(new Assign($f->var('constraints'), new Array_([new ArrayItem($f->new('NotBlank')), new ArrayItem($f->new('\Symfony\Component\Validator\Constraints\Email', ['mode' => $f->val('strict')]))], ['kind' => Array_::KIND_SHORT]))),
                 new Expression(new Assign($f->var('violations'), $f->methodCall($f->staticCall('Validation', 'createValidator'), 'validate', [$f->var('value'), $f->var('constraints')]))),
                 new Foreach_($f->var('violations'), $f->var('violation'), ['stmts' => [
                     new Expression($f->methodCall($f->methodCall($f->propertyFetch($f->var('this'), 'context'), 'buildViolation', [new String_($f->methodCall($f->var('violation'), 'getMessage'))]), 'addViolation')),

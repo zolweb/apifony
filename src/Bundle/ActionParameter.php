@@ -9,7 +9,6 @@ use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
@@ -133,10 +132,10 @@ class ActionParameter
             new TryCatch([
                 new Expression($f->methodCall($f->var('this'), 'validateParameter', [
                     new Variable($this->variableName),
-                    array_map(
-                        static fn (Constraint $constraint): New_ => $constraint->getInstantiationAst(),
+                    new Array_(array_map(
+                        static fn (Constraint $constraint): ArrayItem => new ArrayItem($constraint->getInstantiationAst()),
                         $this->getConstraints(),
-                    ),
+                    ), ['kind' => Array_::KIND_SHORT]),
                 ])),
             ], [
                 new Catch_([new Name('ParameterValidationException')], $f->var('e'), [
@@ -159,14 +158,14 @@ class ActionParameter
                 new Expression(new Assign(new Variable($this->variableName), $f->methodCall($f->var('this'), \sprintf('get%s%sParameter', ucfirst($this->type->getBuiltInPhpType()), $this->type->isNullable() ? 'OrNull' : ''), array_merge([$f->var('request'), new String_($this->parameter->name), $this->parameter->in, $this->parameter->required], $this->schema->hasDefault ? [$this->type->getDefaultExpr()] : [])))),
                 new Expression($f->methodCall($f->var('this'), 'validateParameter', [
                     new Variable($this->variableName),
-                    array_map(
-                        static fn (Constraint $constraint): New_ => $constraint->getInstantiationAst(),
+                    new Array_(array_map(
+                        static fn (Constraint $constraint): ArrayItem => new ArrayItem($constraint->getInstantiationAst()),
                         $this->getConstraints(),
-                    ),
+                    ), ['kind' => Array_::KIND_SHORT]),
                 ])),
             ], [
                 new Catch_([new Name('DenormalizationException')], $f->var('e'), [
-                    new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($this->parameter->in)), new String_($this->parameter->name)), new Array_([new ArrayItem($f->methodCall($f->var('e'), 'getMessage'))]))),
+                    new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($this->parameter->in)), new String_($this->parameter->name)), new Array_([new ArrayItem($f->methodCall($f->var('e'), 'getMessage'))], ['kind' => Array_::KIND_SHORT]))),
                 ]),
                 new Catch_([new Name('ParameterValidationException')], $f->var('e'), [
                     new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($this->parameter->in)), new String_($this->parameter->name)), $f->propertyFetch($f->var('e'), 'messages'))),

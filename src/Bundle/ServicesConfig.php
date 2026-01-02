@@ -69,8 +69,8 @@ class ServicesConfig implements File
             $config['services']["{$controller->getNamespace()}\\{$controller->getClassName()}"] = [
                 'class' => "{$controller->getNamespace()}\\{$controller->getClassName()}",
                 'arguments' => [
-                    '$deserializer' => "@{$this->getServiceNamespace()}.deserializer_interface",
-                    '$validator' => '@validator',
+                    '$deserializer' => "@{$this->getServiceNamespace()}.deserializer",
+                    '$validator' => "@{$this->getServiceNamespace()}.validator",
                 ],
                 'public' => true,
             ];
@@ -84,8 +84,13 @@ class ServicesConfig implements File
             ];
         }
 
-        $config['services']["{$this->getServiceNamespace()}.deserializer_interface"] = [
+        $config['services']["{$this->getServiceNamespace()}.deserializer"] = [
             'class' => "{$this->namespace}\\Api\\Deserializer",
+        ];
+
+        $config['services']["{$this->getServiceNamespace()}.validator"] = [
+            'class' => '\Symfony\Component\Validator\Validation',
+            'factory' => ['\Symfony\Component\Validator\Validation', 'createValidator'],
         ];
 
         return Yaml::dump($config, 100);
