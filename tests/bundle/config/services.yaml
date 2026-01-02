@@ -2,8 +2,8 @@ services:
     Zol\Apifony\Tests\TestOpenApiServer\Api\Tag\TagController:
         class: Zol\Apifony\Tests\TestOpenApiServer\Api\Tag\TagController
         arguments:
-            $deserializer: '@zol_apifony_tests_test_open_api_server.deserializer_interface'
-            $validator: '@validator'
+            $deserializer: '@zol_apifony_tests_test_open_api_server.deserializer'
+            $validator: '@zol_apifony_tests_test_open_api_server.validator'
         public: true
     Zol\Apifony\Tests\TestOpenApiServer\Format\EmailValidator:
         class: Zol\Apifony\Tests\TestOpenApiServer\Format\EmailValidator
@@ -35,5 +35,10 @@ services:
         public: true
         tags:
             - validator.constraint_validator
-    zol_apifony_tests_test_open_api_server.deserializer_interface:
+    zol_apifony_tests_test_open_api_server.deserializer:
         class: Zol\Apifony\Tests\TestOpenApiServer\Api\Deserializer
+    zol_apifony_tests_test_open_api_server.validator:
+        class: \Symfony\Component\Validator\Validation
+        factory:
+            - \Symfony\Component\Validator\Validation
+            - createValidator
