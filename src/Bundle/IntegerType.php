@@ -75,8 +75,13 @@ class IntegerType implements Type
             $constraints[] = new Constraint('Assert\DivisibleBy', ['value' => $this->schema->multipleOf]);
         }
 
-        $constraints[] = new Constraint('Assert\GreaterThanOrEqual', ['value' => $this->getMin()]);
-        $constraints[] = new Constraint('Assert\LessThanOrEqual', ['value' => $this->getMax()]);
+        if (($min = $this->getMin()) !== \PHP_INT_MIN) {
+            $constraints[] = new Constraint('Assert\GreaterThanOrEqual', ['value' => $min]);
+        }
+
+        if (($max = $this->getMax()) !== \PHP_INT_MAX) {
+            $constraints[] = new Constraint('Assert\LessThanOrEqual', ['value' => $max]);
+        }
 
         if (\count($this->schema->enum) > 0) {
             $constraints[] = new Constraint('Assert\Choice', ['choices' => $this->schema->enum]);
@@ -107,9 +112,9 @@ class IntegerType implements Type
         }
 
         $type = new IdentifierTypeNode(\sprintf(
-            'int<%d,%d>',
-            $this->getMin(),
-            $this->getMax(),
+            'int<%s,%s>',
+            ($min = $this->getMin()) === \PHP_INT_MIN ? 'min' : (string) $min,
+            ($max = $this->getMax()) === \PHP_INT_MAX ? 'max' : (string) $max,
         ));
 
         if ($this->nullable) {
