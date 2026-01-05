@@ -15,6 +15,18 @@ class TestHandler implements TagHandler
     public function firstOperation(string $pPathParamString, float $pPathParamNumber, int $pPathParamInteger, bool $pPathParamBoolean, string $qQueryParamString, float $qQueryParamNumber, int $qQueryParamInteger, bool $qQueryParamBoolean, string $hHeaderParamString, float $hHeaderParamNumber, int $hHeaderParamInteger, bool $hHeaderParamBoolean, string $cCookieParamString, float $cCookieParamNumber, int $cCookieParamInteger, bool $cCookieParamBoolean, Schema $requestBodyPayload): FirstOperation200Response
     {
         try {
+            $json = file_get_contents(__DIR__.'/integer.json');
+
+            if ($json === false) {
+                throw new \RuntimeException('Failed to read integer.json');
+            }
+
+            $integer = json_decode($json);
+
+            if (!\is_int($integer)) {
+                throw new \RuntimeException('Failed to decode integer.json');
+            }
+
             return new FirstOperation200Response(
                 new FirstOperation200ResponsePayload(
                     json_encode([
@@ -41,6 +53,7 @@ class TestHandler implements TagHandler
                     new Abc('abc2'),
                     [new Abc('abc11'), new Abc('abc12')],
                     [new Abc('abc21'), new Abc('abc22')],
+                    $integer,
                 ),
                 'string',
                 .1,
@@ -49,6 +62,8 @@ class TestHandler implements TagHandler
             );
         } catch (\JsonException $e) {
             throw new \RuntimeException('Unexpected invalid JSON');
+        } catch (\Exception $e) {
+            throw new \RuntimeException('Unexpected random error');
         }
     }
 }

@@ -14,6 +14,7 @@ class FirstOperation200ResponsePayload
      * @param Abc $abc2
      * @param list<Abc> $abcList1
      * @param list<Abc> $abcList2
+     * @param int<min,max> $integer
      */
     public function __construct(
         
@@ -39,7 +40,10 @@ class FirstOperation200ResponsePayload
         #[Assert\NotNull]
         #[Assert\Valid]
         #[Assert\All(constraints: [new Assert\NotNull()])]
-        public readonly array $abcList2
+        public readonly array $abcList2,
+        
+        #[Assert\NotNull]
+        public readonly int $integer
     )
     {
     }

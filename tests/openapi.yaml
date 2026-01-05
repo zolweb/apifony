@@ -147,7 +147,9 @@ paths:
                     type: 'array'
                     items:
                       $ref: '#/components/schemas/Abc'
-                required: ['dump', 'string_string', 'abc1', 'abc2', 'abcList1', 'abcList2']
+                  integer:
+                    type: 'integer'
+                required: ['dump', 'string_string', 'abc1', 'abc2', 'abcList1', 'abcList2', 'integer']
 
 components:
   schemas:
