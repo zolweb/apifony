@@ -194,10 +194,28 @@ components:
         dateTimeProperty:
           type: 'string'
           format: 'date-time'
+        dateTimeProperty2:
+          type: 'string'
+          format: 'date-time'
+        dateTimeProperty3:
+          type: 'string'
+          format: 'date-time'
+        dateTimeProperty4:
+          type: 'string'
+          format: 'date-time'
         dateProperty:
           type: 'string'
           format: 'date'
         timeProperty:
+          type: 'string'
+          format: 'time'
+        timeProperty2:
+          type: 'string'
+          format: 'time'
+        timeProperty3:
+          type: 'string'
+          format: 'time'
+        timeProperty4:
           type: 'string'
           format: 'time'
         customProperty:
@@ -236,7 +254,31 @@ components:
           type: 'array'
           items:
             $ref: '#/components/schemas/Schema'
-      required: ['stringProperty', 'numberProperty', 'integerProperty', 'booleanProperty', 'enumStringProperty', 'enumNullableStringProperty', 'integerRangeProperty', 'emailProperty', 'uuidProperty', 'dateTimeProperty', 'dateProperty', 'timeProperty', 'customProperty', 'objectProperty', 'arrayProperty', 'objectArrayProperty', 'recursiveObjectArray']
+      required: [
+        'stringProperty',
+        'numberProperty',
+        'integerProperty',
+        'booleanProperty',
+        'enumStringProperty',
+        'enumNullableStringProperty',
+        'integerRangeProperty',
+        'emailProperty',
+        'uuidProperty',
+        'dateTimeProperty',
+        'dateTimeProperty2',
+        'dateTimeProperty3',
+        'dateTimeProperty4',
+        'dateProperty',
+        'timeProperty',
+        'timeProperty2',
+        'timeProperty3',
+        'timeProperty4',
+        'customProperty',
+        'objectProperty',
+        'arrayProperty',
+        'objectArrayProperty',
+        'recursiveObjectArray',
+      ]
     Abc:
       type: 'object'
       properties:

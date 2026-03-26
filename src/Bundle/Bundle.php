@@ -47,6 +47,7 @@ class Bundle implements File
             new ComposerJson($packageName, $namespace),
             new DeserializerInterface($namespace),
             new Deserializer($namespace),
+            new ConstraintValidatorFactory($namespace),
         );
     }
 
@@ -65,6 +66,7 @@ class Bundle implements File
         private readonly ComposerJson $composerJson,
         private readonly DeserializerInterface $deserializerInterface,
         private readonly Deserializer $deserializer,
+        private readonly ConstraintValidatorFactory $constraintValidatorFactory,
     ) {
     }
 
@@ -80,6 +82,7 @@ class Bundle implements File
             $this->composerJson,
             $this->deserializerInterface,
             $this->deserializer,
+            $this->constraintValidatorFactory,
         ];
 
         foreach ($this->formats as $format) {

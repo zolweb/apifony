@@ -5,14 +5,14 @@ declare(strict_types=1);
 namespace Zol\Apifony\Bundle;
 
 use PhpParser\BuilderFactory;
-use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\Cast\String_;
+use PhpParser\Node\Expr\BooleanNot;
+use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\DeclareDeclare;
+use PhpParser\Node\Stmt\Else_;
 use PhpParser\Node\Stmt\Expression;
-use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\PrettyPrinter\Standard;
 
@@ -55,17 +55,38 @@ class EmailValidator implements File
     {
         $f = new BuilderFactory();
 
+        $addViolation = static fn (string $message) => new Expression($f->methodCall(
+            $f->methodCall(
+                $f->propertyFetch($f->var('this'), 'context'),
+                'buildViolation',
+                [$f->val($message)],
+            ),
+            'addViolation',
+        ));
+
         $validateMethod = $f->method('validate')
             ->makePublic()
             ->addParam($f->param('value')->setType('mixed'))
             ->addParam($f->param('constraint')->setType('Constraint'))
             ->setReturnType('void')
             ->addStmt(new If_($f->funcCall('\is_string', [$f->var('value')]), ['stmts' => [
-                new Expression(new Assign($f->var('constraints'), new Array_([new ArrayItem($f->new('NotBlank')), new ArrayItem($f->new('\Symfony\Component\Validator\Constraints\Email', ['mode' => $f->val('strict')]))], ['kind' => Array_::KIND_SHORT]))),
-                new Expression(new Assign($f->var('violations'), $f->methodCall($f->staticCall('Validation', 'createValidator'), 'validate', [$f->var('value'), $f->var('constraints')]))),
-                new Foreach_($f->var('violations'), $f->var('violation'), ['stmts' => [
-                    new Expression($f->methodCall($f->methodCall($f->propertyFetch($f->var('this'), 'context'), 'buildViolation', [new String_($f->methodCall($f->var('violation'), 'getMessage'))]), 'addViolation')),
-                ]]),
+                new If_($f->funcCall('\strlen', [$f->var('value')]), [
+                    'stmts' => [
+                        new Expression(new Assign(
+                            $f->var('emailValidator'),
+                            new New_(new Name('EguliasEmailValidator')),
+                        )),
+                        new If_(new BooleanNot($f->methodCall($f->var('emailValidator'), 'isValid', [
+                            $f->var('value'),
+                            new New_(new Name('RFCValidation')),
+                        ])), ['stmts' => [
+                            $addViolation('This value is not a valid email address.'),
+                        ]]),
+                    ],
+                    'else' => new Else_([
+                        $addViolation('This value should not be blank.'),
+                    ]),
+                ]),
             ]]))
         ;
 
@@ -75,10 +96,10 @@ class EmailValidator implements File
         ;
 
         $namespace = $f->namespace("{$this->bundleNamespace}\\Format")
+            ->addStmt($f->use('Egulias\EmailValidator\EmailValidator as EguliasEmailValidator'))
+            ->addStmt($f->use('Egulias\EmailValidator\Validation\RFCValidation'))
             ->addStmt($f->use('Symfony\Component\Validator\Constraint'))
-            ->addStmt($f->use('Symfony\Component\Validator\Constraints\NotBlank'))
             ->addStmt($f->use('Symfony\Component\Validator\ConstraintValidator'))
-            ->addStmt($f->use('Symfony\Component\Validator\Validation'))
             ->addStmt($class)
         ;
 

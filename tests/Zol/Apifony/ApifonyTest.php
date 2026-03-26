@@ -38,8 +38,14 @@ final class ApifonyTest extends WebTestCase
                 'emailProperty' => 'erwin.schrödinger@zol.fr',
                 'uuidProperty' => '83b23b90-9501-4da7-b35c-25134bdc45f8',
                 'dateTimeProperty' => '1969-07-21T03:56:20+01:00',
+                'dateTimeProperty2' => '1969-07-21T03:56:20.001+01:00',
+                'dateTimeProperty3' => '1969-07-21T03:56:20Z',
+                'dateTimeProperty4' => '1969-07-21T03:56:20.001Z',
                 'dateProperty' => '1969-07-21',
                 'timeProperty' => '03:56:20+01:00',
+                'timeProperty2' => '03:56:20.001+01:00',
+                'timeProperty3' => '03:56:20Z',
+                'timeProperty4' => '03:56:20.001Z',
                 'customProperty' => 'custom',
                 'overriddenProperty' => 'abc',
                 'objectProperty' => [
@@ -61,8 +67,14 @@ final class ApifonyTest extends WebTestCase
                         'emailProperty' => 'erwin.schrödinger@zol.fr',
                         'uuidProperty' => '83b23b90-9501-4da7-b35c-25134bdc45f8',
                         'dateTimeProperty' => '1969-07-21T03:56:20+01:00',
+                        'dateTimeProperty2' => '1969-07-21T03:56:20.001+01:00',
+                        'dateTimeProperty3' => '1969-07-21T03:56:20Z',
+                        'dateTimeProperty4' => '1969-07-21T03:56:20.001Z',
                         'dateProperty' => '1969-07-21',
                         'timeProperty' => '03:56:20+01:00',
+                        'timeProperty2' => '03:56:20.001+01:00',
+                        'timeProperty3' => '03:56:20Z',
+                        'timeProperty4' => '03:56:20.001Z',
                         'customProperty' => 'custom',
                         'overriddenProperty' => 'abc',
                         'objectProperty' => [
@@ -123,8 +135,14 @@ final class ApifonyTest extends WebTestCase
                     'emailProperty' => 'erwin.schrödinger@zol.fr',
                     'uuidProperty' => '83b23b90-9501-4da7-b35c-25134bdc45f8',
                     'dateTimeProperty' => '1969-07-21T03:56:20+01:00',
+                    'dateTimeProperty2' => '1969-07-21T03:56:20.001+01:00',
+                    'dateTimeProperty3' => '1969-07-21T03:56:20Z',
+                    'dateTimeProperty4' => '1969-07-21T03:56:20.001Z',
                     'dateProperty' => '1969-07-21',
                     'timeProperty' => '03:56:20+01:00',
+                    'timeProperty2' => '03:56:20.001+01:00',
+                    'timeProperty3' => '03:56:20Z',
+                    'timeProperty4' => '03:56:20.001Z',
                     'customProperty' => 'custom',
                     'nullDefaultProperty' => null,
                     'objectProperty' => [
@@ -148,8 +166,14 @@ final class ApifonyTest extends WebTestCase
                             'emailProperty' => 'erwin.schrödinger@zol.fr',
                             'uuidProperty' => '83b23b90-9501-4da7-b35c-25134bdc45f8',
                             'dateTimeProperty' => '1969-07-21T03:56:20+01:00',
+                            'dateTimeProperty2' => '1969-07-21T03:56:20.001+01:00',
+                            'dateTimeProperty3' => '1969-07-21T03:56:20Z',
+                            'dateTimeProperty4' => '1969-07-21T03:56:20.001Z',
                             'dateProperty' => '1969-07-21',
                             'timeProperty' => '03:56:20+01:00',
+                            'timeProperty2' => '03:56:20.001+01:00',
+                            'timeProperty3' => '03:56:20Z',
+                            'timeProperty4' => '03:56:20.001Z',
                             'customProperty' => 'custom',
                             'nullDefaultProperty' => null,
                             'objectProperty' => [
@@ -171,6 +195,111 @@ final class ApifonyTest extends WebTestCase
                 ],
             ],
             $dump,
+        );
+    }
+
+    public function testB(): void
+    {
+        $httpClient = self::createClient();
+        $httpClient->catchExceptions(false);
+
+        $httpClient->getCookieJar()->set(new Cookie('cookieParamString', 'string'));
+        $httpClient->getCookieJar()->set(new Cookie('cookieParamNumber', '0.1'));
+        $httpClient->getCookieJar()->set(new Cookie('cookieParamInteger', '1'));
+        $httpClient->getCookieJar()->set(new Cookie('cookieParamBoolean', 'true'));
+
+        $httpClient->jsonRequest(
+            method: 'POST',
+            uri: '/path/string/0.1/1/true?queryParamString=string&queryParamNumber=0.1&queryParamInteger=1&queryParamBoolean=true',
+            parameters: [
+                'stringProperty' => 'string',
+                'numberProperty' => 0.1,
+                'integerProperty' => 1,
+                'booleanProperty' => true,
+                'enumStringProperty' => 'def',
+                'enumNullableStringProperty' => null,
+                'integerRangeProperty' => 0,
+                'emailProperty' => 'erwin.schrödinger@zol.fr',
+                'uuidProperty' => '83b23b90-9501-4da7-b35c-25134bdc45f8',
+                'dateTimeProperty' => '1969-error-21T03:56:20+01:00',
+                'dateTimeProperty2' => '1969-07-21T03:56:20.001+01:00',
+                'dateTimeProperty3' => '1969-07-21T03:56:20Z',
+                'dateTimeProperty4' => '1969-07-21T03:56:20.001Z',
+                'dateProperty' => '1969-07-21',
+                'timeProperty' => '03:56:20+01:00',
+                'timeProperty2' => '03:56:20.001+01:00',
+                'timeProperty3' => '03:56:20Z',
+                'timeProperty4' => '03:56:20.001Z',
+                'customProperty' => 'custom',
+                'overriddenProperty' => 'abc',
+                'objectProperty' => [
+                    'stringProperty' => 'string',
+                ],
+                'arrayProperty' => ['string'],
+                'objectArrayProperty' => [
+                    ['stringProperty' => 'string'],
+                ],
+                'recursiveObjectArray' => [
+                    [
+                        'stringProperty' => 'string',
+                        'numberProperty' => 0.1,
+                        'integerProperty' => 1,
+                        'booleanProperty' => true,
+                        'enumStringProperty' => 'def',
+                        'enumNullableStringProperty' => null,
+                        'integerRangeProperty' => 0,
+                        'emailProperty' => 'erwin.schrödinger@zol.fr',
+                        'uuidProperty' => '83b23b90-9501-4da7-b35c-25134bdc45f8',
+                        'dateTimeProperty' => '1969-07-21T03:56:20+01:00',
+                        'dateTimeProperty2' => '1969-07-21T03:56:20.001+01:00',
+                        'dateTimeProperty3' => '1969-07-21T03:56:20Z',
+                        'dateTimeProperty4' => '1969-07-21T03:56:20.001Z',
+                        'dateProperty' => '1969-07-21',
+                        'timeProperty' => '03:56:20+01:00',
+                        'timeProperty2' => '03:56:20.001+01:00',
+                        'timeProperty3' => '03:56:20Z',
+                        'timeProperty4' => '03:56:20.001Z',
+                        'customProperty' => 'custom',
+                        'overriddenProperty' => 'abc',
+                        'objectProperty' => [
+                            'stringProperty' => 'string',
+                        ],
+                        'arrayProperty' => ['string'],
+                        'objectArrayProperty' => [
+                            ['stringProperty' => 'string'],
+                        ],
+                        'recursiveObjectArray' => [],
+                    ],
+                ],
+            ],
+            server: [
+                'HTTP_HEADERPARAMSTRING' => 'string',
+                'HTTP_HEADERPARAMNUMBER' => '0.1',
+                'HTTP_HEADERPARAMINTEGER' => '1',
+                'HTTP_HEADERPARAMBOOLEAN' => 'true',
+            ],
+        );
+
+        $rawContent = $httpClient->getResponse()->getContent();
+
+        self::assertResponseStatusCodeSame(400);
+        self::assertIsString($rawContent);
+        $content = json_decode($rawContent, true);
+        self::assertIsArray($content);
+
+        self::assertEqualsCanonicalizing(
+            [
+                'code' => 'validation_failed',
+                'message' => 'Validation has failed.',
+                'errors' => [
+                    'requestBody' => [
+                        'dateTimeProperty' => [
+                            'This is not a valid date time format according to RFC 3339.',
+                        ],
+                    ],
+                ],
+            ],
+            $content,
         );
     }
 }

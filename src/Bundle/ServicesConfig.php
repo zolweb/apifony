@@ -25,7 +25,10 @@ class ServicesConfig implements File
 
         $formatValidators = [];
         foreach ($formats as $format) {
-            $formatValidators[] = $format->getValidator();
+            $validator = $format->getValidator();
+            if ($validator instanceof FormatValidator) {
+                $formatValidators[] = $validator;
+            }
         }
 
         return new self(
@@ -36,8 +39,8 @@ class ServicesConfig implements File
     }
 
     /**
-     * @param list<Controller>                                                                                  $controllers
-     * @param array<FormatValidator|EmailValidator|UuidValidator|DateTimeValidator|DateValidator|TimeValidator> $formatValidators
+     * @param list<Controller>       $controllers
+     * @param array<FormatValidator> $formatValidators
      */
     private function __construct(
         private readonly string $namespace,
@@ -88,9 +91,29 @@ class ServicesConfig implements File
             'class' => "{$this->namespace}\\Api\\Deserializer",
         ];
 
+        $config['services']["{$this->getServiceNamespace()}.constraint_validator_factory"] = [
+            'class' => "{$this->namespace}\\Api\\ConstraintValidatorFactory",
+            'calls' => array_map(
+                static fn (FormatValidator $formatValidator) => [
+                    'addValidator',
+                    ["@{$formatValidator->getNamespace()}\\{$formatValidator->getClassName()}"],
+                ],
+                $this->formatValidators,
+            ),
+        ];
+
+        $config['services']["{$this->getServiceNamespace()}.validator_builder"] = [
+            'class' => 'Symfony\Component\Validator\ValidatorBuilder',
+            'factory' => ['Symfony\Component\Validator\Validation', 'createValidatorBuilder'],
+            'calls' => [
+                ['enableAttributeMapping'],
+                ['setConstraintValidatorFactory', ["@{$this->getServiceNamespace()}.constraint_validator_factory"]],
+            ],
+        ];
+
         $config['services']["{$this->getServiceNamespace()}.validator"] = [
-            'class' => '\Symfony\Component\Validator\Validation',
-            'factory' => ['\Symfony\Component\Validator\Validation', 'createValidator'],
+            'class' => 'Symfony\Component\Validator\Validation',
+            'factory' => ["@{$this->getServiceNamespace()}.validator_builder", 'getValidator'],
         ];
 
         return Yaml::dump($config, 100);

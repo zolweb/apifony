@@ -6,14 +6,19 @@ namespace Zol\Apifony\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
-use PhpParser\Node\Expr\Cast\String_;
+use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
+use PhpParser\Node\Expr\BinaryOp\BooleanOr;
+use PhpParser\Node\Expr\BinaryOp\Identical;
+use PhpParser\Node\Expr\BinaryOp\NotIdentical;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\DeclareDeclare;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\Return_;
 use PhpParser\PrettyPrinter\Standard;
 
 class DateTimeValidator implements File
@@ -61,11 +66,16 @@ class DateTimeValidator implements File
             ->addParam($f->param('constraint')->setType('Constraint'))
             ->setReturnType('void')
             ->addStmt(new If_($f->funcCall('\is_string', [$f->var('value')]), ['stmts' => [
-                new Expression(new Assign($f->var('constraints'), new Array_([new ArrayItem($f->new('NotBlank')), new ArrayItem($f->new('\Symfony\Component\Validator\Constraints\DateTime', ['format' => $f->val('Y-m-d\TH:i:sP')]))], ['kind' => Array_::KIND_SHORT]))),
-                new Expression(new Assign($f->var('violations'), $f->methodCall($f->staticCall('Validation', 'createValidator'), 'validate', [$f->var('value'), $f->var('constraints')]))),
-                new Foreach_($f->var('violations'), $f->var('violation'), ['stmts' => [
-                    new Expression($f->methodCall($f->methodCall($f->propertyFetch($f->var('this'), 'context'), 'buildViolation', [new String_($f->methodCall($f->var('violation'), 'getMessage'))]), 'addViolation')),
+                new Expression(new Assign($f->var('normalizedValue'), $f->funcCall('str_replace', [new Array_([new ArrayItem($f->val('t')), new ArrayItem($f->val('z'))], ['kind' => Array_::KIND_SHORT]), new Array_([new ArrayItem($f->val('T')), new ArrayItem($f->val('Z'))], ['kind' => Array_::KIND_SHORT]), $f->var('value')]))),
+                new Expression(new Assign($f->var('allowedFormats'), new Array_([new ArrayItem($f->val('!Y-m-d\TH:i:sP')), new ArrayItem($f->val('!Y-m-d\TH:i:s\Z')), new ArrayItem($f->val('!Y-m-d\TH:i:s.uP')), new ArrayItem($f->val('!Y-m-d\TH:i:s.u\Z'))], ['kind' => Array_::KIND_SHORT]))),
+                new Foreach_($f->var('allowedFormats'), $f->var('allowedFormat'), ['stmts' => [
+                    new Expression(new Assign($f->var('dateTime'), $f->staticCall('\DateTimeImmutable', 'createFromFormat', [$f->var('allowedFormat'), $f->var('normalizedValue')]))),
+                    new Expression(new Assign($f->var('errors'), $f->staticCall('\DateTimeImmutable', 'getLastErrors'))),
+                    new If_(new BooleanAnd(new NotIdentical($f->var('dateTime'), $f->val(false)), new BooleanOr(new Identical($f->var('errors'), $f->val(false)), new BooleanAnd(new Identical(new ArrayDimFetch($f->var('errors'), $f->val('warning_count')), $f->val(0)), new Identical(new ArrayDimFetch($f->var('errors'), $f->val('error_count')), $f->val(0))))), ['stmts' => [
+                        new Return_(),
+                    ]]),
                 ]]),
+                new Expression($f->methodCall($f->methodCall($f->propertyFetch($f->var('this'), 'context'), 'buildViolation', [$f->val('This is not a valid date time format according to RFC 3339.')]), 'addViolation')),
             ]]))
         ;
 
@@ -76,9 +86,7 @@ class DateTimeValidator implements File
 
         $namespace = $f->namespace("{$this->bundleNamespace}\\Format")
             ->addStmt($f->use('Symfony\Component\Validator\Constraint'))
-            ->addStmt($f->use('Symfony\Component\Validator\Constraints\NotBlank'))
             ->addStmt($f->use('Symfony\Component\Validator\ConstraintValidator'))
-            ->addStmt($f->use('Symfony\Component\Validator\Validation'))
             ->addStmt($class)
         ;
 

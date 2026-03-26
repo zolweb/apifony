@@ -1,4 +1,5 @@
 .idea/
+tests/bundle/
 var/*
 vendor/
 composer-cache/
