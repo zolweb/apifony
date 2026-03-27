@@ -1,0 +1,38 @@
+services:
+    Zol\Apifony\Tests\TestOpenApiServer\Api\Tag\TagController:
+        class: Zol\Apifony\Tests\TestOpenApiServer\Api\Tag\TagController
+        arguments:
+            $deserializer: '@zol_apifony_tests_test_open_api_server.deserializer'
+            $validator: '@zol_apifony_tests_test_open_api_server.validator'
+        public: true
+    Zol\Apifony\Tests\TestOpenApiServer\Format\CustomValidator:
+        class: Zol\Apifony\Tests\TestOpenApiServer\Format\CustomValidator
+        public: true
+        tags:
+            - validator.constraint_validator
+    zol_apifony_tests_test_open_api_server.deserializer:
+        class: Zol\Apifony\Tests\TestOpenApiServer\Api\Deserializer
+    zol_apifony_tests_test_open_api_server.constraint_validator_factory:
+        class: Zol\Apifony\Tests\TestOpenApiServer\Api\ConstraintValidatorFactory
+        calls:
+            -
+                - addValidator
+                -
+                    - '@Zol\Apifony\Tests\TestOpenApiServer\Format\CustomValidator'
+    zol_apifony_tests_test_open_api_server.validator_builder:
+        class: Symfony\Component\Validator\ValidatorBuilder
+        factory:
+            - Symfony\Component\Validator\Validation
+            - createValidatorBuilder
+        calls:
+            -
+                - enableAttributeMapping
+            -
+                - setConstraintValidatorFactory
+                -
+                    - '@zol_apifony_tests_test_open_api_server.constraint_validator_factory'
+    zol_apifony_tests_test_open_api_server.validator:
+        class: Symfony\Component\Validator\Validation
+        factory:
+            - '@zol_apifony_tests_test_open_api_server.validator_builder'
+            - getValidator
