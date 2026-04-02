@@ -1,7 +1,7 @@
 <?php
 
 declare (strict_types=1);
-namespace Zol\Apifony\Tests\TestOpenApiServer\Api\Tag;
+namespace Zol\Apifony\Tests\TestOpenApiServer\Api\FirstOperation;
 
 use Zol\Apifony\Tests\TestOpenApiServer\Api\DenormalizationException;
 use Zol\Apifony\Tests\TestOpenApiServer\Api\ParameterValidationException;
@@ -12,10 +12,10 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
 use Zol\Apifony\Tests\TestOpenApiServer\Model\Schema;
-class TagController extends AbstractController
+class FirstOperationController extends AbstractController
 {
-    private TagHandler $handler;
-    public function setHandler(TagHandler $handler): void
+    private FirstOperationHandler $handler;
+    public function setHandler(FirstOperationHandler $handler): void
     {
         $this->handler = $handler;
     }

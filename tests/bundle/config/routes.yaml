@@ -1,7 +1,7 @@
 zol_apifony_tests_test_open_api_server_first_operation:
     path: '/path/{pathParamString}/{pathParamNumber}/{pathParamInteger}/{pathParamBoolean}'
     methods: post
-    controller: 'Zol\Apifony\Tests\TestOpenApiServer\Api\Tag\TagController::firstOperation'
+    controller: 'Zol\Apifony\Tests\TestOpenApiServer\Api\FirstOperation\FirstOperationController::firstOperation'
     requirements:
         pathParamString: '[^:/?\x{0023}[\]@!$&''''()*+,;=]+'
         pathParamNumber: '-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?'

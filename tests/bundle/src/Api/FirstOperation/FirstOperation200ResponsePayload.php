@@ -1,7 +1,7 @@
 <?php
 
 declare (strict_types=1);
-namespace Zol\Apifony\Tests\TestOpenApiServer\Api\Tag;
+namespace Zol\Apifony\Tests\TestOpenApiServer\Api\FirstOperation;
 
 use Symfony\Component\Validator\Constraints as Assert;
 use Zol\Apifony\Tests\TestOpenApiServer\Model\Abc;

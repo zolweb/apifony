@@ -6,7 +6,6 @@ namespace Zol\Apifony\Bundle;
 
 use PhpParser\Builder\Use_;
 use PhpParser\BuilderFactory;
-use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\DeclareDeclare;
 use PhpParser\PrettyPrinter\Standard;
@@ -14,17 +13,16 @@ use PhpParser\PrettyPrinter\Standard;
 class Handler implements File
 {
     /**
-     * @param list<Action> $actions
      * @param list<string> $usedModelNames
      */
     public static function build(
         string $bundleNamespace,
         string $aggregateName,
-        array $actions,
+        Action $action,
         array $usedModelNames,
     ): self {
         return new self(
-            $actions,
+            $action,
             $bundleNamespace,
             $aggregateName,
             $usedModelNames,
@@ -32,11 +30,10 @@ class Handler implements File
     }
 
     /**
-     * @param list<Action> $actions
      * @param list<string> $usedModelNames
      */
     private function __construct(
-        private readonly array $actions,
+        private readonly Action $action,
         private readonly string $bundleNamespace,
         private readonly string $aggregateName,
         private readonly array $usedModelNames,
@@ -48,15 +45,7 @@ class Handler implements File
      */
     public function getFiles(): array
     {
-        $files = [];
-
-        foreach ($this->actions as $action) {
-            foreach ($action->getFiles() as $file) {
-                $files[] = $file;
-            }
-        }
-
-        return $files;
+        return $this->action->getFiles();
     }
 
     public function getFolder(): string
@@ -74,10 +63,7 @@ class Handler implements File
         $f = new BuilderFactory();
 
         $interface = $f->interface("{$this->aggregateName}Handler")
-            ->addStmts(array_map(
-                static fn (Action $action): ClassMethod => $action->getHandlerMethod(),
-                $this->actions,
-            ))
+            ->addStmt($this->action->getHandlerMethod())
         ;
 
         $namespace = $f->namespace("{$this->bundleNamespace}\\Api\\{$this->aggregateName}")
