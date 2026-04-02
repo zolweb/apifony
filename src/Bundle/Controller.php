@@ -16,31 +16,28 @@ use PhpParser\PrettyPrinter\Standard;
 class Controller implements File
 {
     /**
-     * @param list<Action> $actions
      * @param list<string> $usedModelNames
      */
     public static function build(
         string $bundleNamespace,
         string $aggregateName,
-        array $actions,
+        Action $action,
         Handler $handler,
         array $usedModelNames,
     ): self {
         // todo maybe import all formats and models and let php-cs-fixer remove unused
         $usedFormatConstraintNames = [];
-        foreach ($actions as $action) {
-            foreach ($action->getParameters() as $parameter) {
-                foreach ($parameter->getConstraints() as $constraint) {
-                    foreach ($constraint->getFormatConstraintClassNames() as $constraintName) {
-                        $usedFormatConstraintNames[$constraintName] = true;
-                    }
+        foreach ($action->getParameters() as $parameter) {
+            foreach ($parameter->getConstraints() as $constraint) {
+                foreach ($constraint->getFormatConstraintClassNames() as $constraintName) {
+                    $usedFormatConstraintNames[$constraintName] = true;
                 }
             }
         }
 
         return new self(
             $handler,
-            $actions,
+            $action,
             $bundleNamespace,
             $aggregateName,
             array_keys($usedFormatConstraintNames),
@@ -49,13 +46,12 @@ class Controller implements File
     }
 
     /**
-     * @param list<Action> $actions
      * @param list<string> $usedFormatConstraintNames
      * @param list<string> $usedModelNames
      */
     private function __construct(
         public readonly Handler $handler,
-        public readonly array $actions,
+        public readonly Action $action,
         private readonly string $bundleNamespace,
         private readonly string $aggregateName,
         private readonly array $usedFormatConstraintNames,
@@ -100,9 +96,7 @@ class Controller implements File
             ->addStmt($setHandlerMethod)
         ;
 
-        foreach ($this->actions as $action) {
-            $class->addStmt($action->getClassMethod());
-        }
+        $class->addStmt($this->action->getClassMethod());
 
         $namespace = $f->namespace("{$this->bundleNamespace}\\Api\\{$this->aggregateName}")
             ->addStmt($f->use("{$this->bundleNamespace}\\Api\\DenormalizationException"))

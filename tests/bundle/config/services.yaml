@@ -1,6 +1,6 @@
 services:
-    Zol\Apifony\Tests\TestOpenApiServer\Api\Tag\TagController:
-        class: Zol\Apifony\Tests\TestOpenApiServer\Api\Tag\TagController
+    Zol\Apifony\Tests\TestOpenApiServer\Api\FirstOperation\FirstOperationController:
+        class: Zol\Apifony\Tests\TestOpenApiServer\Api\FirstOperation\FirstOperationController
         arguments:
             $deserializer: '@zol_apifony_tests_test_open_api_server.deserializer'
             $validator: '@zol_apifony_tests_test_open_api_server.validator'

@@ -20,8 +20,8 @@ class TestOpenApiServerBundle extends AbstractBundle
                 foreach ($container->findTaggedServiceIds('test_open_api_server.handler') as $id => $tags) {
                     foreach ($tags as $tag) {
                         switch ($tag['controller']) {
-                            case 'tag':
-                                $container->findDefinition('Zol\Apifony\Tests\TestOpenApiServer\Api\Tag\TagController')->addMethodCall('setHandler', [new Reference($id)]);
+                            case 'first_operation':
+                                $container->findDefinition('Zol\Apifony\Tests\TestOpenApiServer\Api\FirstOperation\FirstOperationController')->addMethodCall('setHandler', [new Reference($id)]);
                                 break;
                         }
                     }

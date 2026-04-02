@@ -70,16 +70,6 @@ class Operation
         if (!\is_string($data['operationId'])) {
             throw new Exception('Operation operationId attribute must be a string.', $path);
         }
-        if (isset($data['tags'])) {
-            if (!\is_array($data['tags'])) {
-                throw new Exception('Operation tags attribute must be an array.', $path);
-            }
-            foreach ($data['tags'] as $tag) {
-                if (!\is_string($tag)) {
-                    throw new Exception('Operation tags array values must be strings.', $path);
-                }
-            }
-        }
 
         $extensions = [];
         foreach ($data as $key => $extension) {
@@ -102,7 +92,6 @@ class Operation
                 default => null,
             },
             isset($data['responses']) ? Responses::build($data['responses'], $responsesBodyPath) : null,
-            array_values($data['tags'] ?? []),
             $extensions,
             $path,
         );
@@ -110,7 +99,6 @@ class Operation
 
     /**
      * @param list<Reference|Parameter> $parameters
-     * @param list<string>              $tags
      * @param array<string, mixed>      $extensions
      * @param list<string>              $path
      */
@@ -119,7 +107,6 @@ class Operation
         public readonly array $parameters,
         public readonly Reference|RequestBody|null $requestBody,
         public readonly ?Responses $responses,
-        public readonly array $tags,
         public readonly array $extensions,
         public readonly array $path,
     ) {

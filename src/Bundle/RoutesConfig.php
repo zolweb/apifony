@@ -73,9 +73,7 @@ class RoutesConfig implements File
         $serviceNamespace = u($this->namespace)->snake()->toString();
 
         foreach ($this->controllers as $controller) {
-            foreach ($controller->actions as $action) {
-                $routes["{$serviceNamespace}_{$action->getServiceName()}"] = $action->getRoute("{$controller->getNamespace()}\\{$controller->getClassName()}");
-            }
+            $routes["{$serviceNamespace}_{$controller->action->getServiceName()}"] = $controller->action->getRoute("{$controller->getNamespace()}\\{$controller->getClassName()}");
         }
 
         return Yaml::dump($routes, 100);

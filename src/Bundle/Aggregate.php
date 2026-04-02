@@ -18,51 +18,45 @@ use function Symfony\Component\String\u;
 class Aggregate
 {
     /**
-     * @param list<array{route: string, method: string, operation: Operation}> $operations
-     *
      * @throws Exception
      */
     public static function build(
         string $bundleNamespace,
-        string $tag,
-        array $operations,
+        string $route,
+        string $method,
+        Operation $operation,
         ?Components $components,
     ): self {
-        $name = u($tag)->camel()->title()->toString();
+        $name = u($operation->operationId)->camel()->title()->toString();
 
-        $actions = [];
-        foreach ($operations as $operation) {
-            $actions[] = Action::build(
-                $bundleNamespace,
-                $name,
-                $operation['route'],
-                $operation['method'],
-                $operation['operation'],
-                $components,
-            );
-        }
+        $action = Action::build(
+            $bundleNamespace,
+            $name,
+            $route,
+            $method,
+            $operation,
+            $components,
+        );
 
         $usedModelNames = [];
-        foreach ($actions as $action) {
-            if ($action->getRequestBody() !== null) {
-                $usedModelName = $action->getRequestBody()->getUsedModelName();
-                if ($usedModelName !== null) {
-                    $usedModelNames[$usedModelName] = true;
-                }
+        if ($action->getRequestBody() !== null) {
+            $usedModelName = $action->getRequestBody()->getUsedModelName();
+            if ($usedModelName !== null) {
+                $usedModelNames[$usedModelName] = true;
             }
-            foreach ($action->getResponses() as $response) {
-                $usedModelName = $response->getUsedModelName();
-                if ($usedModelName !== null) {
-                    $usedModelNames[$usedModelName] = true;
-                }
+        }
+        foreach ($action->getResponses() as $response) {
+            $usedModelName = $response->getUsedModelName();
+            if ($usedModelName !== null) {
+                $usedModelNames[$usedModelName] = true;
             }
         }
         $usedModelNames = array_keys($usedModelNames);
 
         return new self(
             $name,
-            $handler = Handler::build($bundleNamespace, $name, $actions, $usedModelNames),
-            Controller::build($bundleNamespace, $name, $actions, $handler, $usedModelNames),
+            $handler = Handler::build($bundleNamespace, $name, $action, $usedModelNames),
+            Controller::build($bundleNamespace, $name, $action, $handler, $usedModelNames),
         );
     }
 

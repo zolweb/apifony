@@ -60,7 +60,7 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
 
         $container->services()
             ->set(TestHandler::class)
-            ->tag('test_open_api_server.handler', ['controller' => 'tag'])
+            ->tag('test_open_api_server.handler', ['controller' => 'first_operation'])
         ;
 
         $container->services()

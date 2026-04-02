@@ -15,7 +15,7 @@ class Api
         string $bundleNamespace,
         OpenApi $openApi,
     ): self {
-        $aggregatesData = [];
+        $aggregates = [];
         foreach ($openApi->paths->pathItems ?? [] as $route => $pathItem) {
             foreach ($pathItem->operations as $method => $operation) {
                 if (\array_key_exists('x-apifony-ignore', $operation->extensions)) {
@@ -26,22 +26,15 @@ class Api
                         continue;
                     }
                 }
-                $aggregatesData[$operation->tags[0] ?? 'default'][] = [
-                    'route' => $route,
-                    'method' => $method,
-                    'operation' => $operation,
-                ];
-            }
-        }
 
-        $aggregates = [];
-        foreach ($aggregatesData as $tag => $aggregateData) {
-            $aggregates[] = Aggregate::build(
-                $bundleNamespace,
-                $tag,
-                $aggregateData,
-                $openApi->components,
-            );
+                $aggregates[] = Aggregate::build(
+                    $bundleNamespace,
+                    $route,
+                    $method,
+                    $operation,
+                    $openApi->components,
+                );
+            }
         }
 
         return new self(
