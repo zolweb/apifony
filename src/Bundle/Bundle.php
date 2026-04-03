@@ -37,11 +37,11 @@ class Bundle implements File
         OpenApi $openApi,
     ): self {
         return new self(
-            u($rawName)->camel()->title()->toString(),
+            $name = u($rawName)->camel()->title()->toString(),
             $namespace,
-            $formats = self::buildFormats($namespace, $openApi),
+            $formats = self::buildFormats($namespace, $name, $openApi),
             self::buildModels($namespace, $openApi->components),
-            $api = Api::build($namespace, $openApi),
+            $api = Api::build($namespace, $name, $openApi),
             RoutesConfig::build($namespace, $api),
             ServicesConfig::build($namespace, $api, $formats),
             new ComposerJson($packageName, $namespace),
@@ -107,7 +107,7 @@ class Bundle implements File
      *
      * @throws Exception
      */
-    private static function buildFormats(string $namespace, OpenApi $openApi): array
+    private static function buildFormats(string $namespace, string $name, OpenApi $openApi): array
     {
         $rawFormatNames = [];
 
@@ -213,7 +213,7 @@ class Bundle implements File
 
         $formats = [];
         foreach ($rawFormatNames as $rawFormatName => $_) {
-            $formats[$rawFormatName] = Format::build($namespace, $rawFormatName);
+            $formats[$rawFormatName] = Format::build($namespace, $name, $rawFormatName);
         }
 
         return $formats;
@@ -290,6 +290,15 @@ class Bundle implements File
             ->setReturnType('void')
             ->addParam($f->param('container')->setType('ContainerBuilder'))
             ->addStmt($f->staticCall('parent', 'build', [$f->var('container')]))
+            ->addStmts($this->api->getAutoconfiguration())
+            ->addStmts(
+                array_filter(
+                    array_map(
+                        static fn (Format $format) => $format->getAutoconfiguration(),
+                        $this->formats,
+                    ),
+                ),
+            )
             ->addStmt($f->methodCall($f->var('container'), 'addCompilerPass', [
                 new New_(
                     new Class_(null, ['implements' => [new Name('CompilerPassInterface')], 'stmts' => [
@@ -299,10 +308,7 @@ class Bundle implements File
                             ->setReturnType('void')
                             ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [\sprintf('%s.handler', u($this->name)->snake())]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
                                 new Foreach_($f->var('tags'), $f->var('tag'), ['stmts' => [
-                                    new Switch_(new ArrayDimFetch($f->var('tag'), $f->val('controller')), array_map(
-                                        static fn (Aggregate $aggregate) => $aggregate->getCase(),
-                                        $this->api->getAggregates(),
-                                    )),
+                                    new Switch_(new ArrayDimFetch($f->var('tag'), $f->val('controller')), $this->api->getCases()),
                                 ]]),
                             ]]))
                             ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [\sprintf('%s.format_definition', u($this->name)->snake())]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
@@ -345,6 +351,15 @@ class Bundle implements File
             ->addStmt($f->use('Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator'))
             ->addStmt($f->use('Symfony\Component\DependencyInjection\Reference'))
             ->addStmt($f->use('Symfony\Component\HttpKernel\Bundle\AbstractBundle'))
+            ->addStmts($this->api->getUses())
+            ->addStmts(
+                array_filter(
+                    array_map(
+                        static fn (Format $format) => $format->getDefinitionUse(),
+                        $this->formats,
+                    ),
+                ),
+            )
             ->addStmt($class)
         ;
 
