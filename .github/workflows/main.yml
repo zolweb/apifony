@@ -22,9 +22,9 @@ jobs:
       - name: Install dependencies
         run: |
           apt-get update
-          apt-get install -y zip unzip
-          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-          php composer-setup.php
+          apt-get install -y zip unzip curl
+          curl -4 -fsSL https://getcomposer.org/installer -o composer-setup.php
+          php composer-setup.php --install-dir=. --filename=composer.phar
           php -r "unlink('composer-setup.php');"
           php composer.phar install
           php composer.phar update
@@ -48,9 +48,9 @@ jobs:
       - name: Install dependencies
         run: |
           apt-get update
-          apt-get install -y zip unzip
-          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-          php composer-setup.php
+          apt-get install -y zip unzip curl
+          curl -4 -fsSL https://getcomposer.org/installer -o composer-setup.php
+          php composer-setup.php --install-dir=. --filename=composer.phar
           php -r "unlink('composer-setup.php');"
           php composer.phar install
           php composer.phar update ${{ matrix.composer-options }}
@@ -79,9 +79,9 @@ jobs:
       - name: Install dependencies
         run: |
           apt-get update
-          apt-get install -y zip unzip
-          php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-          php composer-setup.php
+          apt-get install -y zip unzip curl
+          curl -4 -fsSL https://getcomposer.org/installer -o composer-setup.php
+          php composer-setup.php --install-dir=. --filename=composer.phar
           php -r "unlink('composer-setup.php');"
           php composer.phar install
           php composer.phar update ${{ matrix.composer-options }}
