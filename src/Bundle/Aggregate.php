@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Use_;
 use Zol\Apifony\OpenApi\Components;
 use Zol\Apifony\OpenApi\Operation;
 
@@ -22,6 +23,7 @@ class Aggregate
      */
     public static function build(
         string $bundleNamespace,
+        string $bundleName,
         string $route,
         string $method,
         Operation $operation,
@@ -57,6 +59,7 @@ class Aggregate
             $name,
             $handler = Handler::build($bundleNamespace, $name, $action, $usedModelNames),
             Controller::build($bundleNamespace, $name, $action, $handler, $usedModelNames),
+            $bundleName,
         );
     }
 
@@ -64,6 +67,7 @@ class Aggregate
         private readonly string $name,
         private readonly Handler $handler,
         private readonly Controller $controller,
+        private readonly string $bundleName,
     ) {
     }
 
@@ -97,5 +101,28 @@ class Aggregate
             new Expression($f->methodCall($f->methodCall($f->var('container'), 'findDefinition', [\sprintf('%s\%s', $this->controller->getNamespace(), $this->controller->getClassName())]), 'addMethodCall', [$f->val('setHandler'), new Array_([new ArrayItem($f->new('Reference', [$f->var('id')]))], ['kind' => Array_::KIND_SHORT])])),
             new Break_(),
         ]);
+    }
+
+    public function getUse(): Use_
+    {
+        $f = new BuilderFactory();
+
+        return $f->use(\sprintf('%s\%s', $this->handler->getNamespace(), $this->handler->getClassName()))->getNode();
+    }
+
+    public function getAutoconfiguration(): Expression
+    {
+        $f = new BuilderFactory();
+
+        return new Expression(
+            $f->methodCall(
+                $f->methodCall($f->var('container'), 'registerForAutoconfiguration', [$f->classConstFetch($this->handler->getClassName(), 'class')]),
+                'addTag',
+                [
+                    \sprintf('%s.handler', u($this->bundleName)->snake()),
+                    new Array_([new ArrayItem($f->val(u($this->name)->snake()->toString()), $f->val('controller'))], ['kind' => Array_::KIND_SHORT]),
+                ],
+            ),
+        );
     }
 }

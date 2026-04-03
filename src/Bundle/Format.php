@@ -10,6 +10,7 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Use_;
 
 use function Symfony\Component\String\u;
 
@@ -17,6 +18,7 @@ class Format
 {
     public static function build(
         string $bundleNamespace,
+        string $bundleName,
         string $rawName,
     ): self {
         $name = u($rawName)->camel()->title()->toString();
@@ -32,6 +34,7 @@ class Format
 
         return new self(
             $bundleNamespace,
+            $bundleName,
             $rawName,
             $name,
             $validator instanceof FormatValidator ? FormatDefinition::build($bundleNamespace, $name) : null,
@@ -42,6 +45,7 @@ class Format
 
     private function __construct(
         private readonly string $bundleNamespace,
+        private readonly string $bundleName,
         private readonly string $rawName,
         private readonly string $name,
         private readonly ?FormatDefinition $definition,
@@ -80,5 +84,34 @@ class Format
             new Expression($f->methodCall($f->methodCall($f->var('container'), 'findDefinition', ["{$this->bundleNamespace}\\Format\\{$this->name}Validator"]), 'addMethodCall', [$f->val('setFormatDefinition'), new Array_([new ArrayItem($f->new('Reference', [$f->var('id')]))], ['kind' => Array_::KIND_SHORT])])),
             new Break_(),
         ]);
+    }
+
+    public function getAutoconfiguration(): ?Expression
+    {
+        if ($this->definition === null) {
+            return null;
+        }
+
+        $f = new BuilderFactory();
+
+        return new Expression(
+            $f->methodCall(
+                $f->methodCall($f->var('container'), 'registerForAutoconfiguration', [$f->classConstFetch($this->definition->getClassName(), 'class')]),
+                'addTag',
+                [
+                    \sprintf('%s.format_definition', u($this->bundleName)->snake()),
+                    new Array_([new ArrayItem($f->val($this->rawName), $f->val('format'))], ['kind' => Array_::KIND_SHORT]),
+                ],
+            ),
+        );
+    }
+
+    public function getDefinitionUse(): ?Use_
+    {
+        if ($this->definition === null) {
+            return null;
+        }
+
+        return $this->definition->getUse();
     }
 }

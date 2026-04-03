@@ -40,6 +40,16 @@ class Handler implements File
     ) {
     }
 
+    public function getNamespace(): string
+    {
+        return "{$this->bundleNamespace}\\Api\\{$this->aggregateName}";
+    }
+
+    public function getClassName(): string
+    {
+        return "{$this->aggregateName}Handler";
+    }
+
     /**
      * @return list<File>
      */

@@ -7,6 +7,7 @@ namespace Zol\Apifony\Bundle;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\DeclareDeclare;
+use PhpParser\Node\Stmt\Use_;
 use PhpParser\PrettyPrinter\Standard;
 
 class FormatDefinition implements File
@@ -35,6 +36,18 @@ class FormatDefinition implements File
     public function getName(): string
     {
         return "{$this->formatName}Definition.php";
+    }
+
+    public function getClassName(): string
+    {
+        return "{$this->formatName}Definition";
+    }
+
+    public function getUse(): Use_
+    {
+        $f = new BuilderFactory();
+
+        return $f->use("{$this->bundleNamespace}\\Format\\{$this->formatName}Definition")->getNode();
     }
 
     public function getContent(): string

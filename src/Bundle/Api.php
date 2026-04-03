@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Zol\Apifony\Bundle;
 
+use PhpParser\Node\Stmt\Case_;
+use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Use_;
 use Zol\Apifony\OpenApi\OpenApi;
 
 class Api
@@ -13,6 +16,7 @@ class Api
      */
     public static function build(
         string $bundleNamespace,
+        string $bundleName,
         OpenApi $openApi,
     ): self {
         $aggregates = [];
@@ -29,6 +33,7 @@ class Api
 
                 $aggregates[] = Aggregate::build(
                     $bundleNamespace,
+                    $bundleName,
                     $route,
                     $method,
                     $operation,
@@ -83,5 +88,38 @@ class Api
         }
 
         return $files;
+    }
+
+    /**
+     * @return list<Expression>
+     */
+    public function getAutoconfiguration(): array
+    {
+        return array_map(
+            static fn (Aggregate $aggregate) => $aggregate->getAutoconfiguration(),
+            $this->aggregates,
+        );
+    }
+
+    /**
+     * @return list<Case_>
+     */
+    public function getCases(): array
+    {
+        return array_map(
+            static fn (Aggregate $aggregate) => $aggregate->getCase(),
+            $this->aggregates,
+        );
+    }
+
+    /**
+     * @return list<Use_>
+     */
+    public function getUses(): array
+    {
+        return array_map(
+            static fn (Aggregate $aggregate) => $aggregate->getUse(),
+            $this->aggregates,
+        );
     }
 }

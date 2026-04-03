@@ -8,11 +8,15 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader\Configurator\ContainerConfigurator;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
+use Zol\Apifony\Tests\TestOpenApiServer\Api\FirstOperation\FirstOperationHandler;
+use Zol\Apifony\Tests\TestOpenApiServer\Format\CustomDefinition;
 class TestOpenApiServerBundle extends AbstractBundle
 {
     public function build(ContainerBuilder $container): void
     {
         parent::build($container);
+        $container->registerForAutoconfiguration(FirstOperationHandler::class)->addTag('test_open_api_server.handler', ['controller' => 'first_operation']);
+        $container->registerForAutoconfiguration(CustomDefinition::class)->addTag('test_open_api_server.format_definition', ['format' => 'custom']);
         $container->addCompilerPass(new class implements CompilerPassInterface
         {
             public function process(ContainerBuilder $container): void
