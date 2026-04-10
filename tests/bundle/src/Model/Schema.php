@@ -38,6 +38,7 @@ class Schema
      * @param list<SchemaObjectArrayProperty> $objectArrayProperty
      * @param list<Schema> $recursiveObjectArray
      * @param string $defaultProperty
+     * @param list<string> $emptyArrayDefaultProperty
      * @param string $overriddenProperty
      */
     public function __construct(
@@ -136,6 +137,10 @@ class Schema
         
         #[Assert\NotNull]
         public readonly string $defaultProperty = 'abc',
+        
+        #[Assert\NotNull]
+        #[Assert\All(constraints: [new Assert\NotNull()])]
+        public readonly array $emptyArrayDefaultProperty = [],
         
         #[Assert\NotNull]
         public readonly string $overriddenProperty = 'def'

@@ -145,6 +145,7 @@ final class ApifonyTest extends WebTestCase
                     'timeProperty4' => '03:56:20.001Z',
                     'customProperty' => 'custom',
                     'nullDefaultProperty' => null,
+                    'emptyArrayDefaultProperty' => [],
                     'objectProperty' => [
                         'stringProperty' => 'string',
                     ],
@@ -176,6 +177,7 @@ final class ApifonyTest extends WebTestCase
                             'timeProperty4' => '03:56:20.001Z',
                             'customProperty' => 'custom',
                             'nullDefaultProperty' => null,
+                            'emptyArrayDefaultProperty' => [],
                             'objectProperty' => [
                                 'stringProperty' => 'string',
                             ],

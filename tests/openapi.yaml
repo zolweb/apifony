@@ -229,6 +229,11 @@ components:
             - 'string'
             - 'null'
           default: null
+        emptyArrayDefaultProperty:
+          type: 'array'
+          items:
+            type: 'string'
+          default: []
         overriddenProperty:
           type: 'string'
           default: 'def'

@@ -105,7 +105,7 @@ class ModelAttribute
         ;
 
         if ($this->schema->default !== null) {
-            $param->setDefault($this->schema->default);
+            $param->setDefault($this->type->getDefaultExpr());
         }
 
         foreach ($this->type->getConstraints() as $constraint) {

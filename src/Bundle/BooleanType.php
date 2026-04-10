@@ -34,7 +34,16 @@ class BooleanType implements Type
             throw new \RuntimeException();
         }
 
-        return new ConstFetch(new Name([true => 'true', false => 'false', null => 'null'][$this->schema->default]));
+        switch (true) {
+            case $this->schema->default === true:
+                return new ConstFetch(new Name('true'));
+            case $this->schema->default === false:
+                return new ConstFetch(new Name('false'));
+            case $this->schema->default === null && $this->nullable:
+                return new ConstFetch(new Name('null'));
+            default:
+                throw new \RuntimeException();
+        }
     }
 
     public function getRouteRequirementPattern(): string
@@ -86,7 +95,21 @@ class BooleanType implements Type
     public function getDocAst(): TypeNode
     {
         if (\count($this->schema->enum) > 0) {
-            return new IdentifierTypeNode(implode('|', $this->schema->enum));
+            $values = [];
+            foreach ($this->schema->enum as $e) {
+                switch (true) {
+                    case \is_bool($e):
+                        $values[] = $e ? 'true' : 'false';
+                        break;
+                    case $e === null && $this->nullable:
+                        $values[] = 'null';
+                        break;
+                    default:
+                        throw new \RuntimeException();
+                }
+            }
+
+            return new IdentifierTypeNode(implode('|', $values));
         }
 
         $type = new IdentifierTypeNode('bool');

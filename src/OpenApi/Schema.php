@@ -67,19 +67,58 @@ class Schema
                             throw new Exception('Schema objects enum attribute elements must be compatible with type attribute.', $path);
                         }
                         break;
+                    case \is_array($e) && \count($e) === 0:
+                        if ($types !== null && !\in_array('array', $types, true)) {
+                            throw new Exception('Schema objects enum attribute elements must be compatible with type attribute.', $path);
+                        }
+                        break;
                     case $e === null:
                         if ($types !== null && !\in_array('null', $types, true)) {
                             throw new Exception('Schema objects enum attribute elements must be compatible with type attribute.', $path);
                         }
                         break;
                     default:
-                        throw new Exception('Only Schema objects enum attribute elements must be a string, an int, a float, a boolean or null.', $path);
+                        throw new Exception('Schema objects enum attribute elements must be a string, an int, a float, a boolean, an empty array or null.', $path);
                 }
                 $enum[] = $e;
             }
         }
-        if (\array_key_exists('default', $data) && !\is_string($data['default']) && !\is_int($data['default']) && !\is_float($data['default']) && !\is_bool($data['default']) && null !== $data['default']) {
-            throw new Exception('Schema objects default attribute must be a string, an int, a float, a boolean or null.', $path);
+        if (\array_key_exists('default', $data)) {
+            $types = \is_string($type) ? [$type] : $type;
+            switch (true) {
+                case \is_string($data['default']):
+                    if ($types !== null && !\in_array('string', $types, true)) {
+                        throw new Exception('Schema objects default attribute must be compatible with type attribute.', $path);
+                    }
+                    break;
+                case \is_int($data['default']):
+                    if ($types !== null && !\in_array('integer', $types, true) && !\in_array('number', $types, true)) {
+                        throw new Exception('Schema objects default attribute must be compatible with type attribute.', $path);
+                    }
+                    break;
+                case \is_float($data['default']):
+                    if ($types !== null && !\in_array('number', $types, true)) {
+                        throw new Exception('Schema objects default attribute must be compatible with type attribute.', $path);
+                    }
+                    break;
+                case \is_bool($data['default']):
+                    if ($types !== null && !\in_array('boolean', $types, true)) {
+                        throw new Exception('Schema objects default attribute must be compatible with type attribute.', $path);
+                    }
+                    break;
+                case \is_array($data['default']) && \count($data['default']) === 0:
+                    if ($types !== null && !\in_array('array', $types, true)) {
+                        throw new Exception('Schema objects default attribute must be compatible with type attribute.', $path);
+                    }
+                    break;
+                case $data['default'] === null:
+                    if ($types !== null && !\in_array('null', $types, true)) {
+                        throw new Exception('Schema objects default attribute must be compatible with type attribute.', $path);
+                    }
+                    break;
+                default:
+                    throw new Exception('Schema objects default attribute must be a string, an int, a float, a boolean, an empty array or null.', $path);
+            }
         }
         if (\array_key_exists('pattern', $data) && !\is_string($data['pattern'])) {
             throw new Exception('Schema objects pattern attribute must be a string.', $path);
@@ -193,7 +232,8 @@ class Schema
 
     /**
      * @param JsonSchemaType|non-empty-list<JsonSchemaType>|null $type
-     * @param list<string|int|float|bool|null>                   $enum
+     * @param list<string|int|float|bool|array{}|null>           $enum
+     * @param string|int|float|bool|array{}|null                 $default
      * @param array<string, Reference|Schema>                    $properties
      * @param list<string>                                       $required
      * @param array<string, mixed>                               $extensions
@@ -204,7 +244,7 @@ class Schema
         public readonly ?string $format,
         public readonly array $enum,
         public readonly bool $hasDefault,
-        public readonly string|int|float|bool|null $default,
+        public readonly string|int|float|bool|array|null $default,
         public readonly ?string $pattern,
         public readonly ?int $minLength,
         public readonly ?int $maxLength,

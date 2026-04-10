@@ -6,6 +6,7 @@ namespace Zol\Apifony\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
@@ -65,7 +66,19 @@ class ArrayType implements Type
 
     public function getDefaultExpr(): Expr
     {
-        return new ConstFetch(new Name('null'));
+        if (!$this->schema->hasDefault) {
+            throw new \RuntimeException();
+        }
+
+        if ($this->schema->default === null) {
+            return new ConstFetch(new Name('null'));
+        }
+
+        if (!\is_array($this->schema->default)) {
+            throw new \RuntimeException();
+        }
+
+        return new Array_([], ['kind' => Array_::KIND_SHORT]);
     }
 
     /**
@@ -132,7 +145,7 @@ class ArrayType implements Type
 
     public function getInitValue(): Expr
     {
-        return new Expr\Array_();
+        throw new \RuntimeException('Can not init array');
     }
 
     public function getUsedModel(): ?string

@@ -108,7 +108,21 @@ class IntegerType implements Type
     public function getDocAst(): TypeNode
     {
         if (\count($this->schema->enum) > 0) {
-            return new IdentifierTypeNode(implode('|', $this->schema->enum));
+            $values = [];
+            foreach ($this->schema->enum as $e) {
+                switch (true) {
+                    case \is_int($e):
+                        $values[] = (string) $e;
+                        break;
+                    case $e === null && $this->nullable:
+                        $values[] = 'null';
+                        break;
+                    default:
+                        throw new \RuntimeException();
+                }
+            }
+
+            return new IdentifierTypeNode(implode('|', $values));
         }
 
         $type = new IdentifierTypeNode(\sprintf(
