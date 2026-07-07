@@ -6,6 +6,7 @@ namespace Zol\Apifony\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Greater;
@@ -215,8 +216,8 @@ class Action
                     $className,
                     (int) $code,
                     $response,
-                    \array_key_exists('application/json', $response->content) ?
-                        $response->content['application/json']->schema : null,
+                    \array_key_exists('application/json', $response->content)
+                        ? $response->content['application/json']->schema : null,
                     $components,
                 );
             }
@@ -237,7 +238,7 @@ class Action
     }
 
     /**
-     * @return array{path: string, methods: string, controller: string}
+     * @return array{path: string, methods: string, controller: string, requirements?: array<string, string>}
      */
     public function getRoute(string $controllerClassName): array
     {
@@ -270,9 +271,19 @@ class Action
             $actionMethod->addParam($parameter->asParam(true));
         }
 
-        $actionMethod->setReturnType('Response')
-            ->addStmt(new Expression(new Assign($f->var('errors'), $f->val(new Array_([], ['kind' => Array_::KIND_SHORT])))))
-        ;
+        $errorLocations = array_values(array_filter(
+            ['path', 'query', 'header', 'cookie'],
+            fn (string $in): bool => \count($this->getParameters([$in])) > 0,
+        ));
+        if ($this->requestBody !== null) {
+            $errorLocations[] = 'requestBody';
+        }
+
+        $actionMethod->setReturnType('Response');
+
+        foreach ($errorLocations as $location) {
+            $actionMethod->addStmt(new Expression(new Assign($f->var("{$location}Errors"), new Array_([], ['kind' => Array_::KIND_SHORT]))));
+        }
 
         foreach ($this->getParameters(['path']) as $parameter) {
             $actionMethod->addStmts($parameter->getPathSanitizationStmts());
@@ -284,6 +295,13 @@ class Action
 
         if ($this->requestBody !== null) {
             $actionMethod->addStmts($this->requestBody->getStmts());
+        }
+
+        $actionMethod->addStmt(new Expression(new Assign($f->var('errors'), new Array_([], ['kind' => Array_::KIND_SHORT]))));
+        foreach ($errorLocations as $location) {
+            $actionMethod->addStmt(new If_(new Greater($f->funcCall('\count', [$f->var("{$location}Errors")]), $f->val(0)), ['stmts' => [
+                new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val($location)), $f->var("{$location}Errors"))),
+            ]]));
         }
 
         $actionMethod->addStmt(new If_(new Greater($f->funcCall('\count', [$f->var('errors')]), $f->val(0)), ['stmts' => [
@@ -300,10 +318,10 @@ class Action
                 array_map(static fn (ActionParameter $parameter): Variable => $parameter->asVariable(), $this->parameters),
                 $this->requestBody !== null ? [$f->var('requestBodyPayload')] : [],
             )))))
-            ->addStmt(new If_(new Identical($f->classConstFetch($f->var('response'), 'CONTENT_TYPE'), $f->val('application/json')), ['stmts' => [
-                new Return_($f->new('JsonResponse', [$f->propertyFetch($f->var('response'), 'payload'), $f->classConstFetch($f->var('response'), 'CODE'), $f->methodCall($f->var('response'), 'getHeaders')])),
+            ->addStmt(new If_(new Identical($f->methodCall($f->var('response'), 'getContentType'), $f->val('application/json')), ['stmts' => [
+                new Return_($f->new('JsonResponse', [$f->propertyFetch($f->var('response'), 'payload'), $f->methodCall($f->var('response'), 'getCode'), $f->methodCall($f->var('response'), 'getHeaders')])),
             ]]))
-            ->addStmt(new Return_($f->new('Response', [$f->val(''), $f->classConstFetch($f->var('response'), 'CODE'), $f->methodCall($f->var('response'), 'getHeaders')])))
+            ->addStmt(new Return_($f->new('Response', [$f->val(''), $f->methodCall($f->var('response'), 'getCode'), $f->methodCall($f->var('response'), 'getHeaders')])))
         ;
 
         return $actionMethod->getNode();

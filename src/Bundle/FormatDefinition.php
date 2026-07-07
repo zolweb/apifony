@@ -58,11 +58,12 @@ class FormatDefinition implements File
             ->makePublic()
             ->addParam($f->param('value')->setType('mixed'))
             ->setReturnType('array')
-            ->setDocComment(<<<'COMMENT'
-                /**
-                 * @return string[]
-                 */
-                COMMENT
+            ->setDocComment(
+                <<<'COMMENT'
+                    /**
+                     * @return string[]
+                     */
+                    COMMENT
             )
         ;
 

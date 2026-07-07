@@ -139,7 +139,7 @@ class ActionParameter
                 ])),
             ], [
                 new Catch_([new Name('ParameterValidationException')], $f->var('e'), [
-                    new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($this->parameter->in)), new String_($this->parameter->name)), $f->propertyFetch($f->var('e'), 'messages'))),
+                    new Expression(new Assign(new ArrayDimFetch($f->var("{$this->parameter->in}Errors"), new String_($this->parameter->name)), $f->propertyFetch($f->var('e'), 'messages'))),
                 ]),
             ]),
         ];
@@ -165,10 +165,10 @@ class ActionParameter
                 ])),
             ], [
                 new Catch_([new Name('DenormalizationException')], $f->var('e'), [
-                    new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($this->parameter->in)), new String_($this->parameter->name)), new Array_([new ArrayItem($f->methodCall($f->var('e'), 'getMessage'))], ['kind' => Array_::KIND_SHORT]))),
+                    new Expression(new Assign(new ArrayDimFetch($f->var("{$this->parameter->in}Errors"), new String_($this->parameter->name)), new Array_([new ArrayItem($f->methodCall($f->var('e'), 'getMessage'))], ['kind' => Array_::KIND_SHORT]))),
                 ]),
                 new Catch_([new Name('ParameterValidationException')], $f->var('e'), [
-                    new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->val($this->parameter->in)), new String_($this->parameter->name)), $f->propertyFetch($f->var('e'), 'messages'))),
+                    new Expression(new Assign(new ArrayDimFetch($f->var("{$this->parameter->in}Errors"), new String_($this->parameter->name)), $f->propertyFetch($f->var('e'), 'messages'))),
                 ]),
             ]),
         ];

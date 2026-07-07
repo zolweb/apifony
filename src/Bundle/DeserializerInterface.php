@@ -34,46 +34,51 @@ class DeserializerInterface implements File
             new Declare_([new DeclareDeclare('strict_types', $f->val(1))]),
             $f->namespace("{$this->bundleNamespace}\\Api")
                 ->addStmt($f->use('Symfony\Component\Serializer\Exception\ExceptionInterface'))
-                ->addStmt($f->interface('DeserializerInterface')
-                    ->addStmt($f->method('deserialize')
-                        ->setDocComment(<<<'COMMENT'
-                            /**
-                             * @template T of object
-                             *
-                             * @param class-string<T> $type
-                             *
-                             * @return T
-                             *
-                             * @throws ExceptionInterface
-                             * @throws \TypeError
-                             */
-                            COMMENT
+                ->addStmt(
+                    $f->interface('DeserializerInterface')
+                        ->addStmt(
+                            $f->method('deserialize')
+                                ->setDocComment(
+                                    <<<'COMMENT'
+                                        /**
+                                         * @template T of object
+                                         *
+                                         * @param class-string<T> $type
+                                         *
+                                         * @return T
+                                         *
+                                         * @throws ExceptionInterface
+                                         * @throws \TypeError
+                                         */
+                                        COMMENT
+                                )
+                                ->makePublic()
+                                ->addParam($f->param('json')->setType('string'))
+                                ->addParam($f->param('type')->setType('string'))
+                                ->setReturnType('object'),
                         )
-                        ->makePublic()
-                        ->addParam($f->param('json')->setType('string'))
-                        ->addParam($f->param('type')->setType('string'))
-                        ->setReturnType('object'),
-                    )
-                    ->addStmt($f->method('denormalize')
-                        ->setDocComment(<<<'COMMENT'
-                            /**
-                             * @template T of object
-                             *
-                             * @param array<mixed> $data
-                             * @param class-string<T> $type
-                             *
-                             * @return T
-                             *
-                             * @throws ExceptionInterface
-                             * @throws \TypeError
-                             */
-                            COMMENT
-                        )
-                        ->makePublic()
-                        ->addParam($f->param('data')->setType('array'))
-                        ->addParam($f->param('type')->setType('string'))
-                        ->setReturnType('object'),
-                    ),
+                        ->addStmt(
+                            $f->method('denormalize')
+                                ->setDocComment(
+                                    <<<'COMMENT'
+                                        /**
+                                         * @template T of object
+                                         *
+                                         * @param array<mixed> $data
+                                         * @param class-string<T> $type
+                                         *
+                                         * @return T
+                                         *
+                                         * @throws ExceptionInterface
+                                         * @throws \TypeError
+                                         */
+                                        COMMENT
+                                )
+                                ->makePublic()
+                                ->addParam($f->param('data')->setType('array'))
+                                ->addParam($f->param('type')->setType('string'))
+                                ->setReturnType('object'),
+                        ),
                 )
                 ->getNode(),
         ]);

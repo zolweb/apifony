@@ -6,12 +6,17 @@ namespace Zol\Apifony\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\BinaryOp\BooleanOr;
+use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\New_;
+use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Class_;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\DeclareDeclare;
+use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
+use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\PrettyPrinter\Standard;
 use Zol\Apifony\OpenApi\Components;
@@ -116,7 +121,7 @@ class Bundle implements File
                 if ($schema->format !== null) {
                     $rawFormatNames[$schema->format] = null;
                 }
-                foreach ($schema->properties ?? [] as $property) {
+                foreach ($schema->properties as $property) {
                     $addSchemaFormats($property);
                 }
                 if ($schema->items !== null) {
@@ -306,13 +311,15 @@ class Bundle implements File
                             ->makePublic()
                             ->addParam($f->param('container')->setType('ContainerBuilder'))
                             ->setReturnType('void')
-                            ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [\sprintf('%s.handler', u($this->name)->snake())]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
+                            ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [$handlerTag = \sprintf('%s.handler', u($this->name)->snake())]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
                                 new Foreach_($f->var('tags'), $f->var('tag'), ['stmts' => [
+                                    $this->buildTagAttributeGuard($handlerTag, 'controller'),
                                     new Switch_(new ArrayDimFetch($f->var('tag'), $f->val('controller')), $this->api->getCases()),
                                 ]]),
                             ]]))
-                            ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [\sprintf('%s.format_definition', u($this->name)->snake())]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
+                            ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [$formatTag = \sprintf('%s.format_definition', u($this->name)->snake())]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
                                 new Foreach_($f->var('tags'), $f->var('tag'), ['stmts' => [
+                                    $this->buildTagAttributeGuard($formatTag, 'format'),
                                     new Switch_(new ArrayDimFetch($f->var('tag'), $f->val('format')), array_map(
                                         static fn (Format $format) => $format->getCase(),
                                         $this->formats,
@@ -330,11 +337,12 @@ class Bundle implements File
             ->addParam($f->param('container')->setType('ContainerConfigurator'))
             ->addParam($f->param('builder')->setType('ContainerBuilder'))
             ->setReturnType('void')
-            ->setDocComment(<<<'COMMENT'
-                /**
-                 * @param array<mixed> $config
-                 */
-                COMMENT
+            ->setDocComment(
+                <<<'COMMENT'
+                    /**
+                     * @param array<mixed> $config
+                     */
+                    COMMENT
             )
             ->addStmt($f->methodCall($f->var('container'), 'import', [$f->val('../config/services.yaml')]))
         ;
@@ -367,5 +375,25 @@ class Bundle implements File
             new Declare_([new DeclareDeclare('strict_types', $f->val(1))]),
             $namespace->getNode(),
         ]);
+    }
+
+    private function buildTagAttributeGuard(string $tagName, string $attribute): If_
+    {
+        $f = new BuilderFactory();
+
+        return new If_(
+            new BooleanOr(
+                new BooleanNot($f->funcCall('\is_array', [$f->var('tag')])),
+                new BooleanNot($f->funcCall('\array_key_exists', [$f->val($attribute), $f->var('tag')])),
+            ),
+            ['stmts' => [
+                new Expression(new Throw_($f->new('\InvalidArgumentException', [
+                    $f->funcCall('\sprintf', [
+                        $f->val(\sprintf('Service "%%s" tagged as "%s" must define the "%s" tag attribute.', $tagName, $attribute)),
+                        $f->var('id'),
+                    ]),
+                ]))),
+            ]],
+        );
     }
 }

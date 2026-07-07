@@ -164,25 +164,40 @@ class ActionResponse implements File
             $constructor->addStmt(new Assign($f->propertyFetch($f->var('this'), 'payload'), $f->val('')));
         }
 
+        $contentType = $this->payloadType !== null ? 'application/json' : null;
+
+        $getCodeMethod = $f->method('getCode')
+            ->makePublic()
+            ->setReturnType('int')
+            ->addStmt(new Return_($f->val($this->code)))
+        ;
+
+        $getContentTypeMethod = $f->method('getContentType')
+            ->makePublic()
+            ->setReturnType('?string')
+            ->addStmt(new Return_($f->val($contentType)))
+        ;
+
         $getHeadersMethod = $f->method('getHeaders')
             ->makePublic()
             ->setReturnType('array')
-            ->setDocComment(<<<'COMMENT'
-                /**
-                 * @return array<string, ?string>
-                 */
-                COMMENT
+            ->setDocComment(
+                <<<'COMMENT'
+                    /**
+                     * @return array<string, ?string>
+                     */
+                    COMMENT
             )
             ->addStmt(new Return_(new Array_(array_merge(
                 array_map(static fn (ActionResponseHeader $header) => $header->getArrayItem(), $this->headers),
-                [new ArrayItem($f->classConstFetch('self', 'CONTENT_TYPE'), $f->val('content-type'))],
+                [new ArrayItem($f->val($contentType), $f->val('content-type'))],
             ), ['kind' => Array_::KIND_SHORT])))
         ;
 
         $class = $f->class($this->name)
-            ->addStmt($f->classConst('CODE', $this->code)->makePublic())
-            ->addStmt($f->classConst('CONTENT_TYPE', $this->payloadType !== null ? 'application/json' : null)->makePublic())
             ->addStmt($constructor)
+            ->addStmt($getCodeMethod)
+            ->addStmt($getContentTypeMethod)
             ->addStmt($getHeadersMethod)
         ;
 

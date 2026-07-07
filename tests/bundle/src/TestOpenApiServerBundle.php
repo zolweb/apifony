@@ -23,6 +23,9 @@ class TestOpenApiServerBundle extends AbstractBundle
             {
                 foreach ($container->findTaggedServiceIds('test_open_api_server.handler') as $id => $tags) {
                     foreach ($tags as $tag) {
+                        if (!\is_array($tag) || !\array_key_exists('controller', $tag)) {
+                            throw new \InvalidArgumentException(\sprintf('Service "%s" tagged as "test_open_api_server.handler" must define the "controller" tag attribute.', $id));
+                        }
                         switch ($tag['controller']) {
                             case 'first_operation':
                                 $container->findDefinition('Zol\Apifony\Tests\TestOpenApiServer\Api\FirstOperation\FirstOperationController')->addMethodCall('setHandler', [new Reference($id)]);
@@ -32,6 +35,9 @@ class TestOpenApiServerBundle extends AbstractBundle
                 }
                 foreach ($container->findTaggedServiceIds('test_open_api_server.format_definition') as $id => $tags) {
                     foreach ($tags as $tag) {
+                        if (!\is_array($tag) || !\array_key_exists('format', $tag)) {
+                            throw new \InvalidArgumentException(\sprintf('Service "%s" tagged as "test_open_api_server.format_definition" must define the "format" tag attribute.', $id));
+                        }
                         switch ($tag['format']) {
                             case 'email':
                                 $container->findDefinition('Zol\Apifony\Tests\TestOpenApiServer\Format\EmailValidator')->addMethodCall('setFormatDefinition', [new Reference($id)]);

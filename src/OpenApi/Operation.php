@@ -30,9 +30,9 @@ class Operation
                 $parameterPath = $path;
                 $parameterPath[] = 'parameters';
                 $parameterPath[] = (string) $parameterIndex;
-                $operationParameters[] = isset($parameterData['$ref']) ?
-                    Reference::build($parameterData, $parameterPath) :
-                    Parameter::build($parameterData, $parameterPath);
+                $operationParameters[] = isset($parameterData['$ref'])
+                    ? Reference::build($parameterData, $parameterPath)
+                    : Parameter::build($parameterData, $parameterPath);
             }
         }
 
@@ -78,6 +78,29 @@ class Operation
             }
         }
 
+        $requestBody = null;
+        $requestBodyRef = null;
+        if (isset($data['requestBody'])) {
+            if (!\is_array($data['requestBody'])) {
+                throw new Exception('Operation object requestBody attribute must be an array.', $path);
+            }
+            $requestBody = $data['requestBody'];
+            if (isset($data['requestBody']['$ref'])) {
+                if (!\is_string($data['requestBody']['$ref'])) {
+                    throw new Exception('Operation object requestBody attribute $ref attribute must be a string.', $path);
+                }
+                $requestBodyRef = $data['requestBody']['$ref'];
+            }
+        }
+
+        $responses = null;
+        if (isset($data['responses'])) {
+            if (!\is_array($data['responses'])) {
+                throw new Exception('Operation object responses attribute must be an array.', $path);
+            }
+            $responses = $data['responses'];
+        }
+
         $requestBodyPath = $path;
         $requestBodyPath[] = 'requestBody';
         $responsesBodyPath = $path;
@@ -87,11 +110,11 @@ class Operation
             $data['operationId'],
             $parameters,
             match (true) {
-                isset($data['requestBody']) && \is_array($data['requestBody']) && isset($data['requestBody']['$ref']) => Reference::build($data['requestBody'], $responsesBodyPath),
-                isset($data['requestBody']) => RequestBody::build($data['requestBody'], $requestBodyPath),
+                $requestBody !== null && $requestBodyRef !== null => Reference::build($requestBody, $responsesBodyPath),
+                $requestBody !== null => RequestBody::build($requestBody, $requestBodyPath),
                 default => null,
             },
-            isset($data['responses']) ? Responses::build($data['responses'], $responsesBodyPath) : null,
+            $responses !== null ? Responses::build($responses, $responsesBodyPath) : null,
             $extensions,
             $path,
         );

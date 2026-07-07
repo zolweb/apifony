@@ -17,6 +17,7 @@ return (new PhpCsFixer\Config())
         '@PhpCsFixer:risky' => true,
         '@Symfony' => true,
         '@Symfony:risky' => true,
+        'declare_strict_types' => true,
         'yoda_style' => false,
         'class_attributes_separation' => false,
         'class_definition' => false,

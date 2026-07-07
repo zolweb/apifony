@@ -83,6 +83,7 @@ class Schema
                 $enum[] = $e;
             }
         }
+        $default = null;
         if (\array_key_exists('default', $data)) {
             $types = \is_string($type) ? [$type] : $type;
             switch (true) {
@@ -119,6 +120,7 @@ class Schema
                 default:
                     throw new Exception('Schema objects default attribute must be a string, an int, a float, a boolean, an empty array or null.', $path);
             }
+            $default = $data['default'];
         }
         if (\array_key_exists('pattern', $data) && !\is_string($data['pattern'])) {
             throw new Exception('Schema objects pattern attribute must be a string.', $path);
@@ -155,9 +157,6 @@ class Schema
         }
         if (\array_key_exists('uniqueItems', $data) && !\is_bool($data['uniqueItems'])) {
             throw new Exception('Schema objects uniqueItems attribute must be a boolean.', $path);
-        }
-        if (\array_key_exists('properties', $data) && !\is_array($data['properties'])) {
-            throw new Exception('Schema objects properties attribute must be an array.', $path);
         }
         $properties = [];
         if (\array_key_exists('properties', $data)) {
@@ -206,7 +205,7 @@ class Schema
             $data['format'] ?? null,
             $enum,
             \array_key_exists('default', $data),
-            $data['default'] ?? null,
+            $default,
             $data['pattern'] ?? null,
             $data['minLength'] ?? null,
             $data['maxLength'] ?? null,

@@ -48,9 +48,9 @@ class ObjectType implements Type
     {
         $f = new BuilderFactory();
 
-        return $this->isRaw ?
-            $f->funcCall('is_array', [$f->var('requestBodyPayload')]) :
-            new Expr\Instanceof_($f->var('requestBodyPayload'), new Name($this->name));
+        return $this->isRaw
+            ? $f->funcCall('is_array', [$f->var('requestBodyPayload')])
+            : new Expr\Instanceof_($f->var('requestBodyPayload'), new Name($this->name));
     }
 
     public function getConstraints(): array
@@ -89,9 +89,9 @@ class ObjectType implements Type
 
     public function getDocAst(): TypeNode
     {
-        $type = $this->isRaw ?
-            new IdentifierTypeNode('mixed') :
-            new IdentifierTypeNode($this->name);
+        $type = $this->isRaw
+            ? new IdentifierTypeNode('mixed')
+            : new IdentifierTypeNode($this->name);
 
         if ($this->nullable) {
             $type = new NullableTypeNode($type);

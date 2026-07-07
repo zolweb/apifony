@@ -6,7 +6,6 @@ namespace Zol\Apifony\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Name;
@@ -145,10 +144,10 @@ class ActionRequestBody
                 ])),
             ], [
                 new Catch_([new Name('DenormalizationException')], $f->var('e'), [
-                    new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), new Array_([new ArrayItem($f->methodCall($f->var('e'), 'getMessage'))], ['kind' => Array_::KIND_SHORT]))),
+                    new Expression(new Assign($f->var('requestBodyErrors'), new Array_([new ArrayItem($f->methodCall($f->var('e'), 'getMessage'))], ['kind' => Array_::KIND_SHORT]))),
                 ]),
                 new Catch_([new Name('RequestBodyValidationException')], $f->var('e'), [
-                    new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val('requestBody')), $f->propertyFetch($f->var('e'), 'messages'))),
+                    new Expression(new Assign($f->var('requestBodyErrors'), $f->propertyFetch($f->var('e'), 'messages'))),
                 ]),
             ]),
         ];

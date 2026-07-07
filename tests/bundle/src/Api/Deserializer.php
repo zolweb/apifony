@@ -22,10 +22,18 @@ class Deserializer implements DeserializerInterface
     }
     public function deserialize(string $json, string $type): object
     {
-        return $this->serializer->deserialize($json, $type, JsonEncoder::FORMAT);
+        $result = $this->serializer->deserialize($json, $type, JsonEncoder::FORMAT);
+        if (!$result instanceof $type) {
+            throw new \RuntimeException("The deserialized value is not an instance of '{$type}'.");
+        }
+        return $result;
     }
     public function denormalize(array $data, string $type): object
     {
-        return $this->serializer->denormalize($data, $type, null, [AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true]);
+        $result = $this->serializer->denormalize($data, $type, null, [AbstractObjectNormalizer::DISABLE_TYPE_ENFORCEMENT => true]);
+        if (!$result instanceof $type) {
+            throw new \RuntimeException("The deserialized value is not an instance of '{$type}'.");
+        }
+        return $result;
     }
 }

@@ -29,9 +29,9 @@ class PathItem
                 $parameterPath = $path;
                 $parameterPath[] = 'parameters';
                 $parameterPath[] = (string) $parameterIndex;
-                $parameters[] = isset($parameterData['$ref']) ?
-                    Reference::build($parameterData, $parameterPath) :
-                    Parameter::build($parameterData, $parameterPath);
+                $parameters[] = isset($parameterData['$ref'])
+                    ? Reference::build($parameterData, $parameterPath)
+                    : Parameter::build($parameterData, $parameterPath);
             }
         }
 

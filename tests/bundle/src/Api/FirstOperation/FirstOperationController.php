@@ -21,155 +21,175 @@ class FirstOperationController extends AbstractController
     }
     public function firstOperation(Request $request, string $pathParamString, float $pathParamNumber, int $pathParamInteger, bool $pathParamBoolean): Response
     {
-        $errors = [];
+        $pathErrors = [];
+        $queryErrors = [];
+        $headerErrors = [];
+        $cookieErrors = [];
+        $requestBodyErrors = [];
         $pPathParamString = $pathParamString;
         try {
             $this->validateParameter($pPathParamString, [new Assert\NotNull()]);
         } catch (ParameterValidationException $e) {
-            $errors['path']['pathParamString'] = $e->messages;
+            $pathErrors['pathParamString'] = $e->messages;
         }
         $pPathParamNumber = $pathParamNumber;
         try {
             $this->validateParameter($pPathParamNumber, [new Assert\NotNull()]);
         } catch (ParameterValidationException $e) {
-            $errors['path']['pathParamNumber'] = $e->messages;
+            $pathErrors['pathParamNumber'] = $e->messages;
         }
         $pPathParamInteger = $pathParamInteger;
         try {
             $this->validateParameter($pPathParamInteger, [new Assert\NotNull()]);
         } catch (ParameterValidationException $e) {
-            $errors['path']['pathParamInteger'] = $e->messages;
+            $pathErrors['pathParamInteger'] = $e->messages;
         }
         $pPathParamBoolean = $pathParamBoolean;
         try {
             $this->validateParameter($pPathParamBoolean, [new Assert\NotNull()]);
         } catch (ParameterValidationException $e) {
-            $errors['path']['pathParamBoolean'] = $e->messages;
+            $pathErrors['pathParamBoolean'] = $e->messages;
         }
         $qQueryParamString = '';
         try {
             $qQueryParamString = $this->getStringParameter($request, 'queryParamString', 'query', true);
             $this->validateParameter($qQueryParamString, [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $errors['query']['queryParamString'] = [$e->getMessage()];
+            $queryErrors['queryParamString'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
-            $errors['query']['queryParamString'] = $e->messages;
+            $queryErrors['queryParamString'] = $e->messages;
         }
         $qQueryParamNumber = 0.0;
         try {
             $qQueryParamNumber = $this->getFloatParameter($request, 'queryParamNumber', 'query', true);
             $this->validateParameter($qQueryParamNumber, [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $errors['query']['queryParamNumber'] = [$e->getMessage()];
+            $queryErrors['queryParamNumber'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
-            $errors['query']['queryParamNumber'] = $e->messages;
+            $queryErrors['queryParamNumber'] = $e->messages;
         }
         $qQueryParamInteger = 0;
         try {
             $qQueryParamInteger = $this->getIntParameter($request, 'queryParamInteger', 'query', true);
             $this->validateParameter($qQueryParamInteger, [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $errors['query']['queryParamInteger'] = [$e->getMessage()];
+            $queryErrors['queryParamInteger'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
-            $errors['query']['queryParamInteger'] = $e->messages;
+            $queryErrors['queryParamInteger'] = $e->messages;
         }
         $qQueryParamBoolean = false;
         try {
             $qQueryParamBoolean = $this->getBoolParameter($request, 'queryParamBoolean', 'query', true);
             $this->validateParameter($qQueryParamBoolean, [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $errors['query']['queryParamBoolean'] = [$e->getMessage()];
+            $queryErrors['queryParamBoolean'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
-            $errors['query']['queryParamBoolean'] = $e->messages;
+            $queryErrors['queryParamBoolean'] = $e->messages;
         }
         $hHeaderParamString = '';
         try {
             $hHeaderParamString = $this->getStringParameter($request, 'headerParamString', 'header', true);
             $this->validateParameter($hHeaderParamString, [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $errors['header']['headerParamString'] = [$e->getMessage()];
+            $headerErrors['headerParamString'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
-            $errors['header']['headerParamString'] = $e->messages;
+            $headerErrors['headerParamString'] = $e->messages;
         }
         $hHeaderParamNumber = 0.0;
         try {
             $hHeaderParamNumber = $this->getFloatParameter($request, 'headerParamNumber', 'header', true);
             $this->validateParameter($hHeaderParamNumber, [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $errors['header']['headerParamNumber'] = [$e->getMessage()];
+            $headerErrors['headerParamNumber'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
-            $errors['header']['headerParamNumber'] = $e->messages;
+            $headerErrors['headerParamNumber'] = $e->messages;
         }
         $hHeaderParamInteger = 0;
         try {
             $hHeaderParamInteger = $this->getIntParameter($request, 'headerParamInteger', 'header', true);
             $this->validateParameter($hHeaderParamInteger, [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $errors['header']['headerParamInteger'] = [$e->getMessage()];
+            $headerErrors['headerParamInteger'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
-            $errors['header']['headerParamInteger'] = $e->messages;
+            $headerErrors['headerParamInteger'] = $e->messages;
         }
         $hHeaderParamBoolean = false;
         try {
             $hHeaderParamBoolean = $this->getBoolParameter($request, 'headerParamBoolean', 'header', true);
             $this->validateParameter($hHeaderParamBoolean, [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $errors['header']['headerParamBoolean'] = [$e->getMessage()];
+            $headerErrors['headerParamBoolean'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
-            $errors['header']['headerParamBoolean'] = $e->messages;
+            $headerErrors['headerParamBoolean'] = $e->messages;
         }
         $cCookieParamString = '';
         try {
             $cCookieParamString = $this->getStringParameter($request, 'cookieParamString', 'cookie', true);
             $this->validateParameter($cCookieParamString, [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $errors['cookie']['cookieParamString'] = [$e->getMessage()];
+            $cookieErrors['cookieParamString'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
-            $errors['cookie']['cookieParamString'] = $e->messages;
+            $cookieErrors['cookieParamString'] = $e->messages;
         }
         $cCookieParamNumber = 0.0;
         try {
             $cCookieParamNumber = $this->getFloatParameter($request, 'cookieParamNumber', 'cookie', true);
             $this->validateParameter($cCookieParamNumber, [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $errors['cookie']['cookieParamNumber'] = [$e->getMessage()];
+            $cookieErrors['cookieParamNumber'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
-            $errors['cookie']['cookieParamNumber'] = $e->messages;
+            $cookieErrors['cookieParamNumber'] = $e->messages;
         }
         $cCookieParamInteger = 0;
         try {
             $cCookieParamInteger = $this->getIntParameter($request, 'cookieParamInteger', 'cookie', true);
             $this->validateParameter($cCookieParamInteger, [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $errors['cookie']['cookieParamInteger'] = [$e->getMessage()];
+            $cookieErrors['cookieParamInteger'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
-            $errors['cookie']['cookieParamInteger'] = $e->messages;
+            $cookieErrors['cookieParamInteger'] = $e->messages;
         }
         $cCookieParamBoolean = false;
         try {
             $cCookieParamBoolean = $this->getBoolParameter($request, 'cookieParamBoolean', 'cookie', true);
             $this->validateParameter($cCookieParamBoolean, [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $errors['cookie']['cookieParamBoolean'] = [$e->getMessage()];
+            $cookieErrors['cookieParamBoolean'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
-            $errors['cookie']['cookieParamBoolean'] = $e->messages;
+            $cookieErrors['cookieParamBoolean'] = $e->messages;
         }
         $requestBodyPayload = (new \ReflectionClass(Schema::class))->newInstanceWithoutConstructor();
         try {
             $requestBodyPayload = $this->getObjectRequestBody($request, Schema::class);
             $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $errors['requestBody'] = [$e->getMessage()];
+            $requestBodyErrors = [$e->getMessage()];
         } catch (RequestBodyValidationException $e) {
-            $errors['requestBody'] = $e->messages;
+            $requestBodyErrors = $e->messages;
+        }
+        $errors = [];
+        if (\count($pathErrors) > 0) {
+            $errors['path'] = $pathErrors;
+        }
+        if (\count($queryErrors) > 0) {
+            $errors['query'] = $queryErrors;
+        }
+        if (\count($headerErrors) > 0) {
+            $errors['header'] = $headerErrors;
+        }
+        if (\count($cookieErrors) > 0) {
+            $errors['cookie'] = $cookieErrors;
+        }
+        if (\count($requestBodyErrors) > 0) {
+            $errors['requestBody'] = $requestBodyErrors;
         }
         if (\count($errors) > 0) {
             return new JsonResponse(['code' => 'validation_failed', 'message' => 'Validation has failed.', 'errors' => $errors], Response::HTTP_BAD_REQUEST);
         }
         $response = $this->handler->firstOperation($pPathParamString, $pPathParamNumber, $pPathParamInteger, $pPathParamBoolean, $qQueryParamString, $qQueryParamNumber, $qQueryParamInteger, $qQueryParamBoolean, $hHeaderParamString, $hHeaderParamNumber, $hHeaderParamInteger, $hHeaderParamBoolean, $cCookieParamString, $cCookieParamNumber, $cCookieParamInteger, $cCookieParamBoolean, $requestBodyPayload);
-        if ($response::CONTENT_TYPE === 'application/json') {
-            return new JsonResponse($response->payload, $response::CODE, $response->getHeaders());
+        if ($response->getContentType() === 'application/json') {
+            return new JsonResponse($response->payload, $response->getCode(), $response->getHeaders());
         }
-        return new Response('', $response::CODE, $response->getHeaders());
+        return new Response('', $response->getCode(), $response->getHeaders());
     }
 }

@@ -65,13 +65,14 @@ class AbstractController implements File
             ->addParam($f->param('value')->setType('mixed'))
             ->addParam($f->param('constraints')->setType('array'))
             ->setReturnType('void')
-            ->setDocComment(<<<'COMMENT'
-                /**
-                 * @param list<Constraint> $constraints
-                 *
-                 * @throws ParameterValidationException
-                 */
-                COMMENT
+            ->setDocComment(
+                <<<'COMMENT'
+                    /**
+                     * @param list<Constraint> $constraints
+                     *
+                     * @throws ParameterValidationException
+                     */
+                    COMMENT
             )
             ->addStmt(new Assign($f->var('violations'), $f->methodCall($f->propertyFetch($f->var('this'), 'validator'), 'validate', [$f->var('value'), $f->var('constraints')])))
             ->addStmt(new If_(new Greater($f->funcCall('\count', [$f->var('violations')]), $f->val(0)), ['stmts' => [
@@ -89,13 +90,14 @@ class AbstractController implements File
             ->addParam($f->param('value')->setType('mixed'))
             ->addParam($f->param('constraints')->setType('array'))
             ->setReturnType('void')
-            ->setDocComment(<<<'COMMENT'
-                /**
-                 * @param list<Constraint> $constraints
-                 *
-                 * @throws RequestBodyValidationException
-                 */
-                COMMENT
+            ->setDocComment(
+                <<<'COMMENT'
+                    /**
+                     * @param list<Constraint> $constraints
+                     *
+                     * @throws RequestBodyValidationException
+                     */
+                    COMMENT
             )
             ->addStmt(new Assign($f->var('violations'), $f->methodCall($f->propertyFetch($f->var('this'), 'validator'), 'validate', [$f->var('value'), $f->var('constraints')])))
             ->addStmt(new If_(new Greater($f->funcCall('\count', [$f->var('violations')]), $f->val(0)), ['stmts' => [
@@ -126,11 +128,12 @@ class AbstractController implements File
                     ->addParam($f->param('required')->setType('bool'))
                     ->addParam($f->param('default')->setType("?{$type}")->setDefault(null))
                     ->setReturnType(\sprintf("%s{$type}", $nullable ? '?' : ''))
-                    ->setDocComment(<<<'COMMENT'
-                        /**
-                         * @throws DenormalizationException
-                         */
-                        COMMENT
+                    ->setDocComment(
+                        <<<'COMMENT'
+                            /**
+                             * @throws DenormalizationException
+                             */
+                            COMMENT
                     )
                     ->addStmt(new Expression(new Assign($f->var('bag'), new Match_($f->var('in'), [
                         new MatchArm([$f->val('query')], $f->propertyFetch($f->var('request'), 'query')),
@@ -144,17 +147,17 @@ class AbstractController implements File
                         [new If_($f->var('required'), ['stmts' => [
                             new Expression(new Throw_($f->new('DenormalizationException', [new Encapsed([new EncapsedStringPart('Parameter \''), $f->var('name'), new EncapsedStringPart('\' in \''), $f->var('in'), new EncapsedStringPart('\' is required.')])]))),
                         ]])],
-                        $nullable ?
-                            [] :
-                            [new If_(new Identical($f->var('default'), $f->val(null)), ['stmts' => [
+                        $nullable
+                            ? []
+                            : [new If_(new Identical($f->var('default'), $f->val(null)), ['stmts' => [
                                 new Expression(new Throw_($f->new('DenormalizationException', [new Encapsed([new EncapsedStringPart('Parameter \''), $f->var('name'), new EncapsedStringPart('\' in \''), $f->var('in'), new EncapsedStringPart('\' must not be null.')])]))),
                             ]])],
                         [new Return_($f->var('default'))],
                     )]))
                     ->addStmt(new If_(new Identical($f->var('value'), $f->val(null)), ['stmts' => [
-                        $nullable ?
-                            new Return_($f->val(null)) :
-                            new Expression(new Throw_($f->new('DenormalizationException', [new Encapsed([new EncapsedStringPart('Parameter \''), $f->var('name'), new EncapsedStringPart('\' in \''), $f->var('in'), new EncapsedStringPart('\' must not be null.')])]))),
+                        $nullable
+                            ? new Return_($f->val(null))
+                            : new Expression(new Throw_($f->new('DenormalizationException', [new Encapsed([new EncapsedStringPart('Parameter \''), $f->var('name'), new EncapsedStringPart('\' in \''), $f->var('in'), new EncapsedStringPart('\' must not be null.')])]))),
                     ]]))
                     ->addStmts(match ($type) {
                         'string' => [
@@ -200,28 +203,29 @@ class AbstractController implements File
                     ->addParam($f->param('request')->setType('Request'))
                     ->addParam($f->param('default')->setType("?{$type}")->setDefault(null))
                     ->setReturnType(\sprintf("%s{$type}", $nullable ? '?' : ''))
-                    ->setDocComment(<<<'COMMENT'
-                        /**
-                         * @throws DenormalizationException
-                         */
-                        COMMENT
+                    ->setDocComment(
+                        <<<'COMMENT'
+                            /**
+                             * @throws DenormalizationException
+                             */
+                            COMMENT
                     )
                     ->addStmt(new Expression(new Assign($f->var('value'), $f->methodCall($f->var('request'), 'getContent'))))
                     ->addStmt(new If_(new Identical($f->var('value'), $f->val('')), ['stmts' => array_merge(
-                        $nullable ?
-                            [] :
-                            [new If_(new Identical($f->var('default'), $f->val(null)), ['stmts' => [
+                        $nullable
+                            ? []
+                            : [new If_(new Identical($f->var('default'), $f->val(null)), ['stmts' => [
                                 new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body must not be null.')]))),
                             ]])],
                         [new Return_($f->var('default'))],
                     )]))
                     ->addStmt(new Expression(new Assign($f->var('value'), $f->funcCall('json_decode', [$f->var('value'), $f->val(true)]))))
                     ->addStmts(
-                        $nullable && $type !== 'string' ?
-                            [new If_(new Identical($f->var('value'), $f->val(null)), ['stmts' => [
+                        $nullable && $type !== 'string'
+                            ? [new If_(new Identical($f->var('value'), $f->val(null)), ['stmts' => [
                                 new Return_($f->val(null)),
-                            ]])] :
-                            [],
+                            ]])]
+                            : [],
                     )
                     ->addStmts(match ($type) {
                         'string' => [
@@ -263,43 +267,47 @@ class AbstractController implements File
                 ->addParam($f->param('class')->setType('string'))
                 ->addParam($f->param('default')->setType('?object')->setDefault(null))
                 ->setReturnType(\sprintf('%sobject', $nullable ? '?' : ''))
-                ->setDocComment(<<<COMMENT
-                    /**
-                     * @template T of object
-                     *
-                     * @param class-string<T> \$class
-                     * @param ?T \$default
-                     *
-                     * @return {$questionMark}T
-                     *
-                     * @throws DenormalizationException
-                     */
-                    COMMENT
+                ->setDocComment(
+                    <<<COMMENT
+                        /**
+                         * @template T of object
+                         *
+                         * @param class-string<T> \$class
+                         * @param ?T \$default
+                         *
+                         * @return {$questionMark}T
+                         *
+                         * @throws DenormalizationException
+                         */
+                        COMMENT
                 )
                 ->addStmt(new Expression(new Assign($f->var('value'), $f->methodCall($f->var('request'), 'getContent'))))
                 ->addStmt(new If_(new Identical($f->var('value'), $f->val('')), ['stmts' => array_merge(
-                    $nullable ?
-                        [] :
-                        [new If_(new Identical($f->var('default'), $f->val(null)), ['stmts' => [
+                    $nullable
+                        ? []
+                        : [new If_(new Identical($f->var('default'), $f->val(null)), ['stmts' => [
                             new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body must not be null.')]))),
                         ]])],
                     [new Return_($f->var('default'))],
                 )]))
                 ->addStmts(
-                    $nullable ?
-                        [new If_(new Identical($f->var('value'), $f->val('null')), ['stmts' => [
+                    $nullable
+                        ? [new If_(new Identical($f->var('value'), $f->val('null')), ['stmts' => [
                             new Return_($f->val(null)),
-                        ]])] :
-                        [],
+                        ]])]
+                        : [],
                 )
-                ->addStmt(new TryCatch(
-                    [
-                        new Return_($f->methodCall($f->propertyFetch($f->var('this'), 'deserializer'), 'deserialize', [$f->var('value'), $f->var('class')])),
-                    ], [
-                        new Catch_([new Name('ExceptionInterface'), new Name('\TypeError')], $f->var('e'), [
-                            new Expression(new Throw_($f->new('DenormalizationException', [new Encapsed([new EncapsedStringPart('Request body could not be deserialized: '), $f->methodCall($f->var('e'), 'getMessage')])]))),
-                        ]),
-                    ]),
+                ->addStmt(
+                    new TryCatch(
+                        [
+                            new Return_($f->methodCall($f->propertyFetch($f->var('this'), 'deserializer'), 'deserialize', [$f->var('value'), $f->var('class')])),
+                        ],
+                        [
+                            new Catch_([new Name('ExceptionInterface'), new Name('\TypeError')], $f->var('e'), [
+                                new Expression(new Throw_($f->new('DenormalizationException', [new Encapsed([new EncapsedStringPart('Request body could not be deserialized: '), $f->methodCall($f->var('e'), 'getMessage')])]))),
+                            ]),
+                        ]
+                    ),
                 )
             ;
 

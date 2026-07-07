@@ -34,11 +34,12 @@ class RequestBodyValidationException implements File
             ->makePublic()
             ->addParam($f->param('messages')->setType('array')->makePublic()->makeReadonly())
             ->addStmt($f->staticCall('parent', '__construct'))
-            ->setDocComment(<<<'COMMENT'
-                /**
-                 * @param array<string, string[]> $messages
-                 */
-                COMMENT
+            ->setDocComment(
+                <<<'COMMENT'
+                    /**
+                     * @param array<string, string[]> $messages
+                     */
+                    COMMENT
             )
         ;
 

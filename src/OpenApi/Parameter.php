@@ -30,6 +30,21 @@ class Parameter
             throw new Exception('Parameter object required attribute must be a boolean.', $path);
         }
 
+        $schema = null;
+        $schemaRef = null;
+        if (isset($data['schema'])) {
+            if (!\is_array($data['schema'])) {
+                throw new Exception('Parameter object schema attribute must be an array.', $path);
+            }
+            $schema = $data['schema'];
+            if (isset($data['schema']['$ref'])) {
+                if (!\is_string($data['schema']['$ref'])) {
+                    throw new Exception('Parameter object schema attribute $ref attribute must be a string.', $path);
+                }
+                $schemaRef = $data['schema']['$ref'];
+            }
+        }
+
         $extensions = [];
         foreach ($data as $key => $extension) {
             if (\is_string($key) && str_starts_with($key, 'x-')) {
@@ -45,8 +60,8 @@ class Parameter
             $data['in'],
             $data['required'] ?? false,
             match (true) {
-                isset($data['schema']['$ref']) => Reference::build($data['schema'], $schemaPath),
-                isset($data['schema']) => Schema::build($data['schema'], $schemaPath),
+                $schema !== null && $schemaRef !== null => Reference::build($schema, $schemaPath),
+                $schema !== null => Schema::build($schema, $schemaPath),
                 default => null,
             },
             $extensions,

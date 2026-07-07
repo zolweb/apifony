@@ -14,14 +14,25 @@ class Header
      */
     public static function build(array $data, array $path): self
     {
-        if (isset($data['schema']) && !\is_array($data['schema'])) {
-            throw new Exception('Header object schema attribute must be an array.', $path);
-        }
-
         $extensions = [];
         foreach ($data as $key => $extension) {
             if (\is_string($key) && str_starts_with($key, 'x-')) {
                 $extensions[$key] = $extension;
+            }
+        }
+
+        $schema = null;
+        $schemaRef = null;
+        if (isset($data['schema'])) {
+            if (!\is_array($data['schema'])) {
+                throw new Exception('Header object schema attribute must be an array.', $path);
+            }
+            $schema = $data['schema'];
+            if (isset($data['schema']['$ref'])) {
+                if (!\is_string($data['schema']['$ref'])) {
+                    throw new Exception('Header object schema attribute $ref attribute must be a string.', $path);
+                }
+                $schemaRef = $data['schema']['$ref'];
             }
         }
 
@@ -30,8 +41,8 @@ class Header
 
         return new self(
             match (true) {
-                isset($data['schema']['$ref']) => Reference::build($data['schema'], $schemaPath),
-                isset($data['schema']) => Schema::build($data['schema'], $schemaPath),
+                $schema !== null && $schemaRef !== null => Reference::build($schema, $schemaPath),
+                $schema !== null => Schema::build($schema, $schemaPath),
                 default => null,
             },
             $extensions,
