@@ -17,3 +17,6 @@ qa:
 	docker-compose run --rm php-highest php -d memory_limit=-1 /usr/bin/composer update --prefer-dist
 	docker-compose run --rm php-highest php vendor/bin/phpstan --memory-limit=-1 analyse -c phpstan-bundle.neon
 	docker-compose run --rm -e SYMFONY_DEPRECATIONS_HELPER="max[direct]=0" php-highest php vendor/bin/phpunit
+
+build-docker-image: 
+	docker build --tag "apifony:$$(git describe --abbrev=0 --tags)" .
