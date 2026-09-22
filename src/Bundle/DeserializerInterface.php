@@ -56,28 +56,6 @@ class DeserializerInterface implements File
                                 ->addParam($f->param('json')->setType('string'))
                                 ->addParam($f->param('type')->setType('string'))
                                 ->setReturnType('object'),
-                        )
-                        ->addStmt(
-                            $f->method('denormalize')
-                                ->setDocComment(
-                                    <<<'COMMENT'
-                                        /**
-                                         * @template T of object
-                                         *
-                                         * @param array<mixed> $data
-                                         * @param class-string<T> $type
-                                         *
-                                         * @return T
-                                         *
-                                         * @throws ExceptionInterface
-                                         * @throws \TypeError
-                                         */
-                                        COMMENT
-                                )
-                                ->makePublic()
-                                ->addParam($f->param('data')->setType('array'))
-                                ->addParam($f->param('type')->setType('string'))
-                                ->setReturnType('object'),
                         ),
                 )
                 ->getNode(),

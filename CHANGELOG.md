@@ -28,6 +28,44 @@ la donnée reçue (et par `max_input_nesting_level`, 64 par défaut).
 ?tree[name]=root&tree[children][0][name]=a&tree[children][0][children][0][name]=a1
 ```
 
+#### Limitation connue : le typage des items de tableaux n'est contrôlé qu'à partir de Symfony 8
+
+Découvert en couvrant les tableaux imbriqués. Le contrôle de type annoncé en 10.0.0 ne s'applique
+pas aux **items d'un tableau** avant `symfony/serializer` 8. Mesuré, pour une propriété déclarée
+`list<int>` recevant `["abc"]` :
+
+| `symfony/serializer` | `list<int>` | `list<list<int>>` |
+|---|---|---|
+| 6.4.0 (plancher déclaré) | accepté | accepté |
+| 6.4.46 (dernier LTS) | accepté | accepté |
+| 7.2.9 | accepté | accepté |
+| 7.4.19 | accepté | accepté |
+| 8.1.7 | **rejeté** | **rejeté** |
+
+Sur 6.4 et 7.x, le handler reçoit donc un tableau dont les éléments contredisent le `@param`
+déclaré, sans erreur. Le bundle généré déclarant `symfony/serializer: ^6.4 || ^7.0 || ^8.0`, la
+garantie ne vaut aujourd'hui que pour les projets sur Symfony 8. Le test correspondant
+(`ApifonyTest::testE`) est sauté en dessous de cette version.
+
+Cela ne concerne **que le request body**. Les query params ne passent pas par le `Serializer` : leur
+coercition est générée et applique les mêmes règles strictes quelle que soit la version de Symfony.
+
+#### Suppression de `DeserializerInterface::denormalize()`
+
+La méthode générée `denormalize()` est supprimée du `DeserializerInterface` et du `Deserializer`.
+Elle n'était appelée par rien — seul `AbstractController` consomme l'interface, et uniquement via
+`deserialize()` — et elle passait `DISABLE_TYPE_ENFORCEMENT` à **TRUE**, l'inverse exact du contrat
+annoncé en 10.0.0. Elle constituait donc un piège : l'utiliser réintroduisait silencieusement la
+conversion de types que la 10.0.0 avait supprimée.
+
+Retirer une méthode d'une interface ne casse aucune implémentation existante. En revanche, si du
+code appelle directement `$deserializer->denormalize(...)`, il faut le remplacer par
+`deserialize()` en lui passant du JSON.
+
+Au passage, la propriété interne `$serializer` du `Deserializer` généré n'est plus typée
+`SerializerInterface&DenormalizerInterface` mais `SerializerInterface` : l'intersection n'existait
+que pour `denormalize()`.
+
 #### Sérialisation
 
 Seule la **notation à crochets** de PHP est acceptée, la seule qui permette la profondeur :

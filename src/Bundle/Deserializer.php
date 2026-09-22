@@ -51,15 +51,13 @@ class Deserializer implements File
                 ->addStmt($f->use('Symfony\Component\PropertyInfo\Extractor\ReflectionExtractor'))
                 ->addStmt($f->use('Symfony\Component\PropertyInfo\PropertyInfoExtractor'))
                 ->addStmt($f->use('Symfony\Component\Serializer\Encoder\JsonEncoder'))
-                ->addStmt($f->use('Symfony\Component\Serializer\Normalizer\AbstractObjectNormalizer'))
                 ->addStmt($f->use('Symfony\Component\Serializer\Normalizer\ArrayDenormalizer'))
-                ->addStmt($f->use('Symfony\Component\Serializer\Normalizer\DenormalizerInterface'))
                 ->addStmt($f->use('Symfony\Component\Serializer\Normalizer\ObjectNormalizer'))
                 ->addStmt($f->use('Symfony\Component\Serializer\Serializer'))
                 ->addStmt($f->use('Symfony\Component\Serializer\SerializerInterface'))
                 ->addStmt(
                     $f->class('Deserializer')->implement('DeserializerInterface')
-                        ->addStmt($f->property('serializer')->makePrivate()->setType('SerializerInterface&DenormalizerInterface'))
+                        ->addStmt($f->property('serializer')->makePrivate()->setType('SerializerInterface'))
                         ->addStmt(
                             $f->method('__construct')->makePublic()
                                 ->addStmt(new Expression(new Assign($f->propertyFetch($f->var('this'), 'serializer'), new New_(new Name('Serializer'), $f->args([
@@ -81,16 +79,6 @@ class Deserializer implements File
                                 ->addParam($f->param('type')->setType('string'))
                                 ->setReturnType('object')
                                 ->addStmt(new Expression(new Assign($f->var('result'), $f->methodCall($f->propertyFetch($f->var('this'), 'serializer'), 'deserialize', $f->args([$f->var('json'), $f->var('type'), $f->classConstFetch('JsonEncoder', 'FORMAT')])))))
-                                ->addStmts($this->getResultTypeGuardStmts($f))
-                                ->addStmt(new Return_($f->var('result')))
-                        )
-                        ->addStmt(
-                            $f->method('denormalize')
-                                ->makePublic()
-                                ->addParam($f->param('data')->setType('array'))
-                                ->addParam($f->param('type')->setType('string'))
-                                ->setReturnType('object')
-                                ->addStmt(new Expression(new Assign($f->var('result'), $f->methodCall($f->propertyFetch($f->var('this'), 'serializer'), 'denormalize', $f->args([$f->var('data'), $f->var('type'), $f->val(null), new Array_([new ArrayItem($f->val(true), $f->classConstFetch('AbstractObjectNormalizer', 'DISABLE_TYPE_ENFORCEMENT'))], ['kind' => Array_::KIND_SHORT])])))))
                                 ->addStmts($this->getResultTypeGuardStmts($f))
                                 ->addStmt(new Return_($f->var('result')))
                         )
