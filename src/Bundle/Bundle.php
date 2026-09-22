@@ -58,7 +58,7 @@ class Bundle implements File
 
     /**
      * @param array<string, Format> $formats
-     * @param array<Model>          $models
+     * @param list<Model>           $models
      */
     private function __construct(
         private readonly string $name,
@@ -225,55 +225,19 @@ class Bundle implements File
     }
 
     /**
-     * @return array<Model>
+     * @return list<Model>
      *
      * @throws Exception
      */
     private static function buildModels(string $namespace, ?Components $components): array
     {
-        $models = [];
-
-        /**
-         * @throws Exception
-         */
-        $addModels = static function (string $rawName, Reference|Schema $schema) use (&$addModels, &$models, $namespace, $components): void {
-            if ($schema instanceof Reference) {
-                if ($components === null || !isset($components->schemas[$schema->getName()])) {
-                    throw new Exception('Reference not found in schemas components.', $schema->path);
-                }
-                $schema = $components->schemas[$rawName = $schema->getName()];
-            }
-            if (!isset($models[$rawName])) {
-                $type = TypeFactory::build('', $schema, $components);
-                if ($type instanceof ObjectType) {
-                    if (!($schema->extensions['x-apifony-raw'] ?? false)) {
-                        $models[$rawName] = Model::build(
-                            $namespace,
-                            "{$namespace}\\Model",
-                            'src/Model',
-                            $rawName,
-                            $schema,
-                            $components,
-                            true,
-                        );
-                        foreach ($schema->properties as $propertyName => $property) {
-                            $addModels("{$rawName}_{$propertyName}", $property);
-                        }
-                    }
-                } elseif ($type instanceof ArrayType) {
-                    if ($schema->items === null) {
-                        throw new Exception('Schema objects of array type without items attribute are not supported.', $schema->path);
-                    }
-                    $addModels($rawName, $schema->items);
-                }
-            }
-        };
+        $collector = ModelCollector::forComponents($namespace, $components);
 
         foreach ($components->schemas ?? [] as $rawName => $schema) {
-            $addModels($rawName, $schema);
+            $collector->collect($rawName, $schema);
         }
 
-        return $models;
+        return $collector->getModels();
     }
 
     public function getFolder(): string

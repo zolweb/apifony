@@ -54,34 +54,9 @@ class ActionResponse implements File
             }
 
             if ($hasModel) {
-                $addModels = static function (string $rawName, Reference|Schema $schema) use (&$addModels, &$payloadModels, $bundleNamespace, $aggregateName, $components): void {
-                    if (!$schema instanceof Reference) {
-                        $type = TypeFactory::build('', $schema, $components);
-                        if ($type instanceof ObjectType) {
-                            if (!($schema->extensions['x-apifony-raw'] ?? false)) {
-                                $payloadModels[$rawName] = Model::build(
-                                    $bundleNamespace,
-                                    "{$bundleNamespace}\\Api\\{$aggregateName}",
-                                    "src/Api/{$aggregateName}",
-                                    $rawName,
-                                    $schema,
-                                    $components,
-                                    false,
-                                );
-                                foreach ($schema->properties as $propertyName => $property) {
-                                    $addModels("{$rawName}_{$propertyName}", $property);
-                                }
-                            }
-                        } elseif ($type instanceof ArrayType) {
-                            if ($schema->items === null) {
-                                throw new Exception('Schema objects of array type without items attribute are not supported.', $schema->path);
-                            }
-                            $addModels($rawName, $schema->items);
-                        }
-                    }
-                };
-
-                $addModels($className, $schema);
+                $collector = ModelCollector::forAggregate($bundleNamespace, $aggregateName, $components);
+                $collector->collect($className, $schema);
+                $payloadModels = $collector->getModels();
             }
         }
 
