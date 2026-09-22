@@ -87,7 +87,7 @@ class TypeFactory
             'integer' => new IntegerType($schema, $nullable),
             'number' => new NumberType($schema, $nullable),
             'boolean' => new BooleanType($schema, $nullable),
-            'object' => new ObjectType($schema, $nullable, $className),
+            'object' => new ObjectType($schema, $nullable, $className, $components),
             'array' => new ArrayType($schema, $nullable, $className, $components),
         };
     }

@@ -6,9 +6,11 @@ namespace Zol\Apifony\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\String_;
+use PhpParser\Node\Stmt\Expression;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -132,6 +134,23 @@ class StringType implements Type
         }
 
         return $type;
+    }
+
+    public function getUsedModelNames(): array
+    {
+        return [];
+    }
+
+    public function hasInformativeDocType(): bool
+    {
+        return false;
+    }
+
+    public function getParameterDenormalizationStmts(Expr $source, Expr $target, Expr $path, Expr $in, DenormalizationContext $context): array
+    {
+        $f = new BuilderFactory();
+
+        return [new Expression(new Assign($target, $f->methodCall($f->var('this'), \sprintf('denormalize%sParameter', ucfirst($this->getBuiltInPhpType())), [$source, $path, $in])))];
     }
 
     public function asName(): Name

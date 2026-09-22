@@ -7,8 +7,14 @@ namespace Zol\Apifony\Bundle;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayDimFetch;
+use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Name;
+use PhpParser\Node\Scalar\Encapsed;
+use PhpParser\Node\Scalar\EncapsedStringPart;
+use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Foreach_;
 use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
@@ -145,7 +151,7 @@ class ArrayType implements Type
 
     public function getInitValue(): Expr
     {
-        throw new \RuntimeException('Can not init array');
+        return new Array_([], ['kind' => Array_::KIND_SHORT]);
     }
 
     public function getUsedModel(): ?string
@@ -162,6 +168,51 @@ class ArrayType implements Type
         }
 
         return $type;
+    }
+
+    public function hasInformativeDocType(): bool
+    {
+        return true;
+    }
+
+    /**
+     * @return list<string>
+     *
+     * @throws Exception
+     */
+    public function getUsedModelNames(): array
+    {
+        if ($this->usedModel !== null) {
+            return [$this->usedModel];
+        }
+
+        return $this->itemType->getUsedModelNames();
+    }
+
+    public function getParameterDenormalizationStmts(Expr $source, Expr $target, Expr $path, Expr $in, DenormalizationContext $context): array
+    {
+        $f = new BuilderFactory();
+
+        $key = $context->nextVariable();
+        $item = $context->nextVariable();
+        $itemPath = $context->nextVariable();
+        $itemValue = $context->nextVariable();
+
+        return [
+            new Expression(new Assign($target, new Array_([], ['kind' => Array_::KIND_SHORT]))),
+            new Foreach_(
+                $f->methodCall($f->var('this'), 'denormalizeListParameter', [$source, $path, $in]),
+                $item,
+                [
+                    'keyVar' => $key,
+                    'stmts' => array_merge(
+                        [new Expression(new Assign($itemPath, new Encapsed([$path, new EncapsedStringPart('['), $key, new EncapsedStringPart(']')])))],
+                        $this->itemType->getParameterDenormalizationStmts($item, $itemValue, $itemPath, $in, $context),
+                        [new Expression(new Assign(new ArrayDimFetch($target), $itemValue))],
+                    ),
+                ],
+            ),
+        ];
     }
 
     public function asName(): Name

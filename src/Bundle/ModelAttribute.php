@@ -66,6 +66,11 @@ class ModelAttribute
     ) {
     }
 
+    public function getType(): Type
+    {
+        return $this->type;
+    }
+
     public function getUsedModelName(): ?string
     {
         return $this->usedModelName;

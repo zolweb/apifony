@@ -102,6 +102,77 @@ paths:
           required: true
           schema:
             type: 'boolean'
+        - name: 'queryParamStringArray'
+          in: 'query'
+          required: true
+          schema:
+            type: 'array'
+            items:
+              type: 'string'
+              minLength: 2
+            minItems: 1
+        - name: 'queryParamIntegerMatrix'
+          in: 'query'
+          required: true
+          schema:
+            type: 'array'
+            items:
+              type: 'array'
+              items:
+                type: 'integer'
+        - name: 'queryParamAbcList'
+          in: 'query'
+          required: true
+          schema:
+            type: 'array'
+            items:
+              $ref: '#/components/schemas/Abc'
+        - name: 'queryParamObject'
+          in: 'query'
+          required: true
+          schema:
+            type: 'object'
+            properties:
+              stringProperty:
+                type: 'string'
+              nestedArrayProperty:
+                type: 'array'
+                items:
+                  type: 'integer'
+              nestedObjectProperty:
+                type: 'object'
+                properties:
+                  emailProperty:
+                    type: 'string'
+                    format: 'email'
+                required: ['emailProperty']
+              optionalProperty:
+                type: 'string'
+                default: 'abc'
+            required: ['stringProperty', 'nestedArrayProperty', 'nestedObjectProperty']
+        - name: 'queryParamAbcRef'
+          in: 'query'
+          required: true
+          schema:
+            $ref: '#/components/schemas/Abc'
+        - name: 'queryParamOptionalArray'
+          in: 'query'
+          required: false
+          schema:
+            type: 'array'
+            items:
+              type: 'string'
+            default: []
+        - name: 'queryParamNullableArray'
+          in: 'query'
+          required: false
+          schema:
+            type:
+              - 'array'
+              - 'null'
+            items:
+              type: 'boolean'
+            default: null
       requestBody:
         content:
           application/json:

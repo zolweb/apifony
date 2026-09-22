@@ -45,8 +45,10 @@ class Constraint
         foreach ($this->parameters as $parameter) {
             if (\is_array($parameter)) {
                 foreach ($parameter as $value) {
-                    if ($value instanceof self && $value->formatName !== null) {
-                        $formatConstraintNames[] = (string) u($value->formatName)->camel()->title();
+                    if ($value instanceof self) {
+                        foreach ($value->getFormatConstraintClassNames() as $formatConstraintName) {
+                            $formatConstraintNames[] = $formatConstraintName;
+                        }
                     }
                 }
             }

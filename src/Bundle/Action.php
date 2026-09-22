@@ -19,6 +19,8 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\UnionType;
+use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
+use PHPStan\PhpDocParser\Printer\Printer;
 use Zol\Apifony\OpenApi\Components;
 use Zol\Apifony\OpenApi\Operation;
 use Zol\Apifony\OpenApi\Reference;
@@ -44,7 +46,7 @@ class Action
             $className,
             $route,
             $method,
-            self::buildParameters($className, $operation, $components),
+            self::buildParameters($bundleNamespace, $aggregateName, $className, $operation, $components),
             self::buildRequestBody($bundleNamespace, $aggregateName, $className, $operation, $components),
             self::buildResponses($bundleNamespace, $aggregateName, $className, $operation, $components),
         );
@@ -104,6 +106,11 @@ class Action
     {
         $files = [];
 
+        foreach ($this->parameters as $parameter) {
+            foreach ($parameter->getModels() as $model) {
+                $files[] = $model;
+            }
+        }
         foreach ($this->getResponses() as $response) {
             $files[] = $response;
         }
@@ -125,6 +132,8 @@ class Action
      * @throws Exception
      */
     private static function buildParameters(
+        string $bundleNamespace,
+        string $aggregateName,
         string $actionClassName,
         Operation $operation,
         ?Components $components,
@@ -138,13 +147,21 @@ class Action
                 }
                 $parameter = $components->parameters[$parameter->getName()];
             }
-            $parameters[] = ActionParameter::build($actionClassName, $parameter, $components, ++$ordinal);
+            $parameters[] = ActionParameter::build($bundleNamespace, $aggregateName, $actionClassName, $parameter, $components, ++$ordinal);
         }
 
         usort(
             $parameters,
             static fn (ActionParameter $param1, ActionParameter $param2): int => $param1->shouldBePositionedBefore($param2) ? -1 : 1
         );
+
+        $variableNames = [];
+        foreach ($parameters as $parameter) {
+            if (isset($variableNames[$parameter->getVariableName()])) {
+                throw new Exception(\sprintf('Parameters \'%s\' and \'%s\' both map to the \'$%s\' handler argument.', $variableNames[$parameter->getVariableName()], $parameter->getRawName(), $parameter->getVariableName()), $operation->path);
+            }
+            $variableNames[$parameter->getVariableName()] = $parameter->getRawName();
+        }
 
         return $parameters;
     }
@@ -258,6 +275,24 @@ class Action
         return $route;
     }
 
+    /**
+     * @return list<ClassMethod>
+     *
+     * @throws Exception
+     */
+    public function getParameterDenormalizerMethods(): array
+    {
+        $methods = [];
+        foreach ($this->parameters as $parameter) {
+            $method = $parameter->getDenormalizerMethod();
+            if ($method !== null) {
+                $methods[] = $method;
+            }
+        }
+
+        return $methods;
+    }
+
     public function getClassMethod(): ClassMethod
     {
         $f = new BuilderFactory();
@@ -331,7 +366,7 @@ class Action
     {
         $f = new BuilderFactory();
 
-        return $f->method($this->name)
+        $method = $f->method($this->name)
             ->makePublic()
             ->addParams(array_merge(
                 array_map(
@@ -343,7 +378,20 @@ class Action
             ->setReturnType(new UnionType(array_map(
                 static fn (ActionResponse $response) => new Name($response->getClassName()),
                 $this->responses,
-            )))->getNode()
+            )))
         ;
+
+        $docTagNodes = [];
+        foreach ($this->parameters as $parameter) {
+            $docTagNode = $parameter->getDocTagNode();
+            if ($docTagNode !== null) {
+                $docTagNodes[] = $docTagNode;
+            }
+        }
+        if (\count($docTagNodes) > 0) {
+            $method->setDocComment((new Printer())->print(new PhpDocNode($docTagNodes)));
+        }
+
+        return $method->getNode();
     }
 }

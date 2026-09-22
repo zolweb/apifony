@@ -79,6 +79,9 @@ class Controller implements File
         return "{$this->aggregateName}Controller.php";
     }
 
+    /**
+     * @throws Exception
+     */
     public function getContent(): string
     {
         $f = new BuilderFactory();
@@ -97,6 +100,10 @@ class Controller implements File
         ;
 
         $class->addStmt($this->action->getClassMethod());
+
+        foreach ($this->action->getParameterDenormalizerMethods() as $denormalizerMethod) {
+            $class->addStmt($denormalizerMethod);
+        }
 
         $namespace = $f->namespace("{$this->bundleNamespace}\\Api\\{$this->aggregateName}")
             ->addStmt($f->use("{$this->bundleNamespace}\\Api\\DenormalizationException"))

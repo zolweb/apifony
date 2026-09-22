@@ -53,6 +53,11 @@ class Aggregate
                 $usedModelNames[$usedModelName] = true;
             }
         }
+        foreach ($action->getParameters() as $parameter) {
+            foreach ($parameter->getUsedModelNames() as $usedModelName) {
+                $usedModelNames[$usedModelName] = true;
+            }
+        }
         $usedModelNames = array_keys($usedModelNames);
 
         return new self(

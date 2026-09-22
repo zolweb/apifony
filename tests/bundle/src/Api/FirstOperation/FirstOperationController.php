@@ -12,6 +12,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Validator\Constraints as Assert;
 use Zol\Apifony\Tests\TestOpenApiServer\Model\Schema;
+use Zol\Apifony\Tests\TestOpenApiServer\Model\Abc;
 class FirstOperationController extends AbstractController
 {
     private FirstOperationHandler $handler;
@@ -158,6 +159,69 @@ class FirstOperationController extends AbstractController
         } catch (ParameterValidationException $e) {
             $cookieErrors['cookieParamBoolean'] = $e->messages;
         }
+        $qQueryParamStringArray = [];
+        try {
+            $qQueryParamStringArray = $this->denormalizeQQueryParamStringArrayParameter($request, 'queryParamStringArray', 'query');
+            $this->validateParameter($qQueryParamStringArray, [new Assert\NotNull(), new Assert\Count(min: 1), new Assert\All(constraints: [new Assert\NotNull(), new Assert\Length(min: 2)])]);
+        } catch (DenormalizationException $e) {
+            $queryErrors['queryParamStringArray'] = [$e->getMessage()];
+        } catch (ParameterValidationException $e) {
+            $queryErrors['queryParamStringArray'] = $e->messages;
+        }
+        $qQueryParamIntegerMatrix = [];
+        try {
+            $qQueryParamIntegerMatrix = $this->denormalizeQQueryParamIntegerMatrixParameter($request, 'queryParamIntegerMatrix', 'query');
+            $this->validateParameter($qQueryParamIntegerMatrix, [new Assert\NotNull(), new Assert\All(constraints: [new Assert\NotNull(), new Assert\All(constraints: [new Assert\NotNull()])])]);
+        } catch (DenormalizationException $e) {
+            $queryErrors['queryParamIntegerMatrix'] = [$e->getMessage()];
+        } catch (ParameterValidationException $e) {
+            $queryErrors['queryParamIntegerMatrix'] = $e->messages;
+        }
+        $qQueryParamAbcList = [];
+        try {
+            $qQueryParamAbcList = $this->denormalizeQQueryParamAbcListParameter($request, 'queryParamAbcList', 'query');
+            $this->validateParameter($qQueryParamAbcList, [new Assert\NotNull(), new Assert\Valid(), new Assert\All(constraints: [new Assert\NotNull()])]);
+        } catch (DenormalizationException $e) {
+            $queryErrors['queryParamAbcList'] = [$e->getMessage()];
+        } catch (ParameterValidationException $e) {
+            $queryErrors['queryParamAbcList'] = $e->messages;
+        }
+        $qQueryParamObject = (new \ReflectionClass(FirstOperationQueryParamObject::class))->newInstanceWithoutConstructor();
+        try {
+            $qQueryParamObject = $this->denormalizeQQueryParamObjectParameter($request, 'queryParamObject', 'query');
+            $this->validateParameter($qQueryParamObject, [new Assert\Valid(), new Assert\NotNull()]);
+        } catch (DenormalizationException $e) {
+            $queryErrors['queryParamObject'] = [$e->getMessage()];
+        } catch (ParameterValidationException $e) {
+            $queryErrors['queryParamObject'] = $e->messages;
+        }
+        $qQueryParamAbcRef = (new \ReflectionClass(Abc::class))->newInstanceWithoutConstructor();
+        try {
+            $qQueryParamAbcRef = $this->denormalizeQQueryParamAbcRefParameter($request, 'queryParamAbcRef', 'query');
+            $this->validateParameter($qQueryParamAbcRef, [new Assert\Valid(), new Assert\NotNull()]);
+        } catch (DenormalizationException $e) {
+            $queryErrors['queryParamAbcRef'] = [$e->getMessage()];
+        } catch (ParameterValidationException $e) {
+            $queryErrors['queryParamAbcRef'] = $e->messages;
+        }
+        $qQueryParamOptionalArray = [];
+        try {
+            $qQueryParamOptionalArray = $this->denormalizeQQueryParamOptionalArrayParameter($request, 'queryParamOptionalArray', 'query');
+            $this->validateParameter($qQueryParamOptionalArray, [new Assert\NotNull(), new Assert\All(constraints: [new Assert\NotNull()])]);
+        } catch (DenormalizationException $e) {
+            $queryErrors['queryParamOptionalArray'] = [$e->getMessage()];
+        } catch (ParameterValidationException $e) {
+            $queryErrors['queryParamOptionalArray'] = $e->messages;
+        }
+        $qQueryParamNullableArray = [];
+        try {
+            $qQueryParamNullableArray = $this->denormalizeQQueryParamNullableArrayParameter($request, 'queryParamNullableArray', 'query');
+            $this->validateParameter($qQueryParamNullableArray, [new Assert\All(constraints: [new Assert\NotNull()])]);
+        } catch (DenormalizationException $e) {
+            $queryErrors['queryParamNullableArray'] = [$e->getMessage()];
+        } catch (ParameterValidationException $e) {
+            $queryErrors['queryParamNullableArray'] = $e->messages;
+        }
         $requestBodyPayload = (new \ReflectionClass(Schema::class))->newInstanceWithoutConstructor();
         try {
             $requestBodyPayload = $this->getObjectRequestBody($request, Schema::class);
@@ -186,10 +250,151 @@ class FirstOperationController extends AbstractController
         if (\count($errors) > 0) {
             return new JsonResponse(['code' => 'validation_failed', 'message' => 'Validation has failed.', 'errors' => $errors], Response::HTTP_BAD_REQUEST);
         }
-        $response = $this->handler->firstOperation($pPathParamString, $pPathParamNumber, $pPathParamInteger, $pPathParamBoolean, $qQueryParamString, $qQueryParamNumber, $qQueryParamInteger, $qQueryParamBoolean, $hHeaderParamString, $hHeaderParamNumber, $hHeaderParamInteger, $hHeaderParamBoolean, $cCookieParamString, $cCookieParamNumber, $cCookieParamInteger, $cCookieParamBoolean, $requestBodyPayload);
+        $response = $this->handler->firstOperation($pPathParamString, $pPathParamNumber, $pPathParamInteger, $pPathParamBoolean, $qQueryParamString, $qQueryParamNumber, $qQueryParamInteger, $qQueryParamBoolean, $hHeaderParamString, $hHeaderParamNumber, $hHeaderParamInteger, $hHeaderParamBoolean, $cCookieParamString, $cCookieParamNumber, $cCookieParamInteger, $cCookieParamBoolean, $qQueryParamStringArray, $qQueryParamIntegerMatrix, $qQueryParamAbcList, $qQueryParamObject, $qQueryParamAbcRef, $qQueryParamOptionalArray, $qQueryParamNullableArray, $requestBodyPayload);
         if ($response->getContentType() === 'application/json') {
             return new JsonResponse($response->payload, $response->getCode(), $response->getHeaders());
         }
         return new Response('', $response->getCode(), $response->getHeaders());
+    }
+    /**
+     * @return list<string>
+     *
+     * @throws DenormalizationException
+     */
+    private function denormalizeQQueryParamStringArrayParameter(Request $request, string $name, string $in): array
+    {
+        if (!$this->hasParameter($request, $name, $in)) {
+            throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+        }
+        $v0 = [];
+        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name, $in) as $v1 => $v2) {
+            $v3 = "{$name}[{$v1}]";
+            $v4 = $this->denormalizeStringParameter($v2, $v3, $in);
+            $v0[] = $v4;
+        }
+        return $v0;
+    }
+    /**
+     * @return list<list<int<min,max>>>
+     *
+     * @throws DenormalizationException
+     */
+    private function denormalizeQQueryParamIntegerMatrixParameter(Request $request, string $name, string $in): array
+    {
+        if (!$this->hasParameter($request, $name, $in)) {
+            throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+        }
+        $v0 = [];
+        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name, $in) as $v1 => $v2) {
+            $v3 = "{$name}[{$v1}]";
+            $v4 = [];
+            foreach ($this->denormalizeListParameter($v2, $v3, $in) as $v5 => $v6) {
+                $v7 = "{$v3}[{$v5}]";
+                $v8 = $this->denormalizeIntParameter($v6, $v7, $in);
+                $v4[] = $v8;
+            }
+            $v0[] = $v4;
+        }
+        return $v0;
+    }
+    /**
+     * @return list<Abc>
+     *
+     * @throws DenormalizationException
+     */
+    private function denormalizeQQueryParamAbcListParameter(Request $request, string $name, string $in): array
+    {
+        if (!$this->hasParameter($request, $name, $in)) {
+            throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+        }
+        $v0 = [];
+        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name, $in) as $v1 => $v2) {
+            $v3 = "{$name}[{$v1}]";
+            $v5 = $this->denormalizeMapParameter($v2, $v3, $in);
+            $v6 = "{$v3}[def]";
+            $v7 = $this->denormalizeStringParameter($this->getRequiredParameterProperty($v5, 'def', $v6, $in), $v6, $in);
+            $v4 = new Abc(def: $v7);
+            $v0[] = $v4;
+        }
+        return $v0;
+    }
+    /**
+     * @throws DenormalizationException
+     */
+    private function denormalizeQQueryParamObjectParameter(Request $request, string $name, string $in): FirstOperationQueryParamObject
+    {
+        if (!$this->hasParameter($request, $name, $in)) {
+            throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+        }
+        $v1 = $this->denormalizeMapParameter($this->getRawParameter($request, $name, $in), $name, $in);
+        $v2 = "{$name}[stringProperty]";
+        $v3 = $this->denormalizeStringParameter($this->getRequiredParameterProperty($v1, 'stringProperty', $v2, $in), $v2, $in);
+        $v4 = "{$name}[nestedArrayProperty]";
+        $v5 = [];
+        foreach ($this->denormalizeListParameter($this->getRequiredParameterProperty($v1, 'nestedArrayProperty', $v4, $in), $v4, $in) as $v6 => $v7) {
+            $v8 = "{$v4}[{$v6}]";
+            $v9 = $this->denormalizeIntParameter($v7, $v8, $in);
+            $v5[] = $v9;
+        }
+        $v10 = "{$name}[nestedObjectProperty]";
+        $v12 = $this->denormalizeMapParameter($this->getRequiredParameterProperty($v1, 'nestedObjectProperty', $v10, $in), $v10, $in);
+        $v13 = "{$v10}[emailProperty]";
+        $v14 = $this->denormalizeStringParameter($this->getRequiredParameterProperty($v12, 'emailProperty', $v13, $in), $v13, $in);
+        $v11 = new FirstOperationQueryParamObjectNestedObjectProperty(emailProperty: $v14);
+        $v16 = 'abc';
+        if (\array_key_exists('optionalProperty', $v1)) {
+            $v15 = "{$name}[optionalProperty]";
+            $v16 = $this->denormalizeStringParameter($v1['optionalProperty'], $v15, $in);
+        }
+        return new FirstOperationQueryParamObject(stringProperty: $v3, nestedArrayProperty: $v5, nestedObjectProperty: $v11, optionalProperty: $v16);
+    }
+    /**
+     * @throws DenormalizationException
+     */
+    private function denormalizeQQueryParamAbcRefParameter(Request $request, string $name, string $in): Abc
+    {
+        if (!$this->hasParameter($request, $name, $in)) {
+            throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+        }
+        $v1 = $this->denormalizeMapParameter($this->getRawParameter($request, $name, $in), $name, $in);
+        $v2 = "{$name}[def]";
+        $v3 = $this->denormalizeStringParameter($this->getRequiredParameterProperty($v1, 'def', $v2, $in), $v2, $in);
+        return new Abc(def: $v3);
+    }
+    /**
+     * @return list<string>
+     *
+     * @throws DenormalizationException
+     */
+    private function denormalizeQQueryParamOptionalArrayParameter(Request $request, string $name, string $in): array
+    {
+        if (!$this->hasParameter($request, $name, $in)) {
+            return [];
+        }
+        $v0 = [];
+        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name, $in) as $v1 => $v2) {
+            $v3 = "{$name}[{$v1}]";
+            $v4 = $this->denormalizeStringParameter($v2, $v3, $in);
+            $v0[] = $v4;
+        }
+        return $v0;
+    }
+    /**
+     * @return ?list<bool>
+     *
+     * @throws DenormalizationException
+     */
+    private function denormalizeQQueryParamNullableArrayParameter(Request $request, string $name, string $in): ?array
+    {
+        if (!$this->hasParameter($request, $name, $in)) {
+            return null;
+        }
+        $v0 = [];
+        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name, $in) as $v1 => $v2) {
+            $v3 = "{$name}[{$v1}]";
+            $v4 = $this->denormalizeBoolParameter($v2, $v3, $in);
+            $v0[] = $v4;
+        }
+        return $v0;
     }
 }
