@@ -282,11 +282,27 @@ class Action
      */
     public function getParameterDenormalizerMethods(): array
     {
+        $context = new DenormalizationContext();
+
         $methods = [];
         foreach ($this->parameters as $parameter) {
-            $method = $parameter->getDenormalizerMethod();
+            $method = $parameter->getDenormalizerMethod($context);
             if ($method !== null) {
                 $methods[] = $method;
+            }
+        }
+
+        // Building a model method registers the models it uses in turn, so drain the registry
+        // until it settles. It always does: the set of model names is finite.
+        $emittedModelNames = [];
+        while (true) {
+            $pendingModels = array_diff_key($context->getModels(), $emittedModelNames);
+            if (\count($pendingModels) === 0) {
+                break;
+            }
+            foreach ($pendingModels as $modelName => $model) {
+                $emittedModelNames[$modelName] = true;
+                $methods[] = $model->getParameterDenormalizerMethod($context);
             }
         }
 

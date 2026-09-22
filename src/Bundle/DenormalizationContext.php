@@ -8,16 +8,16 @@ use PhpParser\Node\Expr\Variable;
 
 /**
  * Carries the state shared by a whole parameter denormalization tree: a counter handing out unique
- * temporary variable names, and the models visited on the current branch, used to detect cycles.
+ * temporary variable names, and the registry of the models met along the way.
  */
 class DenormalizationContext
 {
     private int $counter = 0;
 
     /**
-     * @var list<string>
+     * @var array<string, ObjectType>
      */
-    private array $visitedModels = [];
+    private array $models = [];
 
     public function nextVariable(): Variable
     {
@@ -25,21 +25,35 @@ class DenormalizationContext
     }
 
     /**
-     * @param list<string> $path
-     *
-     * @throws Exception
+     * Restarts the temporary variable names, so that every generated method reads from $v0.
      */
-    public function enterModel(string $name, array $path): void
+    public function resetVariables(): void
     {
-        if (\in_array($name, $this->visitedModels, true)) {
-            throw new Exception('Recursive schemas are not supported for array and object parameters.', $path);
-        }
-
-        $this->visitedModels[] = $name;
+        $this->counter = 0;
     }
 
-    public function leaveModel(): void
+    /**
+     * Registers a model and returns the name of the controller method denormalizing it. Emitting
+     * one method per model, rather than inlining the whole type tree at each use site, is what
+     * lets a recursive schema produce recursive code instead of a generator that never terminates.
+     */
+    public function registerModel(ObjectType $type): string
     {
-        array_pop($this->visitedModels);
+        $this->models[$type->getName()] = $type;
+
+        return self::getModelMethodName($type->getName());
+    }
+
+    public static function getModelMethodName(string $modelName): string
+    {
+        return \sprintf('denormalize%sParameterValue', $modelName);
+    }
+
+    /**
+     * @return array<string, ObjectType>
+     */
+    public function getModels(): array
+    {
+        return $this->models;
     }
 }

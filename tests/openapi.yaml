@@ -155,6 +155,11 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/Abc'
+        - name: 'queryParamNodeTree'
+          in: 'query'
+          required: true
+          schema:
+            $ref: '#/components/schemas/Node'
         - name: 'queryParamOptionalArray'
           in: 'query'
           required: false
@@ -361,3 +366,14 @@ components:
         def:
           type: 'string'
       required: ['def']
+    Node:
+      type: 'object'
+      properties:
+        name:
+          type: 'string'
+        children:
+          type: 'array'
+          items:
+            $ref: '#/components/schemas/Node'
+          default: []
+      required: ['name']

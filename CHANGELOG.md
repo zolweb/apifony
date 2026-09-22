@@ -20,6 +20,13 @@ public function op(array $qTags, array $qMatrix, array $qAbcList, OpFilter $qFil
 ```
 
 Les schémas inline de type objet donnent lieu à un modèle généré, comme pour les request bodies.
+Le contrôleur reçoit une méthode de dénormalisation par modèle, si bien que les schémas récursifs
+via `$ref` sont supportés : la récursion du schéma devient une récursion du code généré, bornée par
+la donnée reçue (et par `max_input_nesting_level`, 64 par défaut).
+
+```
+?tree[name]=root&tree[children][0][name]=a&tree[children][0][children][0][name]=a1
+```
 
 #### Sérialisation
 
@@ -40,7 +47,6 @@ styles ne permet d'aller au-delà d'un niveau. `style` et `explode` restent igno
 
 - `array` et `object` ne sont supportés qu'en `query`. En `path`, `header` ou `cookie`, la
   génération échoue avec un message explicite.
-- Les schémas récursifs (via `$ref`) ne sont pas supportés pour ces paramètres.
 - Un paramètre tableau optionnel se déclare avec `default: []`, un paramètre objet optionnel avec
   `type: ['object', 'null']` et `default: null` — ce sont les seules valeurs par défaut que
   `Schema` accepte pour ces types.

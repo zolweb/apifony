@@ -20,7 +20,11 @@ final class ApifonyTest extends WebTestCase
         .'&queryParamAbcList[0][def]=x&queryParamAbcList[1][def]=y'
         .'&queryParamObject[stringProperty]=s&queryParamObject[nestedArrayProperty][]=1'
         .'&queryParamObject[nestedObjectProperty][emailProperty]=erwin@zol.fr'
-        .'&queryParamAbcRef[def]=z';
+        .'&queryParamAbcRef[def]=z'
+        .'&queryParamNodeTree[name]=root'
+        .'&queryParamNodeTree[children][0][name]=a'
+        .'&queryParamNodeTree[children][0][children][0][name]=a1'
+        .'&queryParamNodeTree[children][1][name]=b';
 
     public function testA(): void
     {
@@ -142,6 +146,13 @@ final class ApifonyTest extends WebTestCase
                     'optionalProperty' => 'abc',
                 ],
                 'queryParamAbcRef' => ['def' => 'z'],
+                'queryParamNodeTree' => [
+                    'name' => 'root',
+                    'children' => [
+                        ['name' => 'a', 'children' => [['name' => 'a1', 'children' => []]]],
+                        ['name' => 'b', 'children' => []],
+                    ],
+                ],
                 'queryParamOptionalArray' => [],
                 'queryParamNullableArray' => null,
                 'requestBodyPayload' => [
@@ -433,7 +444,8 @@ final class ApifonyTest extends WebTestCase
                 .'&queryParamIntegerMatrix[0][]=abc'
                 .'&queryParamAbcList[0][]=x'
                 .'&queryParamOptionalArray[3]=x'
-                .'&queryParamAbcRef[def]=z',
+                .'&queryParamAbcRef[def]=z'
+                .'&queryParamNodeTree[name]=root',
             self::getRequestBody(),
         );
 
@@ -475,7 +487,8 @@ final class ApifonyTest extends WebTestCase
                 .'&queryParamAbcList[0][def]=x'
                 .'&queryParamObject[stringProperty]=s&queryParamObject[nestedArrayProperty][]=1'
                 .'&queryParamObject[nestedObjectProperty][emailProperty]=notanemail'
-                .'&queryParamAbcRef[def]=z',
+                .'&queryParamAbcRef[def]=z'
+                .'&queryParamNodeTree[name]=root',
             self::getRequestBody(),
         );
 

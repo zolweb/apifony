@@ -9,6 +9,7 @@ use Zol\Apifony\Tests\TestOpenApiServer\Api\FirstOperation\FirstOperation200Resp
 use Zol\Apifony\Tests\TestOpenApiServer\Api\FirstOperation\FirstOperationHandler;
 use Zol\Apifony\Tests\TestOpenApiServer\Api\FirstOperation\FirstOperationQueryParamObject;
 use Zol\Apifony\Tests\TestOpenApiServer\Model\Abc;
+use Zol\Apifony\Tests\TestOpenApiServer\Model\Node;
 use Zol\Apifony\Tests\TestOpenApiServer\Model\Schema;
 
 class TestHandler implements FirstOperationHandler
@@ -20,7 +21,7 @@ class TestHandler implements FirstOperationHandler
      * @param list<string>             $qQueryParamOptionalArray
      * @param ?list<bool>              $qQueryParamNullableArray
      */
-    public function firstOperation(string $pPathParamString, float $pPathParamNumber, int $pPathParamInteger, bool $pPathParamBoolean, string $qQueryParamString, float $qQueryParamNumber, int $qQueryParamInteger, bool $qQueryParamBoolean, string $hHeaderParamString, float $hHeaderParamNumber, int $hHeaderParamInteger, bool $hHeaderParamBoolean, string $cCookieParamString, float $cCookieParamNumber, int $cCookieParamInteger, bool $cCookieParamBoolean, array $qQueryParamStringArray, array $qQueryParamIntegerMatrix, array $qQueryParamAbcList, FirstOperationQueryParamObject $qQueryParamObject, Abc $qQueryParamAbcRef, array $qQueryParamOptionalArray, ?array $qQueryParamNullableArray, Schema $requestBodyPayload): FirstOperation200Response
+    public function firstOperation(string $pPathParamString, float $pPathParamNumber, int $pPathParamInteger, bool $pPathParamBoolean, string $qQueryParamString, float $qQueryParamNumber, int $qQueryParamInteger, bool $qQueryParamBoolean, string $hHeaderParamString, float $hHeaderParamNumber, int $hHeaderParamInteger, bool $hHeaderParamBoolean, string $cCookieParamString, float $cCookieParamNumber, int $cCookieParamInteger, bool $cCookieParamBoolean, array $qQueryParamStringArray, array $qQueryParamIntegerMatrix, array $qQueryParamAbcList, FirstOperationQueryParamObject $qQueryParamObject, Abc $qQueryParamAbcRef, Node $qQueryParamNodeTree, array $qQueryParamOptionalArray, ?array $qQueryParamNullableArray, Schema $requestBodyPayload): FirstOperation200Response
     {
         try {
             $json = file_get_contents(__DIR__.'/integer.json');
@@ -59,6 +60,7 @@ class TestHandler implements FirstOperationHandler
                         'queryParamAbcList' => $qQueryParamAbcList,
                         'queryParamObject' => $qQueryParamObject,
                         'queryParamAbcRef' => $qQueryParamAbcRef,
+                        'queryParamNodeTree' => $qQueryParamNodeTree,
                         'queryParamOptionalArray' => $qQueryParamOptionalArray,
                         'queryParamNullableArray' => $qQueryParamNullableArray,
                         'requestBodyPayload' => $requestBodyPayload,

@@ -264,14 +264,14 @@ class ActionParameter
      *
      * @throws Exception
      */
-    public function getDenormalizerMethod(): ?ClassMethod
+    public function getDenormalizerMethod(DenormalizationContext $context): ?ClassMethod
     {
         if (!$this->isComplex()) {
             return null;
         }
 
         $f = new BuilderFactory();
-        $context = new DenormalizationContext();
+        $context->resetVariables();
         $result = $context->nextVariable();
 
         $returnDoc = $this->type->hasInformativeDocType()

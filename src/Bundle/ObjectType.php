@@ -14,8 +14,10 @@ use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\EncapsedStringPart;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
+use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -90,6 +92,11 @@ class ObjectType implements Type
         }
 
         return $constraints;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
     }
 
     public function getBuiltInPhpType(): string
@@ -196,51 +203,69 @@ class ObjectType implements Type
             return [new Expression(new Assign($target, $f->methodCall($f->var('this'), 'denormalizeMapParameter', [$source, $path, $in])))];
         }
 
-        $context->enterModel($this->name, $this->schema->path);
+        return [new Expression(new Assign($target, $f->methodCall($f->var('this'), $context->registerModel($this), [$source, $path, $in])))];
+    }
+
+    /**
+     * The controller method denormalizing one value of this model. It is emitted once per model,
+     * which is what makes a recursive schema generate recursive code rather than an infinitely
+     * inlined type tree.
+     *
+     * @throws Exception
+     */
+    public function getParameterDenormalizerMethod(DenormalizationContext $context): ClassMethod
+    {
+        $f = new BuilderFactory();
+        $context->resetVariables();
+
+        $method = $f->method(DenormalizationContext::getModelMethodName($this->name))
+            ->makePrivate()
+            ->addParam($f->param('value')->setType('mixed'))
+            ->addParam($f->param('path')->setType('string'))
+            ->addParam($f->param('in')->setType('string'))
+            ->setReturnType($this->name)
+            ->setDocComment("/**\n * @throws DenormalizationException\n */")
+        ;
 
         $values = $context->nextVariable();
-        $stmts = [new Expression(new Assign($values, $f->methodCall($f->var('this'), 'denormalizeMapParameter', [$source, $path, $in])))];
-        $args = [];
+        $method->addStmt(new Expression(new Assign($values, $f->methodCall($f->var('this'), 'denormalizeMapParameter', [$f->var('value'), $f->var('path'), $f->var('in')]))));
 
+        $args = [];
         foreach ($this->getAttributes() as $attribute) {
             $rawName = $attribute->getRawName();
             $propertyPath = $context->nextVariable();
             $propertyValue = $context->nextVariable();
-            $propertyPathStmt = new Expression(new Assign($propertyPath, new Encapsed([$path, new EncapsedStringPart("[{$rawName}]")])));
+            $propertyPathStmt = new Expression(new Assign($propertyPath, new Encapsed([$f->var('path'), new EncapsedStringPart("[{$rawName}]")])));
 
             if (\in_array($rawName, $this->schema->required, true)) {
-                $stmts[] = $propertyPathStmt;
+                $method->addStmt($propertyPathStmt);
                 foreach ($attribute->getType()->getParameterDenormalizationStmts(
-                    $f->methodCall($f->var('this'), 'getRequiredParameterProperty', [$values, $f->val($rawName), $propertyPath, $in]),
+                    $f->methodCall($f->var('this'), 'getRequiredParameterProperty', [$values, $f->val($rawName), $propertyPath, $f->var('in')]),
                     $propertyValue,
                     $propertyPath,
-                    $in,
+                    $f->var('in'),
                     $context,
                 ) as $stmt) {
-                    $stmts[] = $stmt;
+                    $method->addStmt($stmt);
                 }
             } else {
-                $stmts[] = new Expression(new Assign($propertyValue, $attribute->getType()->getDefaultExpr()));
-                $stmts[] = new If_($f->funcCall('\array_key_exists', [$f->val($rawName), $values]), ['stmts' => array_merge(
+                $method->addStmt(new Expression(new Assign($propertyValue, $attribute->getType()->getDefaultExpr())));
+                $method->addStmt(new If_($f->funcCall('\array_key_exists', [$f->val($rawName), $values]), ['stmts' => array_merge(
                     [$propertyPathStmt],
                     $attribute->getType()->getParameterDenormalizationStmts(
                         new ArrayDimFetch($values, $f->val($rawName)),
                         $propertyValue,
                         $propertyPath,
-                        $in,
+                        $f->var('in'),
                         $context,
                     ),
-                )]);
+                )]));
             }
 
             $args[] = new Arg($propertyValue, name: new Identifier($rawName));
         }
 
-        $stmts[] = new Expression(new Assign($target, $f->new($this->name, $args)));
-
-        $context->leaveModel();
-
-        return $stmts;
+        return $method->addStmt(new Return_($f->new($this->name, $args)))->getNode();
     }
 
     public function asName(): Name
