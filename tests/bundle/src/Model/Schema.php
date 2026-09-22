@@ -35,6 +35,7 @@ class Schema
      * @param ?string $nullDefaultProperty
      * @param SchemaObjectProperty $objectProperty
      * @param list<string> $arrayProperty
+     * @param list<list<int<min,max>>> $integerMatrixProperty
      * @param list<SchemaObjectArrayProperty> $objectArrayProperty
      * @param list<Schema> $recursiveObjectArray
      * @param string $defaultProperty
@@ -124,6 +125,10 @@ class Schema
         #[Assert\NotNull]
         #[Assert\All(constraints: [new Assert\NotNull()])]
         public readonly array $arrayProperty,
+        
+        #[Assert\NotNull]
+        #[Assert\All(constraints: [new Assert\NotNull(), new Assert\All(constraints: [new Assert\NotNull()])])]
+        public readonly array $integerMatrixProperty,
         
         #[Assert\NotNull]
         #[Assert\Valid]

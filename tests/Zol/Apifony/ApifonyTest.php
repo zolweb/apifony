@@ -39,67 +39,7 @@ final class ApifonyTest extends WebTestCase
         $httpClient->jsonRequest(
             method: 'POST',
             uri: '/path/string/0.1/1/true'.self::VALID_QUERY,
-            parameters: [
-                'stringProperty' => 'string',
-                'numberProperty' => 0.1,
-                'integerProperty' => 1,
-                'booleanProperty' => true,
-                'enumStringProperty' => 'def',
-                'enumNullableStringProperty' => null,
-                'integerRangeProperty' => 0,
-                'emailProperty' => 'erwin.schrödinger@zol.fr',
-                'uuidProperty' => '83b23b90-9501-4da7-b35c-25134bdc45f8',
-                'dateTimeProperty' => '1969-07-21T03:56:20+01:00',
-                'dateTimeProperty2' => '1969-07-21T03:56:20.001+01:00',
-                'dateTimeProperty3' => '1969-07-21T03:56:20Z',
-                'dateTimeProperty4' => '1969-07-21T03:56:20.001Z',
-                'dateProperty' => '1969-07-21',
-                'timeProperty' => '03:56:20+01:00',
-                'timeProperty2' => '03:56:20.001+01:00',
-                'timeProperty3' => '03:56:20Z',
-                'timeProperty4' => '03:56:20.001Z',
-                'customProperty' => 'custom',
-                'overriddenProperty' => 'abc',
-                'objectProperty' => [
-                    'stringProperty' => 'string',
-                ],
-                'arrayProperty' => ['string'],
-                'objectArrayProperty' => [
-                    ['stringProperty' => 'string'],
-                ],
-                'recursiveObjectArray' => [
-                    [
-                        'stringProperty' => 'string',
-                        'numberProperty' => 0.1,
-                        'integerProperty' => 1,
-                        'booleanProperty' => true,
-                        'enumStringProperty' => 'def',
-                        'enumNullableStringProperty' => null,
-                        'integerRangeProperty' => 0,
-                        'emailProperty' => 'erwin.schrödinger@zol.fr',
-                        'uuidProperty' => '83b23b90-9501-4da7-b35c-25134bdc45f8',
-                        'dateTimeProperty' => '1969-07-21T03:56:20+01:00',
-                        'dateTimeProperty2' => '1969-07-21T03:56:20.001+01:00',
-                        'dateTimeProperty3' => '1969-07-21T03:56:20Z',
-                        'dateTimeProperty4' => '1969-07-21T03:56:20.001Z',
-                        'dateProperty' => '1969-07-21',
-                        'timeProperty' => '03:56:20+01:00',
-                        'timeProperty2' => '03:56:20.001+01:00',
-                        'timeProperty3' => '03:56:20Z',
-                        'timeProperty4' => '03:56:20.001Z',
-                        'customProperty' => 'custom',
-                        'overriddenProperty' => 'abc',
-                        'objectProperty' => [
-                            'stringProperty' => 'string',
-                        ],
-                        'arrayProperty' => ['string'],
-                        'objectArrayProperty' => [
-                            ['stringProperty' => 'string'],
-                        ],
-                        'recursiveObjectArray' => [],
-                    ],
-                ],
-            ],
+            parameters: self::getRequestBody(),
             server: [
                 'HTTP_HEADERPARAMSTRING' => 'string',
                 'HTTP_HEADERPARAMNUMBER' => '0.1',
@@ -181,6 +121,7 @@ final class ApifonyTest extends WebTestCase
                         'stringProperty' => 'string',
                     ],
                     'arrayProperty' => ['string'],
+                    'integerMatrixProperty' => [[1, 2], [3]],
                     'objectArrayProperty' => [
                         [
                             'stringProperty' => 'string',
@@ -213,6 +154,7 @@ final class ApifonyTest extends WebTestCase
                                 'stringProperty' => 'string',
                             ],
                             'arrayProperty' => ['string'],
+                            'integerMatrixProperty' => [[1, 2], [3]],
                             'objectArrayProperty' => [
                                 [
                                     'stringProperty' => 'string',
@@ -244,67 +186,7 @@ final class ApifonyTest extends WebTestCase
         $httpClient->jsonRequest(
             method: 'POST',
             uri: '/path/string/0.1/1/true'.self::VALID_QUERY,
-            parameters: [
-                'stringProperty' => 'string',
-                'numberProperty' => 0.1,
-                'integerProperty' => 1,
-                'booleanProperty' => true,
-                'enumStringProperty' => 'def',
-                'enumNullableStringProperty' => null,
-                'integerRangeProperty' => 0,
-                'emailProperty' => 'erwin.schrödinger@zol.fr',
-                'uuidProperty' => '83b23b90-9501-4da7-b35c-25134bdc45f8',
-                'dateTimeProperty' => '1969-error-21T03:56:20+01:00',
-                'dateTimeProperty2' => '1969-07-21T03:56:20.001+01:00',
-                'dateTimeProperty3' => '1969-07-21T03:56:20Z',
-                'dateTimeProperty4' => '1969-07-21T03:56:20.001Z',
-                'dateProperty' => '1969-07-21',
-                'timeProperty' => '03:56:20+01:00',
-                'timeProperty2' => '03:56:20.001+01:00',
-                'timeProperty3' => '03:56:20Z',
-                'timeProperty4' => '03:56:20.001Z',
-                'customProperty' => 'custom',
-                'overriddenProperty' => 'abc',
-                'objectProperty' => [
-                    'stringProperty' => 'string',
-                ],
-                'arrayProperty' => ['string'],
-                'objectArrayProperty' => [
-                    ['stringProperty' => 'string'],
-                ],
-                'recursiveObjectArray' => [
-                    [
-                        'stringProperty' => 'string',
-                        'numberProperty' => 0.1,
-                        'integerProperty' => 1,
-                        'booleanProperty' => true,
-                        'enumStringProperty' => 'def',
-                        'enumNullableStringProperty' => null,
-                        'integerRangeProperty' => 0,
-                        'emailProperty' => 'erwin.schrödinger@zol.fr',
-                        'uuidProperty' => '83b23b90-9501-4da7-b35c-25134bdc45f8',
-                        'dateTimeProperty' => '1969-07-21T03:56:20+01:00',
-                        'dateTimeProperty2' => '1969-07-21T03:56:20.001+01:00',
-                        'dateTimeProperty3' => '1969-07-21T03:56:20Z',
-                        'dateTimeProperty4' => '1969-07-21T03:56:20.001Z',
-                        'dateProperty' => '1969-07-21',
-                        'timeProperty' => '03:56:20+01:00',
-                        'timeProperty2' => '03:56:20.001+01:00',
-                        'timeProperty3' => '03:56:20Z',
-                        'timeProperty4' => '03:56:20.001Z',
-                        'customProperty' => 'custom',
-                        'overriddenProperty' => 'abc',
-                        'objectProperty' => [
-                            'stringProperty' => 'string',
-                        ],
-                        'arrayProperty' => ['string'],
-                        'objectArrayProperty' => [
-                            ['stringProperty' => 'string'],
-                        ],
-                        'recursiveObjectArray' => [],
-                    ],
-                ],
-            ],
+            parameters: self::getRequestBody(['dateTimeProperty' => '1969-error-21T03:56:20+01:00']),
             server: [
                 'HTTP_HEADERPARAMSTRING' => 'string',
                 'HTTP_HEADERPARAMNUMBER' => '0.1',
@@ -337,11 +219,37 @@ final class ApifonyTest extends WebTestCase
     }
 
     /**
+     * A wrong leaf type nested two levels deep in a request body must be rejected, not silently
+     * kept as a string inside a list<list<int>>.
+     */
+    public function testE(): void
+    {
+        $httpClient = self::createClientForQuery(
+            self::VALID_QUERY,
+            self::getRequestBody(['integerMatrixProperty' => [['abc']]]),
+        );
+
+        $rawContent = $httpClient->getResponse()->getContent();
+
+        self::assertResponseStatusCodeSame(400);
+        self::assertIsString($rawContent);
+        $content = json_decode($rawContent, true);
+        self::assertIsArray($content);
+        self::assertSame('validation_failed', $content['code'] ?? null);
+        self::assertIsArray($content['errors'] ?? null);
+        self::assertIsArray($content['errors']['requestBody'] ?? null);
+        self::assertIsString($content['errors']['requestBody'][0] ?? null);
+        self::assertStringContainsString('must be one of "int"', $content['errors']['requestBody'][0]);
+    }
+
+    /**
+     * @param array<string, mixed> $overrides
+     *
      * @return array<string, mixed>
      */
-    private static function getRequestBody(): array
+    private static function getRequestBody(array $overrides = []): array
     {
-        return [
+        return array_merge([
             'stringProperty' => 'string',
             'numberProperty' => 0.1,
             'integerProperty' => 1,
@@ -366,6 +274,7 @@ final class ApifonyTest extends WebTestCase
                 'stringProperty' => 'string',
             ],
             'arrayProperty' => ['string'],
+            'integerMatrixProperty' => [[1, 2], [3]],
             'objectArrayProperty' => [
                 ['stringProperty' => 'string'],
             ],
@@ -395,13 +304,14 @@ final class ApifonyTest extends WebTestCase
                         'stringProperty' => 'string',
                     ],
                     'arrayProperty' => ['string'],
+                    'integerMatrixProperty' => [[1, 2], [3]],
                     'objectArrayProperty' => [
                         ['stringProperty' => 'string'],
                     ],
                     'recursiveObjectArray' => [],
                 ],
             ],
-        ];
+        ], $overrides);
     }
 
     /**
