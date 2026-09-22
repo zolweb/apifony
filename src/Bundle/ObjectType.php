@@ -66,15 +66,6 @@ class ObjectType implements Type
         throw new Exception('Object path parameters are not supported.', $this->schema->path);
     }
 
-    public function getRequestBodyPayloadTypeCheckingAst(): Expr
-    {
-        $f = new BuilderFactory();
-
-        return $this->isRaw
-            ? $f->funcCall('is_array', [$f->var('requestBodyPayload')])
-            : new Expr\Instanceof_($f->var('requestBodyPayload'), new Name($this->name));
-    }
-
     public function getConstraints(): array
     {
         $constraints = [];

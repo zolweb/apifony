@@ -59,13 +59,6 @@ class BooleanType implements Type
         return 'true|false';
     }
 
-    public function getRequestBodyPayloadTypeCheckingAst(): Expr
-    {
-        $f = new BuilderFactory();
-
-        return $f->funcCall('is_bool', [$f->var('requestBodyPayload')]);
-    }
-
     public function getConstraints(): array
     {
         $constraints = [];

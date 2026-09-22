@@ -70,13 +70,6 @@ class StringType implements Type
         return $this->schema->pattern !== null ? $this->schema->pattern : '[^:/?\x{0023}[\]@!$&\'\'()*+,;=]+'; // TODO Remove one of the \' and write a twig escaper for yaml strings
     }
 
-    public function getRequestBodyPayloadTypeCheckingAst(): Expr
-    {
-        $f = new BuilderFactory();
-
-        return $f->funcCall('is_string', [$f->var('requestBodyPayload')]);
-    }
-
     public function getConstraints(): array
     {
         $constraints = [];

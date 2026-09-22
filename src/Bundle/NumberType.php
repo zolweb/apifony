@@ -53,13 +53,6 @@ class NumberType implements Type
         return '-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?';
     }
 
-    public function getRequestBodyPayloadTypeCheckingAst(): Expr
-    {
-        $f = new BuilderFactory();
-
-        return $f->funcCall('is_float', [$f->var('requestBodyPayload')]);
-    }
-
     public function getConstraints(): array
     {
         $constraints = [];

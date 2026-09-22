@@ -17,9 +17,6 @@ interface Type
 
     public function getRouteRequirementPattern(): string;
 
-    // todo take ast variable in parameter
-    public function getRequestBodyPayloadTypeCheckingAst(): Expr;
-
     /**
      * @return list<Constraint>
      */

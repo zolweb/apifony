@@ -555,69 +555,6 @@ class AbstractController implements File
             );
         }
 
-        foreach (['string', 'int', 'float', 'bool'] as $type) {
-            foreach ([false, true] as $nullable) {
-                $getParameterMethod = $f->method(\sprintf('get%s%sRequestBody', ucfirst($type), $nullable ? 'OrNull' : ''))
-                    ->makePublic()
-                    ->addParam($f->param('request')->setType('Request'))
-                    ->addParam($f->param('default')->setType("?{$type}")->setDefault(null))
-                    ->setReturnType(\sprintf("%s{$type}", $nullable ? '?' : ''))
-                    ->setDocComment(
-                        <<<'COMMENT'
-                            /**
-                             * @throws DenormalizationException
-                             */
-                            COMMENT
-                    )
-                    ->addStmt(new Expression(new Assign($f->var('value'), $f->methodCall($f->var('request'), 'getContent'))))
-                    ->addStmt(new If_(new Identical($f->var('value'), $f->val('')), ['stmts' => array_merge(
-                        $nullable
-                            ? []
-                            : [new If_(new Identical($f->var('default'), $f->val(null)), ['stmts' => [
-                                new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body must not be null.')]))),
-                            ]])],
-                        [new Return_($f->var('default'))],
-                    )]))
-                    ->addStmt(new Expression(new Assign($f->var('value'), $f->funcCall('json_decode', [$f->var('value'), $f->val(true)]))))
-                    ->addStmts(
-                        $nullable && $type !== 'string'
-                            ? [new If_(new Identical($f->var('value'), $f->val(null)), ['stmts' => [
-                                new Return_($f->val(null)),
-                            ]])]
-                            : [],
-                    )
-                    ->addStmts(match ($type) {
-                        'string' => [
-                            new If_(new BooleanNot($f->funcCall('\is_string', [$f->var('value')])), ['stmts' => [
-                                new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body must be a string.')]))),
-                            ]]),
-                            new Return_($f->var('value')),
-                        ],
-                        'int' => [
-                            new If_(new BooleanNot($f->funcCall('\is_int', [$f->var('value')])), ['stmts' => [
-                                new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body must be an integer.')]))),
-                            ]]),
-                            new Return_($f->var('value')),
-                        ],
-                        'float' => [
-                            new If_(new BooleanAnd(new BooleanNot($f->funcCall('\is_int', [$f->var('value')])), new BooleanNot($f->funcCall('\is_float', [$f->var('value')]))), ['stmts' => [
-                                new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body must be a numeric.')]))),
-                            ]]),
-                            new Return_(new Double($f->var('value'), ['kind' => Double::KIND_FLOAT])),
-                        ],
-                        'bool' => [
-                            new If_(new BooleanNot($f->funcCall('\is_bool', [$f->var('value')])), ['stmts' => [
-                                new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body must be a boolean.')]))),
-                            ]]),
-                            new Return_($f->var('value')),
-                        ],
-                    })
-                ;
-
-                $class->addStmt($getParameterMethod);
-            }
-        }
-
         // One denormalizer per model and per source, emitted on the controller every action extends,
         // so that a model shared by several operations is rendered once for the whole bundle.
         $queryContext = new DenormalizationContext(DenormalizationContext::SOURCE_QUERY);

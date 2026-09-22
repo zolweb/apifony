@@ -95,13 +95,6 @@ class ArrayType implements Type
         throw new Exception('Array path parameters are not supported.', $this->schema->path);
     }
 
-    public function getRequestBodyPayloadTypeCheckingAst(): Expr
-    {
-        $f = new BuilderFactory();
-
-        return new Expr\BinaryOp\BooleanAnd($f->funcCall('is_array', [$f->var('requestBodyPayload')]), $this->itemType->getRequestBodyPayloadTypeCheckingAst());
-    }
-
     public function getConstraints(): array
     {
         $constraints = [];

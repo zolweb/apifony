@@ -80,6 +80,16 @@ if (!\in_array($v10, ['abc', 'def', 'ghi'], true)) {
   est redondante avec la dénormalisation, qui garantit déjà le type, et sert de filet si le code
   généré était fautif.
 
+#### Nettoyage du code mort
+
+- Les huit lecteurs `get{String,Int,Float,Bool}{,OrNull}RequestBody` ne sont plus générés. Ils
+  étaient inatteignables : `ActionRequestBody` impose un objet au premier niveau d'un request body,
+  donc aucun appel n'a jamais pu être émis vers eux. L'`AbstractController` généré passe de 851 à
+  710 lignes.
+- `Type::getRequestBodyPayloadTypeCheckingAst()` est retirée de l'interface et de ses six
+  implémentations : elle n'était appelée que par sa propre récursion dans `ArrayType`, sans aucun
+  point d'entrée.
+
 #### Suppression de `DeserializerInterface::denormalize()`
 
 La méthode générée `denormalize()` est supprimée du `DeserializerInterface` et du `Deserializer`.
