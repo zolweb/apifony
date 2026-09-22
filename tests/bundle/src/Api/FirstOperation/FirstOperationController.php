@@ -234,7 +234,7 @@ class FirstOperationController extends AbstractController
         }
         $requestBodyPayload = (new \ReflectionClass(Schema::class))->newInstanceWithoutConstructor();
         try {
-            $requestBodyPayload = $this->getObjectRequestBody($request, Schema::class);
+            $requestBodyPayload = $this->denormalizeSchemaJsonValue($this->getJsonRequestBody($request), '');
             $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
             $requestBodyErrors = [$e->getMessage()];
@@ -390,69 +390,5 @@ class FirstOperationController extends AbstractController
             $v0[] = $v4;
         }
         return $v0;
-    }
-    /**
-     * @throws DenormalizationException
-     */
-    private function denormalizeAbcParameterValue(mixed $value, string $path, string $in): Abc
-    {
-        $v0 = $this->denormalizeMapParameter($value, $path, $in);
-        $v1 = "{$path}[def]";
-        $v2 = $this->denormalizeStringParameter($this->getRequiredParameterProperty($v0, 'def', $v1, $in), $v1, $in);
-        return new Abc(def: $v2);
-    }
-    /**
-     * @throws DenormalizationException
-     */
-    private function denormalizeFirstOperationQueryParamObjectParameterValue(mixed $value, string $path, string $in): FirstOperationQueryParamObject
-    {
-        $v0 = $this->denormalizeMapParameter($value, $path, $in);
-        $v1 = "{$path}[stringProperty]";
-        $v2 = $this->denormalizeStringParameter($this->getRequiredParameterProperty($v0, 'stringProperty', $v1, $in), $v1, $in);
-        $v3 = "{$path}[nestedArrayProperty]";
-        $v4 = [];
-        foreach ($this->denormalizeListParameter($this->getRequiredParameterProperty($v0, 'nestedArrayProperty', $v3, $in), $v3, $in) as $v5 => $v6) {
-            $v7 = "{$v3}[{$v5}]";
-            $v8 = $this->denormalizeIntParameter($v6, $v7, $in);
-            $v4[] = $v8;
-        }
-        $v9 = "{$path}[nestedObjectProperty]";
-        $v10 = $this->denormalizeFirstOperationQueryParamObjectNestedObjectPropertyParameterValue($this->getRequiredParameterProperty($v0, 'nestedObjectProperty', $v9, $in), $v9, $in);
-        $v12 = 'abc';
-        if (\array_key_exists('optionalProperty', $v0)) {
-            $v11 = "{$path}[optionalProperty]";
-            $v12 = $this->denormalizeStringParameter($v0['optionalProperty'], $v11, $in);
-        }
-        return new FirstOperationQueryParamObject(stringProperty: $v2, nestedArrayProperty: $v4, nestedObjectProperty: $v10, optionalProperty: $v12);
-    }
-    /**
-     * @throws DenormalizationException
-     */
-    private function denormalizeNodeParameterValue(mixed $value, string $path, string $in): Node
-    {
-        $v0 = $this->denormalizeMapParameter($value, $path, $in);
-        $v1 = "{$path}[name]";
-        $v2 = $this->denormalizeStringParameter($this->getRequiredParameterProperty($v0, 'name', $v1, $in), $v1, $in);
-        $v4 = [];
-        if (\array_key_exists('children', $v0)) {
-            $v3 = "{$path}[children]";
-            $v4 = [];
-            foreach ($this->denormalizeListParameter($v0['children'], $v3, $in) as $v5 => $v6) {
-                $v7 = "{$v3}[{$v5}]";
-                $v8 = $this->denormalizeNodeParameterValue($v6, $v7, $in);
-                $v4[] = $v8;
-            }
-        }
-        return new Node(name: $v2, children: $v4);
-    }
-    /**
-     * @throws DenormalizationException
-     */
-    private function denormalizeFirstOperationQueryParamObjectNestedObjectPropertyParameterValue(mixed $value, string $path, string $in): FirstOperationQueryParamObjectNestedObjectProperty
-    {
-        $v0 = $this->denormalizeMapParameter($value, $path, $in);
-        $v1 = "{$path}[emailProperty]";
-        $v2 = $this->denormalizeStringParameter($this->getRequiredParameterProperty($v0, 'emailProperty', $v1, $in), $v1, $in);
-        return new FirstOperationQueryParamObjectNestedObjectProperty(emailProperty: $v2);
     }
 }

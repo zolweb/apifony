@@ -206,7 +206,7 @@ class ArrayType implements Type
         return $this->itemType->getUsedModelNames();
     }
 
-    public function getParameterDenormalizationStmts(Expr $source, Expr $target, Expr $path, Expr $in, DenormalizationContext $context): array
+    public function getParameterDenormalizationStmts(Expr $source, Expr $target, Expr $path, DenormalizationContext $context): array
     {
         $f = new BuilderFactory();
 
@@ -215,21 +215,21 @@ class ArrayType implements Type
         $itemPath = $context->nextVariable();
         $itemValue = $context->nextVariable();
 
-        return [
+        return $context->wrapNullable($this->nullable, $source, $target, fn (Expr $value): array => [
             new Expression(new Assign($target, new Array_([], ['kind' => Array_::KIND_SHORT]))),
             new Foreach_(
-                $f->methodCall($f->var('this'), 'denormalizeListParameter', [$source, $path, $in]),
+                $f->methodCall($f->var('this'), \sprintf('denormalizeList%s', $context->getSource()), array_merge([$value, $path], $context->getLocationArgs())),
                 $item,
                 [
                     'keyVar' => $key,
                     'stmts' => array_merge(
                         [new Expression(new Assign($itemPath, new Encapsed([$path, new EncapsedStringPart('['), $key, new EncapsedStringPart(']')])))],
-                        $this->itemType->getParameterDenormalizationStmts($item, $itemValue, $itemPath, $in, $context),
+                        $this->itemType->getParameterDenormalizationStmts($item, $itemValue, $itemPath, $context),
                         [new Expression(new Assign(new ArrayDimFetch($target), $itemValue))],
                     ),
                 ],
             ),
-        ];
+        ]);
     }
 
     public function asName(): Name

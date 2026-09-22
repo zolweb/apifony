@@ -6,10 +6,16 @@ namespace Zol\Apifony\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr;
+use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
+use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\Name;
+use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\If_;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
@@ -133,11 +139,45 @@ class BooleanType implements Type
         return false;
     }
 
-    public function getParameterDenormalizationStmts(Expr $source, Expr $target, Expr $path, Expr $in, DenormalizationContext $context): array
+    public function getParameterDenormalizationStmts(Expr $source, Expr $target, Expr $path, DenormalizationContext $context): array
     {
         $f = new BuilderFactory();
 
-        return [new Expression(new Assign($target, $f->methodCall($f->var('this'), \sprintf('denormalize%sParameter', ucfirst($this->getBuiltInPhpType())), [$source, $path, $in])))];
+        return $context->wrapNullable($this->nullable, $source, $target, fn (Expr $value): array => array_merge(
+            [new Expression(new Assign($target, $f->methodCall($f->var('this'), \sprintf('denormalize%s%s', ucfirst($this->getBuiltInPhpType()), $context->getSource()), array_merge([$value, $path], $context->getLocationArgs()))))],
+            $this->getNarrowingStmts($target, $path, $context),
+        ));
+    }
+
+    /**
+     * Statements making the value actually satisfy the narrowed type getDocAst() advertises, so
+     * that the generated models can be constructed without asserting anything.
+     *
+     * @return list<Stmt>
+     */
+    private function getNarrowingStmts(Expr $target, Expr $path, DenormalizationContext $context): array
+    {
+        $f = new BuilderFactory();
+
+        if (\count($this->schema->enum) === 0) {
+            return [];
+        }
+
+        $expectation = \sprintf('must be one of %s.', implode(', ', array_map(
+            static fn (mixed $e): string => $e === null ? 'null' : var_export($e, true),
+            $this->schema->enum,
+        )));
+
+        return [new If_(
+            new BooleanNot($f->funcCall('\in_array', [
+                $target,
+                new Array_(array_map(static fn (mixed $e): ArrayItem => new ArrayItem($f->val($e)), $this->schema->enum), ['kind' => Array_::KIND_SHORT]),
+                $f->val(true),
+            ])),
+            ['stmts' => [new Expression(new Throw_($f->new('DenormalizationException', [
+                $f->methodCall($f->var('this'), \sprintf('get%sErrorMessage', $context->getSource()), array_merge([$path], $context->getLocationArgs(), [$f->val($expectation)])),
+            ])))]],
+        )];
     }
 
     public function asName(): Name

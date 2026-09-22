@@ -100,6 +100,16 @@ class Model implements File
     ) {
     }
 
+    public function getClassName(): string
+    {
+        return $this->className;
+    }
+
+    public function getNamespace(): string
+    {
+        return $this->namespace;
+    }
+
     public function getFolder(): string
     {
         return $this->folder;

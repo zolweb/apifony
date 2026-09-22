@@ -57,7 +57,7 @@ interface Type
      *
      * @throws Exception
      */
-    public function getParameterDenormalizationStmts(Expr $source, Expr $target, Expr $path, Expr $in, DenormalizationContext $context): array;
+    public function getParameterDenormalizationStmts(Expr $source, Expr $target, Expr $path, DenormalizationContext $context): array;
 
     public function asName(): Name;
 }

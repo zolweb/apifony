@@ -282,7 +282,7 @@ class Action
      */
     public function getParameterDenormalizerMethods(): array
     {
-        $context = new DenormalizationContext();
+        $context = new DenormalizationContext(DenormalizationContext::SOURCE_QUERY);
 
         $methods = [];
         foreach ($this->parameters as $parameter) {
@@ -292,21 +292,22 @@ class Action
             }
         }
 
-        // Building a model method registers the models it uses in turn, so drain the registry
-        // until it settles. It always does: the set of model names is finite.
-        $emittedModelNames = [];
-        while (true) {
-            $pendingModels = array_diff_key($context->getModels(), $emittedModelNames);
-            if (\count($pendingModels) === 0) {
-                break;
-            }
-            foreach ($pendingModels as $modelName => $model) {
-                $emittedModelNames[$modelName] = true;
-                $methods[] = $model->getParameterDenormalizerMethod($context);
-            }
+        return $methods;
+    }
+
+    /**
+     * Populates the registries with every model this action denormalizes, so that the
+     * AbstractController can emit one method per model for the whole bundle.
+     *
+     * @throws Exception
+     */
+    public function registerDenormalizationModels(DenormalizationContext $queryContext, DenormalizationContext $jsonContext): void
+    {
+        foreach ($this->parameters as $parameter) {
+            $parameter->registerDenormalizationModels($queryContext);
         }
 
-        return $methods;
+        $this->requestBody?->registerDenormalizationModels($jsonContext);
     }
 
     public function getClassMethod(): ClassMethod

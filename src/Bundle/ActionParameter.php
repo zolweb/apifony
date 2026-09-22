@@ -302,7 +302,6 @@ class ActionParameter
             $f->methodCall($f->var('this'), 'getRawParameter', [$f->var('request'), $f->var('name'), $f->var('in')]),
             $result,
             $f->var('name'),
-            $f->var('in'),
             $context,
         );
 
@@ -319,6 +318,22 @@ class ActionParameter
         }
 
         return $method->addStmt(new Return_($returnExpr))->getNode();
+    }
+
+    /**
+     * Populates the registry with the models this parameter needs, without keeping the statements:
+     * they are emitted by getDenormalizerMethod, the models by the AbstractController.
+     *
+     * @throws Exception
+     */
+    public function registerDenormalizationModels(DenormalizationContext $context): void
+    {
+        if (!$this->isComplex()) {
+            return;
+        }
+
+        $f = new BuilderFactory();
+        $this->type->getParameterDenormalizationStmts($f->var('value'), $f->var('target'), $f->var('path'), $context);
     }
 
     private function isComplex(): bool

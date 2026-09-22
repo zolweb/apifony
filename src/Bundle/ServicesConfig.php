@@ -72,7 +72,6 @@ class ServicesConfig implements File
             $config['services']["{$controller->getNamespace()}\\{$controller->getClassName()}"] = [
                 'class' => "{$controller->getNamespace()}\\{$controller->getClassName()}",
                 'arguments' => [
-                    '$deserializer' => "@{$this->getServiceNamespace()}.deserializer",
                     '$validator' => "@{$this->getServiceNamespace()}.validator",
                 ],
                 'public' => true,
@@ -86,10 +85,6 @@ class ServicesConfig implements File
                 'tags' => ['validator.constraint_validator'],
             ];
         }
-
-        $config['services']["{$this->getServiceNamespace()}.deserializer"] = [
-            'class' => "{$this->namespace}\\Api\\Deserializer",
-        ];
 
         $config['services']["{$this->getServiceNamespace()}.constraint_validator_factory"] = [
             'class' => "{$this->namespace}\\Api\\ConstraintValidatorFactory",

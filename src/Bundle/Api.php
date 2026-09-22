@@ -12,12 +12,15 @@ use Zol\Apifony\OpenApi\OpenApi;
 class Api
 {
     /**
+     * @param list<Model> $componentModels
+     *
      * @throws Exception
      */
     public static function build(
         string $bundleNamespace,
         string $bundleName,
         OpenApi $openApi,
+        array $componentModels,
     ): self {
         $aggregates = [];
         foreach ($openApi->paths->pathItems ?? [] as $route => $pathItem) {
@@ -42,8 +45,17 @@ class Api
             }
         }
 
+        $models = $componentModels;
+        foreach ($aggregates as $aggregate) {
+            foreach ($aggregate->getFiles() as $file) {
+                if ($file instanceof Model) {
+                    $models[] = $file;
+                }
+            }
+        }
+
         return new self(
-            new AbstractController($bundleNamespace),
+            new AbstractController($bundleNamespace, $aggregates, $models),
             $aggregates,
             new DenormalizationException($bundleNamespace),
             new ParameterValidationException($bundleNamespace),

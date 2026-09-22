@@ -30,15 +30,10 @@ class ComposerJson implements File
                 'version' => '1.0.0',
                 'require' => [
                     'egulias/email-validator' => '^2.1.10 || ^3 || ^4', // Required by Symfony Validator
-                    'phpdocumentor/type-resolver' => '^1.8 || ^2', // Required by PhpStanExtractor
-                    'phpstan/phpdoc-parser' => '^1.13 || ^2.0', // Required by PhpStanExtractor
                     'symfony/dependency-injection' => '^6.4 || ^7.0 || ^8.0',
                     'symfony/http-foundation' => '^6.4 || ^7.0 || ^8.0',
                     'symfony/http-kernel' => '^6.4 || ^7.0 || ^8.0',
-                    'symfony/serializer' => '^6.4 || ^7.0 || ^8.0',
                     'symfony/validator' => '^6.4 || ^7.0 || ^8.0',
-                    'symfony/property-access' => '^6.4 || ^7.0 || ^8.0', // Required by ObjectNormalizer
-                    'symfony/property-info' => '^6.4 || ^7.0 || ^8.0',
                 ],
                 'autoload' => [
                     'psr-4' => [

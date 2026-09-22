@@ -195,55 +195,78 @@ class ObjectType implements Type
         return false;
     }
 
-    public function getParameterDenormalizationStmts(Expr $source, Expr $target, Expr $path, Expr $in, DenormalizationContext $context): array
+    public function getParameterDenormalizationStmts(Expr $source, Expr $target, Expr $path, DenormalizationContext $context): array
     {
         $f = new BuilderFactory();
 
         if ($this->isRaw) {
-            return [new Expression(new Assign($target, $f->methodCall($f->var('this'), 'denormalizeMapParameter', [$source, $path, $in])))];
+            return $context->wrapNullable($this->nullable, $source, $target, static fn (Expr $value): array => [
+                new Expression(new Assign($target, $f->methodCall($f->var('this'), \sprintf('denormalizeMap%s', $context->getSource()), array_merge([$value, $path], $context->getLocationArgs())))),
+            ]);
         }
 
-        return [new Expression(new Assign($target, $f->methodCall($f->var('this'), $context->registerModel($this), [$source, $path, $in])))];
+        $method = $context->registerModel($this);
+
+        return $context->wrapNullable($this->nullable, $source, $target, static fn (Expr $value): array => [
+            new Expression(new Assign($target, $f->methodCall($f->var('this'), $method, array_merge([$value, $path], $context->getLocationArgs())))),
+        ]);
     }
 
     /**
-     * The controller method denormalizing one value of this model. It is emitted once per model,
-     * which is what makes a recursive schema generate recursive code rather than an infinitely
-     * inlined type tree.
+     * The path of one of this model properties, as the generated code builds it: query parameters
+     * use the bracket notation they were sent with, a request body uses dots.
+     */
+    private function getPropertyPathExpr(Expr $path, string $rawName, DenormalizationContext $context): Expr
+    {
+        $f = new BuilderFactory();
+
+        if ($context->getSource() === DenormalizationContext::SOURCE_QUERY) {
+            return new Encapsed([$path, new EncapsedStringPart("[{$rawName}]")]);
+        }
+
+        return $f->methodCall($f->var('this'), 'appendJsonPath', [$path, $f->val($rawName)]);
+    }
+
+    /**
+     * The method denormalizing one value of this model. It is emitted once per model and per
+     * source, on the AbstractController every controller extends, which is what makes a recursive
+     * schema generate recursive code rather than an infinitely inlined type tree.
      *
      * @throws Exception
      */
-    public function getParameterDenormalizerMethod(DenormalizationContext $context): ClassMethod
+    public function getModelDenormalizerMethod(DenormalizationContext $context): ClassMethod
     {
         $f = new BuilderFactory();
         $context->resetVariables();
+        $isQuery = $context->getSource() === DenormalizationContext::SOURCE_QUERY;
 
-        $method = $f->method(DenormalizationContext::getModelMethodName($this->name))
-            ->makePrivate()
+        $method = $f->method(DenormalizationContext::getModelMethodName($this->name, $context->getSource()))
+            ->makePublic()
             ->addParam($f->param('value')->setType('mixed'))
             ->addParam($f->param('path')->setType('string'))
-            ->addParam($f->param('in')->setType('string'))
             ->setReturnType($this->name)
             ->setDocComment("/**\n * @throws DenormalizationException\n */")
         ;
+        if ($isQuery) {
+            $method->addParam($f->param('in')->setType('string'));
+        }
 
         $values = $context->nextVariable();
-        $method->addStmt(new Expression(new Assign($values, $f->methodCall($f->var('this'), 'denormalizeMapParameter', [$f->var('value'), $f->var('path'), $f->var('in')]))));
+        $method->addStmt(new Expression(new Assign($values, $f->methodCall($f->var('this'), \sprintf('denormalizeMap%s', $context->getSource()), array_merge([$f->var('value'), $f->var('path')], $context->getLocationArgs())))));
 
         $args = [];
         foreach ($this->getAttributes() as $attribute) {
             $rawName = $attribute->getRawName();
             $propertyPath = $context->nextVariable();
             $propertyValue = $context->nextVariable();
-            $propertyPathStmt = new Expression(new Assign($propertyPath, new Encapsed([$f->var('path'), new EncapsedStringPart("[{$rawName}]")])));
+            $propertyPathStmt = new Expression(new Assign($propertyPath, $this->getPropertyPathExpr($f->var('path'), $rawName, $context)));
 
             if (\in_array($rawName, $this->schema->required, true)) {
                 $method->addStmt($propertyPathStmt);
                 foreach ($attribute->getType()->getParameterDenormalizationStmts(
-                    $f->methodCall($f->var('this'), 'getRequiredParameterProperty', [$values, $f->val($rawName), $propertyPath, $f->var('in')]),
+                    $f->methodCall($f->var('this'), \sprintf('getRequired%sProperty', $context->getSource()), array_merge([$values, $f->val($rawName), $propertyPath], $context->getLocationArgs())),
                     $propertyValue,
                     $propertyPath,
-                    $f->var('in'),
                     $context,
                 ) as $stmt) {
                     $method->addStmt($stmt);
@@ -256,7 +279,6 @@ class ObjectType implements Type
                         new ArrayDimFetch($values, $f->val($rawName)),
                         $propertyValue,
                         $propertyPath,
-                        $f->var('in'),
                         $context,
                     ),
                 )]));

@@ -135,11 +135,13 @@ class NumberType implements Type
         return false;
     }
 
-    public function getParameterDenormalizationStmts(Expr $source, Expr $target, Expr $path, Expr $in, DenormalizationContext $context): array
+    public function getParameterDenormalizationStmts(Expr $source, Expr $target, Expr $path, DenormalizationContext $context): array
     {
         $f = new BuilderFactory();
 
-        return [new Expression(new Assign($target, $f->methodCall($f->var('this'), \sprintf('denormalize%sParameter', ucfirst($this->getBuiltInPhpType())), [$source, $path, $in])))];
+        return $context->wrapNullable($this->nullable, $source, $target, fn (Expr $value): array => [
+            new Expression(new Assign($target, $f->methodCall($f->var('this'), \sprintf('denormalize%s%s', ucfirst($this->getBuiltInPhpType()), $context->getSource()), array_merge([$value, $path], $context->getLocationArgs())))),
+        ]);
     }
 
     public function asName(): Name

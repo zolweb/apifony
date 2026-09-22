@@ -45,13 +45,11 @@ class Bundle implements File
             $name = u($rawName)->camel()->title()->toString(),
             $namespace,
             $formats = self::buildFormats($namespace, $name, $openApi),
-            self::buildModels($namespace, $openApi->components),
-            $api = Api::build($namespace, $name, $openApi),
+            $models = self::buildModels($namespace, $openApi->components),
+            $api = Api::build($namespace, $name, $openApi, $models),
             RoutesConfig::build($namespace, $api),
             ServicesConfig::build($namespace, $api, $formats),
             new ComposerJson($packageName, $namespace),
-            new DeserializerInterface($namespace),
-            new Deserializer($namespace),
             new ConstraintValidatorFactory($namespace),
         );
     }
@@ -69,8 +67,6 @@ class Bundle implements File
         private readonly RoutesConfig $routesConfig,
         private readonly ServicesConfig $servicesConfig,
         private readonly ComposerJson $composerJson,
-        private readonly DeserializerInterface $deserializerInterface,
-        private readonly Deserializer $deserializer,
         private readonly ConstraintValidatorFactory $constraintValidatorFactory,
     ) {
     }
@@ -85,8 +81,6 @@ class Bundle implements File
             $this->routesConfig,
             $this->servicesConfig,
             $this->composerJson,
-            $this->deserializerInterface,
-            $this->deserializer,
             $this->constraintValidatorFactory,
         ];
 

@@ -28,46 +28,57 @@ la donnée reçue (et par `max_input_nesting_level`, 64 par défaut).
 ?tree[name]=root&tree[children][0][name]=a&tree[children][0][children][0][name]=a1
 ```
 
-#### Correction : le typage des items de tableaux est maintenant contrôlé sur toutes les versions
+#### Le composant Serializer de Symfony n'est plus utilisé
 
-Découvert en couvrant les tableaux imbriqués. Le contrôle de type annoncé en 10.0.0 ne s'appliquait
-pas aux **items d'un tableau** avant `symfony/serializer` 8. Mesuré, pour une propriété déclarée
-`list<int>` recevant `["abc"]` :
+Le request body était le dernier consommateur du `Serializer` — deux sites d'appel, dans
+`getObjectRequestBody` et `getObjectOrNullRequestBody`. Il est remplacé par du code généré, comme
+les query params depuis la 10.1.0. Les réponses n'étaient pas concernées : elles passent par
+`JsonResponse`, donc par `json_encode`.
 
-| `symfony/serializer` | `list<int>` | `list<list<int>>` |
-|---|---|---|
-| 6.4.0 (plancher déclaré) | accepté | accepté |
-| 6.4.46 (dernier LTS) | accepté | accepté |
-| 7.2.9 | accepté | accepté |
-| 7.4.19 | accepté | accepté |
-| 8.1.7 | rejeté | rejeté |
+**Le bundle généré passe de dix à cinq dépendances.** Disparaissent `symfony/serializer`,
+`symfony/property-info`, `symfony/property-access`, `phpstan/phpdoc-parser` et
+`phpdocumentor/type-resolver`.
 
-Sur 6.4 et 7.x, le handler recevait donc un tableau dont les éléments contredisaient le `@param`
-déclaré, sans erreur. Le bundle généré déclarant `symfony/serializer: ^6.4 || ^7.0 || ^8.0`, la
-garantie ne valait que pour les projets sur Symfony 8.
+Motivations, au-delà de l'allègement :
 
-Le type de l'item est désormais émis comme contrainte dans le `Assert\All` que produisait déjà
-`ArrayType`, ce qui rend la garantie indépendante de la version de Symfony :
+- **La garantie de typage ne dépend plus de la version de Symfony.** Le contrôle des items de
+  tableaux annoncé en 10.0.0 n'était réellement appliqué qu'à partir de `symfony/serializer` 8
+  (mesuré sur 6.4.0, 6.4.46, 7.2.9 et 7.4.19 : une propriété déclarée `list<int>` acceptait
+  `["abc"]`). Le code généré applique les mêmes règles partout.
+- **Les erreurs client ne fuitent plus les noms de classes générées.** Au lieu de
+  `Request body could not be deserialized: The type of the "x" attribute for class "Ns\Model\Schema"
+  must be one of "int"`, on obtient `Property 'objectProperty.stringProperty' in 'requestBody' must
+  be an integer.`, avec le chemin exact de la valeur fautive.
+- **Un couplage invisible disparaît.** La dénormalisation ne fonctionnait que parce que
+  `PhpStanExtractor` lisait les `@param list<Foo>` des constructeurs promus. Rien ne le disait, et
+  activer `no_superfluous_phpdoc_tags` sur le bundle aurait suffi à la dégrader silencieusement.
+- **Le code généré est vérifié par PHPStan** au niveau max, là où le `@return T` du `Serializer`
+  n'était qu'une assertion.
+
+Le dénormaliseur garantit désormais exactement ce que le PHPDoc du modèle annonce, y compris les
+types affinés que la validation seule contrôlait auparavant :
 
 ```php
-#[Assert\All(constraints: [new Assert\Type(type: 'string'), new Assert\NotNull()])]
-public readonly array $arrayProperty,
-
-#[Assert\All(constraints: [new Assert\Type(type: 'array'), new Assert\NotNull(),
-    new Assert\All(constraints: [new Assert\Type(type: 'int'), new Assert\NotNull()])])]
-public readonly array $integerMatrixProperty,
+$v10 = $this->denormalizeStringJson($this->getRequiredJsonProperty($v0, 'enumStringProperty', $v9), $v9);
+if (!\in_array($v10, ['abc', 'def', 'ghi'], true)) {
+    throw new DenormalizationException($this->getJsonErrorMessage($v9, 'must be one of \'abc\', \'def\', \'ghi\'.'));
+}
 ```
 
-**Les projets sur Symfony 6.4 ou 7.x verront donc des 400 sur des payloads qui passaient**, ce qui
-est précisément l'objet de la 10.0.0. Un `number` continue d'accepter un entier comme un flottant,
-conformément à ce que font déjà les lecteurs scalaires. Les items de type objet ne reçoivent pas de
-contrainte : le normalizer ne sait de toute façon pas construire un objet à partir d'un scalaire.
+**Conséquences pour les projets existants :**
 
-Sur Symfony 8 le rejet vient du `Serializer`, en dessous il vient de la validation : le message
-diffère donc selon la version, mais l'issue est la même.
-
-Cela ne concernait **que le request body**. Les query params ne passent pas par le `Serializer` :
-leur coercition est générée et applique les mêmes règles strictes quelle que soit la version.
+- `DeserializerInterface` et `Deserializer` ne sont plus générés, et le service correspondant
+  disparaît de `services.yaml`. Le constructeur de `AbstractController` ne prend plus que
+  `$validator`.
+- Une valeur d'enum ou hors bornes dans un body est désormais rejetée à la dénormalisation, avec
+  un message plat, là où elle l'était par la validation avec un message clé par propriété.
+- Les applications qui activaient `framework.property_info` uniquement pour apifony peuvent le
+  retirer.
+- Les méthodes de dénormalisation sont émises **une fois par modèle** sur l'`AbstractController`,
+  et non plus par contrôleur : un modèle partagé par plusieurs opérations n'est plus dupliqué.
+- Les modèles générés portent une contrainte `Assert\Type` sur les items de leurs tableaux. Elle
+  est redondante avec la dénormalisation, qui garantit déjà le type, et sert de filet si le code
+  généré était fautif.
 
 #### Suppression de `DeserializerInterface::denormalize()`
 

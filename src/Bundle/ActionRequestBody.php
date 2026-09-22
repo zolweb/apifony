@@ -99,6 +99,18 @@ class ActionRequestBody
     }
 
     /**
+     * Populates the registry with the model this request body denormalizes.
+     *
+     * @throws Exception
+     */
+    public function registerDenormalizationModels(DenormalizationContext $context): void
+    {
+        if ($this->getPayloadBuiltInPhpType() === 'object') {
+            $context->registerModel($this->payloadType);
+        }
+    }
+
+    /**
      * @return list<Stmt>
      */
     public function getStmts(): array
@@ -108,7 +120,13 @@ class ActionRequestBody
         return [
             new Expression(new Assign($f->var('requestBodyPayload'), $f->methodCall($f->new('\ReflectionClass', [$f->classConstFetch($this->getPayloadTypeName(), 'class')]), 'newInstanceWithoutConstructor'))),
             new TryCatch([
-                new Expression(new Assign($f->var('requestBodyPayload'), $f->methodCall($f->var('this'), 'getObjectRequestBody', array_merge([$f->var('request')], $this->getPayloadBuiltInPhpType() === 'object' ? [$f->classConstFetch($this->getPayloadTypeName(), 'class')] : [])))),
+                new Expression(new Assign($f->var('requestBodyPayload'), $f->methodCall(
+                    $f->var('this'),
+                    $this->getPayloadBuiltInPhpType() === 'object'
+                        ? DenormalizationContext::getModelMethodName($this->getPayloadTypeName()->toString(), DenormalizationContext::SOURCE_JSON)
+                        : 'denormalizeMapJson',
+                    [$f->methodCall($f->var('this'), 'getJsonRequestBody', [$f->var('request')]), $f->val('')],
+                ))),
                 new Expression($f->methodCall($f->var('this'), 'validateRequestBody', [
                     $f->var('requestBodyPayload'),
                     new Array_(array_map(
