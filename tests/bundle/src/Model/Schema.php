@@ -123,11 +123,11 @@ class Schema
         public readonly SchemaObjectProperty $objectProperty,
         
         #[Assert\NotNull]
-        #[Assert\All(constraints: [new Assert\NotNull()])]
+        #[Assert\All(constraints: [new Assert\Type(type: 'string'), new Assert\NotNull()])]
         public readonly array $arrayProperty,
         
         #[Assert\NotNull]
-        #[Assert\All(constraints: [new Assert\NotNull(), new Assert\All(constraints: [new Assert\NotNull()])])]
+        #[Assert\All(constraints: [new Assert\Type(type: 'array'), new Assert\NotNull(), new Assert\All(constraints: [new Assert\Type(type: 'int'), new Assert\NotNull()])])]
         public readonly array $integerMatrixProperty,
         
         #[Assert\NotNull]
@@ -144,7 +144,7 @@ class Schema
         public readonly string $defaultProperty = 'abc',
         
         #[Assert\NotNull]
-        #[Assert\All(constraints: [new Assert\NotNull()])]
+        #[Assert\All(constraints: [new Assert\Type(type: 'string'), new Assert\NotNull()])]
         public readonly array $emptyArrayDefaultProperty = [],
         
         #[Assert\NotNull]

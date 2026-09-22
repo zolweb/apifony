@@ -163,7 +163,7 @@ class FirstOperationController extends AbstractController
         $qQueryParamStringArray = [];
         try {
             $qQueryParamStringArray = $this->denormalizeQQueryParamStringArrayParameter($request, 'queryParamStringArray', 'query');
-            $this->validateParameter($qQueryParamStringArray, [new Assert\NotNull(), new Assert\Count(min: 1), new Assert\All(constraints: [new Assert\NotNull(), new Assert\Length(min: 2)])]);
+            $this->validateParameter($qQueryParamStringArray, [new Assert\NotNull(), new Assert\Count(min: 1), new Assert\All(constraints: [new Assert\Type(type: 'string'), new Assert\NotNull(), new Assert\Length(min: 2)])]);
         } catch (DenormalizationException $e) {
             $queryErrors['queryParamStringArray'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
@@ -172,7 +172,7 @@ class FirstOperationController extends AbstractController
         $qQueryParamIntegerMatrix = [];
         try {
             $qQueryParamIntegerMatrix = $this->denormalizeQQueryParamIntegerMatrixParameter($request, 'queryParamIntegerMatrix', 'query');
-            $this->validateParameter($qQueryParamIntegerMatrix, [new Assert\NotNull(), new Assert\All(constraints: [new Assert\NotNull(), new Assert\All(constraints: [new Assert\NotNull()])])]);
+            $this->validateParameter($qQueryParamIntegerMatrix, [new Assert\NotNull(), new Assert\All(constraints: [new Assert\Type(type: 'array'), new Assert\NotNull(), new Assert\All(constraints: [new Assert\Type(type: 'int'), new Assert\NotNull()])])]);
         } catch (DenormalizationException $e) {
             $queryErrors['queryParamIntegerMatrix'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
@@ -217,7 +217,7 @@ class FirstOperationController extends AbstractController
         $qQueryParamOptionalArray = [];
         try {
             $qQueryParamOptionalArray = $this->denormalizeQQueryParamOptionalArrayParameter($request, 'queryParamOptionalArray', 'query');
-            $this->validateParameter($qQueryParamOptionalArray, [new Assert\NotNull(), new Assert\All(constraints: [new Assert\NotNull()])]);
+            $this->validateParameter($qQueryParamOptionalArray, [new Assert\NotNull(), new Assert\All(constraints: [new Assert\Type(type: 'string'), new Assert\NotNull()])]);
         } catch (DenormalizationException $e) {
             $queryErrors['queryParamOptionalArray'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
@@ -226,7 +226,7 @@ class FirstOperationController extends AbstractController
         $qQueryParamNullableArray = [];
         try {
             $qQueryParamNullableArray = $this->denormalizeQQueryParamNullableArrayParameter($request, 'queryParamNullableArray', 'query');
-            $this->validateParameter($qQueryParamNullableArray, [new Assert\All(constraints: [new Assert\NotNull()])]);
+            $this->validateParameter($qQueryParamNullableArray, [new Assert\All(constraints: [new Assert\Type(type: 'bool'), new Assert\NotNull()])]);
         } catch (DenormalizationException $e) {
             $queryErrors['queryParamNullableArray'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {

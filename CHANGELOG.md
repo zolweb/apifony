@@ -28,9 +28,9 @@ la donnée reçue (et par `max_input_nesting_level`, 64 par défaut).
 ?tree[name]=root&tree[children][0][name]=a&tree[children][0][children][0][name]=a1
 ```
 
-#### Limitation connue : le typage des items de tableaux n'est contrôlé qu'à partir de Symfony 8
+#### Correction : le typage des items de tableaux est maintenant contrôlé sur toutes les versions
 
-Découvert en couvrant les tableaux imbriqués. Le contrôle de type annoncé en 10.0.0 ne s'applique
+Découvert en couvrant les tableaux imbriqués. Le contrôle de type annoncé en 10.0.0 ne s'appliquait
 pas aux **items d'un tableau** avant `symfony/serializer` 8. Mesuré, pour une propriété déclarée
 `list<int>` recevant `["abc"]` :
 
@@ -40,15 +40,34 @@ pas aux **items d'un tableau** avant `symfony/serializer` 8. Mesuré, pour une p
 | 6.4.46 (dernier LTS) | accepté | accepté |
 | 7.2.9 | accepté | accepté |
 | 7.4.19 | accepté | accepté |
-| 8.1.7 | **rejeté** | **rejeté** |
+| 8.1.7 | rejeté | rejeté |
 
-Sur 6.4 et 7.x, le handler reçoit donc un tableau dont les éléments contredisent le `@param`
+Sur 6.4 et 7.x, le handler recevait donc un tableau dont les éléments contredisaient le `@param`
 déclaré, sans erreur. Le bundle généré déclarant `symfony/serializer: ^6.4 || ^7.0 || ^8.0`, la
-garantie ne vaut aujourd'hui que pour les projets sur Symfony 8. Le test correspondant
-(`ApifonyTest::testE`) est sauté en dessous de cette version.
+garantie ne valait que pour les projets sur Symfony 8.
 
-Cela ne concerne **que le request body**. Les query params ne passent pas par le `Serializer` : leur
-coercition est générée et applique les mêmes règles strictes quelle que soit la version de Symfony.
+Le type de l'item est désormais émis comme contrainte dans le `Assert\All` que produisait déjà
+`ArrayType`, ce qui rend la garantie indépendante de la version de Symfony :
+
+```php
+#[Assert\All(constraints: [new Assert\Type(type: 'string'), new Assert\NotNull()])]
+public readonly array $arrayProperty,
+
+#[Assert\All(constraints: [new Assert\Type(type: 'array'), new Assert\NotNull(),
+    new Assert\All(constraints: [new Assert\Type(type: 'int'), new Assert\NotNull()])])]
+public readonly array $integerMatrixProperty,
+```
+
+**Les projets sur Symfony 6.4 ou 7.x verront donc des 400 sur des payloads qui passaient**, ce qui
+est précisément l'objet de la 10.0.0. Un `number` continue d'accepter un entier comme un flottant,
+conformément à ce que font déjà les lecteurs scalaires. Les items de type objet ne reçoivent pas de
+contrainte : le normalizer ne sait de toute façon pas construire un objet à partir d'un scalaire.
+
+Sur Symfony 8 le rejet vient du `Serializer`, en dessous il vient de la validation : le message
+diffère donc selon la version, mais l'issue est la même.
+
+Cela ne concernait **que le request body**. Les query params ne passent pas par le `Serializer` :
+leur coercition est générée et applique les mêmes règles strictes quelle que soit la version.
 
 #### Suppression de `DeserializerInterface::denormalize()`
 
