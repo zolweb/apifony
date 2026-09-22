@@ -160,6 +160,33 @@ paths:
           required: true
           schema:
             $ref: '#/components/schemas/Node'
+        - name: 'queryParamNumberArray'
+          in: 'query'
+          required: true
+          schema:
+            type: 'array'
+            items:
+              type: 'number'
+        - name: 'queryParamEnumArray'
+          in: 'query'
+          required: true
+          schema:
+            type: 'array'
+            items:
+              type: 'string'
+              enum:
+                - 'abc'
+                - 'def'
+                - 'ghi'
+        - name: 'queryParamRangeArray'
+          in: 'query'
+          required: true
+          schema:
+            type: 'array'
+            items:
+              type: 'integer'
+              minimum: 1
+              maximum: 5
         - name: 'queryParamOptionalArray'
           in: 'query'
           required: false
@@ -177,6 +204,38 @@ paths:
               - 'null'
             items:
               type: 'boolean'
+            default: null
+        - name: 'queryParamNullableString'
+          in: 'query'
+          required: false
+          schema:
+            type:
+              - 'string'
+              - 'null'
+            default: null
+        - name: 'queryParamNullableNumber'
+          in: 'query'
+          required: false
+          schema:
+            type:
+              - 'number'
+              - 'null'
+            default: null
+        - name: 'queryParamNullableInteger'
+          in: 'query'
+          required: false
+          schema:
+            type:
+              - 'integer'
+              - 'null'
+            default: null
+        - name: 'queryParamNullableBoolean'
+          in: 'query'
+          required: false
+          schema:
+            type:
+              - 'boolean'
+              - 'null'
             default: null
       requestBody:
         content:

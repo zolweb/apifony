@@ -24,7 +24,8 @@ final class ApifonyTest extends WebTestCase
         .'&queryParamNodeTree[name]=root'
         .'&queryParamNodeTree[children][0][name]=a'
         .'&queryParamNodeTree[children][0][children][0][name]=a1'
-        .'&queryParamNodeTree[children][1][name]=b';
+        .'&queryParamNodeTree[children][1][name]=b'
+        .'&queryParamNumberArray[]=0.5&queryParamNumberArray[]=1.5&queryParamEnumArray[]=def&queryParamRangeArray[]=3';
 
     public function testA(): void
     {
@@ -93,8 +94,15 @@ final class ApifonyTest extends WebTestCase
                         ['name' => 'b', 'children' => []],
                     ],
                 ],
+                'queryParamNumberArray' => [0.5, 1.5],
+                'queryParamEnumArray' => ['def'],
+                'queryParamRangeArray' => [3],
                 'queryParamOptionalArray' => [],
                 'queryParamNullableArray' => null,
+                'queryParamNullableString' => null,
+                'queryParamNullableNumber' => null,
+                'queryParamNullableInteger' => null,
+                'queryParamNullableBoolean' => null,
                 'requestBodyPayload' => [
                     'stringProperty' => 'string',
                     'numberProperty' => 0.1,
@@ -358,7 +366,8 @@ final class ApifonyTest extends WebTestCase
                 .'&queryParamAbcList[0][]=x'
                 .'&queryParamOptionalArray[3]=x'
                 .'&queryParamAbcRef[def]=z'
-                .'&queryParamNodeTree[name]=root',
+                .'&queryParamNodeTree[name]=root'
+                .'&queryParamNumberArray[]=0.5&queryParamNumberArray[]=1.5&queryParamEnumArray[]=def&queryParamRangeArray[]=3',
             self::getRequestBody(),
         );
 
@@ -401,7 +410,12 @@ final class ApifonyTest extends WebTestCase
                 .'&queryParamObject[stringProperty]=s&queryParamObject[nestedArrayProperty][]=1'
                 .'&queryParamObject[nestedObjectProperty][emailProperty]=notanemail'
                 .'&queryParamAbcRef[def]=z'
-                .'&queryParamNodeTree[name]=root',
+                .'&queryParamNodeTree[name]=root'
+                .'&queryParamNumberArray[]=0.5&queryParamNumberArray[]=1.5&queryParamEnumArray[]=def&queryParamRangeArray[]=3'
+                // A value outside the narrowed type an item declares is rejected while denormalizing,
+                // since the generated code has to produce the list<'abc'|'def'|'ghi'> it announces.
+                .'&queryParamEnumArray[]=zzz'
+                .'&queryParamRangeArray[]=9',
             self::getRequestBody(),
         );
 
@@ -420,6 +434,8 @@ final class ApifonyTest extends WebTestCase
                     'query' => [
                         'queryParamStringArray' => ['[0]: This value is too short. It should have 2 characters or more.'],
                         'queryParamObject' => ['nestedObjectProperty.emailProperty: This value is not a valid email address.'],
+                        'queryParamEnumArray' => ["Parameter 'queryParamEnumArray[1]' in 'query' must be one of 'abc', 'def', 'ghi'."],
+                        'queryParamRangeArray' => ["Parameter 'queryParamRangeArray[1]' in 'query' must be between 1 and 5."],
                     ],
                 ],
             ],

@@ -21,7 +21,7 @@ class TestHandler implements FirstOperationHandler
      * @param list<string>             $qQueryParamOptionalArray
      * @param ?list<bool>              $qQueryParamNullableArray
      */
-    public function firstOperation(string $pPathParamString, float $pPathParamNumber, int $pPathParamInteger, bool $pPathParamBoolean, string $qQueryParamString, float $qQueryParamNumber, int $qQueryParamInteger, bool $qQueryParamBoolean, string $hHeaderParamString, float $hHeaderParamNumber, int $hHeaderParamInteger, bool $hHeaderParamBoolean, string $cCookieParamString, float $cCookieParamNumber, int $cCookieParamInteger, bool $cCookieParamBoolean, array $qQueryParamStringArray, array $qQueryParamIntegerMatrix, array $qQueryParamAbcList, FirstOperationQueryParamObject $qQueryParamObject, Abc $qQueryParamAbcRef, Node $qQueryParamNodeTree, array $qQueryParamOptionalArray, ?array $qQueryParamNullableArray, Schema $requestBodyPayload): FirstOperation200Response
+    public function firstOperation(string $pPathParamString, float $pPathParamNumber, int $pPathParamInteger, bool $pPathParamBoolean, string $qQueryParamString, float $qQueryParamNumber, int $qQueryParamInteger, bool $qQueryParamBoolean, string $hHeaderParamString, float $hHeaderParamNumber, int $hHeaderParamInteger, bool $hHeaderParamBoolean, string $cCookieParamString, float $cCookieParamNumber, int $cCookieParamInteger, bool $cCookieParamBoolean, array $qQueryParamStringArray, array $qQueryParamIntegerMatrix, array $qQueryParamAbcList, FirstOperationQueryParamObject $qQueryParamObject, Abc $qQueryParamAbcRef, Node $qQueryParamNodeTree, array $qQueryParamNumberArray, array $qQueryParamEnumArray, array $qQueryParamRangeArray, array $qQueryParamOptionalArray, ?array $qQueryParamNullableArray, ?string $qQueryParamNullableString, ?float $qQueryParamNullableNumber, ?int $qQueryParamNullableInteger, ?bool $qQueryParamNullableBoolean, Schema $requestBodyPayload): FirstOperation200Response
     {
         try {
             $json = file_get_contents(__DIR__.'/integer.json');
@@ -61,8 +61,15 @@ class TestHandler implements FirstOperationHandler
                         'queryParamObject' => $qQueryParamObject,
                         'queryParamAbcRef' => $qQueryParamAbcRef,
                         'queryParamNodeTree' => $qQueryParamNodeTree,
+                        'queryParamNumberArray' => $qQueryParamNumberArray,
+                        'queryParamEnumArray' => $qQueryParamEnumArray,
+                        'queryParamRangeArray' => $qQueryParamRangeArray,
                         'queryParamOptionalArray' => $qQueryParamOptionalArray,
                         'queryParamNullableArray' => $qQueryParamNullableArray,
+                        'queryParamNullableString' => $qQueryParamNullableString,
+                        'queryParamNullableNumber' => $qQueryParamNullableNumber,
+                        'queryParamNullableInteger' => $qQueryParamNullableInteger,
+                        'queryParamNullableBoolean' => $qQueryParamNullableBoolean,
                         'requestBodyPayload' => $requestBodyPayload,
                     ], \JSON_THROW_ON_ERROR),
                     'string',

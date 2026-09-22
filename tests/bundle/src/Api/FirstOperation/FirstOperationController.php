@@ -214,6 +214,33 @@ class FirstOperationController extends AbstractController
         } catch (ParameterValidationException $e) {
             $queryErrors['queryParamNodeTree'] = $e->messages;
         }
+        $qQueryParamNumberArray = [];
+        try {
+            $qQueryParamNumberArray = $this->denormalizeQQueryParamNumberArrayParameter($request, 'queryParamNumberArray', 'query');
+            $this->validateParameter($qQueryParamNumberArray, [new Assert\NotNull(), new Assert\All(constraints: [new Assert\Type(type: ['int', 'float']), new Assert\NotNull()])]);
+        } catch (DenormalizationException $e) {
+            $queryErrors['queryParamNumberArray'] = [$e->getMessage()];
+        } catch (ParameterValidationException $e) {
+            $queryErrors['queryParamNumberArray'] = $e->messages;
+        }
+        $qQueryParamEnumArray = [];
+        try {
+            $qQueryParamEnumArray = $this->denormalizeQQueryParamEnumArrayParameter($request, 'queryParamEnumArray', 'query');
+            $this->validateParameter($qQueryParamEnumArray, [new Assert\NotNull(), new Assert\All(constraints: [new Assert\Type(type: 'string'), new Assert\NotNull(), new Assert\Choice(choices: ['abc', 'def', 'ghi'])])]);
+        } catch (DenormalizationException $e) {
+            $queryErrors['queryParamEnumArray'] = [$e->getMessage()];
+        } catch (ParameterValidationException $e) {
+            $queryErrors['queryParamEnumArray'] = $e->messages;
+        }
+        $qQueryParamRangeArray = [];
+        try {
+            $qQueryParamRangeArray = $this->denormalizeQQueryParamRangeArrayParameter($request, 'queryParamRangeArray', 'query');
+            $this->validateParameter($qQueryParamRangeArray, [new Assert\NotNull(), new Assert\All(constraints: [new Assert\Type(type: 'int'), new Assert\NotNull(), new Assert\GreaterThanOrEqual(value: 1), new Assert\LessThanOrEqual(value: 5)])]);
+        } catch (DenormalizationException $e) {
+            $queryErrors['queryParamRangeArray'] = [$e->getMessage()];
+        } catch (ParameterValidationException $e) {
+            $queryErrors['queryParamRangeArray'] = $e->messages;
+        }
         $qQueryParamOptionalArray = [];
         try {
             $qQueryParamOptionalArray = $this->denormalizeQQueryParamOptionalArrayParameter($request, 'queryParamOptionalArray', 'query');
@@ -231,6 +258,42 @@ class FirstOperationController extends AbstractController
             $queryErrors['queryParamNullableArray'] = [$e->getMessage()];
         } catch (ParameterValidationException $e) {
             $queryErrors['queryParamNullableArray'] = $e->messages;
+        }
+        $qQueryParamNullableString = '';
+        try {
+            $qQueryParamNullableString = $this->getStringOrNullParameter($request, 'queryParamNullableString', 'query', false, null);
+            $this->validateParameter($qQueryParamNullableString, []);
+        } catch (DenormalizationException $e) {
+            $queryErrors['queryParamNullableString'] = [$e->getMessage()];
+        } catch (ParameterValidationException $e) {
+            $queryErrors['queryParamNullableString'] = $e->messages;
+        }
+        $qQueryParamNullableNumber = 0.0;
+        try {
+            $qQueryParamNullableNumber = $this->getFloatOrNullParameter($request, 'queryParamNullableNumber', 'query', false, null);
+            $this->validateParameter($qQueryParamNullableNumber, []);
+        } catch (DenormalizationException $e) {
+            $queryErrors['queryParamNullableNumber'] = [$e->getMessage()];
+        } catch (ParameterValidationException $e) {
+            $queryErrors['queryParamNullableNumber'] = $e->messages;
+        }
+        $qQueryParamNullableInteger = 0;
+        try {
+            $qQueryParamNullableInteger = $this->getIntOrNullParameter($request, 'queryParamNullableInteger', 'query', false, null);
+            $this->validateParameter($qQueryParamNullableInteger, []);
+        } catch (DenormalizationException $e) {
+            $queryErrors['queryParamNullableInteger'] = [$e->getMessage()];
+        } catch (ParameterValidationException $e) {
+            $queryErrors['queryParamNullableInteger'] = $e->messages;
+        }
+        $qQueryParamNullableBoolean = false;
+        try {
+            $qQueryParamNullableBoolean = $this->getBoolOrNullParameter($request, 'queryParamNullableBoolean', 'query', false, null);
+            $this->validateParameter($qQueryParamNullableBoolean, []);
+        } catch (DenormalizationException $e) {
+            $queryErrors['queryParamNullableBoolean'] = [$e->getMessage()];
+        } catch (ParameterValidationException $e) {
+            $queryErrors['queryParamNullableBoolean'] = $e->messages;
         }
         $requestBodyPayload = (new \ReflectionClass(Schema::class))->newInstanceWithoutConstructor();
         try {
@@ -260,7 +323,7 @@ class FirstOperationController extends AbstractController
         if (\count($errors) > 0) {
             return new JsonResponse(['code' => 'validation_failed', 'message' => 'Validation has failed.', 'errors' => $errors], Response::HTTP_BAD_REQUEST);
         }
-        $response = $this->handler->firstOperation($pPathParamString, $pPathParamNumber, $pPathParamInteger, $pPathParamBoolean, $qQueryParamString, $qQueryParamNumber, $qQueryParamInteger, $qQueryParamBoolean, $hHeaderParamString, $hHeaderParamNumber, $hHeaderParamInteger, $hHeaderParamBoolean, $cCookieParamString, $cCookieParamNumber, $cCookieParamInteger, $cCookieParamBoolean, $qQueryParamStringArray, $qQueryParamIntegerMatrix, $qQueryParamAbcList, $qQueryParamObject, $qQueryParamAbcRef, $qQueryParamNodeTree, $qQueryParamOptionalArray, $qQueryParamNullableArray, $requestBodyPayload);
+        $response = $this->handler->firstOperation($pPathParamString, $pPathParamNumber, $pPathParamInteger, $pPathParamBoolean, $qQueryParamString, $qQueryParamNumber, $qQueryParamInteger, $qQueryParamBoolean, $hHeaderParamString, $hHeaderParamNumber, $hHeaderParamInteger, $hHeaderParamBoolean, $cCookieParamString, $cCookieParamNumber, $cCookieParamInteger, $cCookieParamBoolean, $qQueryParamStringArray, $qQueryParamIntegerMatrix, $qQueryParamAbcList, $qQueryParamObject, $qQueryParamAbcRef, $qQueryParamNodeTree, $qQueryParamNumberArray, $qQueryParamEnumArray, $qQueryParamRangeArray, $qQueryParamOptionalArray, $qQueryParamNullableArray, $qQueryParamNullableString, $qQueryParamNullableNumber, $qQueryParamNullableInteger, $qQueryParamNullableBoolean, $requestBodyPayload);
         if ($response->getContentType() === 'application/json') {
             return new JsonResponse($response->payload, $response->getCode(), $response->getHeaders());
         }
@@ -354,6 +417,66 @@ class FirstOperationController extends AbstractController
             throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
         }
         return $this->denormalizeNodeParameterValue($this->getRawParameter($request, $name, $in), $name, $in);
+    }
+    /**
+     * @return list<float>
+     *
+     * @throws DenormalizationException
+     */
+    private function denormalizeQQueryParamNumberArrayParameter(Request $request, string $name, string $in): array
+    {
+        if (!$this->hasParameter($request, $name, $in)) {
+            throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+        }
+        $v0 = [];
+        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name, $in) as $v1 => $v2) {
+            $v3 = "{$name}[{$v1}]";
+            $v4 = $this->denormalizeFloatParameter($v2, $v3, $in);
+            $v0[] = $v4;
+        }
+        return $v0;
+    }
+    /**
+     * @return list<'abc'|'def'|'ghi'>
+     *
+     * @throws DenormalizationException
+     */
+    private function denormalizeQQueryParamEnumArrayParameter(Request $request, string $name, string $in): array
+    {
+        if (!$this->hasParameter($request, $name, $in)) {
+            throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+        }
+        $v0 = [];
+        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name, $in) as $v1 => $v2) {
+            $v3 = "{$name}[{$v1}]";
+            $v4 = $this->denormalizeStringParameter($v2, $v3, $in);
+            if (!\in_array($v4, ['abc', 'def', 'ghi'], true)) {
+                throw new DenormalizationException($this->getParameterErrorMessage($v3, $in, 'must be one of \'abc\', \'def\', \'ghi\'.'));
+            }
+            $v0[] = $v4;
+        }
+        return $v0;
+    }
+    /**
+     * @return list<int<1,5>>
+     *
+     * @throws DenormalizationException
+     */
+    private function denormalizeQQueryParamRangeArrayParameter(Request $request, string $name, string $in): array
+    {
+        if (!$this->hasParameter($request, $name, $in)) {
+            throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+        }
+        $v0 = [];
+        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name, $in) as $v1 => $v2) {
+            $v3 = "{$name}[{$v1}]";
+            $v4 = $this->denormalizeIntParameter($v2, $v3, $in);
+            if ($v4 < 1 || $v4 > 5) {
+                throw new DenormalizationException($this->getParameterErrorMessage($v3, $in, 'must be between 1 and 5.'));
+            }
+            $v0[] = $v4;
+        }
+        return $v0;
     }
     /**
      * @return list<string>
