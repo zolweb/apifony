@@ -6,8 +6,6 @@ namespace Zol\Apifony\Bundle;
 
 use Symfony\Component\Yaml\Yaml;
 
-use function Symfony\Component\String\u;
-
 class RoutesConfig implements File
 {
     // /**
@@ -52,7 +50,7 @@ class RoutesConfig implements File
     {
         $routes = [];
 
-        $serviceNamespace = u($this->namespace)->snake()->toString();
+        $serviceNamespace = Naming::forServiceId($this->namespace);
 
         foreach ($this->controllers as $controller) {
             $routes["{$serviceNamespace}_{$controller->action->getServiceName()}"] = $controller->action->getRoute("{$controller->getNamespace()}\\{$controller->getClassName()}");

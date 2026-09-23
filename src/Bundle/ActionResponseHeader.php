@@ -12,8 +12,6 @@ use Zol\Apifony\OpenApi\Components;
 use Zol\Apifony\OpenApi\Header;
 use Zol\Apifony\OpenApi\Reference;
 
-use function Symfony\Component\String\u;
-
 class ActionResponseHeader
 {
     /**
@@ -61,13 +59,13 @@ class ActionResponseHeader
     {
         $f = new BuilderFactory();
 
-        return new ArrayItem(new String_($f->propertyFetch($f->var('this'), u($this->name)->camel()->toString())), $f->val($this->name));
+        return new ArrayItem(new String_($f->propertyFetch($f->var('this'), Naming::forMember($this->name))), $f->val($this->name));
     }
 
     public function getParam(): Param
     {
         $f = new BuilderFactory();
 
-        return $f->param(u($this->name)->camel()->toString())->setType($this->type->asName())->makePublic()->makeReadonly()->getNode();
+        return $f->param(Naming::forMember($this->name))->setType($this->type->asName())->makePublic()->makeReadonly()->getNode();
     }
 }

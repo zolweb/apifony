@@ -18,8 +18,6 @@ use Zol\Apifony\OpenApi\Components;
 use Zol\Apifony\OpenApi\MediaType;
 use Zol\Apifony\OpenApi\Reference;
 
-use function Symfony\Component\String\u;
-
 class ActionRequestBody
 {
     /**
@@ -32,7 +30,7 @@ class ActionRequestBody
         MediaType $mediaType,
         ?Components $components,
     ): self {
-        $className = u(\sprintf('%s_RequestBodyPayload', $actionName))->camel()->title()->toString();
+        $className = Naming::forClass(\sprintf('%s_RequestBodyPayload', $actionName));
 
         $payloadModels = [];
         $usedModelName = null;

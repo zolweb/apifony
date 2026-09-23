@@ -24,8 +24,6 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use Zol\Apifony\OpenApi\Components;
 use Zol\Apifony\OpenApi\Schema;
 
-use function Symfony\Component\String\u;
-
 class ObjectType implements Type
 {
     private readonly bool $isRaw;
@@ -79,7 +77,7 @@ class ObjectType implements Type
         }
 
         if ($this->schema->format !== null) {
-            $constraints[] = new Constraint(\sprintf('Assert%s', u($this->schema->format)->camel()->title()), [], $this->schema->format);
+            $constraints[] = new Constraint(\sprintf('Assert%s', Naming::forClass($this->schema->format)), [], $this->schema->format);
         }
 
         return $constraints;

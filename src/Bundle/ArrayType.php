@@ -23,8 +23,6 @@ use Zol\Apifony\OpenApi\Components;
 use Zol\Apifony\OpenApi\Reference;
 use Zol\Apifony\OpenApi\Schema;
 
-use function Symfony\Component\String\u;
-
 class ArrayType implements Type
 {
     private readonly Schema $schema;
@@ -57,7 +55,7 @@ class ArrayType implements Type
                 throw new Exception('Reference not found in schemas components.', $items->path);
             }
             $items = $components->schemas[$className = $usedModel = $items->getName()];
-            $className = u($className)->camel()->title()->toString();
+            $className = Naming::forClass($className);
         }
 
         $this->schema = $schema;
@@ -104,7 +102,7 @@ class ArrayType implements Type
         }
 
         if ($this->schema->format !== null) {
-            $constraints[] = new Constraint(\sprintf('Assert%s', u($this->schema->format)->camel()->title()), [], $this->schema->format);
+            $constraints[] = new Constraint(\sprintf('Assert%s', Naming::forClass($this->schema->format)), [], $this->schema->format);
         }
 
         if ($this->schema->minItems !== null) {

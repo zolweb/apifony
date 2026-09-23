@@ -21,8 +21,6 @@ use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use Zol\Apifony\OpenApi\Schema;
 
-use function Symfony\Component\String\u;
-
 class BooleanType implements Type
 {
     public function __construct(
@@ -68,7 +66,7 @@ class BooleanType implements Type
         }
 
         if ($this->schema->format !== null) {
-            $constraints[] = new Constraint(\sprintf('Assert%s', u($this->schema->format)->camel()->title()), [], $this->schema->format);
+            $constraints[] = new Constraint(\sprintf('Assert%s', Naming::forClass($this->schema->format)), [], $this->schema->format);
         }
 
         if (\count($this->schema->enum) > 0) {

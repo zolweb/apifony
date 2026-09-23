@@ -17,8 +17,6 @@ use Zol\Apifony\OpenApi\Reference;
 use Zol\Apifony\OpenApi\Response;
 use Zol\Apifony\OpenApi\Schema;
 
-use function Symfony\Component\String\u;
-
 class ActionResponse implements File
 {
     /**
@@ -33,7 +31,7 @@ class ActionResponse implements File
         Reference|Schema|null $payload,
         ?Components $components,
     ): self {
-        $className = u(\sprintf('%s_%s_ResponsePayload', $actionName, $code))->camel()->title()->toString();
+        $className = Naming::forClass(\sprintf('%s_%s_ResponsePayload', $actionName, $code));
 
         $payloadModels = [];
         $payloadType = null;
@@ -63,7 +61,7 @@ class ActionResponse implements File
         return new self(
             $bundleNamespace,
             $aggregateName,
-            u(\sprintf('%s_%s_Response', $actionName, $code))->camel()->title()->toString(),
+            Naming::forClass(\sprintf('%s_%s_Response', $actionName, $code)),
             $code,
             $payloadType,
             array_map(

@@ -14,8 +14,6 @@ use PHPStan\PhpDocParser\Printer\Printer;
 use Zol\Apifony\OpenApi\Components;
 use Zol\Apifony\OpenApi\Schema;
 
-use function Symfony\Component\String\u;
-
 class Model implements File
 {
     /**
@@ -30,7 +28,7 @@ class Model implements File
         ?Components $components,
         bool $isComponent,
     ): self {
-        $className = u($rawName)->camel()->title()->toString();
+        $className = Naming::forClass($rawName);
 
         $ordinal = 0;
         $ordinals = [];

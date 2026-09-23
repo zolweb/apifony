@@ -12,8 +12,6 @@ use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Use_;
 
-use function Symfony\Component\String\u;
-
 class Format
 {
     public static function build(
@@ -21,7 +19,7 @@ class Format
         string $bundleName,
         string $rawName,
     ): self {
-        $name = u($rawName)->camel()->title()->toString();
+        $name = Naming::forClass($rawName);
 
         $validator = match ($rawName) {
             'email' => EmailValidator::build($bundleNamespace),
@@ -99,7 +97,7 @@ class Format
                 $f->methodCall($f->var('container'), 'registerForAutoconfiguration', [$f->classConstFetch($this->definition->getClassName(), 'class')]),
                 'addTag',
                 [
-                    \sprintf('%s.format_definition', u($this->bundleName)->snake()),
+                    \sprintf('%s.format_definition', Naming::forServiceId($this->bundleName)),
                     new Array_([new ArrayItem($f->val($this->rawName), $f->val('format'))], ['kind' => Array_::KIND_SHORT]),
                 ],
             ),

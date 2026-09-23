@@ -14,8 +14,6 @@ use PhpParser\Node\Stmt\Use_;
 use Zol\Apifony\OpenApi\Components;
 use Zol\Apifony\OpenApi\Operation;
 
-use function Symfony\Component\String\u;
-
 class Aggregate
 {
     /**
@@ -29,7 +27,7 @@ class Aggregate
         Operation $operation,
         ?Components $components,
     ): self {
-        $name = u($operation->operationId)->camel()->title()->toString();
+        $name = Naming::forClass($operation->operationId);
 
         $action = Action::build(
             $bundleNamespace,
@@ -110,7 +108,7 @@ class Aggregate
     {
         $f = new BuilderFactory();
 
-        return new Case_($f->val(u($this->name)->snake()->toString()), [
+        return new Case_($f->val(Naming::forServiceId($this->name)), [
             new Expression($f->methodCall($f->methodCall($f->var('container'), 'findDefinition', [\sprintf('%s\%s', $this->controller->getNamespace(), $this->controller->getClassName())]), 'addMethodCall', [$f->val('setHandler'), new Array_([new ArrayItem($f->new('Reference', [$f->var('id')]))], ['kind' => Array_::KIND_SHORT])])),
             new Break_(),
         ]);
@@ -132,8 +130,8 @@ class Aggregate
                 $f->methodCall($f->var('container'), 'registerForAutoconfiguration', [$f->classConstFetch($this->handler->getClassName(), 'class')]),
                 'addTag',
                 [
-                    \sprintf('%s.handler', u($this->bundleName)->snake()),
-                    new Array_([new ArrayItem($f->val(u($this->name)->snake()->toString()), $f->val('controller'))], ['kind' => Array_::KIND_SHORT]),
+                    \sprintf('%s.handler', Naming::forServiceId($this->bundleName)),
+                    new Array_([new ArrayItem($f->val(Naming::forServiceId($this->name)), $f->val('controller'))], ['kind' => Array_::KIND_SHORT]),
                 ],
             ),
         );

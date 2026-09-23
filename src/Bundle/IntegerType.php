@@ -26,8 +26,6 @@ use PHPStan\PhpDocParser\Ast\Type\TypeNode;
 use Zol\Apifony\Narrow;
 use Zol\Apifony\OpenApi\Schema;
 
-use function Symfony\Component\String\u;
-
 class IntegerType implements Type
 {
     public function __construct(
@@ -72,7 +70,7 @@ class IntegerType implements Type
         }
 
         if ($this->schema->format !== null) {
-            $constraints[] = new Constraint(\sprintf('Assert%s', u($this->schema->format)->camel()->title()), [], $this->schema->format);
+            $constraints[] = new Constraint(\sprintf('Assert%s', Naming::forClass($this->schema->format)), [], $this->schema->format);
         }
 
         if ($this->schema->multipleOf !== null) {

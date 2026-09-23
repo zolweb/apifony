@@ -13,8 +13,6 @@ use Zol\Apifony\OpenApi\Components;
 use Zol\Apifony\OpenApi\Reference;
 use Zol\Apifony\OpenApi\Schema;
 
-use function Symfony\Component\String\u;
-
 class ModelAttribute
 {
     /**
@@ -44,7 +42,7 @@ class ModelAttribute
         if (!$required && !$property->hasDefault) {
             throw new Exception('Every non required property must have a default value.', $property->path);
         }
-        $className = u($className)->camel()->title()->toString();
+        $className = Naming::forClass($className);
         $type = TypeFactory::build($className, $property, $components);
         if ($type instanceof ArrayType) {
             $usedModelName = $type->getUsedModel();

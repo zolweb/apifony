@@ -12,8 +12,6 @@ use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\New_;
 use PhpParser\Node\Identifier;
 
-use function Symfony\Component\String\u;
-
 class Constraint
 {
     /**
@@ -39,7 +37,7 @@ class Constraint
         $formatConstraintNames = [];
 
         if ($this->formatName !== null) {
-            $formatConstraintNames[] = (string) u($this->formatName)->camel()->title();
+            $formatConstraintNames[] = Naming::forClass($this->formatName);
         }
 
         foreach ($this->parameters as $parameter) {

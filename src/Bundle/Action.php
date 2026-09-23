@@ -25,8 +25,6 @@ use Zol\Apifony\OpenApi\Components;
 use Zol\Apifony\OpenApi\Operation;
 use Zol\Apifony\OpenApi\Reference;
 
-use function Symfony\Component\String\u;
-
 class Action
 {
     /**
@@ -40,7 +38,7 @@ class Action
         Operation $operation,
         ?Components $components,
     ): self {
-        $className = u($operation->operationId)->camel()->toString();
+        $className = Naming::forMember($operation->operationId);
 
         return new self(
             $className,
@@ -68,7 +66,7 @@ class Action
 
     public function getServiceName(): string
     {
-        return u($this->name)->snake()->toString();
+        return Naming::forServiceId($this->name);
     }
 
     public function getRequestBody(): ?ActionRequestBody

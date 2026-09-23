@@ -6,8 +6,6 @@ namespace Zol\Apifony\Bundle;
 
 use Symfony\Component\Yaml\Yaml;
 
-use function Symfony\Component\String\u;
-
 class ServicesConfig implements File
 {
     /**
@@ -51,7 +49,7 @@ class ServicesConfig implements File
 
     public function getServiceNamespace(): string
     {
-        return u($this->namespace)->snake()->toString();
+        return Naming::forServiceId($this->namespace);
     }
 
     public function getFolder(): string

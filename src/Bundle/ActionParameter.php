@@ -33,8 +33,6 @@ use Zol\Apifony\OpenApi\Parameter;
 use Zol\Apifony\OpenApi\Reference;
 use Zol\Apifony\OpenApi\Schema;
 
-use function Symfony\Component\String\u;
-
 class ActionParameter
 {
     /**
@@ -58,7 +56,7 @@ class ActionParameter
             throw new Exception('Parameter objects without schema attribute are not supported.', $parameter->path);
         }
 
-        $variableName = \sprintf('%s%s', $parameter->in[0], u($parameter->name)->camel()->title());
+        $variableName = \sprintf('%s%s', $parameter->in[0], Naming::forClass($parameter->name));
         $className = "{$actionClassName}_{$parameter->name}";
 
         $schema = $parameter->schema;
@@ -71,7 +69,7 @@ class ActionParameter
             $isReference = true;
             $schema = $components->schemas[$className = $usedModelNames[] = $schema->getName()];
         }
-        $className = u($className)->camel()->title()->toString();
+        $className = Naming::forClass($className);
 
         if ($parameter->required && $schema->hasDefault) {
             throw new Exception('Every required parameter must not have a default value.', $parameter->path);

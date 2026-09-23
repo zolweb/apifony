@@ -28,8 +28,6 @@ use Zol\Apifony\OpenApi\RequestBody;
 use Zol\Apifony\OpenApi\Response;
 use Zol\Apifony\OpenApi\Schema;
 
-use function Symfony\Component\String\u;
-
 class Bundle implements File
 {
     /**
@@ -42,7 +40,7 @@ class Bundle implements File
         OpenApi $openApi,
     ): self {
         return new self(
-            $name = u($rawName)->camel()->title()->toString(),
+            $name = Naming::forClass($rawName),
             $namespace,
             $formats = self::buildFormats($namespace, $name, $openApi),
             $models = self::buildModels($namespace, $openApi->components),
@@ -269,13 +267,13 @@ class Bundle implements File
                             ->makePublic()
                             ->addParam($f->param('container')->setType('ContainerBuilder'))
                             ->setReturnType('void')
-                            ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [$handlerTag = \sprintf('%s.handler', u($this->name)->snake())]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
+                            ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [$handlerTag = \sprintf('%s.handler', Naming::forServiceId($this->name))]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
                                 new Foreach_($f->var('tags'), $f->var('tag'), ['stmts' => [
                                     $this->buildTagAttributeGuard($handlerTag, 'controller'),
                                     new Switch_(new ArrayDimFetch($f->var('tag'), $f->val('controller')), $this->api->getCases()),
                                 ]]),
                             ]]))
-                            ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [$formatTag = \sprintf('%s.format_definition', u($this->name)->snake())]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
+                            ->addStmt(new Foreach_($f->methodCall($f->var('container'), 'findTaggedServiceIds', [$formatTag = \sprintf('%s.format_definition', Naming::forServiceId($this->name))]), $f->var('tags'), ['keyVar' => $f->var('id'), 'stmts' => [
                                 new Foreach_($f->var('tags'), $f->var('tag'), ['stmts' => [
                                     $this->buildTagAttributeGuard($formatTag, 'format'),
                                     new Switch_(new ArrayDimFetch($f->var('tag'), $f->val('format')), array_map(
