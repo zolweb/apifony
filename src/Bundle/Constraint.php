@@ -16,9 +16,6 @@ class Constraint
 {
     /**
      * @param array<string, string|int|float|bool|array<string|int|float|bool|self|array{}|null>|null> $parameters
-     */
-    /**
-     * @param array<string, string|int|float|bool|array<string|int|float|bool|self|array{}|null>|null> $parameters
      * @param bool                                                                                     $enforcedByDenormalizer whether the generated denormalizer already guarantees this, making it dead weight once the value has been rebuilt
      */
     public function __construct(

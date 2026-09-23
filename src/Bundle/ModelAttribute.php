@@ -25,16 +25,17 @@ class ModelAttribute
         bool $required,
         ?Components $components,
     ): self {
-        $usedModelName = null;
         if (preg_match('/[^A-Za-z0-9_]/', $rawName)) {
             throw new Exception('Only [A-Za-z0-9_] are authorized chars in attribute names.', $property->path);
         }
         $className = "{$modelClassName}_{$rawName}";
+        $isReference = false;
         if ($property instanceof Reference) {
             if ($components === null || !isset($components->schemas[$property->getName()])) {
                 throw new Exception('Reference not found in schemas components.', $property->path);
             }
-            $property = $components->schemas[$className = $usedModelName = $property->getName()];
+            $isReference = true;
+            $property = $components->schemas[$className = $property->getName()];
         }
         if ($required && $property->hasDefault) {
             throw new Exception('Every required property must not have a default value.', $property->path);
@@ -44,9 +45,11 @@ class ModelAttribute
         }
         $className = Naming::forClass($className);
         $type = TypeFactory::build($className, $property, $components);
-        if ($type instanceof ArrayType) {
-            $usedModelName = $type->getUsedModel();
-        }
+
+        // The component class this attribute is rendered as, if any. Null lets ObjectType recurse
+        // into the type instead, which is how an inlined array or object reaches the models its
+        // own items and properties reference.
+        $usedModelName = $isReference && ModelCollector::producesModel($type) ? $className : null;
 
         return new self(
             $rawName,
@@ -69,9 +72,18 @@ class ModelAttribute
         return $this->type;
     }
 
-    public function getUsedModelName(): ?string
+    /**
+     * The models the file holding this attribute must import: the component class the attribute is
+     * rendered as, or, when it is inlined, whatever its own type reaches. Recursion stops at a
+     * component, which imports its own dependencies.
+     *
+     * @return list<string>
+     *
+     * @throws Exception
+     */
+    public function getUsedModelNames(): array
     {
-        return $this->usedModelName;
+        return $this->usedModelName !== null ? [$this->usedModelName] : $this->type->getUsedModelNames();
     }
 
     public function hasDefault(): bool

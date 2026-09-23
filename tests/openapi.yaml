@@ -319,6 +319,84 @@ paths:
                     x-apifony-raw: true
                 required: ['bodyEcho', 'paramEcho']
 
+  /raw-shapes:
+    post:
+      tags:
+        - 'tag'
+      operationId: 'rawShapesOperation'
+      parameters:
+        - name: 'typelessParam'
+          in: 'query'
+          required: true
+          schema:
+            x-apifony-raw: true
+        - name: 'stringParam'
+          in: 'query'
+          required: false
+          schema:
+            type: 'string'
+            x-apifony-raw: true
+            default: 'fallback'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: 'object'
+              properties:
+                nullableRaw:
+                  type:
+                    - 'object'
+                    - 'null'
+                  x-apifony-raw: true
+                refRaw:
+                  $ref: '#/components/schemas/RawThing'
+              required: ['nullableRaw', 'refRaw']
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: 'object'
+                properties:
+                  typelessEcho:
+                    x-apifony-raw: true
+                  stringEcho:
+                    x-apifony-raw: true
+                  nullableRawEcho:
+                    x-apifony-raw: true
+                  refRawEcho:
+                    $ref: '#/components/schemas/RawThing'
+                required: ['typelessEcho', 'stringEcho', 'nullableRawEcho', 'refRawEcho']
+
+  /component-refs:
+    get:
+      tags:
+        - 'tag'
+      operationId: 'componentRefOperation'
+      parameters:
+        - name: 'stringListParam'
+          in: 'query'
+          required: true
+          schema:
+            $ref: '#/components/schemas/StringList'
+        - name: 'abcListParam'
+          in: 'query'
+          required: true
+          schema:
+            $ref: '#/components/schemas/AbcList'
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: 'object'
+                properties:
+                  stringListEcho:
+                    $ref: '#/components/schemas/StringList'
+                  abcListEcho:
+                    $ref: '#/components/schemas/AbcList'
+                required: ['stringListEcho', 'abcListEcho']
+
 components:
   schemas:
     Schema:
@@ -469,6 +547,17 @@ components:
         def:
           type: 'string'
       required: ['def']
+    RawThing:
+      type: 'object'
+      x-apifony-raw: true
+    StringList:
+      type: 'array'
+      items:
+        type: 'string'
+    AbcList:
+      type: 'array'
+      items:
+        $ref: '#/components/schemas/Abc'
     Node:
       type: 'object'
       properties:

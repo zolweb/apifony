@@ -22,6 +22,13 @@ class TypeFactory
             $schema = $components->schemas[$schema->getName()];
         }
 
+        // x-apifony-raw means "any value": the declared type, if there is one at all, is ignored.
+        // Deciding it here is what lets a raw schema omit its type attribute, which is how
+        // OpenAPI 3.1 already spells "any type".
+        if (($schema->extensions['x-apifony-raw'] ?? false) === true) {
+            return new RawType($schema);
+        }
+
         $type = null;
         $nullable = false;
         if ($schema->type === null) {

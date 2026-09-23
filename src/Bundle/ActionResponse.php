@@ -36,6 +36,7 @@ class ActionResponse implements File
         $payloadModels = [];
         $payloadType = null;
         $usedModelName = null;
+        $isReference = false;
         if ($payload !== null) {
             $schema = $payload;
             $hasModel = true;
@@ -43,13 +44,16 @@ class ActionResponse implements File
                 if ($components === null || !isset($components->schemas[$schema->getName()])) {
                     throw new Exception('Reference not found in schemas components.', $schema->path);
                 }
-                $schema = $components->schemas[$className = $usedModelName = $schema->getName()];
+                $schema = $components->schemas[$className = $schema->getName()];
+                $isReference = true;
                 $hasModel = false;
             }
+            $className = Naming::forClass($className);
             $payloadType = TypeFactory::build($className, $schema, $components);
-            if (!$payloadType instanceof ObjectType) {
-                throw new Exception('Only object schemas are supported for responses.', $schema->path);
+            if (!$payloadType instanceof ObjectType && !$payloadType instanceof RawType) {
+                throw new Exception('Only object and raw schemas are supported for responses.', $schema->path);
             }
+            $usedModelName = $isReference && ModelCollector::producesModel($payloadType) ? $className : null;
 
             if ($hasModel) {
                 $collector = ModelCollector::forAggregate($bundleNamespace, $aggregateName, $components);
@@ -82,7 +86,7 @@ class ActionResponse implements File
         private readonly string $aggregateName,
         private readonly string $name,
         private readonly int $code,
-        private readonly ?ObjectType $payloadType,
+        private readonly ObjectType|RawType|null $payloadType,
         private readonly array $headers,
         private readonly array $payloadModels,
         private readonly ?string $usedModelName,

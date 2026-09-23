@@ -14,6 +14,7 @@ use Zol\Apifony\Tests\TestOpenApiServer\Api\FirstOperation\FirstOperationQueryPa
 use Zol\Apifony\Tests\TestOpenApiServer\Model\Node;
 use Zol\Apifony\Tests\TestOpenApiServer\Api\FirstOperation\FirstOperationQueryParamObjectNestedObjectProperty;
 use Zol\Apifony\Tests\TestOpenApiServer\Model\Schema;
+use Zol\Apifony\Tests\TestOpenApiServer\Api\RawShapesOperation\RawShapesOperationRequestBodyPayload;
 use Zol\Apifony\Tests\TestOpenApiServer\Model\SchemaObjectProperty;
 use Zol\Apifony\Tests\TestOpenApiServer\Model\SchemaObjectArrayProperty;
 abstract class AbstractController
@@ -647,6 +648,18 @@ abstract class AbstractController
             $v80[] = $v84;
         }
         return new Schema(stringProperty: $v2, numberProperty: $v4, integerProperty: $v6, booleanProperty: $v8, enumStringProperty: $v10, enumNullableStringProperty: $v12, integerRangeProperty: $v15, emailProperty: $v17, uuidProperty: $v19, dateTimeProperty: $v21, dateTimeProperty2: $v23, dateTimeProperty3: $v25, dateTimeProperty4: $v27, dateProperty: $v29, timeProperty: $v31, timeProperty2: $v33, timeProperty3: $v35, timeProperty4: $v37, customProperty: $v39, defaultProperty: $v41, nullDefaultProperty: $v43, emptyArrayDefaultProperty: $v46, overriddenProperty: $v52, objectProperty: $v54, arrayProperty: $v56, rawProperty: $v62, integerMatrixProperty: $v64, objectArrayProperty: $v74, recursiveObjectArray: $v80);
+    }
+    /**
+     * @throws DenormalizationException
+     */
+    public function denormalizeRawShapesOperationRequestBodyPayloadJsonValue(mixed $value, string $path): RawShapesOperationRequestBodyPayload
+    {
+        $v0 = $this->denormalizeMapJson($value, $path);
+        $v1 = $this->appendPath($path, 'nullableRaw');
+        $v2 = $this->getRequiredJsonProperty($v0, 'nullableRaw', $v1);
+        $v3 = $this->appendPath($path, 'refRaw');
+        $v4 = $this->getRequiredJsonProperty($v0, 'refRaw', $v3);
+        return new RawShapesOperationRequestBodyPayload(nullableRaw: $v2, refRaw: $v4);
     }
     /**
      * @throws DenormalizationException

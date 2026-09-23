@@ -10,6 +10,8 @@ use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\Bundle\AbstractBundle;
 use Zol\Apifony\Tests\TestOpenApiServer\Api\FirstOperation\FirstOperationHandler;
 use Zol\Apifony\Tests\TestOpenApiServer\Api\RawOperation\RawOperationHandler;
+use Zol\Apifony\Tests\TestOpenApiServer\Api\RawShapesOperation\RawShapesOperationHandler;
+use Zol\Apifony\Tests\TestOpenApiServer\Api\ComponentRefOperation\ComponentRefOperationHandler;
 use Zol\Apifony\Tests\TestOpenApiServer\Format\CustomDefinition;
 class TestOpenApiServerBundle extends AbstractBundle
 {
@@ -18,6 +20,8 @@ class TestOpenApiServerBundle extends AbstractBundle
         parent::build($container);
         $container->registerForAutoconfiguration(FirstOperationHandler::class)->addTag('test_open_api_server.handler', ['controller' => 'first_operation']);
         $container->registerForAutoconfiguration(RawOperationHandler::class)->addTag('test_open_api_server.handler', ['controller' => 'raw_operation']);
+        $container->registerForAutoconfiguration(RawShapesOperationHandler::class)->addTag('test_open_api_server.handler', ['controller' => 'raw_shapes_operation']);
+        $container->registerForAutoconfiguration(ComponentRefOperationHandler::class)->addTag('test_open_api_server.handler', ['controller' => 'component_ref_operation']);
         $container->registerForAutoconfiguration(CustomDefinition::class)->addTag('test_open_api_server.format_definition', ['format' => 'custom']);
         $container->addCompilerPass(new class implements CompilerPassInterface
         {
@@ -34,6 +38,12 @@ class TestOpenApiServerBundle extends AbstractBundle
                                 break;
                             case 'raw_operation':
                                 $container->findDefinition('Zol\Apifony\Tests\TestOpenApiServer\Api\RawOperation\RawOperationController')->addMethodCall('setHandler', [new Reference($id)]);
+                                break;
+                            case 'raw_shapes_operation':
+                                $container->findDefinition('Zol\Apifony\Tests\TestOpenApiServer\Api\RawShapesOperation\RawShapesOperationController')->addMethodCall('setHandler', [new Reference($id)]);
+                                break;
+                            case 'component_ref_operation':
+                                $container->findDefinition('Zol\Apifony\Tests\TestOpenApiServer\Api\ComponentRefOperation\ComponentRefOperationController')->addMethodCall('setHandler', [new Reference($id)]);
                                 break;
                         }
                     }

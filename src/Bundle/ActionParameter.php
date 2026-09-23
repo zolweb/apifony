@@ -64,14 +64,13 @@ class ActionParameter
         $className = "{$actionClassName}_{$parameter->name}";
 
         $schema = $parameter->schema;
-        $usedModelNames = [];
         $isReference = false;
         if ($schema instanceof Reference) {
             if ($components === null || !isset($components->schemas[$schema->getName()])) {
                 throw new Exception('Reference not found in schemas components.', $schema->path);
             }
             $isReference = true;
-            $schema = $components->schemas[$className = $usedModelNames[] = $schema->getName()];
+            $schema = $components->schemas[$className = $schema->getName()];
         }
         $className = Naming::forClass($className);
 
@@ -84,22 +83,25 @@ class ActionParameter
 
         $type = TypeFactory::build($className, $schema, $components);
 
+        // A reference is rendered as the component class only when the referenced schema is one
+        // ModelCollector emits; an array or a scalar component is inlined and names no class of
+        // its own, so what has to be imported is then whatever the type itself references.
+        $usedModelNames = $isReference && ModelCollector::producesModel($type) ? [$className] : $type->getUsedModelNames();
+
         $models = [];
-        if ($type instanceof ArrayType || $type instanceof ObjectType) {
+        if ($type instanceof ArrayType || $type instanceof ObjectType || $type instanceof RawType) {
             if ($parameter->in === 'path') {
                 // Delegates to the type so that the existing, more precise message is kept.
                 $type->getRouteRequirementPattern();
             }
             if ($parameter->in !== 'query') {
-                throw new Exception('Array and object parameters are only supported in query.', $parameter->path);
+                throw new Exception('Array, object and raw parameters are only supported in query.', $parameter->path);
             }
             if (!$isReference) {
+                // A referenced schema is already emitted among the components models.
                 $collector = ModelCollector::forAggregate($bundleNamespace, $aggregateName, $components);
                 $collector->collect($className, $schema);
                 $models = $collector->getModels();
-                foreach ($type->getUsedModelNames() as $usedModelName) {
-                    $usedModelNames[] = $usedModelName;
-                }
             }
         }
 
@@ -368,7 +370,7 @@ class ActionParameter
 
     private function isComplex(): bool
     {
-        return $this->type instanceof ArrayType || $this->type instanceof ObjectType;
+        return $this->type instanceof ArrayType || $this->type instanceof ObjectType || $this->type instanceof RawType;
     }
 
     private function getDenormalizerMethodName(): string

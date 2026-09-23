@@ -301,6 +301,55 @@ final class ApifonyTest extends WebTestCase
     }
 
     /**
+     * x-apifony-raw applies to any schema, not just to an object one: a scalar type, no type at
+     * all, a nullable declaration and a reference to a raw component all render as mixed and are
+     * handed over untouched. A raw is the one place where an absent optional value can carry a
+     * default that is not null.
+     */
+    public function testI(): void
+    {
+        $httpClient = self::createClient();
+        $httpClient->catchExceptions(false);
+        $httpClient->jsonRequest(
+            method: 'POST',
+            uri: '/raw-shapes?typelessParam[a][]=1&typelessParam[a][]=2',
+            parameters: ['nullableRaw' => null, 'refRaw' => ['x' => false]],
+        );
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertSame(
+            [
+                'typelessEcho' => ['a' => ['1', '2']],
+                'stringEcho' => 'fallback',
+                'nullableRawEcho' => null,
+                'refRawEcho' => ['x' => false],
+            ],
+            json_decode((string) $httpClient->getResponse()->getContent(), true),
+        );
+    }
+
+    /**
+     * A query parameter referencing a components schema that is not an object: the reference is
+     * inlined, so the generated files must import the item model and nothing named after the
+     * array schema itself.
+     */
+    public function testH(): void
+    {
+        $httpClient = self::createClient();
+        $httpClient->catchExceptions(false);
+        $httpClient->request(
+            method: 'GET',
+            uri: '/component-refs?stringListParam[]=a&stringListParam[]=b&abcListParam[0][def]=c&abcListParam[1][def]=d',
+        );
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertSame(
+            ['stringListEcho' => ['a', 'b'], 'abcListEcho' => [['def' => 'c'], ['def' => 'd']]],
+            json_decode((string) $httpClient->getResponse()->getContent(), true),
+        );
+    }
+
+    /**
      * @param array<string, mixed> $overrides
      *
      * @return array<string, mixed>

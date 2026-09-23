@@ -24,8 +24,6 @@ use Zol\Apifony\OpenApi\Schema;
 
 class ObjectType implements Type
 {
-    private readonly bool $isRaw;
-
     /**
      * @var list<ModelAttribute>|null
      */
@@ -37,7 +35,6 @@ class ObjectType implements Type
         private readonly string $name,
         private readonly ?Components $components = null,
     ) {
-        $this->isRaw = ($this->schema->extensions['x-apifony-raw'] ?? false) === true;
     }
 
     public function isNullable(): bool
@@ -64,11 +61,7 @@ class ObjectType implements Type
 
     public function getConstraints(): array
     {
-        $constraints = [];
-
-        if (!$this->isRaw) {
-            $constraints[] = new Constraint('Assert\Valid', []);
-        }
+        $constraints = [new Constraint('Assert\Valid', [])];
 
         if (!$this->nullable) {
             $constraints[] = new Constraint('Assert\NotNull', [], enforcedByDenormalizer: true);
@@ -99,16 +92,12 @@ class ObjectType implements Type
 
     public function getBuiltInPhpType(): string
     {
-        return $this->isRaw ? 'mixed' : 'object';
+        return 'object';
     }
 
     public function getInitValue(): Expr
     {
         $f = new BuilderFactory();
-
-        if ($this->isRaw) {
-            return new ConstFetch(new Name('null'));
-        }
 
         return $f->methodCall(
             $f->new('\ReflectionClass', [$f->classConstFetch($this->name, 'class')]),
@@ -155,19 +144,9 @@ class ObjectType implements Type
      */
     public function getUsedModelNames(): array
     {
-        if ($this->isRaw) {
-            return [];
-        }
-
         $names = [];
         foreach ($this->getAttributes() as $attribute) {
-            $usedModelName = $attribute->getUsedModelName();
-            if ($usedModelName !== null) {
-                $names[] = $usedModelName;
-
-                continue;
-            }
-            foreach ($attribute->getType()->getUsedModelNames() as $name) {
+            foreach ($attribute->getUsedModelNames() as $name) {
                 $names[] = $name;
             }
         }
@@ -177,9 +156,7 @@ class ObjectType implements Type
 
     public function getDocAst(): TypeNode
     {
-        $type = $this->isRaw
-            ? new IdentifierTypeNode('mixed')
-            : new IdentifierTypeNode($this->name);
+        $type = new IdentifierTypeNode($this->name);
 
         if ($this->nullable) {
             $type = new NullableTypeNode($type);
@@ -196,12 +173,6 @@ class ObjectType implements Type
     public function getParameterDenormalizationStmts(Expr $source, Expr $target, Expr $path, DenormalizationContext $context): array
     {
         $f = new BuilderFactory();
-
-        // x-apifony-raw means "any value": whatever json_decode returned, or whatever the query
-        // string carried. Checking its shape would defeat the point.
-        if ($this->isRaw) {
-            return [new Expression(new Assign($target, $source))];
-        }
 
         $method = $context->registerModel($this);
 
@@ -270,6 +241,6 @@ class ObjectType implements Type
 
     public function asName(): Name
     {
-        return new Name(($this->nullable ? '?' : '').($this->isRaw ? 'mixed' : $this->name));
+        return new Name(($this->nullable ? '?' : '').$this->name);
     }
 }

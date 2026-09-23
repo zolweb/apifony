@@ -49,18 +49,22 @@ class ArrayType implements Type
         if ($items === null) {
             throw new Exception('Schema objects of array type without items attribute are not supported.', $schema->path);
         }
-        $usedModel = null;
+        $isReference = false;
         if ($items instanceof Reference) {
             if ($components === null || !isset($components->schemas[$items->getName()])) {
                 throw new Exception('Reference not found in schemas components.', $items->path);
             }
-            $items = $components->schemas[$className = $usedModel = $items->getName()];
+            $isReference = true;
+            $items = $components->schemas[$className = $items->getName()];
             $className = Naming::forClass($className);
         }
 
         $this->schema = $schema;
         $this->itemType = TypeFactory::build($className, $items, $components);
-        $this->usedModel = $usedModel;
+
+        // The component class the items are rendered as, if any. Null lets getUsedModelNames()
+        // recurse into the item type instead.
+        $this->usedModel = $isReference && ModelCollector::producesModel($this->itemType) ? $className : null;
     }
 
     public function isNullable(): bool
@@ -165,6 +169,11 @@ class ArrayType implements Type
     public function getUsedModel(): ?string
     {
         return $this->usedModel;
+    }
+
+    public function getItemType(): Type
+    {
+        return $this->itemType;
     }
 
     public function getDocAst(): TypeNode

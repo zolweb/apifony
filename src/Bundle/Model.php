@@ -65,8 +65,8 @@ class Model implements File
         $usedModelNames = [];
         if (!$isComponent) {
             foreach ($attributes as $attribute) {
-                if ($attribute->getUsedModelName() !== null) {
-                    $usedModelNames[$attribute->getUsedModelName()] = true;
+                foreach ($attribute->getUsedModelNames() as $usedModelName) {
+                    $usedModelNames[$usedModelName] = true;
                 }
             }
         }

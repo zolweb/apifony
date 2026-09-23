@@ -94,9 +94,6 @@ class ModelCollector
         $type = TypeFactory::build('', $schema, $this->components);
 
         if ($type instanceof ObjectType) {
-            if ($schema->extensions['x-apifony-raw'] ?? false) {
-                return;
-            }
             $this->sources[$className] = $rawName;
             $this->models[$className] = Model::build(
                 $this->bundleNamespace,
@@ -116,6 +113,26 @@ class ModelCollector
             }
             $this->collect($rawName, $schema->items);
         }
+    }
+
+    /**
+     * The rule collect() applies, asked of a type instead of a schema: a reference is rendered as
+     * a class of its own only when unwrapping its array levels ends on an inline object schema. An
+     * array whose items are a reference lends its name to nothing, the referenced schema owns the
+     * class; a scalar or a raw schema is inlined and names nothing at all.
+     *
+     * @throws Exception
+     */
+    public static function producesModel(Type $type): bool
+    {
+        while ($type instanceof ArrayType) {
+            if ($type->getUsedModel() !== null) {
+                return false;
+            }
+            $type = $type->getItemType();
+        }
+
+        return $type instanceof ObjectType;
     }
 
     /**

@@ -35,7 +35,7 @@ class ActionRequestBody
         $className = Naming::forClass(\sprintf('%s_RequestBodyPayload', $actionName));
 
         $payloadModels = [];
-        $usedModelName = null;
+        $isReference = false;
         if ($mediaType->schema === null) {
             throw new Exception('Mediatypes without schema are not supported.', $mediaType->path);
         }
@@ -45,13 +45,16 @@ class ActionRequestBody
             if ($components === null || !isset($components->schemas[$schema->getName()])) {
                 throw new Exception('Reference not found in schemas components.', $schema->path);
             }
-            $schema = $components->schemas[$className = $usedModelName = $schema->getName()];
+            $schema = $components->schemas[$className = $schema->getName()];
+            $isReference = true;
             $hasModel = false;
         }
+        $className = Naming::forClass($className);
         $payloadType = TypeFactory::build($className, $schema, $components);
-        if (!$payloadType instanceof ObjectType) {
-            throw new Exception('Only object schema are supported for request bodies.', $schema->path);
+        if (!$payloadType instanceof ObjectType && !$payloadType instanceof RawType) {
+            throw new Exception('Only object and raw schemas are supported for request bodies.', $schema->path);
         }
+        $usedModelName = $isReference && ModelCollector::producesModel($payloadType) ? $className : null;
 
         if ($hasModel) {
             $collector = ModelCollector::forAggregate($bundleNamespace, $aggregateName, $components);
@@ -70,7 +73,7 @@ class ActionRequestBody
      * @param list<Model> $payloadModels
      */
     private function __construct(
-        private readonly ObjectType $payloadType,
+        private readonly ObjectType|RawType $payloadType,
         private readonly array $payloadModels,
         private readonly ?string $usedModelName,
     ) {
@@ -106,7 +109,7 @@ class ActionRequestBody
      */
     public function registerDenormalizationModels(DenormalizationContext $context): void
     {
-        if ($this->getPayloadBuiltInPhpType() === 'object') {
+        if ($this->payloadType instanceof ObjectType) {
             $context->registerModel($this->payloadType);
         }
     }
@@ -119,7 +122,7 @@ class ActionRequestBody
     {
         $json = $f->methodCall($f->var('this'), 'getJsonRequestBody', [$f->var('request')]);
 
-        if ($this->getPayloadBuiltInPhpType() !== 'object') {
+        if (!$this->payloadType instanceof ObjectType) {
             return $json;
         }
 

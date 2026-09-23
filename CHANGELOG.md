@@ -255,6 +255,35 @@ Un body `[1, "two", false]` ou `"une chaîne"` est donc accepté sur un schéma 
 objet passait. La fixture couvre maintenant les trois emplacements, avec une seconde opération
 dédiée.
 
+Enfin l'extension n'était lue que sur les schémas de type `object` : partout ailleurs elle était
+silencieusement ignorée. `x-apifony-raw` est désormais un type à part entière, décidé avant la
+résolution du type déclaré, et vaut donc pour n'importe quel schéma :
+
+```yaml
+# le type déclaré est ignoré, ces trois écritures sont équivalentes
+monChamp: {x-apifony-raw: true}                      # forme recommandée
+monChamp: {type: 'object', x-apifony-raw: true}
+monChamp: {type: 'string', x-apifony-raw: true}      # avant : un simple string
+```
+
+Omettre `type` est la forme recommandée, et c'est déjà ce qu'un schéma sans `type` signifie en
+OpenAPI 3.1. Trois conséquences :
+
+- **Un raw accepte `null`**, y compris quand la propriété est `required` et que le schéma ne se
+  déclare pas nullable. « N'importe quelle valeur » inclut `null` : une déclaration de nullabilité
+  sur un raw n'a donc pas d'effet. C'est ce qui corrige au passage la génération de
+  `public readonly ?mixed $champ`, que PHP refuse de parser (`Type mixed cannot be marked as
+  nullable`).
+- **Un raw est le seul type dont la valeur par défaut peut être autre chose que `null` ou `[]`** :
+  `default: 'fallback'` sur un paramètre optionnel est rendu tel quel.
+- **Un raw n'est plus jamais importé comme un modèle.** Un `$ref` vers un composant raw — comme
+  vers un composant de type tableau ou scalaire — n'émet plus de `use …\Model\NomDuComposant`
+  pointant vers une classe qui n'existe pas.
+
+Rappel de sémantique côté query string : un raw y reçoit la structure que la notation à crochets a
+produite (`?p[a][]=1&p[a][]=2` donne `['a' => ['1', '2']]`), dont les feuilles sont toujours des
+chaînes — une query string ne sait exprimer ni entier, ni booléen, ni `null`.
+
 ##### Un tableau envoyé à un paramètre scalaire ne court-circuite plus l'enveloppe
 
 Envoyer un tableau à un paramètre scalaire (`?monParam[]=a`) faisait lever une

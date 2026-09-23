@@ -11,3 +11,11 @@ zol_apifony_tests_test_open_api_server_raw_operation:
     path: /raw
     methods: post
     controller: 'Zol\Apifony\Tests\TestOpenApiServer\Api\RawOperation\RawOperationController::rawOperation'
+zol_apifony_tests_test_open_api_server_raw_shapes_operation:
+    path: /raw-shapes
+    methods: post
+    controller: 'Zol\Apifony\Tests\TestOpenApiServer\Api\RawShapesOperation\RawShapesOperationController::rawShapesOperation'
+zol_apifony_tests_test_open_api_server_component_ref_operation:
+    path: /component-refs
+    methods: get
+    controller: 'Zol\Apifony\Tests\TestOpenApiServer\Api\ComponentRefOperation\ComponentRefOperationController::componentRefOperation'
