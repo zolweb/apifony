@@ -286,6 +286,39 @@ paths:
                     type: 'integer'
                 required: ['dump', 'string_string', 'abc1', 'abc2', 'abcList1', 'abcList2', 'integer']
 
+  /raw:
+    post:
+      tags:
+        - 'tag'
+      operationId: 'rawOperation'
+      parameters:
+        - name: 'rawParam'
+          in: 'query'
+          required: true
+          schema:
+            type: 'object'
+            x-apifony-raw: true
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: 'object'
+              x-apifony-raw: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                type: 'object'
+                properties:
+                  bodyEcho:
+                    type: 'object'
+                    x-apifony-raw: true
+                  paramEcho:
+                    type: 'object'
+                    x-apifony-raw: true
+                required: ['bodyEcho', 'paramEcho']
+
 components:
   schemas:
     Schema:
@@ -382,6 +415,9 @@ components:
           type: 'array'
           items:
             type: 'string'
+        rawProperty:
+          type: 'object'
+          x-apifony-raw: true
         integerMatrixProperty:
           type: 'array'
           items:
@@ -422,6 +458,7 @@ components:
         'customProperty',
         'objectProperty',
         'arrayProperty',
+        'rawProperty',
         'integerMatrixProperty',
         'objectArrayProperty',
         'recursiveObjectArray',

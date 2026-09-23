@@ -7,3 +7,7 @@ zol_apifony_tests_test_open_api_server_first_operation:
         pathParamNumber: '-?(0|[1-9]\d*)(\.\d+)?([eE][+-]?\d+)?'
         pathParamInteger: '-?(0|[1-9]\d*)'
         pathParamBoolean: true|false
+zol_apifony_tests_test_open_api_server_raw_operation:
+    path: /raw
+    methods: post
+    controller: 'Zol\Apifony\Tests\TestOpenApiServer\Api\RawOperation\RawOperationController::rawOperation'

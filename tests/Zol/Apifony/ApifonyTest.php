@@ -129,6 +129,7 @@ final class ApifonyTest extends WebTestCase
                         'stringProperty' => 'string',
                     ],
                     'arrayProperty' => ['string'],
+                    'rawProperty' => ['a' => 1, 'b' => [true, null, 'x']],
                     'integerMatrixProperty' => [[1, 2], [3]],
                     'objectArrayProperty' => [
                         [
@@ -162,6 +163,7 @@ final class ApifonyTest extends WebTestCase
                                 'stringProperty' => 'string',
                             ],
                             'arrayProperty' => ['string'],
+                            'rawProperty' => ['a' => 1, 'b' => [true, null, 'x']],
                             'integerMatrixProperty' => [[1, 2], [3]],
                             'objectArrayProperty' => [
                                 [
@@ -254,6 +256,48 @@ final class ApifonyTest extends WebTestCase
     }
 
     /**
+     * An x-apifony-raw schema takes any value: the handler receives what json_decode returned,
+     * and the query bag carried, untouched.
+     */
+    public function testF(): void
+    {
+        $httpClient = self::createClient();
+        $httpClient->catchExceptions(false);
+        $httpClient->jsonRequest(
+            method: 'POST',
+            uri: '/raw?rawParam[k]=v&rawParam[l][]=1&rawParam[l][]=2',
+            parameters: ['a' => 1, 'b' => [true, null, 'x'], 'c' => ['d' => 2.5]],
+        );
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertSame(
+            ['bodyEcho' => ['a' => 1, 'b' => [true, null, 'x'], 'c' => ['d' => 2.5]], 'paramEcho' => ['k' => 'v', 'l' => ['1', '2']]],
+            json_decode((string) $httpClient->getResponse()->getContent(), true),
+        );
+    }
+
+    /**
+     * The point of raw being mixed: a body that is not an object at all is still accepted.
+     */
+    public function testG(): void
+    {
+        $httpClient = self::createClient();
+        $httpClient->catchExceptions(false);
+        $httpClient->request(
+            method: 'POST',
+            uri: '/raw?rawParam=scalar',
+            server: ['CONTENT_TYPE' => 'application/json'],
+            content: '[1, "two", false]',
+        );
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertSame(
+            ['bodyEcho' => [1, 'two', false], 'paramEcho' => 'scalar'],
+            json_decode((string) $httpClient->getResponse()->getContent(), true),
+        );
+    }
+
+    /**
      * @param array<string, mixed> $overrides
      *
      * @return array<string, mixed>
@@ -285,6 +329,7 @@ final class ApifonyTest extends WebTestCase
                 'stringProperty' => 'string',
             ],
             'arrayProperty' => ['string'],
+            'rawProperty' => ['a' => 1, 'b' => [true, null, 'x']],
             'integerMatrixProperty' => [[1, 2], [3]],
             'objectArrayProperty' => [
                 ['stringProperty' => 'string'],
@@ -315,6 +360,7 @@ final class ApifonyTest extends WebTestCase
                         'stringProperty' => 'string',
                     ],
                     'arrayProperty' => ['string'],
+                    'rawProperty' => ['a' => 1, 'b' => [true, null, 'x']],
                     'integerMatrixProperty' => [[1, 2], [3]],
                     'objectArrayProperty' => [
                         ['stringProperty' => 'string'],

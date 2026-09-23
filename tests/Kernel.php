@@ -50,6 +50,11 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
         ;
 
         $container->services()
+            ->set(RawHandler::class)
+            ->autoconfigure(true)
+        ;
+
+        $container->services()
             ->set(CustomDefinition::class)
             ->autoconfigure(true)
         ;

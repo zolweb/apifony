@@ -190,10 +190,10 @@ class ObjectType implements Type
     {
         $f = new BuilderFactory();
 
+        // x-apifony-raw means "any value": whatever json_decode returned, or whatever the query
+        // string carried. Checking its shape would defeat the point.
         if ($this->isRaw) {
-            return $context->wrapNullable($this->nullable, $source, $target, static fn (Expr $value): array => [
-                new Expression(new Assign($target, $f->methodCall($f->var('this'), \sprintf('denormalizeMap%s', $context->getSource()), array_merge([$value, $path], $context->getLocationArgs())))),
-            ]);
+            return [new Expression(new Assign($target, $source))];
         }
 
         $method = $context->registerModel($this);

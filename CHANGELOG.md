@@ -80,6 +80,30 @@ if (!\in_array($v10, ['abc', 'def', 'ghi'], true)) {
   est redondante avec la dénormalisation, qui garantit déjà le type, et sert de filet si le code
   généré était fautif.
 
+#### Correction : `x-apifony-raw` accepte enfin n'importe quelle valeur
+
+Un request body déclaré `x-apifony-raw` générait `(new \ReflectionClass(mixed::class))` comme
+valeur initiale. `mixed::class` est syntaxiquement valide et vaut la chaîne `"mixed"`, si bien que
+chaque requête levait `ReflectionException: Class "mixed" does not exist` — **une 500 systématique**.
+Le bug est antérieur à cette version et n'était couvert par aucun test.
+
+Par ailleurs la dénormalisation d'une valeur raw exigeait un tableau, ce qui contredit son
+intention : recevoir le résultat de `json_decode`, quel qu'il soit. Une valeur raw est désormais
+transmise telle quelle, sans contrôle de forme, que ce soit pour un request body, un query param ou
+une propriété imbriquée dans un modèle :
+
+```php
+// body
+$requestBodyPayload = $this->getJsonRequestBody($request);
+
+// query param
+return $this->getRawParameter($request, $name, $in);
+```
+
+Un body `[1, "two", false]` ou `"une chaîne"` est donc accepté sur un schéma raw, là où seul un
+objet passait. La fixture couvre maintenant les trois emplacements, avec une seconde opération
+dédiée.
+
 #### Nettoyage du code mort
 
 - Les huit lecteurs `get{String,Int,Float,Bool}{,OrNull}RequestBody` ne sont plus générés. Ils

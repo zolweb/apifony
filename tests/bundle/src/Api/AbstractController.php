@@ -628,33 +628,35 @@ abstract class AbstractController
             $v60 = $this->denormalizeStringJson($v58, $v59);
             $v56[] = $v60;
         }
-        $v61 = $this->appendJsonPath($path, 'integerMatrixProperty');
-        $v62 = [];
-        foreach ($this->denormalizeListJson($this->getRequiredJsonProperty($v0, 'integerMatrixProperty', $v61), $v61) as $v63 => $v64) {
-            $v65 = "{$v61}[{$v63}]";
-            $v66 = [];
-            foreach ($this->denormalizeListJson($v64, $v65) as $v67 => $v68) {
-                $v69 = "{$v65}[{$v67}]";
-                $v70 = $this->denormalizeIntJson($v68, $v69);
-                $v66[] = $v70;
+        $v61 = $this->appendJsonPath($path, 'rawProperty');
+        $v62 = $this->getRequiredJsonProperty($v0, 'rawProperty', $v61);
+        $v63 = $this->appendJsonPath($path, 'integerMatrixProperty');
+        $v64 = [];
+        foreach ($this->denormalizeListJson($this->getRequiredJsonProperty($v0, 'integerMatrixProperty', $v63), $v63) as $v65 => $v66) {
+            $v67 = "{$v63}[{$v65}]";
+            $v68 = [];
+            foreach ($this->denormalizeListJson($v66, $v67) as $v69 => $v70) {
+                $v71 = "{$v67}[{$v69}]";
+                $v72 = $this->denormalizeIntJson($v70, $v71);
+                $v68[] = $v72;
             }
-            $v62[] = $v66;
+            $v64[] = $v68;
         }
-        $v71 = $this->appendJsonPath($path, 'objectArrayProperty');
-        $v72 = [];
-        foreach ($this->denormalizeListJson($this->getRequiredJsonProperty($v0, 'objectArrayProperty', $v71), $v71) as $v73 => $v74) {
-            $v75 = "{$v71}[{$v73}]";
-            $v76 = $this->denormalizeSchemaObjectArrayPropertyJsonValue($v74, $v75);
-            $v72[] = $v76;
+        $v73 = $this->appendJsonPath($path, 'objectArrayProperty');
+        $v74 = [];
+        foreach ($this->denormalizeListJson($this->getRequiredJsonProperty($v0, 'objectArrayProperty', $v73), $v73) as $v75 => $v76) {
+            $v77 = "{$v73}[{$v75}]";
+            $v78 = $this->denormalizeSchemaObjectArrayPropertyJsonValue($v76, $v77);
+            $v74[] = $v78;
         }
-        $v77 = $this->appendJsonPath($path, 'recursiveObjectArray');
-        $v78 = [];
-        foreach ($this->denormalizeListJson($this->getRequiredJsonProperty($v0, 'recursiveObjectArray', $v77), $v77) as $v79 => $v80) {
-            $v81 = "{$v77}[{$v79}]";
-            $v82 = $this->denormalizeSchemaJsonValue($v80, $v81);
-            $v78[] = $v82;
+        $v79 = $this->appendJsonPath($path, 'recursiveObjectArray');
+        $v80 = [];
+        foreach ($this->denormalizeListJson($this->getRequiredJsonProperty($v0, 'recursiveObjectArray', $v79), $v79) as $v81 => $v82) {
+            $v83 = "{$v79}[{$v81}]";
+            $v84 = $this->denormalizeSchemaJsonValue($v82, $v83);
+            $v80[] = $v84;
         }
-        return new Schema(stringProperty: $v2, numberProperty: $v4, integerProperty: $v6, booleanProperty: $v8, enumStringProperty: $v10, enumNullableStringProperty: $v12, integerRangeProperty: $v15, emailProperty: $v17, uuidProperty: $v19, dateTimeProperty: $v21, dateTimeProperty2: $v23, dateTimeProperty3: $v25, dateTimeProperty4: $v27, dateProperty: $v29, timeProperty: $v31, timeProperty2: $v33, timeProperty3: $v35, timeProperty4: $v37, customProperty: $v39, defaultProperty: $v41, nullDefaultProperty: $v43, emptyArrayDefaultProperty: $v46, overriddenProperty: $v52, objectProperty: $v54, arrayProperty: $v56, integerMatrixProperty: $v62, objectArrayProperty: $v72, recursiveObjectArray: $v78);
+        return new Schema(stringProperty: $v2, numberProperty: $v4, integerProperty: $v6, booleanProperty: $v8, enumStringProperty: $v10, enumNullableStringProperty: $v12, integerRangeProperty: $v15, emailProperty: $v17, uuidProperty: $v19, dateTimeProperty: $v21, dateTimeProperty2: $v23, dateTimeProperty3: $v25, dateTimeProperty4: $v27, dateProperty: $v29, timeProperty: $v31, timeProperty2: $v33, timeProperty3: $v35, timeProperty4: $v37, customProperty: $v39, defaultProperty: $v41, nullDefaultProperty: $v43, emptyArrayDefaultProperty: $v46, overriddenProperty: $v52, objectProperty: $v54, arrayProperty: $v56, rawProperty: $v62, integerMatrixProperty: $v64, objectArrayProperty: $v74, recursiveObjectArray: $v80);
     }
     /**
      * @throws DenormalizationException

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Zol\Apifony\Bundle;
 
 use PhpParser\BuilderFactory;
+use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
@@ -111,6 +112,25 @@ class ActionRequestBody
     }
 
     /**
+     * A raw payload is whatever json_decode returned, handed over untouched. Anything else is
+     * rebuilt by the denormalizer generated for its model.
+     */
+    private function getReadExpr(BuilderFactory $f): Expr
+    {
+        $json = $f->methodCall($f->var('this'), 'getJsonRequestBody', [$f->var('request')]);
+
+        if ($this->getPayloadBuiltInPhpType() !== 'object') {
+            return $json;
+        }
+
+        return $f->methodCall(
+            $f->var('this'),
+            DenormalizationContext::getModelMethodName($this->getPayloadTypeName()->toString(), DenormalizationContext::SOURCE_JSON),
+            [$json, $f->val('')],
+        );
+    }
+
+    /**
      * @return list<Stmt>
      */
     public function getStmts(): array
@@ -118,15 +138,9 @@ class ActionRequestBody
         $f = new BuilderFactory();
 
         return [
-            new Expression(new Assign($f->var('requestBodyPayload'), $f->methodCall($f->new('\ReflectionClass', [$f->classConstFetch($this->getPayloadTypeName(), 'class')]), 'newInstanceWithoutConstructor'))),
+            new Expression(new Assign($f->var('requestBodyPayload'), $this->payloadType->getInitValue())),
             new TryCatch([
-                new Expression(new Assign($f->var('requestBodyPayload'), $f->methodCall(
-                    $f->var('this'),
-                    $this->getPayloadBuiltInPhpType() === 'object'
-                        ? DenormalizationContext::getModelMethodName($this->getPayloadTypeName()->toString(), DenormalizationContext::SOURCE_JSON)
-                        : 'denormalizeMapJson',
-                    [$f->methodCall($f->var('this'), 'getJsonRequestBody', [$f->var('request')]), $f->val('')],
-                ))),
+                new Expression(new Assign($f->var('requestBodyPayload'), $this->getReadExpr($f))),
                 new Expression($f->methodCall($f->var('this'), 'validateRequestBody', [
                     $f->var('requestBodyPayload'),
                     new Array_(array_map(
