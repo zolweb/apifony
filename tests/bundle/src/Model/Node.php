@@ -12,10 +12,8 @@ class Node
      */
     public function __construct(
         
-        #[Assert\NotNull]
         public readonly string $name,
         
-        #[Assert\NotNull]
         #[Assert\Valid]
         #[Assert\All(constraints: [new Assert\NotNull()])]
         public readonly array $children = []

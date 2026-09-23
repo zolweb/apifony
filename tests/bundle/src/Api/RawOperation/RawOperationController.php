@@ -9,7 +9,6 @@ use Zol\Apifony\Tests\TestOpenApiServer\Api\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Validator\Constraints as Assert;
 class RawOperationController extends AbstractController
 {
     private RawOperationHandler $handler;
@@ -23,18 +22,13 @@ class RawOperationController extends AbstractController
         $qRawParam = null;
         try {
             $qRawParam = $this->denormalizeQRawParamParameter($request, 'rawParam', 'query');
-            $this->validate($qRawParam, 'rawParam', [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
             $errors[] = ['in' => 'query', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
-        } catch (ValidationException $e) {
-            foreach ($e->errors as $error) {
-                $errors[] = ['in' => 'query', ...$error];
-            }
         }
         $requestBodyPayload = null;
         try {
             $requestBodyPayload = $this->getJsonRequestBody($request);
-            $this->validate($requestBodyPayload, '', [new Assert\NotNull()]);
+            $this->validate($requestBodyPayload, '', []);
         } catch (DenormalizationException $e) {
             $errors[] = ['in' => 'requestBody', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
         } catch (ValidationException $e) {

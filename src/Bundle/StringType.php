@@ -73,7 +73,7 @@ class StringType implements Type
         $constraints = [];
 
         if (!$this->nullable) {
-            $constraints[] = new Constraint('Assert\NotNull', []);
+            $constraints[] = new Constraint('Assert\NotNull', [], enforcedByDenormalizer: true);
         }
 
         if ($this->schema->format !== null) {
@@ -93,7 +93,7 @@ class StringType implements Type
         }
 
         if (\count($this->schema->enum) > 0) {
-            $constraints[] = new Constraint('Assert\Choice', ['choices' => $this->schema->enum]);
+            $constraints[] = new Constraint('Assert\Choice', ['choices' => $this->schema->enum], enforcedByDenormalizer: true);
         }
 
         return $constraints;

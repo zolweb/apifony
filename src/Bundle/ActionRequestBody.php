@@ -131,6 +131,14 @@ class ActionRequestBody
     }
 
     /**
+     * @return list<Constraint>
+     */
+    public function getResidualConstraints(): array
+    {
+        return Constraint::filterResidual($this->payloadType->getConstraints());
+    }
+
+    /**
      * @return list<Stmt>
      */
     public function getStmts(): array
@@ -146,7 +154,7 @@ class ActionRequestBody
                     $f->val(''),
                     new Array_(array_map(
                         static fn (Constraint $constraint): ArrayItem => new ArrayItem($constraint->getInstantiationAst()),
-                        $this->payloadType->getConstraints(),
+                        $this->getResidualConstraints(),
                     ), ['kind' => Array_::KIND_SHORT]),
                 ])),
             ], [

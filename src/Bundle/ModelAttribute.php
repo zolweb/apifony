@@ -97,6 +97,16 @@ class ModelAttribute
         return new PhpDocTagNode('@param', new ParamTagValueNode($this->type->getDocAst(), false, "\${$this->rawName}", '', false));
     }
 
+    /**
+     * The constraints actually rendered as attributes, once PHP's own guarantees are taken out.
+     *
+     * @return list<Constraint>
+     */
+    public function getAttributeConstraints(): array
+    {
+        return Constraint::filterPhpGuaranteed($this->type->getConstraints());
+    }
+
     public function getParam(): Param
     {
         $f = new BuilderFactory();
@@ -111,7 +121,7 @@ class ModelAttribute
             $param->setDefault($this->type->getDefaultExpr());
         }
 
-        foreach ($this->type->getConstraints() as $constraint) {
+        foreach ($this->getAttributeConstraints() as $constraint) {
             $param->addAttribute($constraint->getAttributeAst());
         }
 

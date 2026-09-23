@@ -275,6 +275,40 @@ handler changent).
 
 #### Interne
 
+##### Les contraintes déjà garanties ne sont plus émises
+
+Le contrôleur revalidait ce que la dénormalisation venait d'établir. Sur la fixture, **28 des 34
+appels à `validate()` ne pouvaient rien détecter** : ils ne portaient que des contraintes dont le
+code généré, vérifié par PHPStan au niveau max, garantit déjà le respect.
+
+```php
+// avant — les quatre contraintes sont mortes, le dénormaliseur rend un list<'abc'|'def'|'ghi'>
+$this->validate($qQueryParamEnumArray, 'queryParamEnumArray', [new Assert\NotNull(),
+    new Assert\All(constraints: [new Assert\Type(type: 'string'), new Assert\NotNull(),
+        new Assert\Choice(choices: ['abc', 'def', 'ghi'])])]);
+
+// après — plus d'appel du tout
+```
+
+Ne sont plus émises, au site d'appel, les contraintes que le dénormaliseur applique déjà :
+`NotNull`, `Type`, `Choice`, et les bornes **entières** — leur affinage utilise exactement les mêmes
+valeurs. Restent `Count`, `Length`, `Unique`, `Regex`, `DivisibleBy`, les formats, `Valid`, et les
+bornes d'un `number`, que rien n'affine. Quand il ne reste rien, l'appel et son `try`/`catch`
+disparaissent : **34 appels tombent à 7**.
+
+La distinction se fait selon le chemin de lecture, pas selon le type : un paramètre scalaire passe
+par les anciens lecteurs, qui coercent le type mais ignorent enums et bornes, donc seul le `NotNull`
+y est retiré.
+
+Les **modèles générés** perdent leur `#[Assert\NotNull]` de premier niveau, que PHP garantit déjà
+sur une propriété typée promue non nullable — `Schema` passe de 51 à 24 attributs. Tout le reste est
+conservé : `Choice`, les bornes et les `Assert\All(constraints: [...])` sur les items restent utiles
+à qui construit un modèle à la main, PHP ne typant pas le contenu d'un tableau.
+
+Conséquence assumée : pour un paramètre de type objet, le `Assert\Valid` du site d'appel fait
+toujours descendre dans les attributs du modèle, dont certains restent redondants avec la
+dénormalisation. C'est le prix d'un modèle qui décrit son schéma.
+
 ##### Nettoyage du code mort
 
 - Les huit lecteurs `get{String,Int,Float,Bool}{,OrNull}RequestBody` ne sont plus générés. Ils

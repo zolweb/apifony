@@ -112,8 +112,11 @@ class Controller implements File
             ->addStmt($f->use('Symfony\Component\HttpFoundation\JsonResponse'))
             ->addStmt($f->use('Symfony\Component\HttpFoundation\Request'))
             ->addStmt($f->use('Symfony\Component\HttpFoundation\Response'))
-            ->addStmt(new Use_([new UseUse(new Name('Symfony\Component\Validator\Constraints'), 'Assert')]))
         ;
+
+        if ($this->action->usesAssertConstraints()) {
+            $namespace->addStmt(new Use_([new UseUse(new Name('Symfony\Component\Validator\Constraints'), 'Assert')]));
+        }
 
         foreach ($this->usedFormatConstraintNames as $usedFormatConstraintName) {
             $namespace->addStmt(new Use_([new UseUse(new Name("{$this->bundleNamespace}\\Format\\{$usedFormatConstraintName}"), "Assert{$usedFormatConstraintName}")]));

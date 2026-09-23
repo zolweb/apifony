@@ -245,6 +245,10 @@ class ActionParameter
             ]);
         }
 
+        if (\count($this->getResidualConstraints()) === 0) {
+            return $catches;
+        }
+
         $catches[] = new Catch_([new Name('ValidationException')], $f->var('e'), [
             new Foreach_($f->propertyFetch($f->var('e'), 'errors'), $f->var('error'), ['stmts' => [
                 new Expression(new Assign(new ArrayDimFetch($f->var('errors')), new Array_([
@@ -264,16 +268,14 @@ class ActionParameter
     {
         $f = new BuilderFactory();
 
-        return [
-            new Expression(new Assign(new Variable($this->variableName), new Variable($this->parameter->name))),
-            new TryCatch([
-                new Expression($f->methodCall($f->var('this'), 'validate', [
-                    new Variable($this->variableName),
-                    new String_($this->parameter->name),
-                    $this->getConstraintsAst(),
-                ])),
-            ], $this->getCatches(false)),
-        ];
+        $stmts = [new Expression(new Assign(new Variable($this->variableName), new Variable($this->parameter->name)))];
+
+        $validateStmts = $this->getValidateStmts();
+        if (\count($validateStmts) > 0) {
+            $stmts[] = new TryCatch($validateStmts, $this->getCatches(false));
+        }
+
+        return $stmts;
     }
 
     /**
@@ -285,14 +287,10 @@ class ActionParameter
 
         return [
             new Expression(new Assign(new Variable($this->variableName), $this->type->getInitValue())),
-            new TryCatch([
-                new Expression(new Assign(new Variable($this->variableName), $this->getReadExpr())),
-                new Expression($f->methodCall($f->var('this'), 'validate', [
-                    new Variable($this->variableName),
-                    new String_($this->parameter->name),
-                    $this->getConstraintsAst(),
-                ])),
-            ], $this->getCatches(true)),
+            new TryCatch(array_merge(
+                [new Expression(new Assign(new Variable($this->variableName), $this->getReadExpr()))],
+                $this->getValidateStmts(),
+            ), $this->getCatches(true)),
         ];
     }
 
@@ -400,11 +398,46 @@ class ActionParameter
         );
     }
 
+    /**
+     * What is left to check once the value has been read.
+     *
+     * A complex parameter is rebuilt by a generated denormalizer, which already guarantees types,
+     * non nullability, enum membership and integer bounds at every depth. A scalar one goes through
+     * the older readers, which coerce the type but know nothing of enums or bounds, so only PHP's
+     * own guarantee applies there.
+     *
+     * @return list<Constraint>
+     */
+    public function getResidualConstraints(): array
+    {
+        return $this->isComplex()
+            ? Constraint::filterResidual($this->getConstraints())
+            : Constraint::filterPhpGuaranteed($this->getConstraints());
+    }
+
     private function getConstraintsAst(): Array_
     {
         return new Array_(array_map(
             static fn (Constraint $constraint): ArrayItem => new ArrayItem($constraint->getInstantiationAst()),
-            $this->getConstraints(),
+            $this->getResidualConstraints(),
         ), ['kind' => Array_::KIND_SHORT]);
+    }
+
+    /**
+     * @return list<Stmt>
+     */
+    private function getValidateStmts(): array
+    {
+        $f = new BuilderFactory();
+
+        if (\count($this->getResidualConstraints()) === 0) {
+            return [];
+        }
+
+        return [new Expression($f->methodCall($f->var('this'), 'validate', [
+            new Variable($this->variableName),
+            new String_($this->parameter->name),
+            $this->getConstraintsAst(),
+        ]))];
     }
 }

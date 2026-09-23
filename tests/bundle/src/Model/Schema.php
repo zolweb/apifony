@@ -45,113 +45,86 @@ class Schema
      */
     public function __construct(
         
-        #[Assert\NotNull]
         public readonly string $stringProperty,
         
-        #[Assert\NotNull]
         public readonly float $numberProperty,
         
-        #[Assert\NotNull]
         public readonly int $integerProperty,
         
-        #[Assert\NotNull]
         public readonly bool $booleanProperty,
         
-        #[Assert\NotNull]
         #[Assert\Choice(choices: ['abc', 'def', 'ghi'])]
         public readonly string $enumStringProperty,
         
         #[Assert\Choice(choices: ['abc', 'def', 'ghi', null])]
         public readonly ?string $enumNullableStringProperty,
         
-        #[Assert\NotNull]
         #[Assert\GreaterThanOrEqual(value: -5)]
         #[Assert\LessThanOrEqual(value: 5)]
         public readonly int $integerRangeProperty,
         
-        #[Assert\NotNull]
         #[AssertEmail]
         public readonly string $emailProperty,
         
-        #[Assert\NotNull]
         #[AssertUuid]
         public readonly string $uuidProperty,
         
-        #[Assert\NotNull]
         #[AssertDateTime]
         public readonly string $dateTimeProperty,
         
-        #[Assert\NotNull]
         #[AssertDateTime]
         public readonly string $dateTimeProperty2,
         
-        #[Assert\NotNull]
         #[AssertDateTime]
         public readonly string $dateTimeProperty3,
         
-        #[Assert\NotNull]
         #[AssertDateTime]
         public readonly string $dateTimeProperty4,
         
-        #[Assert\NotNull]
         #[AssertDate]
         public readonly string $dateProperty,
         
-        #[Assert\NotNull]
         #[AssertTime]
         public readonly string $timeProperty,
         
-        #[Assert\NotNull]
         #[AssertTime]
         public readonly string $timeProperty2,
         
-        #[Assert\NotNull]
         #[AssertTime]
         public readonly string $timeProperty3,
         
-        #[Assert\NotNull]
         #[AssertTime]
         public readonly string $timeProperty4,
         
-        #[Assert\NotNull]
         #[AssertCustom]
         public readonly string $customProperty,
         
         #[Assert\Valid]
-        #[Assert\NotNull]
         public readonly SchemaObjectProperty $objectProperty,
         
-        #[Assert\NotNull]
         #[Assert\All(constraints: [new Assert\Type(type: 'string'), new Assert\NotNull()])]
         public readonly array $arrayProperty,
         
-        #[Assert\NotNull]
         public readonly mixed $rawProperty,
         
-        #[Assert\NotNull]
         #[Assert\All(constraints: [new Assert\Type(type: 'array'), new Assert\NotNull(), new Assert\All(constraints: [new Assert\Type(type: 'int'), new Assert\NotNull()])])]
         public readonly array $integerMatrixProperty,
         
-        #[Assert\NotNull]
         #[Assert\Valid]
         #[Assert\All(constraints: [new Assert\NotNull()])]
         public readonly array $objectArrayProperty,
         
-        #[Assert\NotNull]
         #[Assert\Valid]
         #[Assert\All(constraints: [new Assert\NotNull()])]
         public readonly array $recursiveObjectArray,
         
-        #[Assert\NotNull]
         public readonly string $defaultProperty = 'abc',
         
         public readonly ?string $nullDefaultProperty = null,
         
-        #[Assert\NotNull]
         #[Assert\All(constraints: [new Assert\Type(type: 'string'), new Assert\NotNull()])]
         public readonly array $emptyArrayDefaultProperty = [],
         
-        #[Assert\NotNull]
         public readonly string $overriddenProperty = 'def'
     )
     {

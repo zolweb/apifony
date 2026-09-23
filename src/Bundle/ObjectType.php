@@ -71,7 +71,7 @@ class ObjectType implements Type
         }
 
         if (!$this->nullable) {
-            $constraints[] = new Constraint('Assert\NotNull', []);
+            $constraints[] = new Constraint('Assert\NotNull', [], enforcedByDenormalizer: true);
         }
 
         if ($this->schema->format !== null) {

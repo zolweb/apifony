@@ -307,6 +307,30 @@ class Action
         $this->requestBody?->registerDenormalizationModels($jsonContext);
     }
 
+    /**
+     * Whether the generated controller renders at least one Assert\* constraint, and therefore
+     * needs the alias imported.
+     *
+     * @throws Exception
+     */
+    public function usesAssertConstraints(): bool
+    {
+        $constraints = $this->requestBody?->getResidualConstraints() ?? [];
+        foreach ($this->parameters as $parameter) {
+            foreach ($parameter->getResidualConstraints() as $constraint) {
+                $constraints[] = $constraint;
+            }
+        }
+
+        foreach ($constraints as $constraint) {
+            if (str_starts_with($constraint->getName(), 'Assert\\')) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function getClassMethod(): ClassMethod
     {
         $f = new BuilderFactory();

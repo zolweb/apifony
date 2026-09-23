@@ -17,11 +17,67 @@ class Constraint
     /**
      * @param array<string, string|int|float|bool|array<string|int|float|bool|self|array{}|null>|null> $parameters
      */
+    /**
+     * @param array<string, string|int|float|bool|array<string|int|float|bool|self|array{}|null>|null> $parameters
+     * @param bool                                                                                     $enforcedByDenormalizer whether the generated denormalizer already guarantees this, making it dead weight once the value has been rebuilt
+     */
     public function __construct(
         private readonly string $name,
         private readonly array $parameters,
         private readonly ?string $formatName = null,
+        private readonly bool $enforcedByDenormalizer = false,
     ) {
+    }
+
+    /**
+     * The constraints left to check once the generated denormalizer has rebuilt the value: it
+     * already guarantees types, non nullability, enum membership and integer bounds at every depth.
+     *
+     * @param list<self> $constraints
+     *
+     * @return list<self>
+     */
+    public static function filterResidual(array $constraints): array
+    {
+        $residual = [];
+        foreach ($constraints as $constraint) {
+            if ($constraint->enforcedByDenormalizer) {
+                continue;
+            }
+
+            if ($constraint->name === 'Assert\All') {
+                $inner = self::filterResidual(array_values(array_filter(
+                    \is_array($constraint->parameters['constraints'] ?? null) ? $constraint->parameters['constraints'] : [],
+                    static fn (mixed $item): bool => $item instanceof self,
+                )));
+                if (\count($inner) === 0) {
+                    continue;
+                }
+                $residual[] = new self('Assert\All', ['constraints' => $inner]);
+
+                continue;
+            }
+
+            $residual[] = $constraint;
+        }
+
+        return $residual;
+    }
+
+    /**
+     * The constraints left once PHP's own type system has had its say: a non nullable typed value
+     * can never be null, so asserting it is dead weight.
+     *
+     * @param list<self> $constraints
+     *
+     * @return list<self>
+     */
+    public static function filterPhpGuaranteed(array $constraints): array
+    {
+        return array_values(array_filter(
+            $constraints,
+            static fn (self $constraint): bool => $constraint->name !== 'Assert\NotNull',
+        ));
     }
 
     public function getName(): string

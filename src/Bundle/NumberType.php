@@ -56,7 +56,7 @@ class NumberType implements Type
         $constraints = [];
 
         if (!$this->nullable) {
-            $constraints[] = new Constraint('Assert\NotNull', []);
+            $constraints[] = new Constraint('Assert\NotNull', [], enforcedByDenormalizer: true);
         }
 
         if ($this->schema->format !== null) {

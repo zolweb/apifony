@@ -141,9 +141,18 @@ class Model implements File
             ->addStmt($constructor)
         ;
 
-        $namespace = $f->namespace($this->namespace)
-            ->addStmt($f->use('Symfony\Component\Validator\Constraints')->as('Assert'))
-        ;
+        $namespace = $f->namespace($this->namespace);
+
+        // A model whose every constraint was PHP's own to enforce renders no Assert attribute.
+        foreach ($this->attributes as $attribute) {
+            foreach ($attribute->getAttributeConstraints() as $constraint) {
+                if (str_starts_with($constraint->getName(), 'Assert\\')) {
+                    $namespace->addStmt($f->use('Symfony\Component\Validator\Constraints')->as('Assert'));
+
+                    break 2;
+                }
+            }
+        }
 
         foreach ($this->usedFormatConstraintNames as $constraintName) {
             $namespace->addStmt($f->use("{$this->bundleNamespace}\\Format\\{$constraintName}")->as("Assert{$constraintName}"));

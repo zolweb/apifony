@@ -66,7 +66,7 @@ class IntegerType implements Type
         $constraints = [];
 
         if (!$this->nullable) {
-            $constraints[] = new Constraint('Assert\NotNull', []);
+            $constraints[] = new Constraint('Assert\NotNull', [], enforcedByDenormalizer: true);
         }
 
         if ($this->schema->format !== null) {
@@ -78,15 +78,15 @@ class IntegerType implements Type
         }
 
         if (($min = $this->getMin()) !== \PHP_INT_MIN) {
-            $constraints[] = new Constraint('Assert\GreaterThanOrEqual', ['value' => $min]);
+            $constraints[] = new Constraint('Assert\GreaterThanOrEqual', ['value' => $min], enforcedByDenormalizer: true);
         }
 
         if (($max = $this->getMax()) !== \PHP_INT_MAX) {
-            $constraints[] = new Constraint('Assert\LessThanOrEqual', ['value' => $max]);
+            $constraints[] = new Constraint('Assert\LessThanOrEqual', ['value' => $max], enforcedByDenormalizer: true);
         }
 
         if (\count($this->schema->enum) > 0) {
-            $constraints[] = new Constraint('Assert\Choice', ['choices' => $this->schema->enum]);
+            $constraints[] = new Constraint('Assert\Choice', ['choices' => $this->schema->enum], enforcedByDenormalizer: true);
         }
 
         return $constraints;

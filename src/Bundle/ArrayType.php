@@ -98,7 +98,7 @@ class ArrayType implements Type
         $constraints = [];
 
         if (!$this->nullable) {
-            $constraints[] = new Constraint('Assert\NotNull', []);
+            $constraints[] = new Constraint('Assert\NotNull', [], enforcedByDenormalizer: true);
         }
 
         if ($this->schema->format !== null) {
@@ -131,12 +131,12 @@ class ArrayType implements Type
         // Symfony only enforces the item type of a collection from version 8, so it is asserted here
         // to hold on every version the generated bundle supports.
         $itemTypeConstraint = match ($this->itemType->getBuiltInPhpType()) {
-            'string' => new Constraint('Assert\Type', ['type' => 'string']),
-            'int' => new Constraint('Assert\Type', ['type' => 'int']),
+            'string' => new Constraint('Assert\Type', ['type' => 'string'], enforcedByDenormalizer: true),
+            'int' => new Constraint('Assert\Type', ['type' => 'int'], enforcedByDenormalizer: true),
             // A number accepts an int as well as a float, as the scalar readers do.
-            'float' => new Constraint('Assert\Type', ['type' => ['int', 'float']]),
-            'bool' => new Constraint('Assert\Type', ['type' => 'bool']),
-            'array' => new Constraint('Assert\Type', ['type' => 'array']),
+            'float' => new Constraint('Assert\Type', ['type' => ['int', 'float']], enforcedByDenormalizer: true),
+            'bool' => new Constraint('Assert\Type', ['type' => 'bool'], enforcedByDenormalizer: true),
+            'array' => new Constraint('Assert\Type', ['type' => 'array'], enforcedByDenormalizer: true),
             // An object item needs no assertion: the normalizer cannot build one from a scalar.
             // Its short class name would not resolve as an Assert\Type argument anyway.
             default => null,
