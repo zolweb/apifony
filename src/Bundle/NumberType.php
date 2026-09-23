@@ -131,7 +131,7 @@ class NumberType implements Type
         $f = new BuilderFactory();
 
         return $context->wrapNullable($this->nullable, $source, $target, fn (Expr $value): array => [
-            new Expression(new Assign($target, $f->methodCall($f->var('this'), \sprintf('denormalize%s%s', ucfirst($this->getBuiltInPhpType()), $context->getSource()), array_merge([$value, $path], $context->getLocationArgs())))),
+            new Expression(new Assign($target, $f->methodCall($f->var('this'), \sprintf('denormalize%s%s', ucfirst($this->getBuiltInPhpType()), $context->getSource()), [$value, $path]))),
         ]);
     }
 

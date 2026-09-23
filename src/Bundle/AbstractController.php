@@ -9,7 +9,6 @@ use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
 use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrayItem;
-use PhpParser\Node\Expr\ArrowFunction;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\BooleanAnd;
 use PhpParser\Node\Expr\BinaryOp\Coalesce;
@@ -20,7 +19,9 @@ use PhpParser\Node\Expr\BooleanNot;
 use PhpParser\Node\Expr\Cast\Double;
 use PhpParser\Node\Expr\Cast\Int_;
 use PhpParser\Node\Expr\Cast\String_;
+use PhpParser\Node\Expr\ClassConstFetch;
 use PhpParser\Node\Expr\ConstFetch;
+use PhpParser\Node\Expr\Instanceof_;
 use PhpParser\Node\Expr\Match_;
 use PhpParser\Node\Expr\Ternary;
 use PhpParser\Node\Expr\Throw_;
@@ -40,10 +41,10 @@ use PhpParser\PrettyPrinter\Standard;
 class AbstractController implements File
 {
     private const TYPE_ERROR_MESSAGES = [
-        'string' => 'must be a string.',
-        'int' => 'must be an integer.',
-        'float' => 'must be a numeric.',
-        'bool' => 'must be a boolean.',
+        'string' => 'This value should be of type string.',
+        'int' => 'This value should be of type integer.',
+        'float' => 'This value should be of type number.',
+        'bool' => 'This value should be of type boolean.',
     ];
 
     public function __construct(
@@ -66,19 +67,14 @@ class AbstractController implements File
     }
 
     /**
-     * Builds the "Parameter '<subject>' in '<in>' <text>" message of a denormalization failure.
+     * A denormalization failure, carrying where it happened and a machine readable code rather than
+     * spelling the location out in the sentence.
      */
-    private static function getMessageAst(string $subjectVariable, string $text): Encapsed
+    private static function getThrowStmt(string $pathVariable, string $code, string $message): Stmt
     {
         $f = new BuilderFactory();
 
-        return new Encapsed([
-            new EncapsedStringPart('Parameter \''),
-            $f->var($subjectVariable),
-            new EncapsedStringPart('\' in \''),
-            $f->var('in'),
-            new EncapsedStringPart("' {$text}"),
-        ]);
+        return new Expression(new Throw_($f->new('DenormalizationException', [$f->var($pathVariable), $f->val($code), $f->val($message)])));
     }
 
     /**
@@ -90,7 +86,7 @@ class AbstractController implements File
     private static function getCoercionStmts(string $type, string $subjectVariable): array
     {
         $f = new BuilderFactory();
-        $error = new Expression(new Throw_($f->new('DenormalizationException', [self::getMessageAst($subjectVariable, self::TYPE_ERROR_MESSAGES[$type])])));
+        $error = self::getThrowStmt($subjectVariable, 'invalid_type', self::TYPE_ERROR_MESSAGES[$type]);
 
         return match ($type) {
             'string' => [
@@ -132,9 +128,10 @@ class AbstractController implements File
             ->addParam($f->param('validator')->setType('ValidatorInterface')->makeProtected()->makeReadonly())
         ;
 
-        $validateParameter = $f->method('validateParameter')
+        $validate = $f->method('validate')
             ->makePublic()
             ->addParam($f->param('value')->setType('mixed'))
+            ->addParam($f->param('path')->setType('string'))
             ->addParam($f->param('constraints')->setType('array'))
             ->setReturnType('void')
             ->setDocComment(
@@ -142,55 +139,93 @@ class AbstractController implements File
                     /**
                      * @param list<Constraint> $constraints
                      *
-                     * @throws ParameterValidationException
+                     * @throws ValidationException
                      */
                     COMMENT
             )
             ->addStmt(new Assign($f->var('violations'), $f->methodCall($f->propertyFetch($f->var('this'), 'validator'), 'validate', [$f->var('value'), $f->var('constraints')])))
             ->addStmt(new If_(new Greater($f->funcCall('\count', [$f->var('violations')]), $f->val(0)), ['stmts' => [
-                new Expression(new Throw_($f->new('ParameterValidationException', [
-                    $f->funcCall('array_map', [
-                        new ArrowFunction(['static' => true, 'params' => [$f->param('violation')->setType('ConstraintViolationInterface')->getNode()], 'expr' => new Ternary(
-                            new Identical($f->methodCall($f->var('violation'), 'getPropertyPath'), $f->val('')),
-                            new String_($f->methodCall($f->var('violation'), 'getMessage')),
-                            new Encapsed([
-                                $f->methodCall($f->var('violation'), 'getPropertyPath'),
-                                new EncapsedStringPart(': '),
-                                $f->methodCall($f->var('violation'), 'getMessage'),
-                            ]),
-                        )]),
-                        $f->funcCall('iterator_to_array', [$f->var('violations')]),
-                    ]),
-                ]))),
+                new Expression(new Assign($f->var('errors'), new Array_([], ['kind' => Array_::KIND_SHORT]))),
+                new Foreach_($f->var('violations'), $f->var('violation'), ['stmts' => [
+                    new Expression(new Assign(new ArrayDimFetch($f->var('errors')), new Array_([
+                        new ArrayItem($f->methodCall($f->var('this'), 'appendPath', [$f->var('path'), new String_($f->methodCall($f->var('violation'), 'getPropertyPath'))]), $f->val('path')),
+                        new ArrayItem($f->methodCall($f->var('this'), 'getViolationCode', [$f->var('violation')]), $f->val('code')),
+                        new ArrayItem(new String_($f->methodCall($f->var('violation'), 'getMessage')), $f->val('message')),
+                    ], ['kind' => Array_::KIND_SHORT]))),
+                ]]),
+                new Expression(new Throw_($f->new('ValidationException', [$f->var('errors')]))),
             ]]))
         ;
 
-        $validateRequestBody = $f->method('validateRequestBody')
+        $appendPath = $f->method('appendPath')
             ->makePublic()
-            ->addParam($f->param('value')->setType('mixed'))
-            ->addParam($f->param('constraints')->setType('array'))
-            ->setReturnType('void')
+            ->addParam($f->param('base')->setType('string'))
+            ->addParam($f->param('sub')->setType('string'))
+            ->setReturnType('string')
             ->setDocComment(
                 <<<'COMMENT'
                     /**
-                     * @param list<Constraint> $constraints
-                     *
-                     * @throws RequestBodyValidationException
+                     * Joins a value location to one of its sub locations, using the property path syntax the
+                     * Symfony validator already produces: a dot before a property, brackets around an index.
                      */
                     COMMENT
             )
-            ->addStmt(new Assign($f->var('violations'), $f->methodCall($f->propertyFetch($f->var('this'), 'validator'), 'validate', [$f->var('value'), $f->var('constraints')])))
-            ->addStmt(new If_(new Greater($f->funcCall('\count', [$f->var('violations')]), $f->val(0)), ['stmts' => [
-                new Expression(new Assign($f->var('errors'), $f->val(new Array_([], ['kind' => Array_::KIND_SHORT])))),
-                new Foreach_($f->var('violations'), $f->var('violation'), ['stmts' => [
-                    new Expression(new Assign($f->var('path'), $f->methodCall($f->var('violation'), 'getPropertyPath'))),
-                    new If_(new BooleanNot($f->funcCall('isset', [new ArrayDimFetch($f->var('errors'), $f->var('path'))])), ['stmts' => [
-                        new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->var('path')), $f->val(new Array_([], ['kind' => Array_::KIND_SHORT])))),
-                    ]]),
-                    new Expression(new Assign(new ArrayDimFetch(new ArrayDimFetch($f->var('errors'), $f->var('path'))), new String_($f->methodCall($f->var('violation'), 'getMessage')))),
-                ]]),
-                new Expression(new Throw_($f->new('RequestBodyValidationException', [$f->var('errors')]))),
+            ->addStmt(new If_(new Identical($f->var('sub'), $f->val('')), ['stmts' => [new Return_($f->var('base'))]]))
+            ->addStmt(new If_(new Identical($f->var('base'), $f->val('')), ['stmts' => [new Return_($f->var('sub'))]]))
+            ->addStmt(new Return_(new Ternary(
+                $f->funcCall('str_starts_with', [$f->var('sub'), $f->val('[')]),
+                new Encapsed([$f->var('base'), $f->var('sub')]),
+                new Encapsed([$f->var('base'), new EncapsedStringPart('.'), $f->var('sub')]),
+            )))
+        ;
+
+        $constraintCodes = [
+            'required' => ['NotNull', 'NotBlank'],
+            'invalid_type' => ['Type'],
+            'invalid_length' => ['Length'],
+            'invalid_enum_value' => ['Choice'],
+            'out_of_range' => ['GreaterThan', 'GreaterThanOrEqual', 'LessThan', 'LessThanOrEqual', 'Range'],
+            'invalid_multiple' => ['DivisibleBy'],
+            'invalid_count' => ['Count'],
+            'duplicate_values' => ['Unique'],
+            'invalid_pattern' => ['Regex'],
+        ];
+        $arms = [];
+        foreach ($constraintCodes as $code => $constraintNames) {
+            $arms[] = new MatchArm(
+                array_map(static fn (string $constraintName): Expr => $f->classConstFetch("Assert\\{$constraintName}", 'class'), $constraintNames),
+                $f->val($code),
+            );
+        }
+        $arms[] = new MatchArm(null, $f->val('invalid_value'));
+
+        $getViolationCode = $f->method('getViolationCode')
+            ->makePublic()
+            ->addParam($f->param('violation')->setType('ConstraintViolationInterface'))
+            ->setReturnType('string')
+            ->setDocComment(
+                <<<'COMMENT'
+                    /**
+                     * A machine readable code for a violation, so that a client does not have to match on the
+                     * English sentence.
+                     */
+                    COMMENT
+            )
+            ->addStmt(new Expression(new Assign($f->var('constraint'), new Ternary(
+                new Instanceof_($f->var('violation'), new Name('ConstraintViolation')),
+                $f->methodCall($f->var('violation'), 'getConstraint'),
+                $f->val(null),
+            ))))
+            ->addStmt(new If_(new Identical($f->var('constraint'), $f->val(null)), ['stmts' => [
+                new Return_($f->val('invalid_value')),
             ]]))
+            ->addStmt(new If_($f->funcCall('str_starts_with', [
+                new ClassConstFetch($f->var('constraint'), 'class'),
+                $f->val("{$this->bundleNamespace}\\Format\\"),
+            ]), ['stmts' => [
+                new Return_($f->val('invalid_format')),
+            ]]))
+            ->addStmt(new Return_(new Match_(new ClassConstFetch($f->var('constraint'), 'class'), $arms)))
         ;
 
         $class = $f->class('AbstractController')
@@ -219,22 +254,22 @@ class AbstractController implements File
                     ->addStmt(new Expression(new Assign($f->var('value'), $f->methodCall($f->var('this'), 'getRawParameter', [$f->var('request'), $f->var('name'), $f->var('in')]))))
                     ->addStmt(new If_(new BooleanNot($f->var('isset')), ['stmts' => array_merge(
                         [new If_($f->var('required'), ['stmts' => [
-                            new Expression(new Throw_($f->new('DenormalizationException', [self::getMessageAst('name', 'is required.')]))),
+                            self::getThrowStmt('name', 'required', 'This value is required.'),
                         ]])],
                         $nullable
                             ? []
                             : [new If_(new Identical($f->var('default'), $f->val(null)), ['stmts' => [
-                                new Expression(new Throw_($f->new('DenormalizationException', [self::getMessageAst('name', 'must not be null.')]))),
+                                self::getThrowStmt('name', 'required', 'This value should not be null.'),
                             ]])],
                         [new Return_($f->var('default'))],
                     )]))
                     ->addStmt(new If_(new Identical($f->var('value'), $f->val(null)), ['stmts' => [
                         $nullable
                             ? new Return_($f->val(null))
-                            : new Expression(new Throw_($f->new('DenormalizationException', [self::getMessageAst('name', 'must not be null.')]))),
+                            : self::getThrowStmt('name', 'required', 'This value should not be null.'),
                     ]]))
                     ->addStmt(new If_(new BooleanNot($f->funcCall('\is_string', [$f->var('value')])), ['stmts' => [
-                        new Expression(new Throw_($f->new('DenormalizationException', [self::getMessageAst('name', self::TYPE_ERROR_MESSAGES[$type])]))),
+                        self::getThrowStmt('name', 'invalid_type', self::TYPE_ERROR_MESSAGES[$type]),
                     ]]))
                     ->addStmts(self::getCoercionStmts($type, 'name'))
                 ;
@@ -290,7 +325,6 @@ class AbstractController implements File
                 ->makePublic()
                 ->addParam($f->param('value')->setType('mixed'))
                 ->addParam($f->param('path')->setType('string'))
-                ->addParam($f->param('in')->setType('string'))
                 ->setReturnType('array')
                 ->setDocComment(
                     <<<'COMMENT'
@@ -305,10 +339,10 @@ class AbstractController implements File
                         COMMENT
                 )
                 ->addStmt(new If_(new BooleanNot($f->funcCall('\is_array', [$f->var('value')])), ['stmts' => [
-                    new Expression(new Throw_($f->new('DenormalizationException', [self::getMessageAst('path', 'must be an array.')]))),
+                    self::getThrowStmt('path', 'invalid_type', 'This value should be an array.'),
                 ]]))
                 ->addStmt(new If_(new BooleanNot($f->funcCall('array_is_list', [$f->var('value')])), ['stmts' => [
-                    new Expression(new Throw_($f->new('DenormalizationException', [self::getMessageAst('path', 'must be a list.')]))),
+                    self::getThrowStmt('path', 'invalid_type', 'This value should be a list.'),
                 ]]))
                 ->addStmt(new Return_($f->var('value')))
         );
@@ -318,7 +352,6 @@ class AbstractController implements File
                 ->makePublic()
                 ->addParam($f->param('value')->setType('mixed'))
                 ->addParam($f->param('path')->setType('string'))
-                ->addParam($f->param('in')->setType('string'))
                 ->setReturnType('array')
                 ->setDocComment(
                     <<<'COMMENT'
@@ -330,7 +363,7 @@ class AbstractController implements File
                         COMMENT
                 )
                 ->addStmt(new If_(new BooleanNot($f->funcCall('\is_array', [$f->var('value')])), ['stmts' => [
-                    new Expression(new Throw_($f->new('DenormalizationException', [self::getMessageAst('path', 'must be an object.')]))),
+                    self::getThrowStmt('path', 'invalid_type', 'This value should be an object.'),
                 ]]))
                 ->addStmt(new Expression(new Assign($f->var('values'), new Array_([], ['kind' => Array_::KIND_SHORT]))))
                 ->addStmt(new Foreach_($f->var('value'), $f->var('item'), ['keyVar' => $f->var('key'), 'stmts' => [
@@ -345,7 +378,6 @@ class AbstractController implements File
                 ->addParam($f->param('values')->setType('array'))
                 ->addParam($f->param('key')->setType('string'))
                 ->addParam($f->param('path')->setType('string'))
-                ->addParam($f->param('in')->setType('string'))
                 ->setReturnType('mixed')
                 ->setDocComment(
                     <<<'COMMENT'
@@ -357,7 +389,7 @@ class AbstractController implements File
                         COMMENT
                 )
                 ->addStmt(new If_(new BooleanNot($f->funcCall('\array_key_exists', [$f->var('key'), $f->var('values')])), ['stmts' => [
-                    new Expression(new Throw_($f->new('DenormalizationException', [self::getMessageAst('path', 'is required.')]))),
+                    self::getThrowStmt('path', 'required', 'This value is required.'),
                 ]]))
                 ->addStmt(new Return_(new ArrayDimFetch($f->var('values'), $f->var('key'))))
         );
@@ -368,7 +400,6 @@ class AbstractController implements File
                     ->makePublic()
                     ->addParam($f->param('value')->setType('mixed'))
                     ->addParam($f->param('path')->setType('string'))
-                    ->addParam($f->param('in')->setType('string'))
                     ->setReturnType($type)
                     ->setDocComment(
                         <<<'COMMENT'
@@ -378,60 +409,15 @@ class AbstractController implements File
                             COMMENT
                     )
                     ->addStmt(new If_(new BooleanNot($f->funcCall('\is_string', [$f->var('value')])), ['stmts' => [
-                        new Expression(new Throw_($f->new('DenormalizationException', [self::getMessageAst('path', self::TYPE_ERROR_MESSAGES[$type])]))),
+                        self::getThrowStmt('path', 'invalid_type', self::TYPE_ERROR_MESSAGES[$type]),
                     ]]))
                     ->addStmts(self::getCoercionStmts($type, 'path'))
             );
         }
 
-        $class->addStmt(
-            $f->method('getParameterErrorMessage')
-                ->makePublic()
-                ->addParam($f->param('path')->setType('string'))
-                ->addParam($f->param('in')->setType('string'))
-                ->addParam($f->param('expectation')->setType('string'))
-                ->setReturnType('string')
-                ->addStmt(new Return_(new Encapsed([
-                    new EncapsedStringPart('Parameter \''),
-                    $f->var('path'),
-                    new EncapsedStringPart('\' in \''),
-                    $f->var('in'),
-                    new EncapsedStringPart('\' '),
-                    $f->var('expectation'),
-                ])))
-        );
-
         // The JSON family. A request body leaf already carries its type and is only checked, where a
         // query string leaf is always a string and has to be converted.
-        $jsonThrow = static fn (string $expectation): Stmt => new Expression(new Throw_($f->new('DenormalizationException', [
-            $f->methodCall($f->var('this'), 'getJsonErrorMessage', [$f->var('path'), $f->val($expectation)]),
-        ])));
-
-        $class->addStmt(
-            $f->method('getJsonErrorMessage')
-                ->makePublic()
-                ->addParam($f->param('path')->setType('string'))
-                ->addParam($f->param('expectation')->setType('string'))
-                ->setReturnType('string')
-                ->addStmt(new Return_(new Ternary(
-                    new Identical($f->var('path'), $f->val('')),
-                    new Encapsed([new EncapsedStringPart('Request body '), $f->var('expectation')]),
-                    new Encapsed([new EncapsedStringPart('Property \''), $f->var('path'), new EncapsedStringPart('\' in \'requestBody\' '), $f->var('expectation')]),
-                )))
-        );
-
-        $class->addStmt(
-            $f->method('appendJsonPath')
-                ->makePublic()
-                ->addParam($f->param('path')->setType('string'))
-                ->addParam($f->param('key')->setType('string'))
-                ->setReturnType('string')
-                ->addStmt(new Return_(new Ternary(
-                    new Identical($f->var('path'), $f->val('')),
-                    $f->var('key'),
-                    new Encapsed([$f->var('path'), new EncapsedStringPart('.'), $f->var('key')]),
-                )))
-        );
+        $jsonThrow = static fn (string $code, string $message): Stmt => self::getThrowStmt('path', $code, $message);
 
         $class->addStmt(
             $f->method('getJsonRequestBody')
@@ -447,11 +433,11 @@ class AbstractController implements File
                 )
                 ->addStmt(new Expression(new Assign($f->var('value'), $f->methodCall($f->var('request'), 'getContent'))))
                 ->addStmt(new If_(new Identical($f->var('value'), $f->val('')), ['stmts' => [
-                    new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body must not be null.')]))),
+                    new Expression(new Throw_($f->new('DenormalizationException', [$f->val(''), $f->val('required'), $f->val('This value is required.')]))),
                 ]]))
                 ->addStmt(new Expression(new Assign($f->var('value'), $f->funcCall('json_decode', [$f->var('value'), $f->val(true)]))))
                 ->addStmt(new If_(new NotIdentical($f->funcCall('json_last_error'), new ConstFetch(new Name('\JSON_ERROR_NONE'))), ['stmts' => [
-                    new Expression(new Throw_($f->new('DenormalizationException', [$f->val('Request body is not a valid JSON document.')]))),
+                    new Expression(new Throw_($f->new('DenormalizationException', [$f->val(''), $f->val('invalid_json'), $f->val('The request body is not a valid JSON document.')]))),
                 ]]))
                 ->addStmt(new Return_($f->var('value')))
         );
@@ -471,8 +457,8 @@ class AbstractController implements File
                          */
                         COMMENT
                 )
-                ->addStmt(new If_(new BooleanNot($f->funcCall('\is_array', [$f->var('value')])), ['stmts' => [$jsonThrow('must be an array.')]]))
-                ->addStmt(new If_(new BooleanNot($f->funcCall('array_is_list', [$f->var('value')])), ['stmts' => [$jsonThrow('must be a list.')]]))
+                ->addStmt(new If_(new BooleanNot($f->funcCall('\is_array', [$f->var('value')])), ['stmts' => [$jsonThrow('invalid_type', 'This value should be an array.')]]))
+                ->addStmt(new If_(new BooleanNot($f->funcCall('array_is_list', [$f->var('value')])), ['stmts' => [$jsonThrow('invalid_type', 'This value should be a list.')]]))
                 ->addStmt(new Return_($f->var('value')))
         );
 
@@ -491,7 +477,7 @@ class AbstractController implements File
                          */
                         COMMENT
                 )
-                ->addStmt(new If_(new BooleanNot($f->funcCall('\is_array', [$f->var('value')])), ['stmts' => [$jsonThrow('must be an object.')]]))
+                ->addStmt(new If_(new BooleanNot($f->funcCall('\is_array', [$f->var('value')])), ['stmts' => [$jsonThrow('invalid_type', 'This value should be an object.')]]))
                 ->addStmt(new Expression(new Assign($f->var('values'), new Array_([], ['kind' => Array_::KIND_SHORT]))))
                 ->addStmt(new Foreach_($f->var('value'), $f->var('item'), ['keyVar' => $f->var('key'), 'stmts' => [
                     new Expression(new Assign(new ArrayDimFetch($f->var('values'), new String_($f->var('key'))), $f->var('item'))),
@@ -515,7 +501,7 @@ class AbstractController implements File
                          */
                         COMMENT
                 )
-                ->addStmt(new If_(new BooleanNot($f->funcCall('\array_key_exists', [$f->var('key'), $f->var('values')])), ['stmts' => [$jsonThrow('is required.')]]))
+                ->addStmt(new If_(new BooleanNot($f->funcCall('\array_key_exists', [$f->var('key'), $f->var('values')])), ['stmts' => [$jsonThrow('required', 'This value is required.')]]))
                 ->addStmt(new Return_(new ArrayDimFetch($f->var('values'), $f->var('key'))))
         );
 
@@ -535,20 +521,20 @@ class AbstractController implements File
                     )
                     ->addStmts(match ($type) {
                         'string' => [
-                            new If_(new BooleanNot($f->funcCall('\is_string', [$f->var('value')])), ['stmts' => [$jsonThrow(self::TYPE_ERROR_MESSAGES['string'])]]),
+                            new If_(new BooleanNot($f->funcCall('\is_string', [$f->var('value')])), ['stmts' => [$jsonThrow('invalid_type', self::TYPE_ERROR_MESSAGES['string'])]]),
                             new Return_($f->var('value')),
                         ],
                         'int' => [
-                            new If_(new BooleanNot($f->funcCall('\is_int', [$f->var('value')])), ['stmts' => [$jsonThrow(self::TYPE_ERROR_MESSAGES['int'])]]),
+                            new If_(new BooleanNot($f->funcCall('\is_int', [$f->var('value')])), ['stmts' => [$jsonThrow('invalid_type', self::TYPE_ERROR_MESSAGES['int'])]]),
                             new Return_($f->var('value')),
                         ],
                         // A number accepts an int as well as a float, as the scalar readers do.
                         'float' => [
-                            new If_(new BooleanAnd(new BooleanNot($f->funcCall('\is_int', [$f->var('value')])), new BooleanNot($f->funcCall('\is_float', [$f->var('value')]))), ['stmts' => [$jsonThrow(self::TYPE_ERROR_MESSAGES['float'])]]),
+                            new If_(new BooleanAnd(new BooleanNot($f->funcCall('\is_int', [$f->var('value')])), new BooleanNot($f->funcCall('\is_float', [$f->var('value')]))), ['stmts' => [$jsonThrow('invalid_type', self::TYPE_ERROR_MESSAGES['float'])]]),
                             new Return_(new Double($f->var('value'), ['kind' => Double::KIND_FLOAT])),
                         ],
                         'bool' => [
-                            new If_(new BooleanNot($f->funcCall('\is_bool', [$f->var('value')])), ['stmts' => [$jsonThrow(self::TYPE_ERROR_MESSAGES['bool'])]]),
+                            new If_(new BooleanNot($f->funcCall('\is_bool', [$f->var('value')])), ['stmts' => [$jsonThrow('invalid_type', self::TYPE_ERROR_MESSAGES['bool'])]]),
                             new Return_($f->var('value')),
                         ],
                     })
@@ -580,14 +566,17 @@ class AbstractController implements File
             }
         }
 
-        $class->addStmt($validateParameter)
-            ->addStmt($validateRequestBody)
+        $class->addStmt($validate)
+            ->addStmt($appendPath)
+            ->addStmt($getViolationCode)
         ;
 
         $namespace = $f->namespace("{$this->bundleNamespace}\\Api")
             ->addStmt($f->use('Symfony\Component\HttpFoundation\Request'))
             ->addStmt($f->use('Symfony\Component\Validator\Constraint'))
+            ->addStmt($f->use('Symfony\Component\Validator\ConstraintViolation'))
             ->addStmt($f->use('Symfony\Component\Validator\ConstraintViolationInterface'))
+            ->addStmt($f->use('Symfony\Component\Validator\Constraints')->as('Assert'))
             ->addStmt($f->use('Symfony\Component\Validator\Validator\ValidatorInterface'))
         ;
 

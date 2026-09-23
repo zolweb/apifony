@@ -1,8 +1,8 @@
 # CHANGELOG
 
-## 10.1
+## 11.0
 
-### 10.1.0
+### 11.0.0
 
 **Support des query params de type `array` et `object`.**
 
@@ -188,6 +188,44 @@ code appelle directement `$deserializer->denormalize(...)`, il faut le remplacer
 Au passage, la propriété interne `$serializer` du `Deserializer` généré n'est plus typée
 `SerializerInterface&DenormalizerInterface` mais `SerializerInterface` : l'intersection n'existait
 que pour `denormalize()`.
+
+#### L'enveloppe d'erreur devient une liste plate, avec un code par erreur
+
+`errors` était un objet dont les clés étaient les emplacements, et dont la valeur changeait de type
+selon la cause de l'échec. `errors.requestBody` valait une **liste** après un échec de
+dénormalisation et une **map** après un échec de validation, si bien qu'aucun client ne pouvait être
+écrit sans renifler le type. Par ailleurs l'emplacement exact d'une erreur imbriquée était encodé de
+trois façons : dans la clé pour la validation du body, et dans la prose du message partout ailleurs.
+
+`errors` est désormais **une liste plate d'objets**, de forme unique quelle que soit l'origine :
+
+```json
+{
+  "code": "validation_failed",
+  "message": "Validation has failed.",
+  "errors": [
+    {"in": "query", "path": "queryParamAbcList[0].def", "code": "required", "message": "This value is required."},
+    {"in": "query", "path": "queryParamObject.nestedObjectProperty.emailProperty", "code": "invalid_format", "message": "This value is not a valid email address."},
+    {"in": "requestBody", "path": "integerMatrixProperty[0][0]", "code": "invalid_type", "message": "This value should be of type integer."}
+  ]
+}
+```
+
+- **`in`** vaut `path`, `query`, `header`, `cookie` ou `requestBody`.
+- **`path`** localise la valeur fautive dans une **syntaxe unique**, celle des property paths de
+  Symfony : un point avant une propriété, des crochets autour d'un index. Elle s'applique aussi bien
+  au corps qu'aux paramètres, y compris ceux envoyés en notation à crochets — `?point[x]=1` est donc
+  rapporté en `point.x`. La chaîne est vide pour une erreur portant sur le corps entier.
+- **`code`** est exploitable par machine : `required`, `invalid_type`, `invalid_format`,
+  `invalid_enum_value`, `invalid_length`, `out_of_range`, `invalid_count`, `invalid_multiple`,
+  `invalid_pattern`, `duplicate_values`, `invalid_json`, et `invalid_value` par défaut.
+- **`message`** reste une phrase en anglais, désormais autonome : elle ne répète plus l'emplacement,
+  qui est dans `path`.
+
+Côté code généré, `ParameterValidationException` et `RequestBodyValidationException` fusionnent en
+une seule `ValidationException` portant `list<array{path, code, message}>`, et
+`DenormalizationException` porte `$path` et `$errorCode` — `$code` étant déjà pris par `\Exception`.
+Les méthodes `validateParameter` et `validateRequestBody` sont remplacées par une unique `validate`.
 
 #### Sérialisation
 

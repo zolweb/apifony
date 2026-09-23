@@ -9,7 +9,7 @@ use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\DeclareDeclare;
 use PhpParser\PrettyPrinter\Standard;
 
-class ParameterValidationException implements File
+class ValidationException implements File
 {
     public function __construct(
         private readonly string $bundleNamespace,
@@ -23,7 +23,7 @@ class ParameterValidationException implements File
 
     public function getName(): string
     {
-        return 'ParameterValidationException.php';
+        return 'ValidationException.php';
     }
 
     public function getContent(): string
@@ -32,18 +32,18 @@ class ParameterValidationException implements File
 
         $constructor = $f->method('__construct')
             ->makePublic()
-            ->addParam($f->param('messages')->setType('array')->makePublic()->makeReadonly())
+            ->addParam($f->param('errors')->setType('array')->makePublic()->makeReadonly())
             ->addStmt($f->staticCall('parent', '__construct'))
             ->setDocComment(
                 <<<'COMMENT'
                     /**
-                     * @param string[] $messages
+                     * @param list<array{path: string, code: string, message: string}> $errors
                      */
                     COMMENT
             )
         ;
 
-        $class = $f->class('ParameterValidationException')
+        $class = $f->class('ValidationException')
             ->extend('\Exception')
             ->addStmt($constructor)
         ;

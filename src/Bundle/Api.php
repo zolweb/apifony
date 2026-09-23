@@ -64,8 +64,7 @@ class Api
             new AbstractController($bundleNamespace, $aggregates, $models),
             $aggregates,
             new DenormalizationException($bundleNamespace),
-            new ParameterValidationException($bundleNamespace),
-            new RequestBodyValidationException($bundleNamespace),
+            new ValidationException($bundleNamespace),
         );
     }
 
@@ -74,8 +73,7 @@ class Api
         /** @var list<Aggregate> */
         private readonly array $aggregates,
         private readonly DenormalizationException $denormalizationException,
-        private readonly ParameterValidationException $parameterValidationException,
-        private readonly RequestBodyValidationException $requestBodyValidationException,
+        private readonly ValidationException $validationException,
     ) {
     }
 
@@ -95,8 +93,7 @@ class Api
         $files = [
             $this->abstractController,
             $this->denormalizationException,
-            $this->parameterValidationException,
-            $this->requestBodyValidationException,
+            $this->validationException,
         ];
 
         foreach ($this->aggregates as $aggregate) {

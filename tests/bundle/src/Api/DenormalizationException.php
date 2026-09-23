@@ -5,7 +5,7 @@ namespace Zol\Apifony\Tests\TestOpenApiServer\Api;
 
 class DenormalizationException extends \Exception
 {
-    public function __construct(string $message)
+    public function __construct(public readonly string $path, public readonly string $errorCode, string $message)
     {
         parent::__construct($message);
     }

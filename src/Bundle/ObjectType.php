@@ -12,8 +12,6 @@ use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\ConstFetch;
 use PhpParser\Node\Identifier;
 use PhpParser\Node\Name;
-use PhpParser\Node\Scalar\Encapsed;
-use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
@@ -208,23 +206,8 @@ class ObjectType implements Type
         $method = $context->registerModel($this);
 
         return $context->wrapNullable($this->nullable, $source, $target, static fn (Expr $value): array => [
-            new Expression(new Assign($target, $f->methodCall($f->var('this'), $method, array_merge([$value, $path], $context->getLocationArgs())))),
+            new Expression(new Assign($target, $f->methodCall($f->var('this'), $method, [$value, $path]))),
         ]);
-    }
-
-    /**
-     * The path of one of this model properties, as the generated code builds it: query parameters
-     * use the bracket notation they were sent with, a request body uses dots.
-     */
-    private function getPropertyPathExpr(Expr $path, string $rawName, DenormalizationContext $context): Expr
-    {
-        $f = new BuilderFactory();
-
-        if ($context->getSource() === DenormalizationContext::SOURCE_QUERY) {
-            return new Encapsed([$path, new EncapsedStringPart("[{$rawName}]")]);
-        }
-
-        return $f->methodCall($f->var('this'), 'appendJsonPath', [$path, $f->val($rawName)]);
     }
 
     /**
@@ -238,7 +221,6 @@ class ObjectType implements Type
     {
         $f = new BuilderFactory();
         $context->resetVariables();
-        $isQuery = $context->getSource() === DenormalizationContext::SOURCE_QUERY;
 
         $method = $f->method(DenormalizationContext::getModelMethodName($this->name, $context->getSource()))
             ->makePublic()
@@ -247,24 +229,20 @@ class ObjectType implements Type
             ->setReturnType($this->name)
             ->setDocComment("/**\n * @throws DenormalizationException\n */")
         ;
-        if ($isQuery) {
-            $method->addParam($f->param('in')->setType('string'));
-        }
-
         $values = $context->nextVariable();
-        $method->addStmt(new Expression(new Assign($values, $f->methodCall($f->var('this'), \sprintf('denormalizeMap%s', $context->getSource()), array_merge([$f->var('value'), $f->var('path')], $context->getLocationArgs())))));
+        $method->addStmt(new Expression(new Assign($values, $f->methodCall($f->var('this'), \sprintf('denormalizeMap%s', $context->getSource()), [$f->var('value'), $f->var('path')]))));
 
         $args = [];
         foreach ($this->getAttributes() as $attribute) {
             $rawName = $attribute->getRawName();
             $propertyPath = $context->nextVariable();
             $propertyValue = $context->nextVariable();
-            $propertyPathStmt = new Expression(new Assign($propertyPath, $this->getPropertyPathExpr($f->var('path'), $rawName, $context)));
+            $propertyPathStmt = new Expression(new Assign($propertyPath, $f->methodCall($f->var('this'), 'appendPath', [$f->var('path'), $f->val($rawName)])));
 
             if (\in_array($rawName, $this->schema->required, true)) {
                 $method->addStmt($propertyPathStmt);
                 foreach ($attribute->getType()->getParameterDenormalizationStmts(
-                    $f->methodCall($f->var('this'), \sprintf('getRequired%sProperty', $context->getSource()), array_merge([$values, $f->val($rawName), $propertyPath], $context->getLocationArgs())),
+                    $f->methodCall($f->var('this'), \sprintf('getRequired%sProperty', $context->getSource()), [$values, $f->val($rawName), $propertyPath]),
                     $propertyValue,
                     $propertyPath,
                     $context,

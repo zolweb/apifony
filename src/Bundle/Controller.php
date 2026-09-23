@@ -107,8 +107,7 @@ class Controller implements File
 
         $namespace = $f->namespace("{$this->bundleNamespace}\\Api\\{$this->aggregateName}")
             ->addStmt($f->use("{$this->bundleNamespace}\\Api\\DenormalizationException"))
-            ->addStmt($f->use("{$this->bundleNamespace}\\Api\\ParameterValidationException"))
-            ->addStmt($f->use("{$this->bundleNamespace}\\Api\\RequestBodyValidationException"))
+            ->addStmt($f->use("{$this->bundleNamespace}\\Api\\ValidationException"))
             ->addStmt($f->use("{$this->bundleNamespace}\\Api\\AbstractController"))
             ->addStmt($f->use('Symfony\Component\HttpFoundation\JsonResponse'))
             ->addStmt($f->use('Symfony\Component\HttpFoundation\Request'))

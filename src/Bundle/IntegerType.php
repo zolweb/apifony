@@ -155,7 +155,7 @@ class IntegerType implements Type
         $f = new BuilderFactory();
 
         return $context->wrapNullable($this->nullable, $source, $target, fn (Expr $value): array => array_merge(
-            [new Expression(new Assign($target, $f->methodCall($f->var('this'), \sprintf('denormalize%s%s', ucfirst($this->getBuiltInPhpType()), $context->getSource()), array_merge([$value, $path], $context->getLocationArgs()))))],
+            [new Expression(new Assign($target, $f->methodCall($f->var('this'), \sprintf('denormalize%s%s', ucfirst($this->getBuiltInPhpType()), $context->getSource()), [$value, $path])))],
             $this->getNarrowingStmts($target, $path, $context),
         ));
     }
@@ -190,18 +190,18 @@ class IntegerType implements Type
             }
 
             return [new If_($condition, ['stmts' => [new Expression(new Throw_($f->new('DenormalizationException', [
-                $f->methodCall($f->var('this'), \sprintf('get%sErrorMessage', $context->getSource()), array_merge([$path], $context->getLocationArgs(), [$f->val(\sprintf(
-                    'must be %s.',
+                $path, $f->val('out_of_range'), $f->val(\sprintf(
+                    'This value should be %s.',
                     match (true) {
                         $min === \PHP_INT_MIN => \sprintf('at most %d', $max),
                         $max === \PHP_INT_MAX => \sprintf('at least %d', $min),
                         default => \sprintf('between %d and %d', $min, $max),
                     },
-                ))])),
+                )),
             ])))]])];
         }
 
-        $expectation = \sprintf('must be one of %s.', implode(', ', array_map(
+        $expectation = \sprintf('This value should be one of %s.', implode(', ', array_map(
             static fn (mixed $e): string => $e === null ? 'null' : var_export($e, true),
             $this->schema->enum,
         )));
@@ -213,7 +213,7 @@ class IntegerType implements Type
                 $f->val(true),
             ])),
             ['stmts' => [new Expression(new Throw_($f->new('DenormalizationException', [
-                $f->methodCall($f->var('this'), \sprintf('get%sErrorMessage', $context->getSource()), array_merge([$path], $context->getLocationArgs(), [$f->val($expectation)])),
+                $path, $f->val('invalid_enum_value'), $f->val($expectation),
             ])))]],
         )];
     }

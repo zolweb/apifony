@@ -5,7 +5,9 @@ namespace Zol\Apifony\Tests\TestOpenApiServer\Api;
 
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintViolation;
 use Symfony\Component\Validator\ConstraintViolationInterface;
+use Symfony\Component\Validator\Constraints as Assert;
 use Symfony\Component\Validator\Validator\ValidatorInterface;
 use Zol\Apifony\Tests\TestOpenApiServer\Model\Abc;
 use Zol\Apifony\Tests\TestOpenApiServer\Api\FirstOperation\FirstOperationQueryParamObject;
@@ -28,18 +30,18 @@ abstract class AbstractController
         $value = $this->getRawParameter($request, $name, $in);
         if (!$isset) {
             if ($required) {
-                throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+                throw new DenormalizationException($name, 'required', 'This value is required.');
             }
             if ($default === null) {
-                throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
+                throw new DenormalizationException($name, 'required', 'This value should not be null.');
             }
             return $default;
         }
         if ($value === null) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
+            throw new DenormalizationException($name, 'required', 'This value should not be null.');
         }
         if (!\is_string($value)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a string.");
+            throw new DenormalizationException($name, 'invalid_type', 'This value should be of type string.');
         }
         return $value;
     }
@@ -52,7 +54,7 @@ abstract class AbstractController
         $value = $this->getRawParameter($request, $name, $in);
         if (!$isset) {
             if ($required) {
-                throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+                throw new DenormalizationException($name, 'required', 'This value is required.');
             }
             return $default;
         }
@@ -60,7 +62,7 @@ abstract class AbstractController
             return null;
         }
         if (!\is_string($value)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a string.");
+            throw new DenormalizationException($name, 'invalid_type', 'This value should be of type string.');
         }
         return $value;
     }
@@ -73,25 +75,25 @@ abstract class AbstractController
         $value = $this->getRawParameter($request, $name, $in);
         if (!$isset) {
             if ($required) {
-                throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+                throw new DenormalizationException($name, 'required', 'This value is required.');
             }
             if ($default === null) {
-                throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
+                throw new DenormalizationException($name, 'required', 'This value should not be null.');
             }
             return $default;
         }
         if ($value === null) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
+            throw new DenormalizationException($name, 'required', 'This value should not be null.');
         }
         if (!\is_string($value)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be an integer.");
+            throw new DenormalizationException($name, 'invalid_type', 'This value should be of type integer.');
         }
         $absValue = $value;
         if (str_starts_with($value, '-')) {
             $absValue = substr($value, 1);
         }
         if (!ctype_digit($absValue)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be an integer.");
+            throw new DenormalizationException($name, 'invalid_type', 'This value should be of type integer.');
         }
         return (int) $value;
     }
@@ -104,7 +106,7 @@ abstract class AbstractController
         $value = $this->getRawParameter($request, $name, $in);
         if (!$isset) {
             if ($required) {
-                throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+                throw new DenormalizationException($name, 'required', 'This value is required.');
             }
             return $default;
         }
@@ -112,14 +114,14 @@ abstract class AbstractController
             return null;
         }
         if (!\is_string($value)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be an integer.");
+            throw new DenormalizationException($name, 'invalid_type', 'This value should be of type integer.');
         }
         $absValue = $value;
         if (str_starts_with($value, '-')) {
             $absValue = substr($value, 1);
         }
         if (!ctype_digit($absValue)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be an integer.");
+            throw new DenormalizationException($name, 'invalid_type', 'This value should be of type integer.');
         }
         return (int) $value;
     }
@@ -132,25 +134,25 @@ abstract class AbstractController
         $value = $this->getRawParameter($request, $name, $in);
         if (!$isset) {
             if ($required) {
-                throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+                throw new DenormalizationException($name, 'required', 'This value is required.');
             }
             if ($default === null) {
-                throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
+                throw new DenormalizationException($name, 'required', 'This value should not be null.');
             }
             return $default;
         }
         if ($value === null) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
+            throw new DenormalizationException($name, 'required', 'This value should not be null.');
         }
         if (!\is_string($value)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a numeric.");
+            throw new DenormalizationException($name, 'invalid_type', 'This value should be of type number.');
         }
         $absValue = $value;
         if (str_starts_with($value, '-')) {
             $absValue = substr($value, 1);
         }
         if (!is_numeric($absValue)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a numeric.");
+            throw new DenormalizationException($name, 'invalid_type', 'This value should be of type number.');
         }
         return (float) $value;
     }
@@ -163,7 +165,7 @@ abstract class AbstractController
         $value = $this->getRawParameter($request, $name, $in);
         if (!$isset) {
             if ($required) {
-                throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+                throw new DenormalizationException($name, 'required', 'This value is required.');
             }
             return $default;
         }
@@ -171,14 +173,14 @@ abstract class AbstractController
             return null;
         }
         if (!\is_string($value)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a numeric.");
+            throw new DenormalizationException($name, 'invalid_type', 'This value should be of type number.');
         }
         $absValue = $value;
         if (str_starts_with($value, '-')) {
             $absValue = substr($value, 1);
         }
         if (!is_numeric($absValue)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a numeric.");
+            throw new DenormalizationException($name, 'invalid_type', 'This value should be of type number.');
         }
         return (float) $value;
     }
@@ -191,21 +193,21 @@ abstract class AbstractController
         $value = $this->getRawParameter($request, $name, $in);
         if (!$isset) {
             if ($required) {
-                throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+                throw new DenormalizationException($name, 'required', 'This value is required.');
             }
             if ($default === null) {
-                throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
+                throw new DenormalizationException($name, 'required', 'This value should not be null.');
             }
             return $default;
         }
         if ($value === null) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must not be null.");
+            throw new DenormalizationException($name, 'required', 'This value should not be null.');
         }
         if (!\is_string($value)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a boolean.");
+            throw new DenormalizationException($name, 'invalid_type', 'This value should be of type boolean.');
         }
         if (!\in_array($value, ['true', 'false'], true)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a boolean.");
+            throw new DenormalizationException($name, 'invalid_type', 'This value should be of type boolean.');
         }
         return ['true' => true, 'false' => false][$value];
     }
@@ -218,7 +220,7 @@ abstract class AbstractController
         $value = $this->getRawParameter($request, $name, $in);
         if (!$isset) {
             if ($required) {
-                throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+                throw new DenormalizationException($name, 'required', 'This value is required.');
             }
             return $default;
         }
@@ -226,10 +228,10 @@ abstract class AbstractController
             return null;
         }
         if (!\is_string($value)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a boolean.");
+            throw new DenormalizationException($name, 'invalid_type', 'This value should be of type boolean.');
         }
         if (!\in_array($value, ['true', 'false'], true)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' must be a boolean.");
+            throw new DenormalizationException($name, 'invalid_type', 'This value should be of type boolean.');
         }
         return ['true' => true, 'false' => false][$value];
     }
@@ -264,13 +266,13 @@ abstract class AbstractController
      *
      * @throws DenormalizationException
      */
-    public function denormalizeListParameter(mixed $value, string $path, string $in): array
+    public function denormalizeListParameter(mixed $value, string $path): array
     {
         if (!\is_array($value)) {
-            throw new DenormalizationException("Parameter '{$path}' in '{$in}' must be an array.");
+            throw new DenormalizationException($path, 'invalid_type', 'This value should be an array.');
         }
         if (!array_is_list($value)) {
-            throw new DenormalizationException("Parameter '{$path}' in '{$in}' must be a list.");
+            throw new DenormalizationException($path, 'invalid_type', 'This value should be a list.');
         }
         return $value;
     }
@@ -279,10 +281,10 @@ abstract class AbstractController
      *
      * @throws DenormalizationException
      */
-    public function denormalizeMapParameter(mixed $value, string $path, string $in): array
+    public function denormalizeMapParameter(mixed $value, string $path): array
     {
         if (!\is_array($value)) {
-            throw new DenormalizationException("Parameter '{$path}' in '{$in}' must be an object.");
+            throw new DenormalizationException($path, 'invalid_type', 'This value should be an object.');
         }
         $values = [];
         foreach ($value as $key => $item) {
@@ -295,81 +297,69 @@ abstract class AbstractController
      *
      * @throws DenormalizationException
      */
-    public function getRequiredParameterProperty(array $values, string $key, string $path, string $in): mixed
+    public function getRequiredParameterProperty(array $values, string $key, string $path): mixed
     {
         if (!\array_key_exists($key, $values)) {
-            throw new DenormalizationException("Parameter '{$path}' in '{$in}' is required.");
+            throw new DenormalizationException($path, 'required', 'This value is required.');
         }
         return $values[$key];
     }
     /**
      * @throws DenormalizationException
      */
-    public function denormalizeStringParameter(mixed $value, string $path, string $in): string
+    public function denormalizeStringParameter(mixed $value, string $path): string
     {
         if (!\is_string($value)) {
-            throw new DenormalizationException("Parameter '{$path}' in '{$in}' must be a string.");
+            throw new DenormalizationException($path, 'invalid_type', 'This value should be of type string.');
         }
         return $value;
     }
     /**
      * @throws DenormalizationException
      */
-    public function denormalizeIntParameter(mixed $value, string $path, string $in): int
+    public function denormalizeIntParameter(mixed $value, string $path): int
     {
         if (!\is_string($value)) {
-            throw new DenormalizationException("Parameter '{$path}' in '{$in}' must be an integer.");
+            throw new DenormalizationException($path, 'invalid_type', 'This value should be of type integer.');
         }
         $absValue = $value;
         if (str_starts_with($value, '-')) {
             $absValue = substr($value, 1);
         }
         if (!ctype_digit($absValue)) {
-            throw new DenormalizationException("Parameter '{$path}' in '{$in}' must be an integer.");
+            throw new DenormalizationException($path, 'invalid_type', 'This value should be of type integer.');
         }
         return (int) $value;
     }
     /**
      * @throws DenormalizationException
      */
-    public function denormalizeFloatParameter(mixed $value, string $path, string $in): float
+    public function denormalizeFloatParameter(mixed $value, string $path): float
     {
         if (!\is_string($value)) {
-            throw new DenormalizationException("Parameter '{$path}' in '{$in}' must be a numeric.");
+            throw new DenormalizationException($path, 'invalid_type', 'This value should be of type number.');
         }
         $absValue = $value;
         if (str_starts_with($value, '-')) {
             $absValue = substr($value, 1);
         }
         if (!is_numeric($absValue)) {
-            throw new DenormalizationException("Parameter '{$path}' in '{$in}' must be a numeric.");
+            throw new DenormalizationException($path, 'invalid_type', 'This value should be of type number.');
         }
         return (float) $value;
     }
     /**
      * @throws DenormalizationException
      */
-    public function denormalizeBoolParameter(mixed $value, string $path, string $in): bool
+    public function denormalizeBoolParameter(mixed $value, string $path): bool
     {
         if (!\is_string($value)) {
-            throw new DenormalizationException("Parameter '{$path}' in '{$in}' must be a boolean.");
+            throw new DenormalizationException($path, 'invalid_type', 'This value should be of type boolean.');
         }
         if (!\in_array($value, ['true', 'false'], true)) {
-            throw new DenormalizationException("Parameter '{$path}' in '{$in}' must be a boolean.");
+            throw new DenormalizationException($path, 'invalid_type', 'This value should be of type boolean.');
         }
         return ['true' => true, 'false' => false][$value];
-    }
-    public function getParameterErrorMessage(string $path, string $in, string $expectation): string
-    {
-        return "Parameter '{$path}' in '{$in}' {$expectation}";
-    }
-    public function getJsonErrorMessage(string $path, string $expectation): string
-    {
-        return $path === '' ? "Request body {$expectation}" : "Property '{$path}' in 'requestBody' {$expectation}";
-    }
-    public function appendJsonPath(string $path, string $key): string
-    {
-        return $path === '' ? $key : "{$path}.{$key}";
     }
     /**
      * @throws DenormalizationException
@@ -378,11 +368,11 @@ abstract class AbstractController
     {
         $value = $request->getContent();
         if ($value === '') {
-            throw new DenormalizationException('Request body must not be null.');
+            throw new DenormalizationException('', 'required', 'This value is required.');
         }
         $value = json_decode($value, true);
         if (json_last_error() !== \JSON_ERROR_NONE) {
-            throw new DenormalizationException('Request body is not a valid JSON document.');
+            throw new DenormalizationException('', 'invalid_json', 'The request body is not a valid JSON document.');
         }
         return $value;
     }
@@ -394,10 +384,10 @@ abstract class AbstractController
     public function denormalizeListJson(mixed $value, string $path): array
     {
         if (!\is_array($value)) {
-            throw new DenormalizationException($this->getJsonErrorMessage($path, 'must be an array.'));
+            throw new DenormalizationException($path, 'invalid_type', 'This value should be an array.');
         }
         if (!array_is_list($value)) {
-            throw new DenormalizationException($this->getJsonErrorMessage($path, 'must be a list.'));
+            throw new DenormalizationException($path, 'invalid_type', 'This value should be a list.');
         }
         return $value;
     }
@@ -409,7 +399,7 @@ abstract class AbstractController
     public function denormalizeMapJson(mixed $value, string $path): array
     {
         if (!\is_array($value)) {
-            throw new DenormalizationException($this->getJsonErrorMessage($path, 'must be an object.'));
+            throw new DenormalizationException($path, 'invalid_type', 'This value should be an object.');
         }
         $values = [];
         foreach ($value as $key => $item) {
@@ -425,7 +415,7 @@ abstract class AbstractController
     public function getRequiredJsonProperty(array $values, string $key, string $path): mixed
     {
         if (!\array_key_exists($key, $values)) {
-            throw new DenormalizationException($this->getJsonErrorMessage($path, 'is required.'));
+            throw new DenormalizationException($path, 'required', 'This value is required.');
         }
         return $values[$key];
     }
@@ -435,7 +425,7 @@ abstract class AbstractController
     public function denormalizeStringJson(mixed $value, string $path): string
     {
         if (!\is_string($value)) {
-            throw new DenormalizationException($this->getJsonErrorMessage($path, 'must be a string.'));
+            throw new DenormalizationException($path, 'invalid_type', 'This value should be of type string.');
         }
         return $value;
     }
@@ -445,7 +435,7 @@ abstract class AbstractController
     public function denormalizeIntJson(mixed $value, string $path): int
     {
         if (!\is_int($value)) {
-            throw new DenormalizationException($this->getJsonErrorMessage($path, 'must be an integer.'));
+            throw new DenormalizationException($path, 'invalid_type', 'This value should be of type integer.');
         }
         return $value;
     }
@@ -455,7 +445,7 @@ abstract class AbstractController
     public function denormalizeFloatJson(mixed $value, string $path): float
     {
         if (!\is_int($value) && !\is_float($value)) {
-            throw new DenormalizationException($this->getJsonErrorMessage($path, 'must be a numeric.'));
+            throw new DenormalizationException($path, 'invalid_type', 'This value should be of type number.');
         }
         return (float) $value;
     }
@@ -465,59 +455,59 @@ abstract class AbstractController
     public function denormalizeBoolJson(mixed $value, string $path): bool
     {
         if (!\is_bool($value)) {
-            throw new DenormalizationException($this->getJsonErrorMessage($path, 'must be a boolean.'));
+            throw new DenormalizationException($path, 'invalid_type', 'This value should be of type boolean.');
         }
         return $value;
     }
     /**
      * @throws DenormalizationException
      */
-    public function denormalizeAbcParameterValue(mixed $value, string $path, string $in): Abc
+    public function denormalizeAbcParameterValue(mixed $value, string $path): Abc
     {
-        $v0 = $this->denormalizeMapParameter($value, $path, $in);
-        $v1 = "{$path}[def]";
-        $v2 = $this->denormalizeStringParameter($this->getRequiredParameterProperty($v0, 'def', $v1, $in), $v1, $in);
+        $v0 = $this->denormalizeMapParameter($value, $path);
+        $v1 = $this->appendPath($path, 'def');
+        $v2 = $this->denormalizeStringParameter($this->getRequiredParameterProperty($v0, 'def', $v1), $v1);
         return new Abc(def: $v2);
     }
     /**
      * @throws DenormalizationException
      */
-    public function denormalizeFirstOperationQueryParamObjectParameterValue(mixed $value, string $path, string $in): FirstOperationQueryParamObject
+    public function denormalizeFirstOperationQueryParamObjectParameterValue(mixed $value, string $path): FirstOperationQueryParamObject
     {
-        $v0 = $this->denormalizeMapParameter($value, $path, $in);
-        $v1 = "{$path}[stringProperty]";
-        $v2 = $this->denormalizeStringParameter($this->getRequiredParameterProperty($v0, 'stringProperty', $v1, $in), $v1, $in);
-        $v3 = "{$path}[nestedArrayProperty]";
+        $v0 = $this->denormalizeMapParameter($value, $path);
+        $v1 = $this->appendPath($path, 'stringProperty');
+        $v2 = $this->denormalizeStringParameter($this->getRequiredParameterProperty($v0, 'stringProperty', $v1), $v1);
+        $v3 = $this->appendPath($path, 'nestedArrayProperty');
         $v4 = [];
-        foreach ($this->denormalizeListParameter($this->getRequiredParameterProperty($v0, 'nestedArrayProperty', $v3, $in), $v3, $in) as $v5 => $v6) {
+        foreach ($this->denormalizeListParameter($this->getRequiredParameterProperty($v0, 'nestedArrayProperty', $v3), $v3) as $v5 => $v6) {
             $v7 = "{$v3}[{$v5}]";
-            $v8 = $this->denormalizeIntParameter($v6, $v7, $in);
+            $v8 = $this->denormalizeIntParameter($v6, $v7);
             $v4[] = $v8;
         }
-        $v9 = "{$path}[nestedObjectProperty]";
-        $v10 = $this->denormalizeFirstOperationQueryParamObjectNestedObjectPropertyParameterValue($this->getRequiredParameterProperty($v0, 'nestedObjectProperty', $v9, $in), $v9, $in);
+        $v9 = $this->appendPath($path, 'nestedObjectProperty');
+        $v10 = $this->denormalizeFirstOperationQueryParamObjectNestedObjectPropertyParameterValue($this->getRequiredParameterProperty($v0, 'nestedObjectProperty', $v9), $v9);
         $v12 = 'abc';
         if (\array_key_exists('optionalProperty', $v0)) {
-            $v11 = "{$path}[optionalProperty]";
-            $v12 = $this->denormalizeStringParameter($v0['optionalProperty'], $v11, $in);
+            $v11 = $this->appendPath($path, 'optionalProperty');
+            $v12 = $this->denormalizeStringParameter($v0['optionalProperty'], $v11);
         }
         return new FirstOperationQueryParamObject(stringProperty: $v2, nestedArrayProperty: $v4, nestedObjectProperty: $v10, optionalProperty: $v12);
     }
     /**
      * @throws DenormalizationException
      */
-    public function denormalizeNodeParameterValue(mixed $value, string $path, string $in): Node
+    public function denormalizeNodeParameterValue(mixed $value, string $path): Node
     {
-        $v0 = $this->denormalizeMapParameter($value, $path, $in);
-        $v1 = "{$path}[name]";
-        $v2 = $this->denormalizeStringParameter($this->getRequiredParameterProperty($v0, 'name', $v1, $in), $v1, $in);
+        $v0 = $this->denormalizeMapParameter($value, $path);
+        $v1 = $this->appendPath($path, 'name');
+        $v2 = $this->denormalizeStringParameter($this->getRequiredParameterProperty($v0, 'name', $v1), $v1);
         $v4 = [];
         if (\array_key_exists('children', $v0)) {
-            $v3 = "{$path}[children]";
+            $v3 = $this->appendPath($path, 'children');
             $v4 = [];
-            foreach ($this->denormalizeListParameter($v0['children'], $v3, $in) as $v5 => $v6) {
+            foreach ($this->denormalizeListParameter($v0['children'], $v3) as $v5 => $v6) {
                 $v7 = "{$v3}[{$v5}]";
-                $v8 = $this->denormalizeNodeParameterValue($v6, $v7, $in);
+                $v8 = $this->denormalizeNodeParameterValue($v6, $v7);
                 $v4[] = $v8;
             }
         }
@@ -526,11 +516,11 @@ abstract class AbstractController
     /**
      * @throws DenormalizationException
      */
-    public function denormalizeFirstOperationQueryParamObjectNestedObjectPropertyParameterValue(mixed $value, string $path, string $in): FirstOperationQueryParamObjectNestedObjectProperty
+    public function denormalizeFirstOperationQueryParamObjectNestedObjectPropertyParameterValue(mixed $value, string $path): FirstOperationQueryParamObjectNestedObjectProperty
     {
-        $v0 = $this->denormalizeMapParameter($value, $path, $in);
-        $v1 = "{$path}[emailProperty]";
-        $v2 = $this->denormalizeStringParameter($this->getRequiredParameterProperty($v0, 'emailProperty', $v1, $in), $v1, $in);
+        $v0 = $this->denormalizeMapParameter($value, $path);
+        $v1 = $this->appendPath($path, 'emailProperty');
+        $v2 = $this->denormalizeStringParameter($this->getRequiredParameterProperty($v0, 'emailProperty', $v1), $v1);
         return new FirstOperationQueryParamObjectNestedObjectProperty(emailProperty: $v2);
     }
     /**
@@ -539,65 +529,65 @@ abstract class AbstractController
     public function denormalizeSchemaJsonValue(mixed $value, string $path): Schema
     {
         $v0 = $this->denormalizeMapJson($value, $path);
-        $v1 = $this->appendJsonPath($path, 'stringProperty');
+        $v1 = $this->appendPath($path, 'stringProperty');
         $v2 = $this->denormalizeStringJson($this->getRequiredJsonProperty($v0, 'stringProperty', $v1), $v1);
-        $v3 = $this->appendJsonPath($path, 'numberProperty');
+        $v3 = $this->appendPath($path, 'numberProperty');
         $v4 = $this->denormalizeFloatJson($this->getRequiredJsonProperty($v0, 'numberProperty', $v3), $v3);
-        $v5 = $this->appendJsonPath($path, 'integerProperty');
+        $v5 = $this->appendPath($path, 'integerProperty');
         $v6 = $this->denormalizeIntJson($this->getRequiredJsonProperty($v0, 'integerProperty', $v5), $v5);
-        $v7 = $this->appendJsonPath($path, 'booleanProperty');
+        $v7 = $this->appendPath($path, 'booleanProperty');
         $v8 = $this->denormalizeBoolJson($this->getRequiredJsonProperty($v0, 'booleanProperty', $v7), $v7);
-        $v9 = $this->appendJsonPath($path, 'enumStringProperty');
+        $v9 = $this->appendPath($path, 'enumStringProperty');
         $v10 = $this->denormalizeStringJson($this->getRequiredJsonProperty($v0, 'enumStringProperty', $v9), $v9);
         if (!\in_array($v10, ['abc', 'def', 'ghi'], true)) {
-            throw new DenormalizationException($this->getJsonErrorMessage($v9, 'must be one of \'abc\', \'def\', \'ghi\'.'));
+            throw new DenormalizationException($v9, 'invalid_enum_value', 'This value should be one of \'abc\', \'def\', \'ghi\'.');
         }
-        $v11 = $this->appendJsonPath($path, 'enumNullableStringProperty');
+        $v11 = $this->appendPath($path, 'enumNullableStringProperty');
         $v13 = $this->getRequiredJsonProperty($v0, 'enumNullableStringProperty', $v11);
         $v12 = null;
         if ($v13 !== null) {
             $v12 = $this->denormalizeStringJson($v13, $v11);
             if (!\in_array($v12, ['abc', 'def', 'ghi', null], true)) {
-                throw new DenormalizationException($this->getJsonErrorMessage($v11, 'must be one of \'abc\', \'def\', \'ghi\', null.'));
+                throw new DenormalizationException($v11, 'invalid_enum_value', 'This value should be one of \'abc\', \'def\', \'ghi\', null.');
             }
         }
-        $v14 = $this->appendJsonPath($path, 'integerRangeProperty');
+        $v14 = $this->appendPath($path, 'integerRangeProperty');
         $v15 = $this->denormalizeIntJson($this->getRequiredJsonProperty($v0, 'integerRangeProperty', $v14), $v14);
         if ($v15 < -5 || $v15 > 5) {
-            throw new DenormalizationException($this->getJsonErrorMessage($v14, 'must be between -5 and 5.'));
+            throw new DenormalizationException($v14, 'out_of_range', 'This value should be between -5 and 5.');
         }
-        $v16 = $this->appendJsonPath($path, 'emailProperty');
+        $v16 = $this->appendPath($path, 'emailProperty');
         $v17 = $this->denormalizeStringJson($this->getRequiredJsonProperty($v0, 'emailProperty', $v16), $v16);
-        $v18 = $this->appendJsonPath($path, 'uuidProperty');
+        $v18 = $this->appendPath($path, 'uuidProperty');
         $v19 = $this->denormalizeStringJson($this->getRequiredJsonProperty($v0, 'uuidProperty', $v18), $v18);
-        $v20 = $this->appendJsonPath($path, 'dateTimeProperty');
+        $v20 = $this->appendPath($path, 'dateTimeProperty');
         $v21 = $this->denormalizeStringJson($this->getRequiredJsonProperty($v0, 'dateTimeProperty', $v20), $v20);
-        $v22 = $this->appendJsonPath($path, 'dateTimeProperty2');
+        $v22 = $this->appendPath($path, 'dateTimeProperty2');
         $v23 = $this->denormalizeStringJson($this->getRequiredJsonProperty($v0, 'dateTimeProperty2', $v22), $v22);
-        $v24 = $this->appendJsonPath($path, 'dateTimeProperty3');
+        $v24 = $this->appendPath($path, 'dateTimeProperty3');
         $v25 = $this->denormalizeStringJson($this->getRequiredJsonProperty($v0, 'dateTimeProperty3', $v24), $v24);
-        $v26 = $this->appendJsonPath($path, 'dateTimeProperty4');
+        $v26 = $this->appendPath($path, 'dateTimeProperty4');
         $v27 = $this->denormalizeStringJson($this->getRequiredJsonProperty($v0, 'dateTimeProperty4', $v26), $v26);
-        $v28 = $this->appendJsonPath($path, 'dateProperty');
+        $v28 = $this->appendPath($path, 'dateProperty');
         $v29 = $this->denormalizeStringJson($this->getRequiredJsonProperty($v0, 'dateProperty', $v28), $v28);
-        $v30 = $this->appendJsonPath($path, 'timeProperty');
+        $v30 = $this->appendPath($path, 'timeProperty');
         $v31 = $this->denormalizeStringJson($this->getRequiredJsonProperty($v0, 'timeProperty', $v30), $v30);
-        $v32 = $this->appendJsonPath($path, 'timeProperty2');
+        $v32 = $this->appendPath($path, 'timeProperty2');
         $v33 = $this->denormalizeStringJson($this->getRequiredJsonProperty($v0, 'timeProperty2', $v32), $v32);
-        $v34 = $this->appendJsonPath($path, 'timeProperty3');
+        $v34 = $this->appendPath($path, 'timeProperty3');
         $v35 = $this->denormalizeStringJson($this->getRequiredJsonProperty($v0, 'timeProperty3', $v34), $v34);
-        $v36 = $this->appendJsonPath($path, 'timeProperty4');
+        $v36 = $this->appendPath($path, 'timeProperty4');
         $v37 = $this->denormalizeStringJson($this->getRequiredJsonProperty($v0, 'timeProperty4', $v36), $v36);
-        $v38 = $this->appendJsonPath($path, 'customProperty');
+        $v38 = $this->appendPath($path, 'customProperty');
         $v39 = $this->denormalizeStringJson($this->getRequiredJsonProperty($v0, 'customProperty', $v38), $v38);
         $v41 = 'abc';
         if (\array_key_exists('defaultProperty', $v0)) {
-            $v40 = $this->appendJsonPath($path, 'defaultProperty');
+            $v40 = $this->appendPath($path, 'defaultProperty');
             $v41 = $this->denormalizeStringJson($v0['defaultProperty'], $v40);
         }
         $v43 = null;
         if (\array_key_exists('nullDefaultProperty', $v0)) {
-            $v42 = $this->appendJsonPath($path, 'nullDefaultProperty');
+            $v42 = $this->appendPath($path, 'nullDefaultProperty');
             $v44 = $v0['nullDefaultProperty'];
             $v43 = null;
             if ($v44 !== null) {
@@ -606,7 +596,7 @@ abstract class AbstractController
         }
         $v46 = [];
         if (\array_key_exists('emptyArrayDefaultProperty', $v0)) {
-            $v45 = $this->appendJsonPath($path, 'emptyArrayDefaultProperty');
+            $v45 = $this->appendPath($path, 'emptyArrayDefaultProperty');
             $v46 = [];
             foreach ($this->denormalizeListJson($v0['emptyArrayDefaultProperty'], $v45) as $v47 => $v48) {
                 $v49 = "{$v45}[{$v47}]";
@@ -616,21 +606,21 @@ abstract class AbstractController
         }
         $v52 = 'def';
         if (\array_key_exists('overriddenProperty', $v0)) {
-            $v51 = $this->appendJsonPath($path, 'overriddenProperty');
+            $v51 = $this->appendPath($path, 'overriddenProperty');
             $v52 = $this->denormalizeStringJson($v0['overriddenProperty'], $v51);
         }
-        $v53 = $this->appendJsonPath($path, 'objectProperty');
+        $v53 = $this->appendPath($path, 'objectProperty');
         $v54 = $this->denormalizeSchemaObjectPropertyJsonValue($this->getRequiredJsonProperty($v0, 'objectProperty', $v53), $v53);
-        $v55 = $this->appendJsonPath($path, 'arrayProperty');
+        $v55 = $this->appendPath($path, 'arrayProperty');
         $v56 = [];
         foreach ($this->denormalizeListJson($this->getRequiredJsonProperty($v0, 'arrayProperty', $v55), $v55) as $v57 => $v58) {
             $v59 = "{$v55}[{$v57}]";
             $v60 = $this->denormalizeStringJson($v58, $v59);
             $v56[] = $v60;
         }
-        $v61 = $this->appendJsonPath($path, 'rawProperty');
+        $v61 = $this->appendPath($path, 'rawProperty');
         $v62 = $this->getRequiredJsonProperty($v0, 'rawProperty', $v61);
-        $v63 = $this->appendJsonPath($path, 'integerMatrixProperty');
+        $v63 = $this->appendPath($path, 'integerMatrixProperty');
         $v64 = [];
         foreach ($this->denormalizeListJson($this->getRequiredJsonProperty($v0, 'integerMatrixProperty', $v63), $v63) as $v65 => $v66) {
             $v67 = "{$v63}[{$v65}]";
@@ -642,14 +632,14 @@ abstract class AbstractController
             }
             $v64[] = $v68;
         }
-        $v73 = $this->appendJsonPath($path, 'objectArrayProperty');
+        $v73 = $this->appendPath($path, 'objectArrayProperty');
         $v74 = [];
         foreach ($this->denormalizeListJson($this->getRequiredJsonProperty($v0, 'objectArrayProperty', $v73), $v73) as $v75 => $v76) {
             $v77 = "{$v73}[{$v75}]";
             $v78 = $this->denormalizeSchemaObjectArrayPropertyJsonValue($v76, $v77);
             $v74[] = $v78;
         }
-        $v79 = $this->appendJsonPath($path, 'recursiveObjectArray');
+        $v79 = $this->appendPath($path, 'recursiveObjectArray');
         $v80 = [];
         foreach ($this->denormalizeListJson($this->getRequiredJsonProperty($v0, 'recursiveObjectArray', $v79), $v79) as $v81 => $v82) {
             $v83 = "{$v79}[{$v81}]";
@@ -664,7 +654,7 @@ abstract class AbstractController
     public function denormalizeSchemaObjectPropertyJsonValue(mixed $value, string $path): SchemaObjectProperty
     {
         $v0 = $this->denormalizeMapJson($value, $path);
-        $v1 = $this->appendJsonPath($path, 'stringProperty');
+        $v1 = $this->appendPath($path, 'stringProperty');
         $v2 = $this->denormalizeStringJson($this->getRequiredJsonProperty($v0, 'stringProperty', $v1), $v1);
         return new SchemaObjectProperty(stringProperty: $v2);
     }
@@ -674,40 +664,64 @@ abstract class AbstractController
     public function denormalizeSchemaObjectArrayPropertyJsonValue(mixed $value, string $path): SchemaObjectArrayProperty
     {
         $v0 = $this->denormalizeMapJson($value, $path);
-        $v1 = $this->appendJsonPath($path, 'stringProperty');
+        $v1 = $this->appendPath($path, 'stringProperty');
         $v2 = $this->denormalizeStringJson($this->getRequiredJsonProperty($v0, 'stringProperty', $v1), $v1);
         return new SchemaObjectArrayProperty(stringProperty: $v2);
     }
     /**
      * @param list<Constraint> $constraints
      *
-     * @throws ParameterValidationException
+     * @throws ValidationException
      */
-    public function validateParameter(mixed $value, array $constraints): void
-    {
-        $violations = $this->validator->validate($value, $constraints);
-        if (\count($violations) > 0) {
-            throw new ParameterValidationException(array_map(static fn(ConstraintViolationInterface $violation) => $violation->getPropertyPath() === '' ? (string) $violation->getMessage() : "{$violation->getPropertyPath()}: {$violation->getMessage()}", iterator_to_array($violations)));
-        }
-    }
-    /**
-     * @param list<Constraint> $constraints
-     *
-     * @throws RequestBodyValidationException
-     */
-    public function validateRequestBody(mixed $value, array $constraints): void
+    public function validate(mixed $value, string $path, array $constraints): void
     {
         $violations = $this->validator->validate($value, $constraints);
         if (\count($violations) > 0) {
             $errors = [];
             foreach ($violations as $violation) {
-                $path = $violation->getPropertyPath();
-                if (!isset($errors[$path])) {
-                    $errors[$path] = [];
-                }
-                $errors[$path][] = (string) $violation->getMessage();
+                $errors[] = ['path' => $this->appendPath($path, (string) $violation->getPropertyPath()), 'code' => $this->getViolationCode($violation), 'message' => (string) $violation->getMessage()];
             }
-            throw new RequestBodyValidationException($errors);
+            throw new ValidationException($errors);
         }
+    }
+    /**
+     * Joins a value location to one of its sub locations, using the property path syntax the
+     * Symfony validator already produces: a dot before a property, brackets around an index.
+     */
+    public function appendPath(string $base, string $sub): string
+    {
+        if ($sub === '') {
+            return $base;
+        }
+        if ($base === '') {
+            return $sub;
+        }
+        return str_starts_with($sub, '[') ? "{$base}{$sub}" : "{$base}.{$sub}";
+    }
+    /**
+     * A machine readable code for a violation, so that a client does not have to match on the
+     * English sentence.
+     */
+    public function getViolationCode(ConstraintViolationInterface $violation): string
+    {
+        $constraint = $violation instanceof ConstraintViolation ? $violation->getConstraint() : null;
+        if ($constraint === null) {
+            return 'invalid_value';
+        }
+        if (str_starts_with($constraint::class, 'Zol\Apifony\Tests\TestOpenApiServer\Format\\')) {
+            return 'invalid_format';
+        }
+        return match ($constraint::class) {
+            Assert\NotNull::class, Assert\NotBlank::class => 'required',
+            Assert\Type::class => 'invalid_type',
+            Assert\Length::class => 'invalid_length',
+            Assert\Choice::class => 'invalid_enum_value',
+            Assert\GreaterThan::class, Assert\GreaterThanOrEqual::class, Assert\LessThan::class, Assert\LessThanOrEqual::class, Assert\Range::class => 'out_of_range',
+            Assert\DivisibleBy::class => 'invalid_multiple',
+            Assert\Count::class => 'invalid_count',
+            Assert\Unique::class => 'duplicate_values',
+            Assert\Regex::class => 'invalid_pattern',
+            default => 'invalid_value',
+        };
     }
 }

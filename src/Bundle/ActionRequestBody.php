@@ -7,12 +7,14 @@ namespace Zol\Apifony\Bundle;
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr;
 use PhpParser\Node\Expr\Array_;
+use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Name;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\TryCatch;
 use Zol\Apifony\OpenApi\Components;
 use Zol\Apifony\OpenApi\MediaType;
@@ -139,8 +141,9 @@ class ActionRequestBody
             new Expression(new Assign($f->var('requestBodyPayload'), $this->payloadType->getInitValue())),
             new TryCatch([
                 new Expression(new Assign($f->var('requestBodyPayload'), $this->getReadExpr($f))),
-                new Expression($f->methodCall($f->var('this'), 'validateRequestBody', [
+                new Expression($f->methodCall($f->var('this'), 'validate', [
                     $f->var('requestBodyPayload'),
+                    $f->val(''),
                     new Array_(array_map(
                         static fn (Constraint $constraint): ArrayItem => new ArrayItem($constraint->getInstantiationAst()),
                         $this->payloadType->getConstraints(),
@@ -148,10 +151,20 @@ class ActionRequestBody
                 ])),
             ], [
                 new Catch_([new Name('DenormalizationException')], $f->var('e'), [
-                    new Expression(new Assign($f->var('requestBodyErrors'), new Array_([new ArrayItem($f->methodCall($f->var('e'), 'getMessage'))], ['kind' => Array_::KIND_SHORT]))),
+                    new Expression(new Assign(new ArrayDimFetch($f->var('errors')), new Array_([
+                        new ArrayItem($f->val('requestBody'), $f->val('in')),
+                        new ArrayItem($f->propertyFetch($f->var('e'), 'path'), $f->val('path')),
+                        new ArrayItem($f->propertyFetch($f->var('e'), 'errorCode'), $f->val('code')),
+                        new ArrayItem($f->methodCall($f->var('e'), 'getMessage'), $f->val('message')),
+                    ], ['kind' => Array_::KIND_SHORT]))),
                 ]),
-                new Catch_([new Name('RequestBodyValidationException')], $f->var('e'), [
-                    new Expression(new Assign($f->var('requestBodyErrors'), $f->propertyFetch($f->var('e'), 'messages'))),
+                new Catch_([new Name('ValidationException')], $f->var('e'), [
+                    new Foreach_($f->propertyFetch($f->var('e'), 'errors'), $f->var('error'), ['stmts' => [
+                        new Expression(new Assign(new ArrayDimFetch($f->var('errors')), new Array_([
+                            new ArrayItem($f->val('requestBody'), $f->val('in')),
+                            new ArrayItem($f->var('error'), null, false, [], true),
+                        ], ['kind' => Array_::KIND_SHORT]))),
+                    ]]),
                 ]),
             ]),
         ];

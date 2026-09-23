@@ -32,6 +32,8 @@ class DenormalizationException implements File
 
         $constructor = $f->method('__construct')
             ->makePublic()
+            ->addParam($f->param('path')->setType('string')->makePublic()->makeReadonly())
+            ->addParam($f->param('errorCode')->setType('string')->makePublic()->makeReadonly())
             ->addParam($f->param('message')->setType('string'))
             ->addStmt($f->staticCall('parent', '__construct', [$f->var('message')]))
         ;

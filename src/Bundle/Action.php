@@ -6,7 +6,6 @@ namespace Zol\Apifony\Bundle;
 
 use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr\Array_;
-use PhpParser\Node\Expr\ArrayDimFetch;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Assign;
 use PhpParser\Node\Expr\BinaryOp\Greater;
@@ -321,19 +320,9 @@ class Action
             $actionMethod->addParam($parameter->asParam(true));
         }
 
-        $errorLocations = array_values(array_filter(
-            ['path', 'query', 'header', 'cookie'],
-            fn (string $in): bool => \count($this->getParameters([$in])) > 0,
-        ));
-        if ($this->requestBody !== null) {
-            $errorLocations[] = 'requestBody';
-        }
-
         $actionMethod->setReturnType('Response');
 
-        foreach ($errorLocations as $location) {
-            $actionMethod->addStmt(new Expression(new Assign($f->var("{$location}Errors"), new Array_([], ['kind' => Array_::KIND_SHORT]))));
-        }
+        $actionMethod->addStmt(new Expression(new Assign($f->var('errors'), new Array_([], ['kind' => Array_::KIND_SHORT]))));
 
         foreach ($this->getParameters(['path']) as $parameter) {
             $actionMethod->addStmts($parameter->getPathSanitizationStmts());
@@ -345,13 +334,6 @@ class Action
 
         if ($this->requestBody !== null) {
             $actionMethod->addStmts($this->requestBody->getStmts());
-        }
-
-        $actionMethod->addStmt(new Expression(new Assign($f->var('errors'), new Array_([], ['kind' => Array_::KIND_SHORT]))));
-        foreach ($errorLocations as $location) {
-            $actionMethod->addStmt(new If_(new Greater($f->funcCall('\count', [$f->var("{$location}Errors")]), $f->val(0)), ['stmts' => [
-                new Expression(new Assign(new ArrayDimFetch($f->var('errors'), $f->val($location)), $f->var("{$location}Errors"))),
-            ]]));
         }
 
         $actionMethod->addStmt(new If_(new Greater($f->funcCall('\count', [$f->var('errors')]), $f->val(0)), ['stmts' => [

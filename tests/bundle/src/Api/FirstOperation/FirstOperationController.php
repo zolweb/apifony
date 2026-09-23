@@ -4,8 +4,7 @@ declare (strict_types=1);
 namespace Zol\Apifony\Tests\TestOpenApiServer\Api\FirstOperation;
 
 use Zol\Apifony\Tests\TestOpenApiServer\Api\DenormalizationException;
-use Zol\Apifony\Tests\TestOpenApiServer\Api\ParameterValidationException;
-use Zol\Apifony\Tests\TestOpenApiServer\Api\RequestBodyValidationException;
+use Zol\Apifony\Tests\TestOpenApiServer\Api\ValidationException;
 use Zol\Apifony\Tests\TestOpenApiServer\Api\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -23,302 +22,346 @@ class FirstOperationController extends AbstractController
     }
     public function firstOperation(Request $request, string $pathParamString, float $pathParamNumber, int $pathParamInteger, bool $pathParamBoolean): Response
     {
-        $pathErrors = [];
-        $queryErrors = [];
-        $headerErrors = [];
-        $cookieErrors = [];
-        $requestBodyErrors = [];
+        $errors = [];
         $pPathParamString = $pathParamString;
         try {
-            $this->validateParameter($pPathParamString, [new Assert\NotNull()]);
-        } catch (ParameterValidationException $e) {
-            $pathErrors['pathParamString'] = $e->messages;
+            $this->validate($pPathParamString, 'pathParamString', [new Assert\NotNull()]);
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'path', ...$error];
+            }
         }
         $pPathParamNumber = $pathParamNumber;
         try {
-            $this->validateParameter($pPathParamNumber, [new Assert\NotNull()]);
-        } catch (ParameterValidationException $e) {
-            $pathErrors['pathParamNumber'] = $e->messages;
+            $this->validate($pPathParamNumber, 'pathParamNumber', [new Assert\NotNull()]);
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'path', ...$error];
+            }
         }
         $pPathParamInteger = $pathParamInteger;
         try {
-            $this->validateParameter($pPathParamInteger, [new Assert\NotNull()]);
-        } catch (ParameterValidationException $e) {
-            $pathErrors['pathParamInteger'] = $e->messages;
+            $this->validate($pPathParamInteger, 'pathParamInteger', [new Assert\NotNull()]);
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'path', ...$error];
+            }
         }
         $pPathParamBoolean = $pathParamBoolean;
         try {
-            $this->validateParameter($pPathParamBoolean, [new Assert\NotNull()]);
-        } catch (ParameterValidationException $e) {
-            $pathErrors['pathParamBoolean'] = $e->messages;
+            $this->validate($pPathParamBoolean, 'pathParamBoolean', [new Assert\NotNull()]);
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'path', ...$error];
+            }
         }
         $qQueryParamString = '';
         try {
             $qQueryParamString = $this->getStringParameter($request, 'queryParamString', 'query', true);
-            $this->validateParameter($qQueryParamString, [new Assert\NotNull()]);
+            $this->validate($qQueryParamString, 'queryParamString', [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $queryErrors['queryParamString'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $queryErrors['queryParamString'] = $e->messages;
+            $errors[] = ['in' => 'query', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'query', ...$error];
+            }
         }
         $qQueryParamNumber = 0.0;
         try {
             $qQueryParamNumber = $this->getFloatParameter($request, 'queryParamNumber', 'query', true);
-            $this->validateParameter($qQueryParamNumber, [new Assert\NotNull()]);
+            $this->validate($qQueryParamNumber, 'queryParamNumber', [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $queryErrors['queryParamNumber'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $queryErrors['queryParamNumber'] = $e->messages;
+            $errors[] = ['in' => 'query', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'query', ...$error];
+            }
         }
         $qQueryParamInteger = 0;
         try {
             $qQueryParamInteger = $this->getIntParameter($request, 'queryParamInteger', 'query', true);
-            $this->validateParameter($qQueryParamInteger, [new Assert\NotNull()]);
+            $this->validate($qQueryParamInteger, 'queryParamInteger', [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $queryErrors['queryParamInteger'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $queryErrors['queryParamInteger'] = $e->messages;
+            $errors[] = ['in' => 'query', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'query', ...$error];
+            }
         }
         $qQueryParamBoolean = false;
         try {
             $qQueryParamBoolean = $this->getBoolParameter($request, 'queryParamBoolean', 'query', true);
-            $this->validateParameter($qQueryParamBoolean, [new Assert\NotNull()]);
+            $this->validate($qQueryParamBoolean, 'queryParamBoolean', [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $queryErrors['queryParamBoolean'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $queryErrors['queryParamBoolean'] = $e->messages;
+            $errors[] = ['in' => 'query', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'query', ...$error];
+            }
         }
         $hHeaderParamString = '';
         try {
             $hHeaderParamString = $this->getStringParameter($request, 'headerParamString', 'header', true);
-            $this->validateParameter($hHeaderParamString, [new Assert\NotNull()]);
+            $this->validate($hHeaderParamString, 'headerParamString', [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $headerErrors['headerParamString'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $headerErrors['headerParamString'] = $e->messages;
+            $errors[] = ['in' => 'header', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'header', ...$error];
+            }
         }
         $hHeaderParamNumber = 0.0;
         try {
             $hHeaderParamNumber = $this->getFloatParameter($request, 'headerParamNumber', 'header', true);
-            $this->validateParameter($hHeaderParamNumber, [new Assert\NotNull()]);
+            $this->validate($hHeaderParamNumber, 'headerParamNumber', [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $headerErrors['headerParamNumber'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $headerErrors['headerParamNumber'] = $e->messages;
+            $errors[] = ['in' => 'header', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'header', ...$error];
+            }
         }
         $hHeaderParamInteger = 0;
         try {
             $hHeaderParamInteger = $this->getIntParameter($request, 'headerParamInteger', 'header', true);
-            $this->validateParameter($hHeaderParamInteger, [new Assert\NotNull()]);
+            $this->validate($hHeaderParamInteger, 'headerParamInteger', [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $headerErrors['headerParamInteger'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $headerErrors['headerParamInteger'] = $e->messages;
+            $errors[] = ['in' => 'header', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'header', ...$error];
+            }
         }
         $hHeaderParamBoolean = false;
         try {
             $hHeaderParamBoolean = $this->getBoolParameter($request, 'headerParamBoolean', 'header', true);
-            $this->validateParameter($hHeaderParamBoolean, [new Assert\NotNull()]);
+            $this->validate($hHeaderParamBoolean, 'headerParamBoolean', [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $headerErrors['headerParamBoolean'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $headerErrors['headerParamBoolean'] = $e->messages;
+            $errors[] = ['in' => 'header', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'header', ...$error];
+            }
         }
         $cCookieParamString = '';
         try {
             $cCookieParamString = $this->getStringParameter($request, 'cookieParamString', 'cookie', true);
-            $this->validateParameter($cCookieParamString, [new Assert\NotNull()]);
+            $this->validate($cCookieParamString, 'cookieParamString', [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $cookieErrors['cookieParamString'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $cookieErrors['cookieParamString'] = $e->messages;
+            $errors[] = ['in' => 'cookie', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'cookie', ...$error];
+            }
         }
         $cCookieParamNumber = 0.0;
         try {
             $cCookieParamNumber = $this->getFloatParameter($request, 'cookieParamNumber', 'cookie', true);
-            $this->validateParameter($cCookieParamNumber, [new Assert\NotNull()]);
+            $this->validate($cCookieParamNumber, 'cookieParamNumber', [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $cookieErrors['cookieParamNumber'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $cookieErrors['cookieParamNumber'] = $e->messages;
+            $errors[] = ['in' => 'cookie', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'cookie', ...$error];
+            }
         }
         $cCookieParamInteger = 0;
         try {
             $cCookieParamInteger = $this->getIntParameter($request, 'cookieParamInteger', 'cookie', true);
-            $this->validateParameter($cCookieParamInteger, [new Assert\NotNull()]);
+            $this->validate($cCookieParamInteger, 'cookieParamInteger', [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $cookieErrors['cookieParamInteger'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $cookieErrors['cookieParamInteger'] = $e->messages;
+            $errors[] = ['in' => 'cookie', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'cookie', ...$error];
+            }
         }
         $cCookieParamBoolean = false;
         try {
             $cCookieParamBoolean = $this->getBoolParameter($request, 'cookieParamBoolean', 'cookie', true);
-            $this->validateParameter($cCookieParamBoolean, [new Assert\NotNull()]);
+            $this->validate($cCookieParamBoolean, 'cookieParamBoolean', [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $cookieErrors['cookieParamBoolean'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $cookieErrors['cookieParamBoolean'] = $e->messages;
+            $errors[] = ['in' => 'cookie', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'cookie', ...$error];
+            }
         }
         $qQueryParamStringArray = [];
         try {
             $qQueryParamStringArray = $this->denormalizeQQueryParamStringArrayParameter($request, 'queryParamStringArray', 'query');
-            $this->validateParameter($qQueryParamStringArray, [new Assert\NotNull(), new Assert\Count(min: 1), new Assert\All(constraints: [new Assert\Type(type: 'string'), new Assert\NotNull(), new Assert\Length(min: 2)])]);
+            $this->validate($qQueryParamStringArray, 'queryParamStringArray', [new Assert\NotNull(), new Assert\Count(min: 1), new Assert\All(constraints: [new Assert\Type(type: 'string'), new Assert\NotNull(), new Assert\Length(min: 2)])]);
         } catch (DenormalizationException $e) {
-            $queryErrors['queryParamStringArray'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $queryErrors['queryParamStringArray'] = $e->messages;
+            $errors[] = ['in' => 'query', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'query', ...$error];
+            }
         }
         $qQueryParamIntegerMatrix = [];
         try {
             $qQueryParamIntegerMatrix = $this->denormalizeQQueryParamIntegerMatrixParameter($request, 'queryParamIntegerMatrix', 'query');
-            $this->validateParameter($qQueryParamIntegerMatrix, [new Assert\NotNull(), new Assert\All(constraints: [new Assert\Type(type: 'array'), new Assert\NotNull(), new Assert\All(constraints: [new Assert\Type(type: 'int'), new Assert\NotNull()])])]);
+            $this->validate($qQueryParamIntegerMatrix, 'queryParamIntegerMatrix', [new Assert\NotNull(), new Assert\All(constraints: [new Assert\Type(type: 'array'), new Assert\NotNull(), new Assert\All(constraints: [new Assert\Type(type: 'int'), new Assert\NotNull()])])]);
         } catch (DenormalizationException $e) {
-            $queryErrors['queryParamIntegerMatrix'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $queryErrors['queryParamIntegerMatrix'] = $e->messages;
+            $errors[] = ['in' => 'query', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'query', ...$error];
+            }
         }
         $qQueryParamAbcList = [];
         try {
             $qQueryParamAbcList = $this->denormalizeQQueryParamAbcListParameter($request, 'queryParamAbcList', 'query');
-            $this->validateParameter($qQueryParamAbcList, [new Assert\NotNull(), new Assert\Valid(), new Assert\All(constraints: [new Assert\NotNull()])]);
+            $this->validate($qQueryParamAbcList, 'queryParamAbcList', [new Assert\NotNull(), new Assert\Valid(), new Assert\All(constraints: [new Assert\NotNull()])]);
         } catch (DenormalizationException $e) {
-            $queryErrors['queryParamAbcList'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $queryErrors['queryParamAbcList'] = $e->messages;
+            $errors[] = ['in' => 'query', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'query', ...$error];
+            }
         }
         $qQueryParamObject = (new \ReflectionClass(FirstOperationQueryParamObject::class))->newInstanceWithoutConstructor();
         try {
             $qQueryParamObject = $this->denormalizeQQueryParamObjectParameter($request, 'queryParamObject', 'query');
-            $this->validateParameter($qQueryParamObject, [new Assert\Valid(), new Assert\NotNull()]);
+            $this->validate($qQueryParamObject, 'queryParamObject', [new Assert\Valid(), new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $queryErrors['queryParamObject'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $queryErrors['queryParamObject'] = $e->messages;
+            $errors[] = ['in' => 'query', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'query', ...$error];
+            }
         }
         $qQueryParamAbcRef = (new \ReflectionClass(Abc::class))->newInstanceWithoutConstructor();
         try {
             $qQueryParamAbcRef = $this->denormalizeQQueryParamAbcRefParameter($request, 'queryParamAbcRef', 'query');
-            $this->validateParameter($qQueryParamAbcRef, [new Assert\Valid(), new Assert\NotNull()]);
+            $this->validate($qQueryParamAbcRef, 'queryParamAbcRef', [new Assert\Valid(), new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $queryErrors['queryParamAbcRef'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $queryErrors['queryParamAbcRef'] = $e->messages;
+            $errors[] = ['in' => 'query', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'query', ...$error];
+            }
         }
         $qQueryParamNodeTree = (new \ReflectionClass(Node::class))->newInstanceWithoutConstructor();
         try {
             $qQueryParamNodeTree = $this->denormalizeQQueryParamNodeTreeParameter($request, 'queryParamNodeTree', 'query');
-            $this->validateParameter($qQueryParamNodeTree, [new Assert\Valid(), new Assert\NotNull()]);
+            $this->validate($qQueryParamNodeTree, 'queryParamNodeTree', [new Assert\Valid(), new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $queryErrors['queryParamNodeTree'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $queryErrors['queryParamNodeTree'] = $e->messages;
+            $errors[] = ['in' => 'query', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'query', ...$error];
+            }
         }
         $qQueryParamNumberArray = [];
         try {
             $qQueryParamNumberArray = $this->denormalizeQQueryParamNumberArrayParameter($request, 'queryParamNumberArray', 'query');
-            $this->validateParameter($qQueryParamNumberArray, [new Assert\NotNull(), new Assert\All(constraints: [new Assert\Type(type: ['int', 'float']), new Assert\NotNull()])]);
+            $this->validate($qQueryParamNumberArray, 'queryParamNumberArray', [new Assert\NotNull(), new Assert\All(constraints: [new Assert\Type(type: ['int', 'float']), new Assert\NotNull()])]);
         } catch (DenormalizationException $e) {
-            $queryErrors['queryParamNumberArray'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $queryErrors['queryParamNumberArray'] = $e->messages;
+            $errors[] = ['in' => 'query', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'query', ...$error];
+            }
         }
         $qQueryParamEnumArray = [];
         try {
             $qQueryParamEnumArray = $this->denormalizeQQueryParamEnumArrayParameter($request, 'queryParamEnumArray', 'query');
-            $this->validateParameter($qQueryParamEnumArray, [new Assert\NotNull(), new Assert\All(constraints: [new Assert\Type(type: 'string'), new Assert\NotNull(), new Assert\Choice(choices: ['abc', 'def', 'ghi'])])]);
+            $this->validate($qQueryParamEnumArray, 'queryParamEnumArray', [new Assert\NotNull(), new Assert\All(constraints: [new Assert\Type(type: 'string'), new Assert\NotNull(), new Assert\Choice(choices: ['abc', 'def', 'ghi'])])]);
         } catch (DenormalizationException $e) {
-            $queryErrors['queryParamEnumArray'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $queryErrors['queryParamEnumArray'] = $e->messages;
+            $errors[] = ['in' => 'query', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'query', ...$error];
+            }
         }
         $qQueryParamRangeArray = [];
         try {
             $qQueryParamRangeArray = $this->denormalizeQQueryParamRangeArrayParameter($request, 'queryParamRangeArray', 'query');
-            $this->validateParameter($qQueryParamRangeArray, [new Assert\NotNull(), new Assert\All(constraints: [new Assert\Type(type: 'int'), new Assert\NotNull(), new Assert\GreaterThanOrEqual(value: 1), new Assert\LessThanOrEqual(value: 5)])]);
+            $this->validate($qQueryParamRangeArray, 'queryParamRangeArray', [new Assert\NotNull(), new Assert\All(constraints: [new Assert\Type(type: 'int'), new Assert\NotNull(), new Assert\GreaterThanOrEqual(value: 1), new Assert\LessThanOrEqual(value: 5)])]);
         } catch (DenormalizationException $e) {
-            $queryErrors['queryParamRangeArray'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $queryErrors['queryParamRangeArray'] = $e->messages;
+            $errors[] = ['in' => 'query', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'query', ...$error];
+            }
         }
         $qQueryParamOptionalArray = [];
         try {
             $qQueryParamOptionalArray = $this->denormalizeQQueryParamOptionalArrayParameter($request, 'queryParamOptionalArray', 'query');
-            $this->validateParameter($qQueryParamOptionalArray, [new Assert\NotNull(), new Assert\All(constraints: [new Assert\Type(type: 'string'), new Assert\NotNull()])]);
+            $this->validate($qQueryParamOptionalArray, 'queryParamOptionalArray', [new Assert\NotNull(), new Assert\All(constraints: [new Assert\Type(type: 'string'), new Assert\NotNull()])]);
         } catch (DenormalizationException $e) {
-            $queryErrors['queryParamOptionalArray'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $queryErrors['queryParamOptionalArray'] = $e->messages;
+            $errors[] = ['in' => 'query', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'query', ...$error];
+            }
         }
         $qQueryParamNullableArray = [];
         try {
             $qQueryParamNullableArray = $this->denormalizeQQueryParamNullableArrayParameter($request, 'queryParamNullableArray', 'query');
-            $this->validateParameter($qQueryParamNullableArray, [new Assert\All(constraints: [new Assert\Type(type: 'bool'), new Assert\NotNull()])]);
+            $this->validate($qQueryParamNullableArray, 'queryParamNullableArray', [new Assert\All(constraints: [new Assert\Type(type: 'bool'), new Assert\NotNull()])]);
         } catch (DenormalizationException $e) {
-            $queryErrors['queryParamNullableArray'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $queryErrors['queryParamNullableArray'] = $e->messages;
+            $errors[] = ['in' => 'query', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'query', ...$error];
+            }
         }
         $qQueryParamNullableString = '';
         try {
             $qQueryParamNullableString = $this->getStringOrNullParameter($request, 'queryParamNullableString', 'query', false, null);
-            $this->validateParameter($qQueryParamNullableString, []);
+            $this->validate($qQueryParamNullableString, 'queryParamNullableString', []);
         } catch (DenormalizationException $e) {
-            $queryErrors['queryParamNullableString'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $queryErrors['queryParamNullableString'] = $e->messages;
+            $errors[] = ['in' => 'query', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'query', ...$error];
+            }
         }
         $qQueryParamNullableNumber = 0.0;
         try {
             $qQueryParamNullableNumber = $this->getFloatOrNullParameter($request, 'queryParamNullableNumber', 'query', false, null);
-            $this->validateParameter($qQueryParamNullableNumber, []);
+            $this->validate($qQueryParamNullableNumber, 'queryParamNullableNumber', []);
         } catch (DenormalizationException $e) {
-            $queryErrors['queryParamNullableNumber'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $queryErrors['queryParamNullableNumber'] = $e->messages;
+            $errors[] = ['in' => 'query', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'query', ...$error];
+            }
         }
         $qQueryParamNullableInteger = 0;
         try {
             $qQueryParamNullableInteger = $this->getIntOrNullParameter($request, 'queryParamNullableInteger', 'query', false, null);
-            $this->validateParameter($qQueryParamNullableInteger, []);
+            $this->validate($qQueryParamNullableInteger, 'queryParamNullableInteger', []);
         } catch (DenormalizationException $e) {
-            $queryErrors['queryParamNullableInteger'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $queryErrors['queryParamNullableInteger'] = $e->messages;
+            $errors[] = ['in' => 'query', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'query', ...$error];
+            }
         }
         $qQueryParamNullableBoolean = false;
         try {
             $qQueryParamNullableBoolean = $this->getBoolOrNullParameter($request, 'queryParamNullableBoolean', 'query', false, null);
-            $this->validateParameter($qQueryParamNullableBoolean, []);
+            $this->validate($qQueryParamNullableBoolean, 'queryParamNullableBoolean', []);
         } catch (DenormalizationException $e) {
-            $queryErrors['queryParamNullableBoolean'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $queryErrors['queryParamNullableBoolean'] = $e->messages;
+            $errors[] = ['in' => 'query', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'query', ...$error];
+            }
         }
         $requestBodyPayload = (new \ReflectionClass(Schema::class))->newInstanceWithoutConstructor();
         try {
             $requestBodyPayload = $this->denormalizeSchemaJsonValue($this->getJsonRequestBody($request), '');
-            $this->validateRequestBody($requestBodyPayload, [new Assert\Valid(), new Assert\NotNull()]);
+            $this->validate($requestBodyPayload, '', [new Assert\Valid(), new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $requestBodyErrors = [$e->getMessage()];
-        } catch (RequestBodyValidationException $e) {
-            $requestBodyErrors = $e->messages;
-        }
-        $errors = [];
-        if (\count($pathErrors) > 0) {
-            $errors['path'] = $pathErrors;
-        }
-        if (\count($queryErrors) > 0) {
-            $errors['query'] = $queryErrors;
-        }
-        if (\count($headerErrors) > 0) {
-            $errors['header'] = $headerErrors;
-        }
-        if (\count($cookieErrors) > 0) {
-            $errors['cookie'] = $cookieErrors;
-        }
-        if (\count($requestBodyErrors) > 0) {
-            $errors['requestBody'] = $requestBodyErrors;
+            $errors[] = ['in' => 'requestBody', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'requestBody', ...$error];
+            }
         }
         if (\count($errors) > 0) {
             return new JsonResponse(['code' => 'validation_failed', 'message' => 'Validation has failed.', 'errors' => $errors], Response::HTTP_BAD_REQUEST);
@@ -337,12 +380,12 @@ class FirstOperationController extends AbstractController
     private function denormalizeQQueryParamStringArrayParameter(Request $request, string $name, string $in): array
     {
         if (!$this->hasParameter($request, $name, $in)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+            throw new DenormalizationException($name, 'required', 'This value is required.');
         }
         $v0 = [];
-        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name, $in) as $v1 => $v2) {
+        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name) as $v1 => $v2) {
             $v3 = "{$name}[{$v1}]";
-            $v4 = $this->denormalizeStringParameter($v2, $v3, $in);
+            $v4 = $this->denormalizeStringParameter($v2, $v3);
             $v0[] = $v4;
         }
         return $v0;
@@ -355,15 +398,15 @@ class FirstOperationController extends AbstractController
     private function denormalizeQQueryParamIntegerMatrixParameter(Request $request, string $name, string $in): array
     {
         if (!$this->hasParameter($request, $name, $in)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+            throw new DenormalizationException($name, 'required', 'This value is required.');
         }
         $v0 = [];
-        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name, $in) as $v1 => $v2) {
+        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name) as $v1 => $v2) {
             $v3 = "{$name}[{$v1}]";
             $v4 = [];
-            foreach ($this->denormalizeListParameter($v2, $v3, $in) as $v5 => $v6) {
+            foreach ($this->denormalizeListParameter($v2, $v3) as $v5 => $v6) {
                 $v7 = "{$v3}[{$v5}]";
-                $v8 = $this->denormalizeIntParameter($v6, $v7, $in);
+                $v8 = $this->denormalizeIntParameter($v6, $v7);
                 $v4[] = $v8;
             }
             $v0[] = $v4;
@@ -378,12 +421,12 @@ class FirstOperationController extends AbstractController
     private function denormalizeQQueryParamAbcListParameter(Request $request, string $name, string $in): array
     {
         if (!$this->hasParameter($request, $name, $in)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+            throw new DenormalizationException($name, 'required', 'This value is required.');
         }
         $v0 = [];
-        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name, $in) as $v1 => $v2) {
+        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name) as $v1 => $v2) {
             $v3 = "{$name}[{$v1}]";
-            $v4 = $this->denormalizeAbcParameterValue($v2, $v3, $in);
+            $v4 = $this->denormalizeAbcParameterValue($v2, $v3);
             $v0[] = $v4;
         }
         return $v0;
@@ -394,9 +437,9 @@ class FirstOperationController extends AbstractController
     private function denormalizeQQueryParamObjectParameter(Request $request, string $name, string $in): FirstOperationQueryParamObject
     {
         if (!$this->hasParameter($request, $name, $in)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+            throw new DenormalizationException($name, 'required', 'This value is required.');
         }
-        return $this->denormalizeFirstOperationQueryParamObjectParameterValue($this->getRawParameter($request, $name, $in), $name, $in);
+        return $this->denormalizeFirstOperationQueryParamObjectParameterValue($this->getRawParameter($request, $name, $in), $name);
     }
     /**
      * @throws DenormalizationException
@@ -404,9 +447,9 @@ class FirstOperationController extends AbstractController
     private function denormalizeQQueryParamAbcRefParameter(Request $request, string $name, string $in): Abc
     {
         if (!$this->hasParameter($request, $name, $in)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+            throw new DenormalizationException($name, 'required', 'This value is required.');
         }
-        return $this->denormalizeAbcParameterValue($this->getRawParameter($request, $name, $in), $name, $in);
+        return $this->denormalizeAbcParameterValue($this->getRawParameter($request, $name, $in), $name);
     }
     /**
      * @throws DenormalizationException
@@ -414,9 +457,9 @@ class FirstOperationController extends AbstractController
     private function denormalizeQQueryParamNodeTreeParameter(Request $request, string $name, string $in): Node
     {
         if (!$this->hasParameter($request, $name, $in)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+            throw new DenormalizationException($name, 'required', 'This value is required.');
         }
-        return $this->denormalizeNodeParameterValue($this->getRawParameter($request, $name, $in), $name, $in);
+        return $this->denormalizeNodeParameterValue($this->getRawParameter($request, $name, $in), $name);
     }
     /**
      * @return list<float>
@@ -426,12 +469,12 @@ class FirstOperationController extends AbstractController
     private function denormalizeQQueryParamNumberArrayParameter(Request $request, string $name, string $in): array
     {
         if (!$this->hasParameter($request, $name, $in)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+            throw new DenormalizationException($name, 'required', 'This value is required.');
         }
         $v0 = [];
-        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name, $in) as $v1 => $v2) {
+        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name) as $v1 => $v2) {
             $v3 = "{$name}[{$v1}]";
-            $v4 = $this->denormalizeFloatParameter($v2, $v3, $in);
+            $v4 = $this->denormalizeFloatParameter($v2, $v3);
             $v0[] = $v4;
         }
         return $v0;
@@ -444,14 +487,14 @@ class FirstOperationController extends AbstractController
     private function denormalizeQQueryParamEnumArrayParameter(Request $request, string $name, string $in): array
     {
         if (!$this->hasParameter($request, $name, $in)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+            throw new DenormalizationException($name, 'required', 'This value is required.');
         }
         $v0 = [];
-        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name, $in) as $v1 => $v2) {
+        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name) as $v1 => $v2) {
             $v3 = "{$name}[{$v1}]";
-            $v4 = $this->denormalizeStringParameter($v2, $v3, $in);
+            $v4 = $this->denormalizeStringParameter($v2, $v3);
             if (!\in_array($v4, ['abc', 'def', 'ghi'], true)) {
-                throw new DenormalizationException($this->getParameterErrorMessage($v3, $in, 'must be one of \'abc\', \'def\', \'ghi\'.'));
+                throw new DenormalizationException($v3, 'invalid_enum_value', 'This value should be one of \'abc\', \'def\', \'ghi\'.');
             }
             $v0[] = $v4;
         }
@@ -465,14 +508,14 @@ class FirstOperationController extends AbstractController
     private function denormalizeQQueryParamRangeArrayParameter(Request $request, string $name, string $in): array
     {
         if (!$this->hasParameter($request, $name, $in)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+            throw new DenormalizationException($name, 'required', 'This value is required.');
         }
         $v0 = [];
-        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name, $in) as $v1 => $v2) {
+        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name) as $v1 => $v2) {
             $v3 = "{$name}[{$v1}]";
-            $v4 = $this->denormalizeIntParameter($v2, $v3, $in);
+            $v4 = $this->denormalizeIntParameter($v2, $v3);
             if ($v4 < 1 || $v4 > 5) {
-                throw new DenormalizationException($this->getParameterErrorMessage($v3, $in, 'must be between 1 and 5.'));
+                throw new DenormalizationException($v3, 'out_of_range', 'This value should be between 1 and 5.');
             }
             $v0[] = $v4;
         }
@@ -489,9 +532,9 @@ class FirstOperationController extends AbstractController
             return [];
         }
         $v0 = [];
-        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name, $in) as $v1 => $v2) {
+        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name) as $v1 => $v2) {
             $v3 = "{$name}[{$v1}]";
-            $v4 = $this->denormalizeStringParameter($v2, $v3, $in);
+            $v4 = $this->denormalizeStringParameter($v2, $v3);
             $v0[] = $v4;
         }
         return $v0;
@@ -507,9 +550,9 @@ class FirstOperationController extends AbstractController
             return null;
         }
         $v0 = [];
-        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name, $in) as $v1 => $v2) {
+        foreach ($this->denormalizeListParameter($this->getRawParameter($request, $name, $in), $name) as $v1 => $v2) {
             $v3 = "{$name}[{$v1}]";
-            $v4 = $this->denormalizeBoolParameter($v2, $v3, $in);
+            $v4 = $this->denormalizeBoolParameter($v2, $v3);
             $v0[] = $v4;
         }
         return $v0;

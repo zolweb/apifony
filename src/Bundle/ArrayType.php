@@ -209,7 +209,7 @@ class ArrayType implements Type
         return $context->wrapNullable($this->nullable, $source, $target, fn (Expr $value): array => [
             new Expression(new Assign($target, new Array_([], ['kind' => Array_::KIND_SHORT]))),
             new Foreach_(
-                $f->methodCall($f->var('this'), \sprintf('denormalizeList%s', $context->getSource()), array_merge([$value, $path], $context->getLocationArgs())),
+                $f->methodCall($f->var('this'), \sprintf('denormalizeList%s', $context->getSource()), [$value, $path]),
                 $item,
                 [
                     'keyVar' => $key,

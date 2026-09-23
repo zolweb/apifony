@@ -4,8 +4,7 @@ declare (strict_types=1);
 namespace Zol\Apifony\Tests\TestOpenApiServer\Api\RawOperation;
 
 use Zol\Apifony\Tests\TestOpenApiServer\Api\DenormalizationException;
-use Zol\Apifony\Tests\TestOpenApiServer\Api\ParameterValidationException;
-use Zol\Apifony\Tests\TestOpenApiServer\Api\RequestBodyValidationException;
+use Zol\Apifony\Tests\TestOpenApiServer\Api\ValidationException;
 use Zol\Apifony\Tests\TestOpenApiServer\Api\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -20,32 +19,28 @@ class RawOperationController extends AbstractController
     }
     public function rawOperation(Request $request): Response
     {
-        $queryErrors = [];
-        $requestBodyErrors = [];
+        $errors = [];
         $qRawParam = null;
         try {
             $qRawParam = $this->denormalizeQRawParamParameter($request, 'rawParam', 'query');
-            $this->validateParameter($qRawParam, [new Assert\NotNull()]);
+            $this->validate($qRawParam, 'rawParam', [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $queryErrors['rawParam'] = [$e->getMessage()];
-        } catch (ParameterValidationException $e) {
-            $queryErrors['rawParam'] = $e->messages;
+            $errors[] = ['in' => 'query', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'query', ...$error];
+            }
         }
         $requestBodyPayload = null;
         try {
             $requestBodyPayload = $this->getJsonRequestBody($request);
-            $this->validateRequestBody($requestBodyPayload, [new Assert\NotNull()]);
+            $this->validate($requestBodyPayload, '', [new Assert\NotNull()]);
         } catch (DenormalizationException $e) {
-            $requestBodyErrors = [$e->getMessage()];
-        } catch (RequestBodyValidationException $e) {
-            $requestBodyErrors = $e->messages;
-        }
-        $errors = [];
-        if (\count($queryErrors) > 0) {
-            $errors['query'] = $queryErrors;
-        }
-        if (\count($requestBodyErrors) > 0) {
-            $errors['requestBody'] = $requestBodyErrors;
+            $errors[] = ['in' => 'requestBody', 'path' => $e->path, 'code' => $e->errorCode, 'message' => $e->getMessage()];
+        } catch (ValidationException $e) {
+            foreach ($e->errors as $error) {
+                $errors[] = ['in' => 'requestBody', ...$error];
+            }
         }
         if (\count($errors) > 0) {
             return new JsonResponse(['code' => 'validation_failed', 'message' => 'Validation has failed.', 'errors' => $errors], Response::HTTP_BAD_REQUEST);
@@ -62,7 +57,7 @@ class RawOperationController extends AbstractController
     private function denormalizeQRawParamParameter(Request $request, string $name, string $in): mixed
     {
         if (!$this->hasParameter($request, $name, $in)) {
-            throw new DenormalizationException("Parameter '{$name}' in '{$in}' is required.");
+            throw new DenormalizationException($name, 'required', 'This value is required.');
         }
         return $this->getRawParameter($request, $name, $in);
     }

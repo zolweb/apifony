@@ -217,11 +217,7 @@ final class ApifonyTest extends WebTestCase
                 'code' => 'validation_failed',
                 'message' => 'Validation has failed.',
                 'errors' => [
-                    'requestBody' => [
-                        'dateTimeProperty' => [
-                            'This is not a valid date time format according to RFC 3339.',
-                        ],
-                    ],
+                    ['in' => 'requestBody', 'path' => 'dateTimeProperty', 'code' => 'invalid_format', 'message' => 'This is not a valid date time format according to RFC 3339.'],
                 ],
             ],
             $content,
@@ -249,10 +245,17 @@ final class ApifonyTest extends WebTestCase
         self::assertIsString($rawContent);
         $content = json_decode($rawContent, true);
         self::assertIsArray($content);
-        self::assertSame('validation_failed', $content['code'] ?? null);
-        self::assertIsArray($content['errors'] ?? null);
-        self::assertIsArray($content['errors']['requestBody'] ?? null);
-        self::assertNotEmpty($content['errors']['requestBody']);
+
+        self::assertEqualsCanonicalizing(
+            [
+                'code' => 'validation_failed',
+                'message' => 'Validation has failed.',
+                'errors' => [
+                    ['in' => 'requestBody', 'path' => 'integerMatrixProperty[0][0]', 'code' => 'invalid_type', 'message' => 'This value should be of type integer.'],
+                ],
+            ],
+            $content,
+        );
     }
 
     /**
@@ -429,13 +432,11 @@ final class ApifonyTest extends WebTestCase
                 'code' => 'validation_failed',
                 'message' => 'Validation has failed.',
                 'errors' => [
-                    'query' => [
-                        'queryParamStringArray' => ["Parameter 'queryParamStringArray' in 'query' must be an array."],
-                        'queryParamIntegerMatrix' => ["Parameter 'queryParamIntegerMatrix[0][0]' in 'query' must be an integer."],
-                        'queryParamAbcList' => ["Parameter 'queryParamAbcList[0][def]' in 'query' is required."],
-                        'queryParamObject' => ["Parameter 'queryParamObject' in 'query' is required."],
-                        'queryParamOptionalArray' => ["Parameter 'queryParamOptionalArray' in 'query' must be a list."],
-                    ],
+                    ['in' => 'query', 'path' => 'queryParamStringArray', 'code' => 'invalid_type', 'message' => 'This value should be an array.'],
+                    ['in' => 'query', 'path' => 'queryParamIntegerMatrix[0][0]', 'code' => 'invalid_type', 'message' => 'This value should be of type integer.'],
+                    ['in' => 'query', 'path' => 'queryParamAbcList[0].def', 'code' => 'required', 'message' => 'This value is required.'],
+                    ['in' => 'query', 'path' => 'queryParamObject', 'code' => 'required', 'message' => 'This value is required.'],
+                    ['in' => 'query', 'path' => 'queryParamOptionalArray', 'code' => 'invalid_type', 'message' => 'This value should be a list.'],
                 ],
             ],
             $content,
@@ -477,12 +478,10 @@ final class ApifonyTest extends WebTestCase
                 'code' => 'validation_failed',
                 'message' => 'Validation has failed.',
                 'errors' => [
-                    'query' => [
-                        'queryParamStringArray' => ['[0]: This value is too short. It should have 2 characters or more.'],
-                        'queryParamObject' => ['nestedObjectProperty.emailProperty: This value is not a valid email address.'],
-                        'queryParamEnumArray' => ["Parameter 'queryParamEnumArray[1]' in 'query' must be one of 'abc', 'def', 'ghi'."],
-                        'queryParamRangeArray' => ["Parameter 'queryParamRangeArray[1]' in 'query' must be between 1 and 5."],
-                    ],
+                    ['in' => 'query', 'path' => 'queryParamStringArray[0]', 'code' => 'invalid_length', 'message' => 'This value is too short. It should have 2 characters or more.'],
+                    ['in' => 'query', 'path' => 'queryParamObject.nestedObjectProperty.emailProperty', 'code' => 'invalid_format', 'message' => 'This value is not a valid email address.'],
+                    ['in' => 'query', 'path' => 'queryParamEnumArray[1]', 'code' => 'invalid_enum_value', 'message' => "This value should be one of 'abc', 'def', 'ghi'."],
+                    ['in' => 'query', 'path' => 'queryParamRangeArray[1]', 'code' => 'out_of_range', 'message' => 'This value should be between 1 and 5.'],
                 ],
             ],
             $content,

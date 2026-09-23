@@ -148,7 +148,7 @@ class StringType implements Type
         $f = new BuilderFactory();
 
         return $context->wrapNullable($this->nullable, $source, $target, fn (Expr $value): array => array_merge(
-            [new Expression(new Assign($target, $f->methodCall($f->var('this'), \sprintf('denormalize%s%s', ucfirst($this->getBuiltInPhpType()), $context->getSource()), array_merge([$value, $path], $context->getLocationArgs()))))],
+            [new Expression(new Assign($target, $f->methodCall($f->var('this'), \sprintf('denormalize%s%s', ucfirst($this->getBuiltInPhpType()), $context->getSource()), [$value, $path])))],
             $this->getNarrowingStmts($target, $path, $context),
         ));
     }
@@ -167,7 +167,7 @@ class StringType implements Type
             return [];
         }
 
-        $expectation = \sprintf('must be one of %s.', implode(', ', array_map(
+        $expectation = \sprintf('This value should be one of %s.', implode(', ', array_map(
             static fn (mixed $e): string => $e === null ? 'null' : var_export($e, true),
             $this->schema->enum,
         )));
@@ -179,7 +179,7 @@ class StringType implements Type
                 $f->val(true),
             ])),
             ['stmts' => [new Expression(new Throw_($f->new('DenormalizationException', [
-                $f->methodCall($f->var('this'), \sprintf('get%sErrorMessage', $context->getSource()), array_merge([$path], $context->getLocationArgs(), [$f->val($expectation)])),
+                $path, $f->val('invalid_enum_value'), $f->val($expectation),
             ])))]],
         )];
     }

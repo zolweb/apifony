@@ -45,17 +45,6 @@ class DenormalizationContext
     }
 
     /**
-     * The trailing arguments every denormalization helper of this source takes. A query parameter
-     * reports the location it was read from; a request body has only one.
-     *
-     * @return list<Expr>
-     */
-    public function getLocationArgs(): array
-    {
-        return $this->source === self::SOURCE_QUERY ? [new Variable('in')] : [];
-    }
-
-    /**
      * Wraps the statements denormalizing a value so that a null yields null instead. Only a JSON
      * document can carry a null: a query string has no notation for it.
      *

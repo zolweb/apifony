@@ -15,13 +15,12 @@ use PhpParser\Node\Expr\Throw_;
 use PhpParser\Node\Expr\Variable;
 use PhpParser\Node\Name;
 use PhpParser\Node\Param;
-use PhpParser\Node\Scalar\Encapsed;
-use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Scalar\String_;
 use PhpParser\Node\Stmt;
 use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Expression;
+use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\Stmt\TryCatch;
@@ -214,6 +213,51 @@ class ActionParameter
     }
 
     /**
+     * Appends one entry to the flat list of errors the action returns.
+     */
+    private function getAppendErrorStmt(Expr $path, Expr $code, Expr $message): Stmt
+    {
+        $f = new BuilderFactory();
+
+        return new Expression(new Assign(new ArrayDimFetch($f->var('errors')), new Array_([
+            new ArrayItem($f->val($this->parameter->in), $f->val('in')),
+            new ArrayItem($path, $f->val('path')),
+            new ArrayItem($code, $f->val('code')),
+            new ArrayItem($message, $f->val('message')),
+        ], ['kind' => Array_::KIND_SHORT])));
+    }
+
+    /**
+     * @return list<Catch_>
+     */
+    private function getCatches(bool $denormalization): array
+    {
+        $f = new BuilderFactory();
+
+        $catches = [];
+        if ($denormalization) {
+            $catches[] = new Catch_([new Name('DenormalizationException')], $f->var('e'), [
+                $this->getAppendErrorStmt(
+                    $f->propertyFetch($f->var('e'), 'path'),
+                    $f->propertyFetch($f->var('e'), 'errorCode'),
+                    $f->methodCall($f->var('e'), 'getMessage'),
+                ),
+            ]);
+        }
+
+        $catches[] = new Catch_([new Name('ValidationException')], $f->var('e'), [
+            new Foreach_($f->propertyFetch($f->var('e'), 'errors'), $f->var('error'), ['stmts' => [
+                new Expression(new Assign(new ArrayDimFetch($f->var('errors')), new Array_([
+                    new ArrayItem($f->val($this->parameter->in), $f->val('in')),
+                    new ArrayItem($f->var('error'), null, false, [], true),
+                ], ['kind' => Array_::KIND_SHORT]))),
+            ]]),
+        ]);
+
+        return $catches;
+    }
+
+    /**
      * @return Stmt[]
      */
     public function getPathSanitizationStmts(): array
@@ -223,15 +267,12 @@ class ActionParameter
         return [
             new Expression(new Assign(new Variable($this->variableName), new Variable($this->parameter->name))),
             new TryCatch([
-                new Expression($f->methodCall($f->var('this'), 'validateParameter', [
+                new Expression($f->methodCall($f->var('this'), 'validate', [
                     new Variable($this->variableName),
+                    new String_($this->parameter->name),
                     $this->getConstraintsAst(),
                 ])),
-            ], [
-                new Catch_([new Name('ParameterValidationException')], $f->var('e'), [
-                    new Expression(new Assign(new ArrayDimFetch($f->var("{$this->parameter->in}Errors"), new String_($this->parameter->name)), $f->propertyFetch($f->var('e'), 'messages'))),
-                ]),
-            ]),
+            ], $this->getCatches(false)),
         ];
     }
 
@@ -246,18 +287,12 @@ class ActionParameter
             new Expression(new Assign(new Variable($this->variableName), $this->type->getInitValue())),
             new TryCatch([
                 new Expression(new Assign(new Variable($this->variableName), $this->getReadExpr())),
-                new Expression($f->methodCall($f->var('this'), 'validateParameter', [
+                new Expression($f->methodCall($f->var('this'), 'validate', [
                     new Variable($this->variableName),
+                    new String_($this->parameter->name),
                     $this->getConstraintsAst(),
                 ])),
-            ], [
-                new Catch_([new Name('DenormalizationException')], $f->var('e'), [
-                    new Expression(new Assign(new ArrayDimFetch($f->var("{$this->parameter->in}Errors"), new String_($this->parameter->name)), new Array_([new ArrayItem($f->methodCall($f->var('e'), 'getMessage'))], ['kind' => Array_::KIND_SHORT]))),
-                ]),
-                new Catch_([new Name('ParameterValidationException')], $f->var('e'), [
-                    new Expression(new Assign(new ArrayDimFetch($f->var("{$this->parameter->in}Errors"), new String_($this->parameter->name)), $f->propertyFetch($f->var('e'), 'messages'))),
-                ]),
-            ]),
+            ], $this->getCatches(true)),
         ];
     }
 
@@ -290,13 +325,7 @@ class ActionParameter
             ->setDocComment("/**\n{$returnDoc} * @throws DenormalizationException\n */")
             ->addStmt(new If_(new BooleanNot($f->methodCall($f->var('this'), 'hasParameter', [$f->var('request'), $f->var('name'), $f->var('in')])), ['stmts' => [
                 $this->parameter->required
-                    ? new Expression(new Throw_($f->new('DenormalizationException', [new Encapsed([
-                        new EncapsedStringPart('Parameter \''),
-                        $f->var('name'),
-                        new EncapsedStringPart('\' in \''),
-                        $f->var('in'),
-                        new EncapsedStringPart('\' is required.'),
-                    ])])))
+                    ? new Expression(new Throw_($f->new('DenormalizationException', [$f->var('name'), $f->val('required'), $f->val('This value is required.')])))
                     : new Return_($this->type->getDefaultExpr()),
             ]]))
         ;
