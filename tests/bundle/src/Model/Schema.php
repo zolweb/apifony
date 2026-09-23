@@ -32,7 +32,6 @@ class Schema
      * @param string $timeProperty3
      * @param string $timeProperty4
      * @param string $customProperty
-     * @param ?string $nullDefaultProperty
      * @param SchemaObjectProperty $objectProperty
      * @param list<string> $arrayProperty
      * @param mixed $rawProperty
@@ -40,6 +39,7 @@ class Schema
      * @param list<SchemaObjectArrayProperty> $objectArrayProperty
      * @param list<Schema> $recursiveObjectArray
      * @param string $defaultProperty
+     * @param ?string $nullDefaultProperty
      * @param list<string> $emptyArrayDefaultProperty
      * @param string $overriddenProperty
      */
@@ -117,8 +117,6 @@ class Schema
         #[AssertCustom]
         public readonly string $customProperty,
         
-        public readonly ?string $nullDefaultProperty,
-        
         #[Assert\Valid]
         #[Assert\NotNull]
         public readonly SchemaObjectProperty $objectProperty,
@@ -146,6 +144,8 @@ class Schema
         
         #[Assert\NotNull]
         public readonly string $defaultProperty = 'abc',
+        
+        public readonly ?string $nullDefaultProperty = null,
         
         #[Assert\NotNull]
         #[Assert\All(constraints: [new Assert\Type(type: 'string'), new Assert\NotNull()])]

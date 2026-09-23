@@ -80,6 +80,29 @@ if (!\in_array($v10, ['abc', 'def', 'ghi'], true)) {
   est redondante avec la dénormalisation, qui garantit déjà le type, et sert de filet si le code
   généré était fautif.
 
+#### Correction : une propriété dont le `default` vaut `null` est enfin optionnelle dans le DTO
+
+`ModelAttribute::hasDefault()` testait `default !== null` au lieu de `hasDefault`, confondant donc
+« a une valeur par défaut » et « a une valeur par défaut non nulle ». Une propriété non requise
+déclarée `default: null` — la seule valeur pour laquelle la distinction compte — était rendue
+**obligatoire** dans le constructeur du modèle généré, alors que ses voisines ne l'étaient pas :
+
+```php
+public readonly string $defaultProperty = 'abc',           // default: 'abc'
+public readonly array $emptyArrayDefaultProperty = [],     // default: []
+public readonly ?string $nullDefaultProperty,              // default: null  <- pas de défaut
+```
+
+La désérialisation n'était pas concernée : elle lit `required` du schéma et passe tous les
+arguments nommés. Seul le code construisant un modèle à la main, typiquement les payloads de
+réponse dans les handlers, devait passer `nullDefaultProperty: null` explicitement.
+
+**Attention, l'ordre des paramètres du constructeur change.** `Model` trie les attributs en plaçant
+ceux qui ont un défaut en dernier ; la propriété corrigée passe donc du premier groupe au second.
+Le code généré n'est pas affecté (il n'utilise que des arguments nommés), mais **toute construction
+positionnelle d'un modèle concerné doit être revue** — l'arité reste la même et les types sont
+souvent compatibles, donc la casse peut être silencieuse.
+
 #### Correction : `x-apifony-raw` accepte enfin n'importe quelle valeur
 
 Un request body déclaré `x-apifony-raw` générait `(new \ReflectionClass(mixed::class))` comme

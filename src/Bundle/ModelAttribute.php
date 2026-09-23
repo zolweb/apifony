@@ -78,7 +78,7 @@ class ModelAttribute
 
     public function hasDefault(): bool
     {
-        return $this->schema->default !== null;
+        return $this->schema->hasDefault;
     }
 
     public function getRawName(): string
@@ -109,7 +109,7 @@ class ModelAttribute
             ->makeReadonly()
         ;
 
-        if ($this->schema->default !== null) {
+        if ($this->schema->hasDefault) {
             $param->setDefault($this->type->getDefaultExpr());
         }
 
