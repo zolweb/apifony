@@ -18,6 +18,13 @@ class ModelCollector
      */
     private array $models = [];
 
+    /**
+     * The specification name each generated class came from, to report a collapse.
+     *
+     * @var array<string, string>
+     */
+    private array $sources = [];
+
     private function __construct(
         private readonly ?Components $components,
         private readonly string $bundleNamespace,
@@ -74,7 +81,12 @@ class ModelCollector
             $schema = $this->components->schemas[$rawName = $schema->getName()];
         }
 
-        if (isset($this->models[$rawName])) {
+        $className = Naming::forClass($rawName);
+        if (isset($this->models[$className])) {
+            if ($this->sources[$className] !== $rawName) {
+                throw new Exception(\sprintf('Schemas \'%s\' and \'%s\' both map to the \'%s\' model.', $this->sources[$className], $rawName, $className), $schema->path);
+            }
+
             return;
         }
 
@@ -84,7 +96,8 @@ class ModelCollector
             if ($schema->extensions['x-apifony-raw'] ?? false) {
                 return;
             }
-            $this->models[$rawName] = Model::build(
+            $this->sources[$className] = $rawName;
+            $this->models[$className] = Model::build(
                 $this->bundleNamespace,
                 $this->namespace,
                 $this->folder,

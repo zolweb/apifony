@@ -82,6 +82,11 @@ class Aggregate
         $this->controller->action->registerDenormalizationModels($queryContext, $jsonContext);
     }
 
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
     public function getController(): Controller
     {
         return $this->controller;

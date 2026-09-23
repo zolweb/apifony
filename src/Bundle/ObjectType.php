@@ -88,6 +88,17 @@ class ObjectType implements Type
         return $this->name;
     }
 
+    /**
+     * Where the schema this type was built from sits in the specification. Two types carrying the
+     * same name but a different path are two different models colliding.
+     *
+     * @return list<string>
+     */
+    public function getSchemaPath(): array
+    {
+        return $this->schema->path;
+    }
+
     public function getBuiltInPhpType(): string
     {
         return $this->isRaw ? 'mixed' : 'object';

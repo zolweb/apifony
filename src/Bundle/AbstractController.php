@@ -591,13 +591,20 @@ class AbstractController implements File
             ->addStmt($f->use('Symfony\Component\Validator\Validator\ValidatorInterface'))
         ;
 
+        // Several models may share a class name while living in different namespaces, since inline
+        // model names are derived from the operation they belong to. Importing one of them here
+        // would silently bind the other's denormalizer to the wrong class.
         $modelNamespaces = [];
         foreach ($this->models as $model) {
-            $modelNamespaces[$model->getClassName()] = $model->getNamespace();
+            $modelNamespaces[$model->getClassName()][$model->getNamespace()] = true;
         }
         foreach (array_keys($usedModelNames) as $usedModelName) {
-            if (isset($modelNamespaces[$usedModelName])) {
-                $namespace->addStmt($f->use("{$modelNamespaces[$usedModelName]}\\{$usedModelName}"));
+            $namespaces = array_keys($modelNamespaces[$usedModelName] ?? []);
+            if (\count($namespaces) > 1) {
+                throw new Exception(\sprintf('Models \'%s\' and \'%s\' both map to the \'%s\' class name.', "{$namespaces[0]}\\{$usedModelName}", "{$namespaces[1]}\\{$usedModelName}", $usedModelName), ['documentation root']);
+            }
+            if (\count($namespaces) === 1) {
+                $namespace->addStmt($f->use("{$namespaces[0]}\\{$usedModelName}"));
             }
         }
 

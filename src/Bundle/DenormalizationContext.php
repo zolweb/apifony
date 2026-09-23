@@ -96,11 +96,20 @@ class DenormalizationContext
      * per model, rather than inlining the whole type tree at each use site, is what lets a
      * recursive schema produce recursive code instead of a generator that never terminates.
      */
+    /**
+     * @throws Exception
+     */
     public function registerModel(ObjectType $type): string
     {
-        $this->models[$type->getName()] = $type;
+        $name = $type->getName();
 
-        return self::getModelMethodName($type->getName(), $this->source);
+        if (isset($this->models[$name]) && $this->models[$name]->getSchemaPath() !== $type->getSchemaPath()) {
+            throw new Exception(\sprintf('Two different schemas both map to the \'%s\' model.', $name), $type->getSchemaPath());
+        }
+
+        $this->models[$name] = $type;
+
+        return self::getModelMethodName($name, $this->source);
     }
 
     public static function getModelMethodName(string $modelName, string $source): string

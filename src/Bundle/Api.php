@@ -23,6 +23,7 @@ class Api
         array $componentModels,
     ): self {
         $aggregates = [];
+        $operationIds = [];
         foreach ($openApi->paths->pathItems ?? [] as $route => $pathItem) {
             foreach ($pathItem->operations as $method => $operation) {
                 if (\array_key_exists('x-apifony-ignore', $operation->extensions)) {
@@ -34,7 +35,7 @@ class Api
                     }
                 }
 
-                $aggregates[] = Aggregate::build(
+                $aggregate = Aggregate::build(
                     $bundleNamespace,
                     $bundleName,
                     $route,
@@ -42,6 +43,11 @@ class Api
                     $operation,
                     $openApi->components,
                 );
+                if (isset($operationIds[$aggregate->getName()])) {
+                    throw new Exception(\sprintf('Operations \'%s\' and \'%s\' both map to the \'%s\' aggregate.', $operationIds[$aggregate->getName()], $operation->operationId, $aggregate->getName()), $operation->path);
+                }
+                $operationIds[$aggregate->getName()] = $operation->operationId;
+                $aggregates[] = $aggregate;
             }
         }
 
