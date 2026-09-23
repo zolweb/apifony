@@ -284,19 +284,3 @@ handler changent).
 - `Type::getRequestBodyPayloadTypeCheckingAst()` est retirée de l'interface et de ses six
   implémentations : elle n'était appelée que par sa propre récursion dans `ArrayType`, sans aucun
   point d'entrée.
-
-## 10.0
-
-### 10.0.0
-
-> Numérotation héritée d'avant le renommage en apifony. Ces changements ont été publiés dans le tag
-> `v1.0.0`, premier tag du projet sous son nom actuel.
-
-**Breaking change majeur dans cette nouvelle version.**
-
-Avant cette version, il était possible de deserialize d'un type vers un autre.
-Par exemple, si l'API attendait un int mais qu'une string était reçue dans le JSON, une conversion silencieuse était faite.
-Avec cette nouvelle version, le résultat sera maintenant une erreur 400 de validation.
-Concrètement, Apifony force maintenant un typage correct dans le JSON en configurant ObjectNormalizer::DISABLE_TYPE_ENFORCEMENT à **FALSE**.
-
-cf. https://symfony.com/doc/current/serializer.html#recursive-denormalization-and-type-safety
