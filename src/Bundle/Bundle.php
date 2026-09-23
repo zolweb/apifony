@@ -39,6 +39,8 @@ class Bundle implements File
         string $namespace,
         OpenApi $openApi,
     ): self {
+        Naming::assertIdentifier(Naming::forClass($rawName), \sprintf('Bundle name \'%s\'', $rawName), ['documentation root']);
+
         return new self(
             $name = Naming::forClass($rawName),
             $namespace,

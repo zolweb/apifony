@@ -16,6 +16,26 @@ use function Symfony\Component\String\u;
 class Naming
 {
     /**
+     * PHP allows bytes >= 0x80 in identifiers, so an accented name is fine; a leading digit is not.
+     */
+    private const IDENTIFIER_PATTERN = '/^[A-Za-z_\x80-\xFF][A-Za-z0-9_\x80-\xFF]*$/';
+
+    /**
+     * Guards the names that reach PHP as identifiers. The conversion cannot fix every input: a name
+     * made only of punctuation comes out empty, and one starting with a digit stays that way.
+     *
+     * @param list<string> $path
+     *
+     * @throws Exception
+     */
+    public static function assertIdentifier(string $identifier, string $subject, array $path): void
+    {
+        if (preg_match(self::IDENTIFIER_PATTERN, $identifier) !== 1) {
+            throw new Exception(\sprintf('%s produces \'%s\', which is not a valid PHP identifier.', $subject, $identifier), $path);
+        }
+    }
+
+    /**
      * A PascalCase class name.
      */
     public static function forClass(string $name): string

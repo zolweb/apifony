@@ -14,12 +14,16 @@ use PhpParser\Node\Stmt\Use_;
 
 class Format
 {
+    /**
+     * @throws Exception
+     */
     public static function build(
         string $bundleNamespace,
         string $bundleName,
         string $rawName,
     ): self {
         $name = Naming::forClass($rawName);
+        Naming::assertIdentifier($name, \sprintf('Format \'%s\'', $rawName), ['documentation root']);
 
         $validator = match ($rawName) {
             'email' => EmailValidator::build($bundleNamespace),

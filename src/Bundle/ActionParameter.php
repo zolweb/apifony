@@ -56,6 +56,11 @@ class ActionParameter
             throw new Exception('Parameter objects without schema attribute are not supported.', $parameter->path);
         }
 
+        if ($parameter->in === 'path') {
+            // The router injects a path parameter into the controller by name, so the raw name is
+            // used as the PHP parameter and cannot be normalized away.
+            Naming::assertIdentifier($parameter->name, \sprintf('Path parameter \'%s\'', $parameter->name), $parameter->path);
+        }
         $variableName = \sprintf('%s%s', $parameter->in[0], Naming::forClass($parameter->name));
         $className = "{$actionClassName}_{$parameter->name}";
 

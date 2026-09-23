@@ -127,6 +127,42 @@ Un body `[1, "two", false]` ou `"une chaîne"` est donc accepté sur un schéma 
 objet passait. La fixture couvre maintenant les trois emplacements, avec une seconde opération
 dédiée.
 
+#### Les noms de la spec qui ne peuvent pas devenir un identifiant PHP sont rejetés
+
+Transformer un nom de la spécification en identifiant PHP supprime tout ce qui n'est ni lettre ni
+chiffre. Rien ne vérifiait le résultat, et l'échec était silencieux : le générateur écrasait sa
+propre sortie et annonçait un succès. Mesuré sur des spécifications valides, avant correction :
+
+| Spécification | Résultat |
+|---|---|
+| `operationId` `getUser` et `get_user` | un seul agrégat, un seul handler, **une seule route** — l'autre endpoint absent du bundle |
+| schémas `User` et `user` | un seul `User.php`, contenant le second ; un `$ref` vers le premier liait le mauvais modèle |
+| formats `date-time` et `dateTime` | classes mutuellement écrasées |
+| path param `user-id` | `function op(..., string $user-id)` — **erreur de parsing PHP** |
+| `operationId: 2fa` | `function 2fa()` — **erreur de parsing PHP** |
+
+Les conversions sont désormais regroupées dans une classe `Naming` unique, et deux familles de
+contrôles s'appuient dessus.
+
+**Collisions** — quatre portées sont gardées : noms d'agrégats, noms de classes de modèles, registre
+des dénormaliseurs, et, en filet sous l'ensemble, le chemin de chaque fichier sur le point d'être
+écrit. Chaque message nomme les deux coupables :
+
+```
+[ERROR] Operations 'getUser' and 'get_user' both map to the 'GetUser' aggregate.
+[ERROR] Schemas 'User' and 'user' both map to the 'User' model.
+[ERROR] Two generated files would be written to 'src/Format/DateTime.php'.
+```
+
+**Validité** — un nom qui produirait un identifiant PHP invalide est refusé, avec sa localisation
+dans la spécification : `operationId`, nom de schéma, nom de format, nom de bundle, et nom de path
+parameter. Ce dernier est le seul nom utilisé tel quel par PHP, le routeur l'injectant dans le
+contrôleur par son nom, ce qui interdit de le normaliser.
+
+Le contrôle porte uniquement sur ce qui empêcherait le code de compiler. **Les noms comportant des
+tirets restent acceptés partout ailleurs** — `X-Api-Key` en en-tête continue de fonctionner — et
+l'unicode aussi : `café` donne `$qCafé`, que PHP accepte.
+
 #### Nettoyage du code mort
 
 - Les huit lecteurs `get{String,Int,Float,Bool}{,OrNull}RequestBody` ne sont plus générés. Ils

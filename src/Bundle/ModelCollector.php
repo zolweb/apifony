@@ -82,6 +82,7 @@ class ModelCollector
         }
 
         $className = Naming::forClass($rawName);
+        Naming::assertIdentifier($className, \sprintf('Schema \'%s\'', $rawName), $schema->path);
         if (isset($this->models[$className])) {
             if ($this->sources[$className] !== $rawName) {
                 throw new Exception(\sprintf('Schemas \'%s\' and \'%s\' both map to the \'%s\' model.', $this->sources[$className], $rawName, $className), $schema->path);
