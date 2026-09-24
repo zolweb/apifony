@@ -12,7 +12,9 @@ use Zol\Apifony\Tests\TestOpenApiServer\Api\FirstOperation\FirstOperationHandler
 use Zol\Apifony\Tests\TestOpenApiServer\Api\RawOperation\RawOperationHandler;
 use Zol\Apifony\Tests\TestOpenApiServer\Api\RawShapesOperation\RawShapesOperationHandler;
 use Zol\Apifony\Tests\TestOpenApiServer\Api\ComponentRefOperation\ComponentRefOperationHandler;
+use Zol\Apifony\Tests\TestOpenApiServer\Api\ComponentBucketOperation\ComponentBucketOperationHandler;
 use Zol\Apifony\Tests\TestOpenApiServer\Format\CustomDefinition;
+use Zol\Apifony\Tests\TestOpenApiServer\Format\IgnoredFormatDefinition;
 class TestOpenApiServerBundle extends AbstractBundle
 {
     public function build(ContainerBuilder $container): void
@@ -22,7 +24,9 @@ class TestOpenApiServerBundle extends AbstractBundle
         $container->registerForAutoconfiguration(RawOperationHandler::class)->addTag('test_open_api_server.handler', ['controller' => 'raw_operation']);
         $container->registerForAutoconfiguration(RawShapesOperationHandler::class)->addTag('test_open_api_server.handler', ['controller' => 'raw_shapes_operation']);
         $container->registerForAutoconfiguration(ComponentRefOperationHandler::class)->addTag('test_open_api_server.handler', ['controller' => 'component_ref_operation']);
+        $container->registerForAutoconfiguration(ComponentBucketOperationHandler::class)->addTag('test_open_api_server.handler', ['controller' => 'component_bucket_operation']);
         $container->registerForAutoconfiguration(CustomDefinition::class)->addTag('test_open_api_server.format_definition', ['format' => 'custom']);
+        $container->registerForAutoconfiguration(IgnoredFormatDefinition::class)->addTag('test_open_api_server.format_definition', ['format' => 'ignored-format']);
         $container->addCompilerPass(new class implements CompilerPassInterface
         {
             public function process(ContainerBuilder $container): void
@@ -44,6 +48,9 @@ class TestOpenApiServerBundle extends AbstractBundle
                                 break;
                             case 'component_ref_operation':
                                 $container->findDefinition('Zol\Apifony\Tests\TestOpenApiServer\Api\ComponentRefOperation\ComponentRefOperationController')->addMethodCall('setHandler', [new Reference($id)]);
+                                break;
+                            case 'component_bucket_operation':
+                                $container->findDefinition('Zol\Apifony\Tests\TestOpenApiServer\Api\ComponentBucketOperation\ComponentBucketOperationController')->addMethodCall('setHandler', [new Reference($id)]);
                                 break;
                         }
                     }
@@ -71,6 +78,9 @@ class TestOpenApiServerBundle extends AbstractBundle
                                 break;
                             case 'custom':
                                 $container->findDefinition('Zol\Apifony\Tests\TestOpenApiServer\Format\CustomValidator')->addMethodCall('setFormatDefinition', [new Reference($id)]);
+                                break;
+                            case 'ignored-format':
+                                $container->findDefinition('Zol\Apifony\Tests\TestOpenApiServer\Format\IgnoredFormatValidator')->addMethodCall('setFormatDefinition', [new Reference($id)]);
                                 break;
                         }
                     }

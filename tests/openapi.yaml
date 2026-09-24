@@ -35,6 +35,7 @@ paths:
                 properties:
                   message:
                     type: string
+                    format: 'ignored-format'
                 required: ['message']
       x-apifony-ignore: true
     post:
@@ -397,6 +398,22 @@ paths:
                     $ref: '#/components/schemas/AbcList'
                 required: ['stringListEcho', 'abcListEcho']
 
+  /component-buckets/{bucketPathParam}:
+    parameters:
+      - $ref: '#/components/parameters/BucketPathParam'
+    post:
+      tags:
+        - 'tag'
+      operationId: 'componentBucketOperation'
+      parameters:
+        - $ref: '#/components/parameters/BucketPathParam'
+        - $ref: '#/components/parameters/BucketQueryParam'
+      requestBody:
+        $ref: '#/components/requestBodies/BucketRequestBody'
+      responses:
+        200:
+          $ref: '#/components/responses/BucketResponse'
+
 components:
   schemas:
     Schema:
@@ -569,3 +586,43 @@ components:
             $ref: '#/components/schemas/Node'
           default: []
       required: ['name']
+    BucketHeaderValue:
+      type: 'string'
+
+  parameters:
+    BucketPathParam:
+      name: 'bucketPathParam'
+      in: 'path'
+      required: true
+      schema:
+        type: 'string'
+    BucketQueryParam:
+      name: 'bucketQueryParam'
+      in: 'query'
+      required: true
+      schema:
+        $ref: '#/components/schemas/Abc'
+  requestBodies:
+    BucketRequestBody:
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Abc'
+  responses:
+    BucketResponse:
+      headers:
+        bucketRefHeader:
+          $ref: '#/components/headers/BucketHeader'
+        bucketRefSchemaHeader:
+          required: true
+          schema:
+            $ref: '#/components/schemas/BucketHeaderValue'
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Abc'
+  headers:
+    BucketHeader:
+      required: true
+      schema:
+        type: 'string'

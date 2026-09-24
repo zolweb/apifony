@@ -19,3 +19,9 @@ zol_apifony_tests_test_open_api_server_component_ref_operation:
     path: /component-refs
     methods: get
     controller: 'Zol\Apifony\Tests\TestOpenApiServer\Api\ComponentRefOperation\ComponentRefOperationController::componentRefOperation'
+zol_apifony_tests_test_open_api_server_component_bucket_operation:
+    path: '/component-buckets/{bucketPathParam}'
+    methods: post
+    controller: 'Zol\Apifony\Tests\TestOpenApiServer\Api\ComponentBucketOperation\ComponentBucketOperationController::componentBucketOperation'
+    requirements:
+        bucketPathParam: '[^:/?\x{0023}[\]@!$&''''()*+,;=]+'

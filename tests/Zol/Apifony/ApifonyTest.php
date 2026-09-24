@@ -455,6 +455,35 @@ final class ApifonyTest extends WebTestCase
      * Denormalization failures of array and object query parameters must land in the
      * validation_failed envelope, never escape as a framework BadRequestException.
      */
+    /**
+     * An operation whose parameters, request body, response and one response header are all
+     * written as references into the components buckets other than schemas. Those four buckets
+     * were entirely absent from this fixture, so every resolution site reading them ran
+     * unexercised.
+     *
+     * The path parameter is referenced twice, from the path item list and from the operation
+     * list, which is what makes the merge keyed on "{in}:{name}" observable: the handler takes it
+     * once.
+     */
+    public function testJ(): void
+    {
+        $httpClient = self::createClient();
+        $httpClient->catchExceptions(false);
+        $httpClient->jsonRequest(
+            method: 'POST',
+            uri: '/component-buckets/onpath?bucketQueryParam[def]=onquery',
+            parameters: ['def' => 'onbody'],
+        );
+
+        self::assertResponseStatusCodeSame(200);
+        self::assertSame(
+            ['def' => 'onpath|onquery|onbody'],
+            json_decode((string) $httpClient->getResponse()->getContent(), true),
+        );
+        self::assertSame('onpath', $httpClient->getResponse()->headers->get('bucketRefHeader'));
+        self::assertSame('onquery', $httpClient->getResponse()->headers->get('bucketRefSchemaHeader'));
+    }
+
     public function testC(): void
     {
         $httpClient = self::createClientForQuery(

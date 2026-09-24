@@ -664,6 +664,16 @@ abstract class AbstractController
     /**
      * @throws DenormalizationException
      */
+    public function denormalizeAbcJsonValue(mixed $value, string $path): Abc
+    {
+        $v0 = $this->denormalizeMapJson($value, $path);
+        $v1 = $this->appendPath($path, 'def');
+        $v2 = $this->denormalizeStringJson($this->getRequiredJsonProperty($v0, 'def', $v1), $v1);
+        return new Abc(def: $v2);
+    }
+    /**
+     * @throws DenormalizationException
+     */
     public function denormalizeSchemaObjectPropertyJsonValue(mixed $value, string $path): SchemaObjectProperty
     {
         $v0 = $this->denormalizeMapJson($value, $path);
