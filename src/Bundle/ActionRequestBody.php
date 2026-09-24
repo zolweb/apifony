@@ -96,15 +96,16 @@ class ActionRequestBody
     }
 
     /**
-     * Populates the registry with the model this request body denormalizes.
+     * The model this request body is denormalized into, if any: a raw payload is handed over
+     * untouched and needs none.
+     *
+     * @return list<ObjectType>
      *
      * @throws Exception
      */
-    public function registerDenormalizationModels(DenormalizationContext $context): void
+    public function getDenormalizationRootModels(): array
     {
-        if ($this->payloadType instanceof ObjectType) {
-            $context->registerModel($this->payloadType);
-        }
+        return $this->payloadType->getDenormalizationRootModels();
     }
 
     /**

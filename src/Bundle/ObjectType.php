@@ -168,11 +168,36 @@ class ObjectType implements Type
         return false;
     }
 
+    public function getDenormalizationRootModels(): array
+    {
+        return [$this];
+    }
+
+    /**
+     * The models this one's own attributes are denormalized into, in the order the attributes are
+     * emitted, which is the order the denormalizer method reaches them in.
+     *
+     * @return list<ObjectType>
+     *
+     * @throws Exception
+     */
+    public function getDenormalizationChildModels(): array
+    {
+        $models = [];
+        foreach ($this->getAttributes() as $attribute) {
+            foreach ($attribute->getType()->getDenormalizationRootModels() as $model) {
+                $models[] = $model;
+            }
+        }
+
+        return $models;
+    }
+
     public function getParameterDenormalizationStmts(Expr $source, Expr $target, Expr $path, DenormalizationContext $context): array
     {
         $f = new BuilderFactory();
 
-        $method = $context->registerModel($this);
+        $method = DenormalizationContext::getModelMethodName($this->name, $context->getSource());
 
         return $context->wrapNullable($this->nullable, $source, $target, static fn (Expr $value): array => [
             new Expression(new Assign($target, $f->methodCall($f->var('this'), $method, [$value, $path]))),

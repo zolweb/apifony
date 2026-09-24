@@ -543,26 +543,39 @@ class AbstractController implements File
 
         // One denormalizer per model and per source, emitted on the controller every action extends,
         // so that a model shared by several operations is rendered once for the whole bundle.
-        $queryContext = new DenormalizationContext(DenormalizationContext::SOURCE_QUERY);
-        $jsonContext = new DenormalizationContext(DenormalizationContext::SOURCE_JSON);
-        foreach ($this->aggregates as $aggregate) {
-            $aggregate->registerDenormalizationModels($queryContext, $jsonContext);
-        }
-
+        //
+        // The models are walked breadth first, one whole generation at a time: every model an
+        // action denormalizes directly, then everything those reference, and so on. Taking them
+        // depth first would emit the same set of methods in a different order.
         $usedModelNames = [];
-        foreach ([$queryContext, $jsonContext] as $context) {
-            // Emitting a model registers the models it uses in turn, so drain until it settles.
-            $emittedModelNames = [];
-            while (true) {
-                $pendingModels = array_diff_key($context->getModels(), $emittedModelNames);
-                if (\count($pendingModels) === 0) {
-                    break;
+        foreach ([DenormalizationContext::SOURCE_QUERY, DenormalizationContext::SOURCE_JSON] as $source) {
+            $context = new DenormalizationContext($source);
+
+            $batch = [];
+            foreach ($this->aggregates as $aggregate) {
+                foreach ($aggregate->getDenormalizationRootModels($source) as $model) {
+                    $context->registerModel($model);
+                    $batch[$model->getName()] = $model;
                 }
-                foreach ($pendingModels as $modelName => $model) {
+            }
+
+            $emittedModelNames = [];
+            while (\count($batch) > 0) {
+                $next = [];
+                foreach ($batch as $modelName => $model) {
+                    if (isset($emittedModelNames[$modelName])) {
+                        continue;
+                    }
                     $emittedModelNames[$modelName] = true;
                     $usedModelNames[$modelName] = true;
                     $class->addStmt($model->getModelDenormalizerMethod($context));
+
+                    foreach ($model->getDenormalizationChildModels() as $child) {
+                        $context->registerModel($child);
+                        $next[$child->getName()] = $child;
+                    }
                 }
+                $batch = $next;
             }
         }
 

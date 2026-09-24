@@ -191,6 +191,11 @@ class ArrayType implements Type
         return $this->itemType->getUsedModelNames();
     }
 
+    public function getDenormalizationRootModels(): array
+    {
+        return $this->itemType->getDenormalizationRootModels();
+    }
+
     public function getParameterDenormalizationStmts(Expr $source, Expr $target, Expr $path, DenormalizationContext $context): array
     {
         $f = new BuilderFactory();

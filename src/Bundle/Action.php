@@ -267,18 +267,28 @@ class Action
     }
 
     /**
-     * Populates the registries with every model this action denormalizes, so that the
-     * AbstractController can emit one method per model for the whole bundle.
+     * The models this action denormalizes at depth zero, for one source: its parameters read a
+     * query string, its request body reads a JSON document. Whatever those models reference in
+     * turn is reached from them, not from here.
+     *
+     * @return list<ObjectType>
      *
      * @throws Exception
      */
-    public function registerDenormalizationModels(DenormalizationContext $queryContext, DenormalizationContext $jsonContext): void
+    public function getDenormalizationRootModels(string $source): array
     {
-        foreach ($this->parameters as $parameter) {
-            $parameter->registerDenormalizationModels($queryContext);
+        if ($source === DenormalizationContext::SOURCE_JSON) {
+            return $this->requestBody?->getDenormalizationRootModels() ?? [];
         }
 
-        $this->requestBody?->registerDenormalizationModels($jsonContext);
+        $models = [];
+        foreach ($this->parameters as $parameter) {
+            foreach ($parameter->getDenormalizationRootModels() as $model) {
+                $models[] = $model;
+            }
+        }
+
+        return $models;
     }
 
     /**

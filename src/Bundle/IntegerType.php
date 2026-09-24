@@ -150,6 +150,11 @@ class IntegerType implements Type
         return false;
     }
 
+    public function getDenormalizationRootModels(): array
+    {
+        return [];
+    }
+
     public function getParameterDenormalizationStmts(Expr $source, Expr $target, Expr $path, DenormalizationContext $context): array
     {
         $f = new BuilderFactory();

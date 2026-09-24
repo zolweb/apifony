@@ -75,9 +75,14 @@ class Aggregate
     /**
      * @throws Exception
      */
-    public function registerDenormalizationModels(DenormalizationContext $queryContext, DenormalizationContext $jsonContext): void
+    /**
+     * @return list<ObjectType>
+     *
+     * @throws Exception
+     */
+    public function getDenormalizationRootModels(string $source): array
     {
-        $this->controller->action->registerDenormalizationModels($queryContext, $jsonContext);
+        return $this->controller->action->getDenormalizationRootModels($source);
     }
 
     public function getName(): string

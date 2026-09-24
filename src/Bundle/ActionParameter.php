@@ -341,19 +341,16 @@ class ActionParameter
     }
 
     /**
-     * Populates the registry with the models this parameter needs, without keeping the statements:
-     * they are emitted by getDenormalizerMethod, the models by the AbstractController.
+     * The models this parameter is denormalized into, which the AbstractController emits a method
+     * for. A scalar parameter goes through the fixed readers and needs none.
+     *
+     * @return list<ObjectType>
      *
      * @throws Exception
      */
-    public function registerDenormalizationModels(DenormalizationContext $context): void
+    public function getDenormalizationRootModels(): array
     {
-        if (!$this->isComplex()) {
-            return;
-        }
-
-        $f = new BuilderFactory();
-        $this->type->getParameterDenormalizationStmts($f->var('value'), $f->var('target'), $f->var('path'), $context);
+        return $this->type->getDenormalizationRootModels();
     }
 
     private function isComplex(): bool

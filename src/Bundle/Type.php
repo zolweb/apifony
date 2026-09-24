@@ -47,6 +47,17 @@ interface Type
     public function hasInformativeDocType(): bool;
 
     /**
+     * The models a value of this type is denormalized into directly, before any of their own
+     * attributes are considered: exactly what generating the statements for this type needs a
+     * method to exist for. An array hands back its item type's, a scalar and a raw hand back none.
+     *
+     * @return list<ObjectType>
+     *
+     * @throws Exception
+     */
+    public function getDenormalizationRootModels(): array;
+
+    /**
      * Statements converting the $source expression, as read from a query string, into a value of
      * this type assigned to $target.
      *

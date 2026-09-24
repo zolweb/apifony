@@ -91,6 +91,11 @@ class RawType implements Type
         return false;
     }
 
+    public function getDenormalizationRootModels(): array
+    {
+        return [];
+    }
+
     /**
      * Checking the shape of a raw value would defeat the point of declaring it raw.
      */

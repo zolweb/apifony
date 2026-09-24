@@ -81,14 +81,13 @@ class DenormalizationContext
     }
 
     /**
-     * Registers a model and returns the name of the method denormalizing it. Emitting one method
-     * per model, rather than inlining the whole type tree at each use site, is what lets a
-     * recursive schema produce recursive code instead of a generator that never terminates.
-     */
-    /**
+     * Records that a model is denormalized for this source, so that two schemas collapsing onto one
+     * model name are caught rather than silently binding the second one's denormalizer to the
+     * first. The name alone cannot tell them apart, so the specification location does.
+     *
      * @throws Exception
      */
-    public function registerModel(ObjectType $type): string
+    public function registerModel(ObjectType $type): void
     {
         $name = $type->getName();
 
@@ -97,20 +96,15 @@ class DenormalizationContext
         }
 
         $this->models[$name] = $type;
-
-        return self::getModelMethodName($name, $this->source);
-    }
-
-    public static function getModelMethodName(string $modelName, string $source): string
-    {
-        return \sprintf('denormalize%s%sValue', $modelName, $source);
     }
 
     /**
-     * @return array<string, ObjectType>
+     * Emitting one method per model, rather than inlining the whole type tree at each use site, is
+     * what lets a recursive schema produce recursive code instead of a generator that never
+     * terminates.
      */
-    public function getModels(): array
+    public static function getModelMethodName(string $modelName, string $source): string
     {
-        return $this->models;
+        return \sprintf('denormalize%s%sValue', $modelName, $source);
     }
 }
