@@ -12,10 +12,8 @@ use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\DeclareDeclare;
 use PhpParser\Node\Stmt\Return_;
 use PhpParser\PrettyPrinter\Standard;
-use Zol\Apifony\OpenApi\Components;
-use Zol\Apifony\OpenApi\Reference;
-use Zol\Apifony\OpenApi\Response;
-use Zol\Apifony\OpenApi\Schema;
+use Zol\Apifony\Resolved\Response;
+use Zol\Apifony\Resolved\SchemaRef;
 
 class ActionResponse implements File
 {
@@ -28,8 +26,7 @@ class ActionResponse implements File
         string $actionName,
         int $code,
         Response $response,
-        Reference|Schema|null $payload,
-        ?Components $components,
+        ?SchemaRef $payload,
     ): self {
         $className = Naming::forClass(\sprintf('%s_%s_ResponsePayload', $actionName, $code));
 
@@ -38,26 +35,22 @@ class ActionResponse implements File
         $usedModelName = null;
         $isReference = false;
         if ($payload !== null) {
-            $schema = $payload;
-            $hasModel = true;
-            if ($schema instanceof Reference) {
-                if ($components === null || !isset($components->schemas[$schema->getName()])) {
-                    throw new Exception('Reference not found in schemas components.', $schema->path);
-                }
-                $schema = $components->schemas[$className = $schema->getName()];
-                $isReference = true;
-                $hasModel = false;
+            $isReference = $payload->isReference;
+            $hasModel = !$isReference;
+            if ($isReference) {
+                $className = (string) $payload->getComponentName();
             }
+            $schema = $payload->getTarget();
             $className = Naming::forClass($className);
-            $payloadType = TypeFactory::build($className, $schema, $components);
+            $payloadType = TypeFactory::build($className, $schema);
             if (!$payloadType instanceof ObjectType && !$payloadType instanceof RawType) {
                 throw new Exception('Only object and raw schemas are supported for responses.', $schema->path);
             }
             $usedModelName = $isReference && ModelCollector::producesModel($payloadType) ? $className : null;
 
             if ($hasModel) {
-                $collector = ModelCollector::forAggregate($bundleNamespace, $aggregateName, $components);
-                $collector->collect($className, $schema);
+                $collector = ModelCollector::forAggregate($bundleNamespace, $aggregateName);
+                $collector->collect($className, $payload);
                 $payloadModels = $collector->getModels();
             }
         }
@@ -69,7 +62,7 @@ class ActionResponse implements File
             $code,
             $payloadType,
             array_map(
-                static fn (string $name) => ActionResponseHeader::build($name, $response->headers[$name], $components),
+                static fn (string $name) => ActionResponseHeader::build($name, $response->headers[$name]),
                 array_keys($response->headers),
             ),
             $payloadModels,

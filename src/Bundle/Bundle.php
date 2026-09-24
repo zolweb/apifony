@@ -19,19 +19,19 @@ use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\If_;
 use PhpParser\Node\Stmt\Switch_;
 use PhpParser\PrettyPrinter\Standard;
-use Zol\Apifony\OpenApi\Components;
-use Zol\Apifony\OpenApi\Header;
+use Zol\Apifony\OpenApi\Exception as OpenApiException;
 use Zol\Apifony\OpenApi\OpenApi;
-use Zol\Apifony\OpenApi\Parameter;
-use Zol\Apifony\OpenApi\Reference;
-use Zol\Apifony\OpenApi\RequestBody;
-use Zol\Apifony\OpenApi\Response;
-use Zol\Apifony\OpenApi\Schema;
+use Zol\Apifony\Resolved\Components;
+use Zol\Apifony\Resolved\Document;
+use Zol\Apifony\Resolved\Resolver;
+use Zol\Apifony\Resolved\Schema;
+use Zol\Apifony\Resolved\SchemaRef;
 
 class Bundle implements File
 {
     /**
      * @throws Exception
+     * @throws OpenApiException
      */
     public static function build(
         string $rawName,
@@ -41,12 +41,14 @@ class Bundle implements File
     ): self {
         Naming::assertIdentifier(Naming::forClass($rawName), \sprintf('Bundle name \'%s\'', $rawName), ['documentation root']);
 
+        $document = Resolver::resolve($openApi);
+
         return new self(
             $name = Naming::forClass($rawName),
             $namespace,
-            $formats = self::buildFormats($namespace, $name, $openApi),
-            $models = self::buildModels($namespace, $openApi->components),
-            $api = Api::build($namespace, $name, $openApi, $models),
+            $formats = self::buildFormats($namespace, $name, $document),
+            $models = self::buildModels($namespace, $document->components),
+            $api = Api::build($namespace, $name, $document, $models),
             RoutesConfig::build($namespace, $api),
             ServicesConfig::build($namespace, $api, $formats),
             new ComposerJson($packageName, $namespace),
@@ -106,34 +108,40 @@ class Bundle implements File
      *
      * @throws Exception
      */
-    private static function buildFormats(string $namespace, string $name, OpenApi $openApi): array
+    private static function buildFormats(string $namespace, string $name, Document $document): array
     {
         $rawFormatNames = [];
 
-        $addSchemaFormats = static function (Reference|Schema $schema) use (&$addSchemaFormats, &$rawFormatNames): void {
-            if ($schema instanceof Schema) {
-                if ($schema->format !== null) {
-                    $rawFormatNames[$schema->format] = null;
-                }
-                foreach ($schema->properties as $property) {
-                    $addSchemaFormats($property);
-                }
-                if ($schema->items !== null) {
-                    $addSchemaFormats($schema->items);
-                }
+        // A slot written as a reference is skipped rather than followed. Nothing is lost: the
+        // components buckets are walked in full below, so every target is reached there, and
+        // skipping is what keeps the walk from going round a recursive schema forever.
+        $addSchemaFormats = static function (SchemaRef $ref) use (&$addSchemaFormats, &$rawFormatNames): void {
+            if ($ref->isReference) {
+                return;
+            }
+
+            $schema = $ref->getTarget();
+            if ($schema->format !== null) {
+                $rawFormatNames[$schema->format] = null;
+            }
+            foreach ($schema->properties as $property) {
+                $addSchemaFormats($property);
+            }
+            if ($schema->items !== null) {
+                $addSchemaFormats($schema->items);
             }
         };
 
-        foreach ($openApi->components->schemas ?? [] as $schema) {
-            $addSchemaFormats($schema);
+        foreach ($document->components->schemas ?? [] as $schema) {
+            $addSchemaFormats(SchemaRef::inline($schema));
         }
-        foreach ($openApi->components->parameters ?? [] as $parameter) {
+        foreach ($document->components->parameters ?? [] as $parameter) {
             if ($parameter->schema === null) {
                 throw new Exception('Parameter objects without schema are not supported.', $parameter->path);
             }
             $addSchemaFormats($parameter->schema);
         }
-        foreach ($openApi->components->requestBodies ?? [] as $requestBody) {
+        foreach ($document->components->requestBodies ?? [] as $requestBody) {
             foreach ($requestBody->content as $mediaType) {
                 if ($mediaType->schema === null) {
                     throw new Exception('Mediatype objects without schema are not supported.', $mediaType->path);
@@ -141,14 +149,12 @@ class Bundle implements File
                 $addSchemaFormats($mediaType->schema);
             }
         }
-        foreach ($openApi->components->responses ?? [] as $response) {
+        foreach ($document->components->responses ?? [] as $response) {
             foreach ($response->headers as $header) {
-                if ($header instanceof Header) {
-                    if ($header->schema === null) {
-                        throw new Exception('Header objects without schema are not supported.', $header->path);
-                    }
-                    $addSchemaFormats($header->schema);
+                if ($header->schema === null) {
+                    throw new Exception('Header objects without schema are not supported.', $header->path);
                 }
+                $addSchemaFormats($header->schema);
             }
             foreach ($response->content as $mediaType) {
                 if ($mediaType->schema === null) {
@@ -157,20 +163,18 @@ class Bundle implements File
                 $addSchemaFormats($mediaType->schema);
             }
         }
-        foreach ($openApi->components->headers ?? [] as $header) {
+        foreach ($document->components->headers ?? [] as $header) {
             if ($header->schema === null) {
                 throw new Exception('Header objects without schema are not supported.', $header->path);
             }
             $addSchemaFormats($header->schema);
         }
-        foreach ($openApi?->paths->pathItems ?? [] as $pathItem) {
+        foreach ($document->paths->pathItems ?? [] as $pathItem) {
             foreach ($pathItem->parameters as $parameter) {
-                if ($parameter instanceof Parameter) {
-                    if ($parameter->schema === null) {
-                        throw new Exception('Parameter objects without schema are not supported.', $parameter->path);
-                    }
-                    $addSchemaFormats($parameter->schema);
+                if ($parameter->schema === null) {
+                    throw new Exception('Parameter objects without schema are not supported.', $parameter->path);
                 }
+                $addSchemaFormats($parameter->schema);
             }
             foreach ($pathItem->operations as $operation) {
                 foreach ($operation->parameters as $parameter) {
@@ -179,7 +183,7 @@ class Bundle implements File
                     }
                     $addSchemaFormats($parameter->schema);
                 }
-                if ($operation->requestBody instanceof RequestBody) {
+                if ($operation->requestBody !== null) {
                     foreach ($operation->requestBody->content as $mediaType) {
                         if ($mediaType->schema === null) {
                             throw new Exception('MediaType objects without schema are not supported.', $mediaType->path);
@@ -187,22 +191,18 @@ class Bundle implements File
                         $addSchemaFormats($mediaType->schema);
                     }
                 }
-                foreach ($operation?->responses->responses ?? [] as $response) {
-                    if ($response instanceof Response) {
-                        foreach ($response->headers as $header) {
-                            if ($header instanceof Header) {
-                                if ($header->schema === null) {
-                                    throw new Exception('Header objects without schema are not supported.', $header->path);
-                                }
-                                $addSchemaFormats($header->schema);
-                            }
+                foreach ($operation->responses->responses ?? [] as $response) {
+                    foreach ($response->headers as $header) {
+                        if ($header->schema === null) {
+                            throw new Exception('Header objects without schema are not supported.', $header->path);
                         }
-                        foreach ($response->content as $mediaType) {
-                            if ($mediaType->schema === null) {
-                                throw new Exception('Mediatype objects without schema are not supported.', $mediaType->path);
-                            }
-                            $addSchemaFormats($mediaType->schema);
+                        $addSchemaFormats($header->schema);
+                    }
+                    foreach ($response->content as $mediaType) {
+                        if ($mediaType->schema === null) {
+                            throw new Exception('Mediatype objects without schema are not supported.', $mediaType->path);
                         }
+                        $addSchemaFormats($mediaType->schema);
                     }
                 }
             }
@@ -223,10 +223,10 @@ class Bundle implements File
      */
     private static function buildModels(string $namespace, ?Components $components): array
     {
-        $collector = ModelCollector::forComponents($namespace, $components);
+        $collector = ModelCollector::forComponents($namespace);
 
         foreach ($components->schemas ?? [] as $rawName => $schema) {
-            $collector->collect($rawName, $schema);
+            $collector->collect($rawName, SchemaRef::inline($schema));
         }
 
         return $collector->getModels();

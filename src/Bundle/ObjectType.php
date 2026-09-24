@@ -19,8 +19,7 @@ use PhpParser\Node\Stmt\Return_;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
-use Zol\Apifony\OpenApi\Components;
-use Zol\Apifony\OpenApi\Schema;
+use Zol\Apifony\Resolved\Schema;
 
 class ObjectType implements Type
 {
@@ -33,7 +32,6 @@ class ObjectType implements Type
         private readonly Schema $schema,
         private readonly bool $nullable,
         private readonly string $name,
-        private readonly ?Components $components = null,
     ) {
     }
 
@@ -111,8 +109,9 @@ class ObjectType implements Type
     }
 
     /**
-     * The attributes of the model this type is rendered as. Built lazily: building them eagerly in
-     * the constructor would make a recursive schema loop forever.
+     * The attributes of the model this type is rendered as. Built lazily: the resolved schema graph
+     * is cyclic wherever the specification is, so building them in the constructor would loop
+     * forever.
      *
      * @return list<ModelAttribute>
      *
@@ -128,7 +127,6 @@ class ObjectType implements Type
                     (string) $rawName,
                     $property,
                     \in_array((string) $rawName, $this->schema->required, true),
-                    $this->components,
                 );
             }
             $this->attributes = $attributes;

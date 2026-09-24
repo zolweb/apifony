@@ -4,24 +4,15 @@ declare(strict_types=1);
 
 namespace Zol\Apifony\Bundle;
 
-use Zol\Apifony\OpenApi\Components;
-use Zol\Apifony\OpenApi\Reference;
-use Zol\Apifony\OpenApi\Schema;
+use Zol\Apifony\Resolved\Schema;
 
 class TypeFactory
 {
     /**
      * @throws Exception
      */
-    public static function build(string $className, Reference|Schema $schema, ?Components $components): Type
+    public static function build(string $className, Schema $schema): Type
     {
-        if ($schema instanceof Reference) {
-            if ($components === null || !isset($components->schemas[$schema->getName()])) {
-                throw new Exception('Reference not found in schemas components.', $schema->path);
-            }
-            $schema = $components->schemas[$schema->getName()];
-        }
-
         // x-apifony-raw means "any value": the declared type, if there is one at all, is ignored.
         // Deciding it here is what lets a raw schema omit its type attribute, which is how
         // OpenAPI 3.1 already spells "any type".
@@ -94,8 +85,8 @@ class TypeFactory
             'integer' => new IntegerType($schema, $nullable),
             'number' => new NumberType($schema, $nullable),
             'boolean' => new BooleanType($schema, $nullable),
-            'object' => new ObjectType($schema, $nullable, $className, $components),
-            'array' => new ArrayType($schema, $nullable, $className, $components),
+            'object' => new ObjectType($schema, $nullable, $className),
+            'array' => new ArrayType($schema, $nullable, $className),
         };
     }
 }

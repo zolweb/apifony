@@ -8,9 +8,7 @@ use PhpParser\BuilderFactory;
 use PhpParser\Node\Expr\ArrayItem;
 use PhpParser\Node\Expr\Cast\String_;
 use PhpParser\Node\Param;
-use Zol\Apifony\OpenApi\Components;
-use Zol\Apifony\OpenApi\Header;
-use Zol\Apifony\OpenApi\Reference;
+use Zol\Apifony\Resolved\Header;
 
 class ActionResponseHeader
 {
@@ -19,26 +17,14 @@ class ActionResponseHeader
      */
     public static function build(
         string $name,
-        Reference|Header $header,
-        ?Components $components,
+        Header $header,
     ): self {
-        if ($header instanceof Reference) {
-            if ($components === null || !isset($components->headers[$header->getName()])) {
-                throw new Exception('Reference not found in headers components.', $header->path);
-            }
-            $header = $components->headers[$header->getName()];
-        }
-        $schema = $header->schema;
-        if ($schema === null) {
+        $ref = $header->schema;
+        if ($ref === null) {
             throw new Exception('Header objets without schema attribute are not supported.', $header->path);
         }
-        if ($schema instanceof Reference) {
-            if ($components === null || !isset($components->schemas[$schema->getName()])) {
-                throw new Exception('Reference not found in schemas components.', $schema->path);
-            }
-            $schema = $components->schemas[$schema->getName()];
-        }
-        $type = TypeFactory::build('', $schema, $components);
+        $schema = $ref->getTarget();
+        $type = TypeFactory::build('', $schema);
         if ($type instanceof ObjectType) {
             throw new Exception('Headers of object type are not supported.', $schema->path);
         }

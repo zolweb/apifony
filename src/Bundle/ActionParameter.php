@@ -27,10 +27,8 @@ use PhpParser\Node\Stmt\TryCatch;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Printer\Printer;
-use Zol\Apifony\OpenApi\Components;
-use Zol\Apifony\OpenApi\Parameter;
-use Zol\Apifony\OpenApi\Reference;
-use Zol\Apifony\OpenApi\Schema;
+use Zol\Apifony\Resolved\Parameter;
+use Zol\Apifony\Resolved\Schema;
 
 class ActionParameter
 {
@@ -42,7 +40,6 @@ class ActionParameter
         string $aggregateName,
         string $actionClassName,
         Parameter $parameter,
-        ?Components $components,
         int $ordinal,
     ): self {
         if ($parameter->schema === null) {
@@ -57,15 +54,12 @@ class ActionParameter
         $variableName = \sprintf('%s%s', $parameter->in[0], Naming::forClass($parameter->name));
         $className = "{$actionClassName}_{$parameter->name}";
 
-        $schema = $parameter->schema;
-        $isReference = false;
-        if ($schema instanceof Reference) {
-            if ($components === null || !isset($components->schemas[$schema->getName()])) {
-                throw new Exception('Reference not found in schemas components.', $schema->path);
-            }
-            $isReference = true;
-            $schema = $components->schemas[$className = $schema->getName()];
+        $ref = $parameter->schema;
+        $isReference = $ref->isReference;
+        if ($isReference) {
+            $className = (string) $ref->getComponentName();
         }
+        $schema = $ref->getTarget();
         $className = Naming::forClass($className);
 
         if ($parameter->required && $schema->hasDefault) {
@@ -75,7 +69,7 @@ class ActionParameter
             throw new Exception('Every non required parameter must have a default value.', $parameter->path);
         }
 
-        $type = TypeFactory::build($className, $schema, $components);
+        $type = TypeFactory::build($className, $schema);
 
         // A reference is rendered as the component class only when the referenced schema is one
         // ModelCollector emits; an array or a scalar component is inlined and names no class of
@@ -93,8 +87,8 @@ class ActionParameter
             }
             if (!$isReference) {
                 // A referenced schema is already emitted among the components models.
-                $collector = ModelCollector::forAggregate($bundleNamespace, $aggregateName, $components);
-                $collector->collect($className, $schema);
+                $collector = ModelCollector::forAggregate($bundleNamespace, $aggregateName);
+                $collector->collect($className, $ref);
                 $models = $collector->getModels();
             }
         }

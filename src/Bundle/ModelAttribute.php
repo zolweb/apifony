@@ -9,9 +9,8 @@ use PhpParser\Comment\Doc;
 use PhpParser\Node\Param;
 use PHPStan\PhpDocParser\Ast\PhpDoc\ParamTagValueNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
-use Zol\Apifony\OpenApi\Components;
-use Zol\Apifony\OpenApi\Reference;
-use Zol\Apifony\OpenApi\Schema;
+use Zol\Apifony\Resolved\Schema;
+use Zol\Apifony\Resolved\SchemaRef;
 
 class ModelAttribute
 {
@@ -21,30 +20,26 @@ class ModelAttribute
     public static function build(
         string $modelClassName,
         string $rawName,
-        Reference|Schema $property,
+        SchemaRef $property,
         bool $required,
-        ?Components $components,
     ): self {
         if (preg_match('/[^A-Za-z0-9_]/', $rawName)) {
             throw new Exception('Only [A-Za-z0-9_] are authorized chars in attribute names.', $property->path);
         }
         $className = "{$modelClassName}_{$rawName}";
-        $isReference = false;
-        if ($property instanceof Reference) {
-            if ($components === null || !isset($components->schemas[$property->getName()])) {
-                throw new Exception('Reference not found in schemas components.', $property->path);
-            }
-            $isReference = true;
-            $property = $components->schemas[$className = $property->getName()];
+        $isReference = $property->isReference;
+        if ($isReference) {
+            $className = (string) $property->getComponentName();
         }
-        if ($required && $property->hasDefault) {
-            throw new Exception('Every required property must not have a default value.', $property->path);
+        $schema = $property->getTarget();
+        if ($required && $schema->hasDefault) {
+            throw new Exception('Every required property must not have a default value.', $schema->path);
         }
-        if (!$required && !$property->hasDefault) {
-            throw new Exception('Every non required property must have a default value.', $property->path);
+        if (!$required && !$schema->hasDefault) {
+            throw new Exception('Every non required property must have a default value.', $schema->path);
         }
         $className = Naming::forClass($className);
-        $type = TypeFactory::build($className, $property, $components);
+        $type = TypeFactory::build($className, $schema);
 
         // The component class this attribute is rendered as, if any. Null lets ObjectType recurse
         // into the type instead, which is how an inlined array or object reaches the models its
@@ -53,7 +48,7 @@ class ModelAttribute
 
         return new self(
             $rawName,
-            $property,
+            $schema,
             $type,
             $usedModelName,
         );

@@ -16,9 +16,7 @@ use PhpParser\Node\Stmt\Catch_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Foreach_;
 use PhpParser\Node\Stmt\TryCatch;
-use Zol\Apifony\OpenApi\Components;
-use Zol\Apifony\OpenApi\MediaType;
-use Zol\Apifony\OpenApi\Reference;
+use Zol\Apifony\Resolved\MediaType;
 
 class ActionRequestBody
 {
@@ -30,35 +28,30 @@ class ActionRequestBody
         string $aggregateName,
         string $actionName,
         MediaType $mediaType,
-        ?Components $components,
     ): self {
         $className = Naming::forClass(\sprintf('%s_RequestBodyPayload', $actionName));
 
         $payloadModels = [];
-        $isReference = false;
         if ($mediaType->schema === null) {
             throw new Exception('Mediatypes without schema are not supported.', $mediaType->path);
         }
-        $schema = $mediaType->schema;
-        $hasModel = true;
-        if ($schema instanceof Reference) {
-            if ($components === null || !isset($components->schemas[$schema->getName()])) {
-                throw new Exception('Reference not found in schemas components.', $schema->path);
-            }
-            $schema = $components->schemas[$className = $schema->getName()];
-            $isReference = true;
-            $hasModel = false;
+        $ref = $mediaType->schema;
+        $isReference = $ref->isReference;
+        $hasModel = !$isReference;
+        if ($isReference) {
+            $className = (string) $ref->getComponentName();
         }
+        $schema = $ref->getTarget();
         $className = Naming::forClass($className);
-        $payloadType = TypeFactory::build($className, $schema, $components);
+        $payloadType = TypeFactory::build($className, $schema);
         if (!$payloadType instanceof ObjectType && !$payloadType instanceof RawType) {
             throw new Exception('Only object and raw schemas are supported for request bodies.', $schema->path);
         }
         $usedModelName = $isReference && ModelCollector::producesModel($payloadType) ? $className : null;
 
         if ($hasModel) {
-            $collector = ModelCollector::forAggregate($bundleNamespace, $aggregateName, $components);
-            $collector->collect($className, $schema);
+            $collector = ModelCollector::forAggregate($bundleNamespace, $aggregateName);
+            $collector->collect($className, $ref);
             $payloadModels = $collector->getModels();
         }
 

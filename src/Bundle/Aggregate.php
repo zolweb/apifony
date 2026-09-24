@@ -11,8 +11,7 @@ use PhpParser\Node\Stmt\Break_;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Use_;
-use Zol\Apifony\OpenApi\Components;
-use Zol\Apifony\OpenApi\Operation;
+use Zol\Apifony\Resolved\Operation;
 
 class Aggregate
 {
@@ -25,7 +24,6 @@ class Aggregate
         string $route,
         string $method,
         Operation $operation,
-        ?Components $components,
     ): self {
         $name = Naming::forClass($operation->operationId);
         Naming::assertIdentifier($name, \sprintf('Operation \'%s\'', $operation->operationId), $operation->path);
@@ -36,7 +34,6 @@ class Aggregate
             $route,
             $method,
             $operation,
-            $components,
         );
 
         $usedModelNames = [];

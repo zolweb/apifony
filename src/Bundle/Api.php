@@ -7,7 +7,7 @@ namespace Zol\Apifony\Bundle;
 use PhpParser\Node\Stmt\Case_;
 use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\Use_;
-use Zol\Apifony\OpenApi\OpenApi;
+use Zol\Apifony\Resolved\Document;
 
 class Api
 {
@@ -19,12 +19,12 @@ class Api
     public static function build(
         string $bundleNamespace,
         string $bundleName,
-        OpenApi $openApi,
+        Document $document,
         array $componentModels,
     ): self {
         $aggregates = [];
         $operationIds = [];
-        foreach ($openApi->paths->pathItems ?? [] as $route => $pathItem) {
+        foreach ($document->paths->pathItems ?? [] as $route => $pathItem) {
             foreach ($pathItem->operations as $method => $operation) {
                 if (\array_key_exists('x-apifony-ignore', $operation->extensions)) {
                     if (!\is_bool($operation->extensions['x-apifony-ignore'])) {
@@ -41,7 +41,6 @@ class Api
                     $route,
                     $method,
                     $operation,
-                    $openApi->components,
                 );
                 if (isset($operationIds[$aggregate->getName()])) {
                     throw new Exception(\sprintf('Operations \'%s\' and \'%s\' both map to the \'%s\' aggregate.', $operationIds[$aggregate->getName()], $operation->operationId, $aggregate->getName()), $operation->path);

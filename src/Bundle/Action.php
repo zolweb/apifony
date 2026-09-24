@@ -20,9 +20,7 @@ use PhpParser\Node\Stmt\Return_;
 use PhpParser\Node\UnionType;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use PHPStan\PhpDocParser\Printer\Printer;
-use Zol\Apifony\OpenApi\Components;
-use Zol\Apifony\OpenApi\Operation;
-use Zol\Apifony\OpenApi\Reference;
+use Zol\Apifony\Resolved\Operation;
 
 class Action
 {
@@ -35,7 +33,6 @@ class Action
         string $route,
         string $method,
         Operation $operation,
-        ?Components $components,
     ): self {
         $className = Naming::forMember($operation->operationId);
 
@@ -43,9 +40,9 @@ class Action
             $className,
             $route,
             $method,
-            self::buildParameters($bundleNamespace, $aggregateName, $className, $operation, $components),
-            self::buildRequestBody($bundleNamespace, $aggregateName, $className, $operation, $components),
-            self::buildResponses($bundleNamespace, $aggregateName, $className, $operation, $components),
+            self::buildParameters($bundleNamespace, $aggregateName, $className, $operation),
+            self::buildRequestBody($bundleNamespace, $aggregateName, $className, $operation),
+            self::buildResponses($bundleNamespace, $aggregateName, $className, $operation),
         );
     }
 
@@ -133,12 +130,11 @@ class Action
         string $aggregateName,
         string $actionClassName,
         Operation $operation,
-        ?Components $components,
     ): array {
         $ordinal = 0;
         $parameters = [];
         foreach ($operation->parameters as $parameter) {
-            $parameters[] = ActionParameter::build($bundleNamespace, $aggregateName, $actionClassName, $parameter, $components, ++$ordinal);
+            $parameters[] = ActionParameter::build($bundleNamespace, $aggregateName, $actionClassName, $parameter, ++$ordinal);
         }
 
         usort(
@@ -165,15 +161,8 @@ class Action
         string $aggregateName,
         string $actionClassName,
         Operation $operation,
-        ?Components $components,
     ): ?ActionRequestBody {
         $requestBody = $operation->requestBody;
-        if ($requestBody instanceof Reference) {
-            if ($components === null || !isset($components->requestBodies[$requestBody->getName()])) {
-                throw new Exception('Reference not found in requestBodies components.', $requestBody->path);
-            }
-            $requestBody = $components->requestBodies[$requestBody->getName()];
-        }
         if ($requestBody === null || \count($requestBody->content) === 0) {
             return null;
         }
@@ -187,7 +176,6 @@ class Action
             $aggregateName,
             $actionClassName,
             $requestBody->content['application/json'],
-            $components,
         );
     }
 
@@ -201,19 +189,12 @@ class Action
         string $aggregateName,
         string $className,
         Operation $operation,
-        ?Components $components,
     ): array {
         $responses = [];
         if ($operation->responses !== null) {
             foreach ($operation->responses->responses as $code => $response) {
                 if (\in_array($code, ['1XX', '2XX', '3XX', '4XX', '5XX'], true)) {
                     throw new Exception('HTTP status code ranges are not supported by Apifony.', $response->path);
-                }
-                if ($response instanceof Reference) {
-                    if ($components === null || !isset($components->responses[$response->getName()])) {
-                        throw new Exception('Reference not found in responses components.', $response->path);
-                    }
-                    $response = $components->responses[$response->getName()];
                 }
                 if (\count(array_diff_key($response->content, ['application/json' => null])) > 0) {
                     throw new Exception('Only application/json is supported by Apifony for response bodies.', $response->path);
@@ -226,7 +207,6 @@ class Action
                     $response,
                     \array_key_exists('application/json', $response->content)
                         ? $response->content['application/json']->schema : null,
-                    $components,
                 );
             }
         }

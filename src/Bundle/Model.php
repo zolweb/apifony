@@ -11,8 +11,7 @@ use PhpParser\PrettyPrinter\Standard;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocNode;
 use PHPStan\PhpDocParser\Ast\PhpDoc\PhpDocTagNode;
 use PHPStan\PhpDocParser\Printer\Printer;
-use Zol\Apifony\OpenApi\Components;
-use Zol\Apifony\OpenApi\Schema;
+use Zol\Apifony\Resolved\Schema;
 
 class Model implements File
 {
@@ -25,7 +24,6 @@ class Model implements File
         string $folder,
         string $rawName,
         Schema $schema,
-        ?Components $components,
         bool $isComponent,
     ): self {
         $className = Naming::forClass($rawName);
@@ -40,7 +38,6 @@ class Model implements File
                 $rawPropertyName,
                 $property,
                 \in_array($rawPropertyName, $schema->required, true),
-                $components,
             );
         }
 

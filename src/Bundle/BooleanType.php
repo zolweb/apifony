@@ -19,7 +19,7 @@ use PhpParser\Node\Stmt\If_;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
-use Zol\Apifony\OpenApi\Schema;
+use Zol\Apifony\Resolved\Schema;
 
 class BooleanType implements Type
 {

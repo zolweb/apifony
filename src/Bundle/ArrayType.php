@@ -19,9 +19,7 @@ use PHPStan\PhpDocParser\Ast\Type\GenericTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\NullableTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
-use Zol\Apifony\OpenApi\Components;
-use Zol\Apifony\OpenApi\Reference;
-use Zol\Apifony\OpenApi\Schema;
+use Zol\Apifony\Resolved\Schema;
 
 class ArrayType implements Type
 {
@@ -36,24 +34,18 @@ class ArrayType implements Type
         Schema $schema,
         private readonly bool $nullable,
         string $className,
-        ?Components $components,
     ) {
         $items = $schema->items;
         if ($items === null) {
             throw new Exception('Schema objects of array type without items attribute are not supported.', $schema->path);
         }
-        $isReference = false;
-        if ($items instanceof Reference) {
-            if ($components === null || !isset($components->schemas[$items->getName()])) {
-                throw new Exception('Reference not found in schemas components.', $items->path);
-            }
-            $isReference = true;
-            $items = $components->schemas[$className = $items->getName()];
-            $className = Naming::forClass($className);
+        $isReference = $items->isReference;
+        if ($isReference) {
+            $className = Naming::forClass((string) $items->getComponentName());
         }
 
         $this->schema = $schema;
-        $this->itemType = TypeFactory::build($className, $items, $components);
+        $this->itemType = TypeFactory::build($className, $items->getTarget());
 
         // The component class the items are rendered as, if any. Null lets getUsedModelNames()
         // recurse into the item type instead.

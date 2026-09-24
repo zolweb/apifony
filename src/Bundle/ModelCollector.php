@@ -4,9 +4,7 @@ declare(strict_types=1);
 
 namespace Zol\Apifony\Bundle;
 
-use Zol\Apifony\OpenApi\Components;
-use Zol\Apifony\OpenApi\Reference;
-use Zol\Apifony\OpenApi\Schema;
+use Zol\Apifony\Resolved\SchemaRef;
 
 /**
  * Walks a schema tree and builds one Model per object schema found in it.
@@ -26,7 +24,6 @@ class ModelCollector
     private array $sources = [];
 
     private function __construct(
-        private readonly ?Components $components,
         private readonly string $bundleNamespace,
         private readonly string $namespace,
         private readonly string $folder,
@@ -38,10 +35,9 @@ class ModelCollector
     /**
      * Collects the models of the components schemas, following references.
      */
-    public static function forComponents(string $bundleNamespace, ?Components $components): self
+    public static function forComponents(string $bundleNamespace): self
     {
         return new self(
-            $components,
             $bundleNamespace,
             "{$bundleNamespace}\\Model",
             'src/Model',
@@ -54,10 +50,9 @@ class ModelCollector
      * Collects the models inlined in an aggregate. Referenced schemas are skipped, as they are
      * already emitted as components.
      */
-    public static function forAggregate(string $bundleNamespace, string $aggregateName, ?Components $components): self
+    public static function forAggregate(string $bundleNamespace, string $aggregateName): self
     {
         return new self(
-            $components,
             $bundleNamespace,
             "{$bundleNamespace}\\Api\\{$aggregateName}",
             "src/Api/{$aggregateName}",
@@ -69,17 +64,15 @@ class ModelCollector
     /**
      * @throws Exception
      */
-    public function collect(string $rawName, Reference|Schema $schema): void
+    public function collect(string $rawName, SchemaRef $ref): void
     {
-        if ($schema instanceof Reference) {
+        if ($ref->isReference) {
             if (!$this->followReferences) {
                 return;
             }
-            if ($this->components === null || !isset($this->components->schemas[$schema->getName()])) {
-                throw new Exception('Reference not found in schemas components.', $schema->path);
-            }
-            $schema = $this->components->schemas[$rawName = $schema->getName()];
+            $rawName = (string) $ref->getComponentName();
         }
+        $schema = $ref->getTarget();
 
         $className = Naming::forClass($rawName);
         Naming::assertIdentifier($className, \sprintf('Schema \'%s\'', $rawName), $schema->path);
@@ -91,7 +84,7 @@ class ModelCollector
             return;
         }
 
-        $type = TypeFactory::build('', $schema, $this->components);
+        $type = TypeFactory::build('', $schema);
 
         if ($type instanceof ObjectType) {
             $this->sources[$className] = $rawName;
@@ -101,7 +94,6 @@ class ModelCollector
                 $this->folder,
                 $rawName,
                 $schema,
-                $this->components,
                 $this->isComponent,
             );
             foreach ($schema->properties as $propertyName => $property) {

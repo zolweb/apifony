@@ -12,7 +12,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Stmt\Expression;
 use PHPStan\PhpDocParser\Ast\Type\IdentifierTypeNode;
 use PHPStan\PhpDocParser\Ast\Type\TypeNode;
-use Zol\Apifony\OpenApi\Schema;
+use Zol\Apifony\Resolved\Schema;
 
 /**
  * The type of an x-apifony-raw schema: the declared type is ignored and any value is accepted,
