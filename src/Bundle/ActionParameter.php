@@ -41,16 +41,10 @@ class ActionParameter
         string $bundleNamespace,
         string $aggregateName,
         string $actionClassName,
-        Reference|Parameter $parameter,
+        Parameter $parameter,
         ?Components $components,
         int $ordinal,
     ): self {
-        if ($parameter instanceof Reference) {
-            if ($components === null || !isset($components->parameters[$parameter->getName()])) {
-                throw new Exception('Reference not found in parameters components.', $parameter->path);
-            }
-            $parameter = $components->parameters[$parameter->getName()];
-        }
         if ($parameter->schema === null) {
             throw new Exception('Parameter objects without schema attribute are not supported.', $parameter->path);
         }

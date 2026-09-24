@@ -33,18 +33,11 @@ class ArrayType implements Type
      * @throws Exception
      */
     public function __construct(
-        Reference|Schema $schema,
+        Schema $schema,
         private readonly bool $nullable,
         string $className,
         ?Components $components,
     ) {
-        if ($schema instanceof Reference) {
-            if ($components === null || !isset($components->schemas[$schema->getName()])) {
-                throw new Exception('Reference not found in schemas components.', $schema->path);
-            }
-            $schema = $components->schemas[$schema->getName()];
-        }
-
         $items = $schema->items;
         if ($items === null) {
             throw new Exception('Schema objects of array type without items attribute are not supported.', $schema->path);

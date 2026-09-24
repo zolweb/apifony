@@ -138,12 +138,6 @@ class Action
         $ordinal = 0;
         $parameters = [];
         foreach ($operation->parameters as $parameter) {
-            if ($parameter instanceof Reference) {
-                if ($components === null || !isset($components->parameters[$parameter->getName()])) {
-                    throw new Exception('Reference not found in parameters components.', $parameter->path);
-                }
-                $parameter = $components->parameters[$parameter->getName()];
-            }
             $parameters[] = ActionParameter::build($bundleNamespace, $aggregateName, $actionClassName, $parameter, $components, ++$ordinal);
         }
 

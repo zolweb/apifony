@@ -174,12 +174,10 @@ class Bundle implements File
             }
             foreach ($pathItem->operations as $operation) {
                 foreach ($operation->parameters as $parameter) {
-                    if ($parameter instanceof Parameter) {
-                        if ($parameter->schema === null) {
-                            throw new Exception('Parameter objects without schema are not supported.', $parameter->path);
-                        }
-                        $addSchemaFormats($parameter->schema);
+                    if ($parameter->schema === null) {
+                        throw new Exception('Parameter objects without schema are not supported.', $parameter->path);
                     }
+                    $addSchemaFormats($parameter->schema);
                 }
                 if ($operation->requestBody instanceof RequestBody) {
                     foreach ($operation->requestBody->content as $mediaType) {

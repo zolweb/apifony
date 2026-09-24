@@ -121,9 +121,12 @@ class Operation
     }
 
     /**
-     * @param list<Reference|Parameter> $parameters
-     * @param array<string, mixed>      $extensions
-     * @param list<string>              $path
+     * References are resolved as the two parameter lists are merged, so what is stored here never
+     * holds one.
+     *
+     * @param list<Parameter>      $parameters
+     * @param array<string, mixed> $extensions
+     * @param list<string>         $path
      */
     private function __construct(
         public readonly string $operationId,
