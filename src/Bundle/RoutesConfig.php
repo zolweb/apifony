@@ -8,31 +8,33 @@ use Symfony\Component\Yaml\Yaml;
 
 class RoutesConfig implements File
 {
-    // /**
-    //  * @return list<Operation>
-    //  */
+    /**
+     * @throws Exception
+     */
     public static function build(
         string $namespace,
         Api $api,
+        NameRegistry $names,
     ): self {
-        $controllers = [];
+        $serviceNamespace = Naming::forServiceId($namespace);
 
+        $routes = [];
         foreach ($api->getAggregates() as $aggregate) {
-            $controllers[] = $aggregate->getController();
+            $controller = $aggregate->getController();
+            $action = $controller->action;
+            $name = "{$serviceNamespace}_{$action->getServiceName()}";
+            $names->claimRoute($name, Origin::spec('operation', $aggregate->getName(), ['documentation root']));
+            $routes[$name] = $action->getRoute("{$controller->getNamespace()}\\{$controller->getClassName()}");
         }
 
-        return new self(
-            $namespace,
-            $controllers,
-        );
+        return new self($routes);
     }
 
     /**
-     * @param list<Controller> $controllers
+     * @param array<string, array{path: string, methods: string, controller: string, requirements?: array<string, string>}> $routes
      */
     private function __construct(
-        private readonly string $namespace,
-        private readonly array $controllers,
+        private readonly array $routes,
     ) {
     }
 
@@ -48,14 +50,6 @@ class RoutesConfig implements File
 
     public function getContent(): string
     {
-        $routes = [];
-
-        $serviceNamespace = Naming::forServiceId($this->namespace);
-
-        foreach ($this->controllers as $controller) {
-            $routes["{$serviceNamespace}_{$controller->action->getServiceName()}"] = $controller->action->getRoute("{$controller->getNamespace()}\\{$controller->getClassName()}");
-        }
-
-        return Yaml::dump($routes, 100);
+        return Yaml::dump($this->routes, 100);
     }
 }

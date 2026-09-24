@@ -78,6 +78,38 @@ final class NameRegistry
     }
 
     /**
+     * A name reaching PHP as a property or a promoted constructor parameter.
+     *
+     * @throws Exception
+     */
+    public function claimProperty(string $classFqn, string $name, Origin $origin): void
+    {
+        $this->assertIdentifier($name, $origin);
+        $this->claim("property:{$classFqn}", 'property', $name, "{$classFqn}::\${$name}", $origin);
+    }
+
+    /**
+     * A key of the generated routes.yaml. Nothing checked these, so a second entry under one name
+     * silently replaced the first and an endpoint went missing from the bundle.
+     *
+     * @throws Exception
+     */
+    public function claimRoute(string $name, Origin $origin): void
+    {
+        $this->claim('route', 'route', $name, $name, $origin);
+    }
+
+    /**
+     * A key of the generated services.yaml, with the same silent overwrite to answer for.
+     *
+     * @throws Exception
+     */
+    public function claimServiceId(string $id, Origin $origin): void
+    {
+        $this->claim('service_id', 'service id', $id, $id, $origin);
+    }
+
+    /**
      * The short name a generated file binds through a use statement. Two classes may legitimately
      * share a short name in different namespaces; what cannot happen is one file importing both,
      * since the second import would silently bind the first one's name to the wrong class.

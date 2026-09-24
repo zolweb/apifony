@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace Zol\Apifony\Tests\Zol\Apifony\Bundle;
 
+use PhpParser\Node\Stmt\ClassMethod;
+use PhpParser\NodeFinder;
+use PhpParser\ParserFactory;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Yaml\Yaml;
+use Zol\Apifony\Bundle\AbstractController;
 use Zol\Apifony\Bundle\Bundle;
 use Zol\Apifony\Bundle\Exception as BundleException;
 use Zol\Apifony\Bundle\File;
@@ -74,6 +78,39 @@ final class RegenerationTest extends TestCase
         }
 
         self::assertSame(array_unique($paths), $paths);
+    }
+
+    /**
+     * The registry seeds the AbstractController's own method names so that an operation landing on
+     * one of them is refused rather than emitting an incompatible override. That list is written
+     * by hand, so it is the one thing here that can quietly drift away from what the class really
+     * declares. Read the emitted file back and let it say.
+     */
+    public function testEveryMethodTheAbstractControllerDeclaresIsAccountedFor(): void
+    {
+        $ast = (new ParserFactory())->createForHostVersion()->parse(
+            (string) file_get_contents(self::getBundleDir().'/src/Api/AbstractController.php'),
+        );
+
+        self::assertNotNull($ast);
+
+        $declared = [];
+        foreach ((new NodeFinder())->findInstanceOf($ast, ClassMethod::class) as $method) {
+            $declared[] = $method->name->toString();
+        }
+
+        self::assertNotEmpty($declared);
+
+        $fixed = AbstractController::getFixedMethodNames();
+        foreach ($declared as $name) {
+            // The denormalizers are named after the models, so they are claimed as they are emitted
+            // rather than seeded.
+            if (preg_match('/^denormalize.+Value$/', $name) === 1) {
+                continue;
+            }
+
+            self::assertContains($name, $fixed, \sprintf('\'%s\' is declared but not among the names the registry reserves.', $name));
+        }
     }
 
     /**

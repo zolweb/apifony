@@ -112,6 +112,36 @@ final class CollisionTest extends TestCase
             'both map to the import',
         ];
 
+        // Not a missing file but a broken bundle: the controller extends an AbstractController
+        // declaring validate(mixed, string, array): void, so this emits an incompatible override
+        // and fails when the class is loaded.
+        yield 'an operation named after a method the controller inherits' => [
+            ['paths' => ['/a' => ['get' => ['operationId' => 'validate']]]],
+            'both map to the method',
+        ];
+
+        yield 'two response headers on one constructor parameter' => [
+            ['paths' => ['/a' => ['get' => [
+                'operationId' => 'op',
+                'responses' => [200 => ['headers' => [
+                    'x-rate-limit' => ['required' => true, 'schema' => ['type' => 'string']],
+                    'X_Rate_Limit' => ['required' => true, 'schema' => ['type' => 'string']],
+                ]]],
+            ]]]],
+            'both map to the property',
+        ];
+
+        yield 'a response header colliding with the payload parameter' => [
+            ['paths' => ['/a' => ['get' => [
+                'operationId' => 'op',
+                'responses' => [200 => [
+                    'headers' => ['payload' => ['required' => true, 'schema' => ['type' => 'string']]],
+                    'content' => ['application/json' => ['schema' => self::objectSchema()]],
+                ]],
+            ]]]],
+            'both map to the property',
+        ];
+
         yield 'two formats on one constraint class' => [
             ['components' => ['schemas' => ['A' => [
                 'type' => 'object',
@@ -159,6 +189,15 @@ final class CollisionTest extends TestCase
                 'parameters' => [['name' => 'user-id', 'in' => 'path', 'required' => true, 'schema' => ['type' => 'string']]],
             ]]]],
             'Path parameter \'user-id\' produces \'user-id\', which is not a valid PHP identifier.',
+        ];
+
+        yield 'a model property starting with a digit' => [
+            ['components' => ['schemas' => ['A' => [
+                'type' => 'object',
+                'properties' => ['0foo' => ['type' => 'string']],
+                'required' => ['0foo'],
+            ]]]],
+            'Property \'0foo\' produces \'0foo\', which is not a valid PHP identifier.',
         ];
 
         yield 'a bundle name made only of punctuation' => [

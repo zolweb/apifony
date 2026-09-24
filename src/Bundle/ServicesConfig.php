@@ -10,11 +10,14 @@ class ServicesConfig implements File
 {
     /**
      * @param array<string, Format> $formats
+     *
+     * @throws Exception
      */
     public static function build(
         string $namespace,
         Api $api,
         array $formats,
+        NameRegistry $names,
     ): self {
         $controllers = [];
         foreach ($api->getAggregates() as $aggregate) {
@@ -29,27 +32,20 @@ class ServicesConfig implements File
             }
         }
 
-        return new self(
-            $namespace,
-            $controllers,
-            $formatValidators,
-        );
+        $config = self::buildConfig($namespace, $controllers, $formatValidators);
+        foreach (array_keys($config['services']) as $id) {
+            $names->claimServiceId($id, Origin::spec('service', $id, ['documentation root']));
+        }
+
+        return new self($config);
     }
 
     /**
-     * @param list<Controller>       $controllers
-     * @param array<FormatValidator> $formatValidators
+     * @param array{services: array<string, mixed>} $config
      */
     private function __construct(
-        private readonly string $namespace,
-        private readonly array $controllers,
-        private readonly array $formatValidators,
+        private readonly array $config,
     ) {
-    }
-
-    public function getServiceNamespace(): string
-    {
-        return Naming::forServiceId($this->namespace);
     }
 
     public function getFolder(): string
@@ -64,19 +60,32 @@ class ServicesConfig implements File
 
     public function getContent(): string
     {
+        return Yaml::dump($this->config, 100);
+    }
+
+    /**
+     * @param list<Controller>       $controllers
+     * @param array<FormatValidator> $formatValidators
+     *
+     * @return array{services: array<string, mixed>}
+     */
+    private static function buildConfig(string $namespace, array $controllers, array $formatValidators): array
+    {
+        $serviceNamespace = Naming::forServiceId($namespace);
+
         $config = ['services' => []];
 
-        foreach ($this->controllers as $controller) {
+        foreach ($controllers as $controller) {
             $config['services']["{$controller->getNamespace()}\\{$controller->getClassName()}"] = [
                 'class' => "{$controller->getNamespace()}\\{$controller->getClassName()}",
                 'arguments' => [
-                    '$validator' => "@{$this->getServiceNamespace()}.validator",
+                    '$validator' => "@{$serviceNamespace}.validator",
                 ],
                 'public' => true,
             ];
         }
 
-        foreach ($this->formatValidators as $formatValidator) {
+        foreach ($formatValidators as $formatValidator) {
             $config['services']["{$formatValidator->getNamespace()}\\{$formatValidator->getClassName()}"] = [
                 'class' => "{$formatValidator->getNamespace()}\\{$formatValidator->getClassName()}",
                 'public' => true,
@@ -84,31 +93,31 @@ class ServicesConfig implements File
             ];
         }
 
-        $config['services']["{$this->getServiceNamespace()}.constraint_validator_factory"] = [
-            'class' => "{$this->namespace}\\Api\\ConstraintValidatorFactory",
+        $config['services']["{$serviceNamespace}.constraint_validator_factory"] = [
+            'class' => "{$namespace}\\Api\\ConstraintValidatorFactory",
             'calls' => array_map(
                 static fn (FormatValidator $formatValidator) => [
                     'addValidator',
                     ["@{$formatValidator->getNamespace()}\\{$formatValidator->getClassName()}"],
                 ],
-                $this->formatValidators,
+                $formatValidators,
             ),
         ];
 
-        $config['services']["{$this->getServiceNamespace()}.validator_builder"] = [
+        $config['services']["{$serviceNamespace}.validator_builder"] = [
             'class' => 'Symfony\Component\Validator\ValidatorBuilder',
             'factory' => ['Symfony\Component\Validator\Validation', 'createValidatorBuilder'],
             'calls' => [
                 ['enableAttributeMapping'],
-                ['setConstraintValidatorFactory', ["@{$this->getServiceNamespace()}.constraint_validator_factory"]],
+                ['setConstraintValidatorFactory', ["@{$serviceNamespace}.constraint_validator_factory"]],
             ],
         ];
 
-        $config['services']["{$this->getServiceNamespace()}.validator"] = [
+        $config['services']["{$serviceNamespace}.validator"] = [
             'class' => 'Symfony\Component\Validator\Validation',
-            'factory' => ["@{$this->getServiceNamespace()}.validator_builder", 'getValidator'],
+            'factory' => ["@{$serviceNamespace}.validator_builder", 'getValidator'],
         ];
 
-        return Yaml::dump($config, 100);
+        return $config;
     }
 }

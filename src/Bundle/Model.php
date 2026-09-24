@@ -25,6 +25,7 @@ class Model implements File
         string $rawName,
         Schema $schema,
         bool $isComponent,
+        NameRegistry $names,
     ): self {
         $className = Naming::forClass($rawName);
 
@@ -32,6 +33,7 @@ class Model implements File
         $ordinals = [];
         $attributes = [];
         foreach ($schema->properties as $rawPropertyName => $property) {
+            $names->claimProperty("{$namespace}\\{$className}", $rawPropertyName, Origin::spec('property', $rawPropertyName, $property->path));
             $ordinals[$rawPropertyName] = ++$ordinal;
             $attributes[$rawPropertyName] = ModelAttribute::build(
                 $className,

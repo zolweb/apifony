@@ -90,6 +90,7 @@ class ModelCollector
                 $rawName,
                 $schema,
                 $this->isComponent,
+                $this->names,
             );
             foreach ($schema->properties as $propertyName => $property) {
                 $this->collect("{$rawName}_{$propertyName}", $property);

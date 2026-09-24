@@ -23,6 +23,11 @@ class Api
         array $componentModels,
         NameRegistry $names,
     ): self {
+        $abstractControllerFqn = "{$bundleNamespace}\\Api\\AbstractController";
+        foreach (AbstractController::getFixedMethodNames() as $fixedMethodName) {
+            $names->claimMethod($abstractControllerFqn, $fixedMethodName, Origin::spec('the controller\'s own', $fixedMethodName, ['documentation root']));
+        }
+
         $aggregates = [];
         foreach ($document->paths->pathItems ?? [] as $route => $pathItem) {
             foreach ($pathItem->operations as $method => $operation) {

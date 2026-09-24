@@ -36,6 +36,11 @@ class Action
         NameRegistry $names,
     ): self {
         $className = Naming::forMember($operation->operationId);
+        // Claimed on AbstractController rather than on the controller itself: a controller extends
+        // it, so an action landing on one of its methods would be an incompatible override. Two
+        // actions cannot collide here without their aggregates having collided first, since both
+        // names come from the same operationId.
+        $names->claimMethod("{$bundleNamespace}\\Api\\AbstractController", $className, Origin::spec('operation', $operation->operationId, $operation->path));
 
         return new self(
             $className,

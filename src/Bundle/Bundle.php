@@ -50,8 +50,8 @@ class Bundle implements File
             $formats = self::buildFormats($namespace, $name, $document, $names),
             $models = self::buildModels($namespace, $document->components, $names),
             $api = Api::build($namespace, $name, $document, $models, $names),
-            RoutesConfig::build($namespace, $api),
-            ServicesConfig::build($namespace, $api, $formats),
+            RoutesConfig::build($namespace, $api, $names),
+            ServicesConfig::build($namespace, $api, $formats, $names),
             new ComposerJson($packageName, $namespace),
             new ConstraintValidatorFactory($namespace),
         );

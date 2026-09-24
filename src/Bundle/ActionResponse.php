@@ -56,16 +56,25 @@ class ActionResponse implements File
             }
         }
 
+        $responseClassName = Naming::forClass(\sprintf('%s_%s_Response', $actionName, $code));
+        $responseFqn = "{$bundleNamespace}\\Api\\{$aggregateName}\\{$responseClassName}";
+        if ($payloadType !== null) {
+            $names->claimProperty($responseFqn, 'payload', Origin::spec('response body of', (string) $code, $response->path));
+        }
+
+        $headers = [];
+        foreach (array_keys($response->headers) as $headerName) {
+            $names->claimProperty($responseFqn, Naming::forMember($headerName), Origin::spec('response header', $headerName, $response->path));
+            $headers[] = ActionResponseHeader::build($headerName, $response->headers[$headerName]);
+        }
+
         return new self(
             $bundleNamespace,
             $aggregateName,
-            Naming::forClass(\sprintf('%s_%s_Response', $actionName, $code)),
+            $responseClassName,
             $code,
             $payloadType,
-            array_map(
-                static fn (string $name) => ActionResponseHeader::build($name, $response->headers[$name]),
-                array_keys($response->headers),
-            ),
+            $headers,
             $payloadModels,
             $usedModelName,
         );

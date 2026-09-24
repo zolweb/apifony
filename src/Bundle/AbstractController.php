@@ -43,6 +43,8 @@ class AbstractController implements File
 {
     private const FILE = 'src/Api/AbstractController.php';
 
+    private const SCALAR_TYPES = ['string', 'int', 'float', 'bool'];
+
     private const TYPE_ERROR_MESSAGES = [
         'string' => 'This value should be of type string.',
         'int' => 'This value should be of type integer.',
@@ -137,6 +139,44 @@ class AbstractController implements File
         private readonly array $denormalizerMethods,
         private readonly array $modelImports,
     ) {
+    }
+
+    /**
+     * The methods this class always declares. A generated controller extends it, so an operation
+     * whose name lands on one of them emits an incompatible override: a fatal error when the class
+     * is loaded, from a specification the generator reported success on. setHandler belongs here
+     * too, since every controller declares it.
+     *
+     * @return list<string>
+     */
+    public static function getFixedMethodNames(): array
+    {
+        $names = [
+            '__construct',
+            'setHandler',
+            'hasParameter',
+            'getRawParameter',
+            'denormalizeListParameter',
+            'denormalizeMapParameter',
+            'getRequiredParameterProperty',
+            'getJsonRequestBody',
+            'denormalizeListJson',
+            'denormalizeMapJson',
+            'getRequiredJsonProperty',
+            'validate',
+            'appendPath',
+            'getViolationCode',
+        ];
+
+        foreach (self::SCALAR_TYPES as $type) {
+            foreach ([false, true] as $nullable) {
+                $names[] = \sprintf('get%s%sParameter', ucfirst($type), $nullable ? 'OrNull' : '');
+            }
+            $names[] = \sprintf('denormalize%sParameter', ucfirst($type));
+            $names[] = \sprintf('denormalize%sJson', ucfirst($type));
+        }
+
+        return $names;
     }
 
     /**
@@ -328,7 +368,7 @@ class AbstractController implements File
             ->addStmt($constructor)
         ;
 
-        foreach (['string', 'int', 'float', 'bool'] as $type) {
+        foreach (self::SCALAR_TYPES as $type) {
             foreach ([false, true] as $nullable) {
                 $getParameterMethod = $f->method(\sprintf('get%s%sParameter', ucfirst($type), $nullable ? 'OrNull' : ''))
                     ->makePublic()
@@ -489,7 +529,7 @@ class AbstractController implements File
                 ->addStmt(new Return_(new ArrayDimFetch($f->var('values'), $f->var('key'))))
         );
 
-        foreach (['string', 'int', 'float', 'bool'] as $type) {
+        foreach (self::SCALAR_TYPES as $type) {
             $class->addStmt(
                 $f->method(\sprintf('denormalize%sParameter', ucfirst($type)))
                     ->makePublic()
@@ -600,7 +640,7 @@ class AbstractController implements File
                 ->addStmt(new Return_(new ArrayDimFetch($f->var('values'), $f->var('key'))))
         );
 
-        foreach (['string', 'int', 'float', 'bool'] as $type) {
+        foreach (self::SCALAR_TYPES as $type) {
             $class->addStmt(
                 $f->method(\sprintf('denormalize%sJson', ucfirst($type)))
                     ->makePublic()
