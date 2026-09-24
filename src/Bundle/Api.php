@@ -21,9 +21,9 @@ class Api
         string $bundleName,
         Document $document,
         array $componentModels,
+        NameRegistry $names,
     ): self {
         $aggregates = [];
-        $operationIds = [];
         foreach ($document->paths->pathItems ?? [] as $route => $pathItem) {
             foreach ($pathItem->operations as $method => $operation) {
                 if (\array_key_exists('x-apifony-ignore', $operation->extensions)) {
@@ -35,18 +35,14 @@ class Api
                     }
                 }
 
-                $aggregate = Aggregate::build(
+                $aggregates[] = Aggregate::build(
                     $bundleNamespace,
                     $bundleName,
                     $route,
                     $method,
                     $operation,
+                    $names,
                 );
-                if (isset($operationIds[$aggregate->getName()])) {
-                    throw new Exception(\sprintf('Operations \'%s\' and \'%s\' both map to the \'%s\' aggregate.', $operationIds[$aggregate->getName()], $operation->operationId, $aggregate->getName()), $operation->path);
-                }
-                $operationIds[$aggregate->getName()] = $operation->operationId;
-                $aggregates[] = $aggregate;
             }
         }
 

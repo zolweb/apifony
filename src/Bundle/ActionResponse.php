@@ -27,6 +27,7 @@ class ActionResponse implements File
         int $code,
         Response $response,
         ?SchemaRef $payload,
+        NameRegistry $names,
     ): self {
         $className = Naming::forClass(\sprintf('%s_%s_ResponsePayload', $actionName, $code));
 
@@ -49,7 +50,7 @@ class ActionResponse implements File
             $usedModelName = $isReference && ModelCollector::producesModel($payloadType) ? $className : null;
 
             if ($hasModel) {
-                $collector = ModelCollector::forAggregate($bundleNamespace, $aggregateName);
+                $collector = ModelCollector::forAggregate($bundleNamespace, $aggregateName, $names);
                 $collector->collect($className, $payload);
                 $payloadModels = $collector->getModels();
             }

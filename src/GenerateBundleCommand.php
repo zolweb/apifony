@@ -60,15 +60,6 @@ class GenerateBundleCommand extends Command
                 $openApi,
             );
 
-            $writtenPaths = [];
-            foreach ($bundle->getFiles() as $file) {
-                $path = "{$file->getFolder()}/{$file->getName()}";
-                if (isset($writtenPaths[$path])) {
-                    throw new BundleException(\sprintf('Two generated files would be written to \'%s\'.', $path), ['documentation root']);
-                }
-                $writtenPaths[$path] = true;
-            }
-
             foreach ($bundle->getFiles() as $file) {
                 if (!file_exists("{$outputDir}/{$file->getFolder()}")) {
                     mkdir("{$outputDir}/{$file->getFolder()}", recursive: true);

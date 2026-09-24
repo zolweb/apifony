@@ -21,9 +21,10 @@ class Format
         string $bundleNamespace,
         string $bundleName,
         string $rawName,
+        NameRegistry $names,
     ): self {
         $name = Naming::forClass($rawName);
-        Naming::assertIdentifier($name, \sprintf('Format \'%s\'', $rawName), ['documentation root']);
+        $names->claimClass("{$bundleNamespace}\\Format", $name, Origin::spec('format', $rawName, ['documentation root']));
 
         $validator = match ($rawName) {
             'email' => EmailValidator::build($bundleNamespace),

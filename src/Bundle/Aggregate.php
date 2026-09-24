@@ -24,9 +24,10 @@ class Aggregate
         string $route,
         string $method,
         Operation $operation,
+        NameRegistry $names,
     ): self {
         $name = Naming::forClass($operation->operationId);
-        Naming::assertIdentifier($name, \sprintf('Operation \'%s\'', $operation->operationId), $operation->path);
+        $names->claimAggregate($name, Origin::spec('operation', $operation->operationId, $operation->path));
 
         $action = Action::build(
             $bundleNamespace,
@@ -34,6 +35,7 @@ class Aggregate
             $route,
             $method,
             $operation,
+            $names,
         );
 
         $usedModelNames = [];

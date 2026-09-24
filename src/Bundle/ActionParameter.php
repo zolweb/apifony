@@ -41,17 +41,21 @@ class ActionParameter
         string $actionClassName,
         Parameter $parameter,
         int $ordinal,
+        NameRegistry $names,
     ): self {
         if ($parameter->schema === null) {
             throw new Exception('Parameter objects without schema attribute are not supported.', $parameter->path);
         }
 
+        $origin = Origin::spec('parameter', $parameter->name, $parameter->path);
+        $aggregateFqn = "{$bundleNamespace}\\Api\\{$aggregateName}\\{$aggregateName}";
         if ($parameter->in === 'path') {
             // The router injects a path parameter into the controller by name, so the raw name is
             // used as the PHP parameter and cannot be normalized away.
-            Naming::assertIdentifier($parameter->name, \sprintf('Path parameter \'%s\'', $parameter->name), $parameter->path);
+            $names->claimArgument("{$aggregateFqn}Controller", $actionClassName, $parameter->name, Origin::spec('path parameter', $parameter->name, $parameter->path));
         }
         $variableName = \sprintf('%s%s', $parameter->in[0], Naming::forClass($parameter->name));
+        $names->claimArgument("{$aggregateFqn}Handler", $actionClassName, $variableName, $origin);
         $className = "{$actionClassName}_{$parameter->name}";
 
         $ref = $parameter->schema;
@@ -87,7 +91,7 @@ class ActionParameter
             }
             if (!$isReference) {
                 // A referenced schema is already emitted among the components models.
-                $collector = ModelCollector::forAggregate($bundleNamespace, $aggregateName);
+                $collector = ModelCollector::forAggregate($bundleNamespace, $aggregateName, $names);
                 $collector->collect($className, $ref);
                 $models = $collector->getModels();
             }

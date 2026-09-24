@@ -33,6 +33,7 @@ class Action
         string $route,
         string $method,
         Operation $operation,
+        NameRegistry $names,
     ): self {
         $className = Naming::forMember($operation->operationId);
 
@@ -40,9 +41,9 @@ class Action
             $className,
             $route,
             $method,
-            self::buildParameters($bundleNamespace, $aggregateName, $className, $operation),
-            self::buildRequestBody($bundleNamespace, $aggregateName, $className, $operation),
-            self::buildResponses($bundleNamespace, $aggregateName, $className, $operation),
+            self::buildParameters($bundleNamespace, $aggregateName, $className, $operation, $names),
+            self::buildRequestBody($bundleNamespace, $aggregateName, $className, $operation, $names),
+            self::buildResponses($bundleNamespace, $aggregateName, $className, $operation, $names),
         );
     }
 
@@ -130,25 +131,18 @@ class Action
         string $aggregateName,
         string $actionClassName,
         Operation $operation,
+        NameRegistry $names,
     ): array {
         $ordinal = 0;
         $parameters = [];
         foreach ($operation->parameters as $parameter) {
-            $parameters[] = ActionParameter::build($bundleNamespace, $aggregateName, $actionClassName, $parameter, ++$ordinal);
+            $parameters[] = ActionParameter::build($bundleNamespace, $aggregateName, $actionClassName, $parameter, ++$ordinal, $names);
         }
 
         usort(
             $parameters,
             static fn (ActionParameter $param1, ActionParameter $param2): int => $param1->shouldBePositionedBefore($param2) ? -1 : 1
         );
-
-        $variableNames = [];
-        foreach ($parameters as $parameter) {
-            if (isset($variableNames[$parameter->getVariableName()])) {
-                throw new Exception(\sprintf('Parameters \'%s\' and \'%s\' both map to the \'$%s\' handler argument.', $variableNames[$parameter->getVariableName()], $parameter->getRawName(), $parameter->getVariableName()), $operation->path);
-            }
-            $variableNames[$parameter->getVariableName()] = $parameter->getRawName();
-        }
 
         return $parameters;
     }
@@ -161,6 +155,7 @@ class Action
         string $aggregateName,
         string $actionClassName,
         Operation $operation,
+        NameRegistry $names,
     ): ?ActionRequestBody {
         $requestBody = $operation->requestBody;
         if ($requestBody === null || \count($requestBody->content) === 0) {
@@ -176,6 +171,7 @@ class Action
             $aggregateName,
             $actionClassName,
             $requestBody->content['application/json'],
+            $names,
         );
     }
 
@@ -189,6 +185,7 @@ class Action
         string $aggregateName,
         string $className,
         Operation $operation,
+        NameRegistry $names,
     ): array {
         $responses = [];
         if ($operation->responses !== null) {
@@ -207,6 +204,7 @@ class Action
                     $response,
                     \array_key_exists('application/json', $response->content)
                         ? $response->content['application/json']->schema : null,
+                    $names,
                 );
             }
         }

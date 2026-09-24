@@ -16,14 +16,8 @@ class ModelCollector
      */
     private array $models = [];
 
-    /**
-     * The specification name each generated class came from, to report a collapse.
-     *
-     * @var array<string, string>
-     */
-    private array $sources = [];
-
     private function __construct(
+        private readonly NameRegistry $names,
         private readonly string $bundleNamespace,
         private readonly string $namespace,
         private readonly string $folder,
@@ -35,9 +29,10 @@ class ModelCollector
     /**
      * Collects the models of the components schemas, following references.
      */
-    public static function forComponents(string $bundleNamespace): self
+    public static function forComponents(string $bundleNamespace, NameRegistry $names): self
     {
         return new self(
+            $names,
             $bundleNamespace,
             "{$bundleNamespace}\\Model",
             'src/Model',
@@ -50,9 +45,10 @@ class ModelCollector
      * Collects the models inlined in an aggregate. Referenced schemas are skipped, as they are
      * already emitted as components.
      */
-    public static function forAggregate(string $bundleNamespace, string $aggregateName): self
+    public static function forAggregate(string $bundleNamespace, string $aggregateName, NameRegistry $names): self
     {
         return new self(
+            $names,
             $bundleNamespace,
             "{$bundleNamespace}\\Api\\{$aggregateName}",
             "src/Api/{$aggregateName}",
@@ -64,30 +60,29 @@ class ModelCollector
     /**
      * @throws Exception
      */
-    public function collect(string $rawName, SchemaRef $ref): void
+    public function collect(string $rawName, SchemaRef $ref, ?Origin $origin = null): void
     {
         if ($ref->isReference) {
             if (!$this->followReferences) {
                 return;
             }
+            // A different named thing, so it claims its class under its own identity rather than
+            // the one the caller was carrying.
             $rawName = (string) $ref->getComponentName();
+            $origin = null;
         }
         $schema = $ref->getTarget();
 
         $className = Naming::forClass($rawName);
-        Naming::assertIdentifier($className, \sprintf('Schema \'%s\'', $rawName), $schema->path);
+        $origin ??= Origin::spec('schema', $rawName, $schema->path);
+        $this->names->claimClass($this->namespace, $className, $origin);
         if (isset($this->models[$className])) {
-            if ($this->sources[$className] !== $rawName) {
-                throw new Exception(\sprintf('Schemas \'%s\' and \'%s\' both map to the \'%s\' model.', $this->sources[$className], $rawName, $className), $schema->path);
-            }
-
             return;
         }
 
         $type = TypeFactory::build('', $schema);
 
         if ($type instanceof ObjectType) {
-            $this->sources[$className] = $rawName;
             $this->models[$className] = Model::build(
                 $this->bundleNamespace,
                 $this->namespace,
@@ -103,7 +98,9 @@ class ModelCollector
             if ($schema->items === null) {
                 throw new Exception('Schema objects of array type without items attribute are not supported.', $schema->path);
             }
-            $this->collect($rawName, $schema->items);
+            // Unwrapping an array level is the same named thing seen one level down, not a second
+            // claimant on the name, so the identity is carried along.
+            $this->collect($rawName, $schema->items, $origin);
         }
     }
 

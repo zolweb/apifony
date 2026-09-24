@@ -39,21 +39,36 @@ class Bundle implements File
         string $namespace,
         OpenApi $openApi,
     ): self {
-        Naming::assertIdentifier(Naming::forClass($rawName), \sprintf('Bundle name \'%s\'', $rawName), ['documentation root']);
+        $names = new NameRegistry();
+        $names->claimBundle($name = Naming::forClass($rawName), Origin::spec('bundle name', $rawName, ['documentation root']));
 
         $document = Resolver::resolve($openApi);
 
-        return new self(
-            $name = Naming::forClass($rawName),
+        $bundle = new self(
+            $name,
             $namespace,
-            $formats = self::buildFormats($namespace, $name, $document),
-            $models = self::buildModels($namespace, $document->components),
-            $api = Api::build($namespace, $name, $document, $models),
+            $formats = self::buildFormats($namespace, $name, $document, $names),
+            $models = self::buildModels($namespace, $document->components, $names),
+            $api = Api::build($namespace, $name, $document, $models, $names),
             RoutesConfig::build($namespace, $api),
             ServicesConfig::build($namespace, $api, $formats),
             new ComposerJson($packageName, $namespace),
             new ConstraintValidatorFactory($namespace),
         );
+
+        // The net under everything the scopes above cannot see between them, and the reason it sits
+        // here rather than in the command: a bundle built programmatically used to get no check at
+        // all.
+        $writtenPaths = [];
+        foreach ($bundle->getFiles() as $file) {
+            $path = $file->getFolder() === '' ? $file->getName() : "{$file->getFolder()}/{$file->getName()}";
+            if (isset($writtenPaths[$path])) {
+                throw new Exception(\sprintf('Two generated files would be written to \'%s\'.', $path), ['documentation root']);
+            }
+            $writtenPaths[$path] = true;
+        }
+
+        return $bundle;
     }
 
     /**
@@ -108,7 +123,7 @@ class Bundle implements File
      *
      * @throws Exception
      */
-    private static function buildFormats(string $namespace, string $name, Document $document): array
+    private static function buildFormats(string $namespace, string $name, Document $document, NameRegistry $names): array
     {
         $rawFormatNames = [];
 
@@ -210,7 +225,7 @@ class Bundle implements File
 
         $formats = [];
         foreach ($rawFormatNames as $rawFormatName => $_) {
-            $formats[$rawFormatName] = Format::build($namespace, $name, $rawFormatName);
+            $formats[$rawFormatName] = Format::build($namespace, $name, $rawFormatName, $names);
         }
 
         return $formats;
@@ -221,9 +236,9 @@ class Bundle implements File
      *
      * @throws Exception
      */
-    private static function buildModels(string $namespace, ?Components $components): array
+    private static function buildModels(string $namespace, ?Components $components, NameRegistry $names): array
     {
-        $collector = ModelCollector::forComponents($namespace);
+        $collector = ModelCollector::forComponents($namespace, $names);
 
         foreach ($components->schemas ?? [] as $rawName => $schema) {
             $collector->collect($rawName, SchemaRef::inline($schema));

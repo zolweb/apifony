@@ -28,6 +28,7 @@ class ActionRequestBody
         string $aggregateName,
         string $actionName,
         MediaType $mediaType,
+        NameRegistry $names,
     ): self {
         $className = Naming::forClass(\sprintf('%s_RequestBodyPayload', $actionName));
 
@@ -50,7 +51,7 @@ class ActionRequestBody
         $usedModelName = $isReference && ModelCollector::producesModel($payloadType) ? $className : null;
 
         if ($hasModel) {
-            $collector = ModelCollector::forAggregate($bundleNamespace, $aggregateName);
+            $collector = ModelCollector::forAggregate($bundleNamespace, $aggregateName, $names);
             $collector->collect($className, $ref);
             $payloadModels = $collector->getModels();
         }

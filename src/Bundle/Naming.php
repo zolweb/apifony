@@ -10,8 +10,9 @@ use function Symfony\Component\String\u;
  * The single place turning a name written in the specification into a PHP identifier.
  *
  * The conversion is lossy: everything that is neither a letter nor a digit is dropped, so distinct
- * specification names can collapse onto the same identifier. Callers are responsible for detecting
- * those collisions; see the registries that guard each scope.
+ * specification names can collapse onto the same identifier, and some names do not survive it at
+ * all. Neither is this class's problem to report: a name is only ever valid or unique with respect
+ * to the scope it enters, so NameRegistry decides both as the name is claimed.
  */
 class Naming
 {
@@ -21,18 +22,12 @@ class Naming
     private const IDENTIFIER_PATTERN = '/^[A-Za-z_\x80-\xFF][A-Za-z0-9_\x80-\xFF]*$/';
 
     /**
-     * Guards the names that reach PHP as identifiers. The conversion cannot fix every input: a name
+     * Whether a name can reach PHP as an identifier. The conversion cannot fix every input: a name
      * made only of punctuation comes out empty, and one starting with a digit stays that way.
-     *
-     * @param list<string> $path
-     *
-     * @throws Exception
      */
-    public static function assertIdentifier(string $identifier, string $subject, array $path): void
+    public static function isIdentifier(string $identifier): bool
     {
-        if (preg_match(self::IDENTIFIER_PATTERN, $identifier) !== 1) {
-            throw new Exception(\sprintf('%s produces \'%s\', which is not a valid PHP identifier.', $subject, $identifier), $path);
-        }
+        return preg_match(self::IDENTIFIER_PATTERN, $identifier) === 1;
     }
 
     /**
