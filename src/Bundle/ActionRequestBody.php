@@ -30,27 +30,21 @@ class ActionRequestBody
         MediaType $mediaType,
         NameRegistry $names,
     ): self {
-        $className = Naming::forClass(\sprintf('%s_RequestBodyPayload', $actionName));
-
         $payloadModels = [];
         if ($mediaType->schema === null) {
             throw new Exception('Mediatypes without schema are not supported.', $mediaType->path);
         }
         $ref = $mediaType->schema;
         $isReference = $ref->isReference;
-        $hasModel = !$isReference;
-        if ($isReference) {
-            $className = (string) $ref->getComponentName();
-        }
+        $className = Naming::forClass($ref->getComponentName() ?? \sprintf('%s_RequestBodyPayload', $actionName));
         $schema = $ref->getTarget();
-        $className = Naming::forClass($className);
         $payloadType = TypeFactory::build($className, $schema);
         if (!$payloadType instanceof ObjectType && !$payloadType instanceof RawType) {
             throw new Exception('Only object and raw schemas are supported for request bodies.', $schema->path);
         }
         $usedModelName = $isReference && ModelCollector::producesModel($payloadType) ? $className : null;
 
-        if ($hasModel) {
+        if (!$isReference) {
             $collector = ModelCollector::forAggregate($bundleNamespace, $aggregateName, $names);
             $collector->collect($className, $ref);
             $payloadModels = $collector->getModels();

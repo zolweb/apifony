@@ -40,9 +40,7 @@ class ArrayType implements Type
             throw new Exception('Schema objects of array type without items attribute are not supported.', $schema->path);
         }
         $isReference = $items->isReference;
-        if ($isReference) {
-            $className = Naming::forClass((string) $items->getComponentName());
-        }
+        $className = Naming::forClass($items->getComponentName() ?? $className);
 
         $this->schema = $schema;
         $this->itemType = TypeFactory::build($className, $items->getTarget());

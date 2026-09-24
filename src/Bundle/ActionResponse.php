@@ -29,27 +29,20 @@ class ActionResponse implements File
         ?SchemaRef $payload,
         NameRegistry $names,
     ): self {
-        $className = Naming::forClass(\sprintf('%s_%s_ResponsePayload', $actionName, $code));
-
         $payloadModels = [];
         $payloadType = null;
         $usedModelName = null;
-        $isReference = false;
         if ($payload !== null) {
             $isReference = $payload->isReference;
-            $hasModel = !$isReference;
-            if ($isReference) {
-                $className = (string) $payload->getComponentName();
-            }
+            $className = Naming::forClass($payload->getComponentName() ?? \sprintf('%s_%s_ResponsePayload', $actionName, $code));
             $schema = $payload->getTarget();
-            $className = Naming::forClass($className);
             $payloadType = TypeFactory::build($className, $schema);
             if (!$payloadType instanceof ObjectType && !$payloadType instanceof RawType) {
                 throw new Exception('Only object and raw schemas are supported for responses.', $schema->path);
             }
             $usedModelName = $isReference && ModelCollector::producesModel($payloadType) ? $className : null;
 
-            if ($hasModel) {
+            if (!$isReference) {
                 $collector = ModelCollector::forAggregate($bundleNamespace, $aggregateName, $names);
                 $collector->collect($className, $payload);
                 $payloadModels = $collector->getModels();
