@@ -56,7 +56,7 @@ class Api
         }
 
         return new self(
-            new AbstractController($bundleNamespace, $aggregates, $models),
+            AbstractController::build($bundleNamespace, $aggregates, $models, $names),
             $aggregates,
             new DenormalizationException($bundleNamespace),
             new ValidationException($bundleNamespace),

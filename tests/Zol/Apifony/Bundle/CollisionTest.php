@@ -80,6 +80,38 @@ final class CollisionTest extends TestCase
             'both map to the class',
         ];
 
+        // Two models may legitimately share a class name in different namespaces, since an inline
+        // model is named after the operation it belongs to. What cannot happen is both being
+        // denormalized: the controller they share would carry one method name for two models.
+        yield 'two models on one denormalizer' => [
+            [
+                'components' => ['schemas' => ['op_node' => self::objectSchema()]],
+                'paths' => ['/a' => ['get' => [
+                    'operationId' => 'op',
+                    'parameters' => [
+                        ['name' => 'node', 'in' => 'query', 'required' => true, 'schema' => self::objectSchema()],
+                        ['name' => 'ref', 'in' => 'query', 'required' => true, 'schema' => ['$ref' => '#/components/schemas/op_node']],
+                    ],
+                ]]],
+            ],
+            'both map to the method',
+        ];
+
+        // Only one of the two is denormalized here, so the clash surfaces where the file would
+        // import a short name that means two different classes.
+        yield 'two models on one import' => [
+            [
+                'components' => ['schemas' => ['op_node' => self::objectSchema()]],
+                'paths' => ['/a' => ['get' => [
+                    'operationId' => 'op',
+                    'parameters' => [
+                        ['name' => 'node', 'in' => 'query', 'required' => true, 'schema' => self::objectSchema()],
+                    ],
+                ]]],
+            ],
+            'both map to the import',
+        ];
+
         yield 'two formats on one constraint class' => [
             ['components' => ['schemas' => ['A' => [
                 'type' => 'object',

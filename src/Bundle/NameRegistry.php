@@ -86,7 +86,7 @@ final class NameRegistry
      */
     public function claimImport(string $file, string $shortName, Origin $origin): void
     {
-        $this->claim("import:{$file}", \sprintf('import of \'%s\'', $file), strtolower($shortName), $shortName, $origin);
+        $this->claim("import:{$file}", 'import', strtolower($shortName), "{$file} → {$shortName}", $origin);
     }
 
     /**

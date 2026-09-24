@@ -30,6 +30,7 @@ use PhpParser\Node\Name;
 use PhpParser\Node\Scalar\Encapsed;
 use PhpParser\Node\Scalar\EncapsedStringPart;
 use PhpParser\Node\Stmt;
+use PhpParser\Node\Stmt\ClassMethod;
 use PhpParser\Node\Stmt\Declare_;
 use PhpParser\Node\Stmt\DeclareDeclare;
 use PhpParser\Node\Stmt\Expression;
@@ -40,6 +41,8 @@ use PhpParser\PrettyPrinter\Standard;
 
 class AbstractController implements File
 {
+    private const FILE = 'src/Api/AbstractController.php';
+
     private const TYPE_ERROR_MESSAGES = [
         'string' => 'This value should be of type string.',
         'int' => 'This value should be of type integer.',
@@ -47,23 +50,115 @@ class AbstractController implements File
         'bool' => 'This value should be of type boolean.',
     ];
 
-    public function __construct(
+    /**
+     * Everything that has a name to settle is settled here rather than while printing: the
+     * denormalizer emitted for each model, and the models this file imports. What getContent then
+     * does is assemble, so no name is invented at a point where the registry is no longer around
+     * to be asked.
+     *
+     * @param list<Aggregate> $aggregates
+     * @param list<Model>     $models
+     *
+     * @throws Exception
+     */
+    public static function build(string $bundleNamespace, array $aggregates, array $models, NameRegistry $names): self
+    {
+        $classFqn = "{$bundleNamespace}\\Api\\AbstractController";
+
+        // One denormalizer per model and per source, emitted on the controller every action
+        // extends, so that a model shared by several operations is rendered once for the whole
+        // bundle.
+        //
+        // The models are walked breadth first, one whole generation at a time: every model an
+        // action denormalizes directly, then everything those reference, and so on. Taking them
+        // depth first would emit the same set of methods in a different order.
+        $methods = [];
+        $usedModelNames = [];
+        foreach ([DenormalizationContext::SOURCE_QUERY, DenormalizationContext::SOURCE_JSON] as $source) {
+            $context = new DenormalizationContext($source);
+
+            $batch = [];
+            foreach ($aggregates as $aggregate) {
+                foreach ($aggregate->getDenormalizationRootModels($source) as $model) {
+                    self::claimDenormalizer($names, $classFqn, $model, $source);
+                    $batch[$model->getName()] = $model;
+                }
+            }
+
+            $emittedModelNames = [];
+            while (\count($batch) > 0) {
+                $next = [];
+                foreach ($batch as $modelName => $model) {
+                    if (isset($emittedModelNames[$modelName])) {
+                        continue;
+                    }
+                    $emittedModelNames[$modelName] = true;
+                    $usedModelNames[$modelName] = true;
+                    $methods[] = $model->getModelDenormalizerMethod($context);
+
+                    foreach ($model->getDenormalizationChildModels() as $child) {
+                        self::claimDenormalizer($names, $classFqn, $child, $source);
+                        $next[$child->getName()] = $child;
+                    }
+                }
+                $batch = $next;
+            }
+        }
+
+        // Several models may share a class name while living in different namespaces, since inline
+        // model names are derived from the operation they belong to. Importing one of them here
+        // would silently bind the other's denormalizer to the wrong class.
+        $modelNamespaces = [];
+        foreach ($models as $model) {
+            $modelNamespaces[$model->getClassName()][$model->getNamespace()] = true;
+        }
+
+        $imports = [];
+        foreach (array_keys($usedModelNames) as $usedModelName) {
+            foreach (array_keys($modelNamespaces[$usedModelName] ?? []) as $modelNamespace) {
+                $names->claimImport(
+                    self::FILE,
+                    $usedModelName,
+                    Origin::spec('model', "{$modelNamespace}\\{$usedModelName}", ['documentation root']),
+                );
+                $imports[] = "{$modelNamespace}\\{$usedModelName}";
+            }
+        }
+
+        return new self($bundleNamespace, $methods, $imports);
+    }
+
+    /**
+     * @param list<ClassMethod> $denormalizerMethods
+     * @param list<string>      $modelImports
+     */
+    private function __construct(
         private readonly string $bundleNamespace,
-        /** @var list<Aggregate> */
-        private readonly array $aggregates,
-        /** @var list<Model> */
-        private readonly array $models,
+        private readonly array $denormalizerMethods,
+        private readonly array $modelImports,
     ) {
+    }
+
+    /**
+     * @throws Exception
+     */
+    private static function claimDenormalizer(NameRegistry $names, string $classFqn, ObjectType $model, string $source): void
+    {
+        $names->claimMethod(
+            $classFqn,
+            DenormalizationContext::getModelMethodName($model->getName(), $source),
+            Origin::spec('model', $model->getName(), $model->getSchemaPath()),
+        );
     }
 
     public function getFolder(): string
     {
-        return 'src/Api';
+        return \dirname(self::FILE);
     }
 
     public function getName(): string
     {
-        return 'AbstractController.php';
+        return basename(self::FILE);
     }
 
     /**
@@ -541,42 +636,8 @@ class AbstractController implements File
             );
         }
 
-        // One denormalizer per model and per source, emitted on the controller every action extends,
-        // so that a model shared by several operations is rendered once for the whole bundle.
-        //
-        // The models are walked breadth first, one whole generation at a time: every model an
-        // action denormalizes directly, then everything those reference, and so on. Taking them
-        // depth first would emit the same set of methods in a different order.
-        $usedModelNames = [];
-        foreach ([DenormalizationContext::SOURCE_QUERY, DenormalizationContext::SOURCE_JSON] as $source) {
-            $context = new DenormalizationContext($source);
-
-            $batch = [];
-            foreach ($this->aggregates as $aggregate) {
-                foreach ($aggregate->getDenormalizationRootModels($source) as $model) {
-                    $context->registerModel($model);
-                    $batch[$model->getName()] = $model;
-                }
-            }
-
-            $emittedModelNames = [];
-            while (\count($batch) > 0) {
-                $next = [];
-                foreach ($batch as $modelName => $model) {
-                    if (isset($emittedModelNames[$modelName])) {
-                        continue;
-                    }
-                    $emittedModelNames[$modelName] = true;
-                    $usedModelNames[$modelName] = true;
-                    $class->addStmt($model->getModelDenormalizerMethod($context));
-
-                    foreach ($model->getDenormalizationChildModels() as $child) {
-                        $context->registerModel($child);
-                        $next[$child->getName()] = $child;
-                    }
-                }
-                $batch = $next;
-            }
+        foreach ($this->denormalizerMethods as $denormalizerMethod) {
+            $class->addStmt($denormalizerMethod);
         }
 
         $class->addStmt($validate)
@@ -593,21 +654,8 @@ class AbstractController implements File
             ->addStmt($f->use('Symfony\Component\Validator\Validator\ValidatorInterface'))
         ;
 
-        // Several models may share a class name while living in different namespaces, since inline
-        // model names are derived from the operation they belong to. Importing one of them here
-        // would silently bind the other's denormalizer to the wrong class.
-        $modelNamespaces = [];
-        foreach ($this->models as $model) {
-            $modelNamespaces[$model->getClassName()][$model->getNamespace()] = true;
-        }
-        foreach (array_keys($usedModelNames) as $usedModelName) {
-            $namespaces = array_keys($modelNamespaces[$usedModelName] ?? []);
-            if (\count($namespaces) > 1) {
-                throw new Exception(\sprintf('Models \'%s\' and \'%s\' both map to the \'%s\' class name.', "{$namespaces[0]}\\{$usedModelName}", "{$namespaces[1]}\\{$usedModelName}", $usedModelName), ['documentation root']);
-            }
-            if (\count($namespaces) === 1) {
-                $namespace->addStmt($f->use("{$namespaces[0]}\\{$usedModelName}"));
-            }
+        foreach ($this->modelImports as $modelImport) {
+            $namespace->addStmt($f->use($modelImport));
         }
 
         $namespace->addStmt($class);

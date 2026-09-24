@@ -15,9 +15,8 @@ use PhpParser\Node\Stmt\Expression;
 use PhpParser\Node\Stmt\If_;
 
 /**
- * Carries the state shared by a whole denormalization tree: which source the values come from, a
- * counter handing out unique temporary variable names, and the registry of the models met along
- * the way.
+ * Carries the state shared by a whole denormalization tree: which source the values come from, and
+ * a counter handing out unique temporary variable names.
  *
  * The source matters because a query string leaf is always a string and must be converted, while a
  * JSON leaf already carries its type and must only be checked.
@@ -28,11 +27,6 @@ class DenormalizationContext
     public const SOURCE_JSON = 'Json';
 
     private int $counter = 0;
-
-    /**
-     * @var array<string, ObjectType>
-     */
-    private array $models = [];
 
     public function __construct(
         private readonly string $source,
@@ -78,24 +72,6 @@ class DenormalizationContext
     public function resetVariables(): void
     {
         $this->counter = 0;
-    }
-
-    /**
-     * Records that a model is denormalized for this source, so that two schemas collapsing onto one
-     * model name are caught rather than silently binding the second one's denormalizer to the
-     * first. The name alone cannot tell them apart, so the specification location does.
-     *
-     * @throws Exception
-     */
-    public function registerModel(ObjectType $type): void
-    {
-        $name = $type->getName();
-
-        if (isset($this->models[$name]) && $this->models[$name]->getSchemaPath() !== $type->getSchemaPath()) {
-            throw new Exception(\sprintf('Two different schemas both map to the \'%s\' model.', $name), $type->getSchemaPath());
-        }
-
-        $this->models[$name] = $type;
     }
 
     /**
