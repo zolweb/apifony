@@ -304,6 +304,101 @@ handler changent).
 
 #### Interne
 
+##### Une passe de résolution entre l'analyse et la génération
+
+`src/OpenApi/` produisait un arbre typé, `src/Bundle/` le consommait, et il n'y avait rien entre les
+deux : chaque générateur résolvait lui-même les `$ref`, au moment où il émettait. Le même bloc de six
+lignes apparaissait **quatorze fois** dans neuf fichiers, et comme résoudre demande l'objet
+`components`, un `?Components` nullable traversait **treize des quarante et une classes** de
+`src/Bundle/`.
+
+`src/Resolved/` est l'image de `src/OpenApi/` sans les unions. Un paramètre, un en-tête, un request
+body et une réponse portent directement leur cible, parce que rien en aval ne demande jamais s'ils
+étaient écrits comme une référence. Un schéma fait exception, et c'est la seule : c'est lui qui nomme
+une classe, donc il est enveloppé dans un `SchemaRef` qui porte à la fois la cible et le fait d'avoir
+été une référence — les deux ensemble décidant le namespace du modèle, le nom qu'il prend, et si un
+fichier est émis pour lui.
+
+Une référence est une feuille pendant la construction du graphe, et n'est liée qu'après, une fois
+tous les schémas de `components` construits. La construction ne suit donc jamais une référence et
+reste bornée par l'arbre d'analyse, qui est fini et acyclique ; la liaison referme ensuite les
+cycles, si bien qu'un schéma récursif se résout sans boucler.
+
+`Reference::getName()` ne prend plus le quatrième segment du pointeur au hasard. Un pointeur vers un
+autre document, un pointeur qui continue au-delà de l'entrée (`#/components/schemas/Abc/properties/def`)
+ou une racine Swagger 2 (`#/definitions/Abc`) donnaient un nom faux ou une clé indéfinie ; ils sont
+maintenant refusés là où ils sont écrits.
+
+##### Les modèles à dénormaliser ne sont plus découverts par effet de bord
+
+Savoir quels modèles avaient besoin d'un dénormaliseur se faisait en **générant les statements puis
+en les jetant** : `ActionParameter` appelait `getParameterDenormalizationStmts()` uniquement pour
+que `ObjectType` atteigne `registerModel` au passage. La génération de statements était donc
+mutante, ce qui forçait la boucle d'émission à être un point fixe — on approchait l'ensemble des
+méthodes à émettre au lieu de le connaître.
+
+L'arbre de types répond directement : un type dit quels modèles il dénormalise à profondeur zéro, un
+objet dit ce que ses attributs réclament, et le graphe est parcouru explicitement, en largeur, une
+génération à la fois.
+
+##### Un seul allocateur pour tous les noms générés
+
+Le docblock de `Naming` disait la propriété que les appelants devaient assumer : la conversion est
+lossy, donc des noms distincts peuvent se télescoper, et « c'est aux appelants de détecter ces
+collisions ». Six le faisaient, chacun avec sa clé, sa durée de vie, son message et son angle mort ;
+l'un d'eux vivait dans la commande plutôt que dans la bibliothèque, si bien qu'un `Bundle::build()`
+appelé par programme n'avait aucune garde.
+
+Un nom n'a de sens que dans une portée, donc `NameRegistry` tient une table par portée et tout
+identifiant y est réclamé avant usage. Validité et unicité étant deux propriétés de l'entrée dans
+une portée, `Naming::assertIdentifier` devient `Naming::isIdentifier` : la classe convertit, le
+registre décide. Les six messages deviennent un seul, qui nomme les deux coupables et l'emplacement
+du second dans la spécification — là où deux des anciens ne nommaient personne et pointaient sur
+`documentation root`.
+
+**Six périmètres n'avaient aucune garde et en ont une.** Le plus grave produisait un bundle cassé
+plutôt qu'un fichier manquant : un `operationId` valant `validate` émettait
+`validate(Request): Response` sur une classe étendant un `AbstractController` qui déclare
+`validate(mixed, string, array): void`, soit une erreur fatale au chargement, sur une spécification
+que le générateur déclarait réussie. Les autres : noms de routes et ids de services, qui étaient de
+simples affectations de tableau — une seconde entrée écrasait la première et un endpoint
+disparaissait du bundle ; noms de propriétés de modèles, dont le garde-fou laissait passer un
+chiffre en tête (`$0foo`, erreur de parsing) ; en-têtes de réponse, qui n'avaient ni contrôle
+d'unicité ni contrôle de validité.
+
+**Deux bugs attrapés au passage.** `Naming::forClass` préserve la casse interne, donc les schémas
+`ABC` et `abc` donnaient deux chaînes distinctes mais une seule classe PHP et un seul fichier sur un
+système insensible à la casse : classes, méthodes et fichiers sont désormais comparés repliés. Et
+les formats `date-time` et `dateTime` produisent tous deux la classe `DateTime`, ce qui ne remontait
+au mieux que comme un conflit de chemin de fichier trois étapes plus loin.
+
+##### Une opération ignorée ne produit plus rien
+
+`x-apifony-ignore` n'était lu que là où les contrôleurs sont construits. Toutes les autres passes
+parcouraient l'opération quand même, et la collecte des formats le faisait : un format mentionné par
+la seule opération ignorée produisait encore une classe de contrainte, un validateur, une interface
+de définition et son câblage de services. L'interface de définition fait partie de la surface du
+bundle généré — c'est ce qu'un utilisateur implémente — donc une opération explicitement exclue
+ajoutait à ce qu'il avait à regarder. L'opération est maintenant écartée pendant la résolution.
+
+##### Un filet de tests sur le générateur lui-même
+
+La suite ne contenait que des tests fonctionnels HTTP contre un kernel booté, et **aucun
+`expectException`** : ni les collisions, ni le nommage, ni la stabilité de la sortie générée
+n'étaient couverts. La fixture ne peut d'ailleurs pas porter de collision, puisqu'une collision
+avorte la génération avant que la suite ne tourne.
+
+- La sortie générée est assertée fichier par fichier contre le bundle committé, en mémoire. C'est le
+  standard que le projet s'appliquait déjà à la main (« regenerates byte for byte ») ; il est
+  maintenant vérifié, y compris en CI, qui régénérait sans jamais comparer.
+- Le comportement de collision est couvert portée par portée, au registre et de bout en bout.
+- La liste des méthodes qu'`AbstractController` réserve est écrite à la main : un test relit le
+  fichier émis et asserte que chaque méthode déclarée y figure, pour qu'elle ne puisse pas dériver.
+
+La fixture couvrait par ailleurs un seul bucket `components`, `schemas`, et ses dix-sept `$ref`
+pointaient tous dedans. Les quatre autres buckets sont désormais exercés, ce qui met sous oracle
+huit sites de résolution qui n'en avaient aucun.
+
 ##### Les contraintes déjà garanties ne sont plus émises
 
 Le contrôleur revalidait ce que la dénormalisation venait d'établir. Sur la fixture, **28 des 34
