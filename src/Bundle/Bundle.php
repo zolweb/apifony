@@ -23,7 +23,9 @@ use Zol\Apifony\OpenApi\Exception as OpenApiException;
 use Zol\Apifony\OpenApi\OpenApi;
 use Zol\Apifony\Resolved\Components;
 use Zol\Apifony\Resolved\Document;
+use Zol\Apifony\Resolved\MediaType;
 use Zol\Apifony\Resolved\Resolver;
+use Zol\Apifony\Resolved\Response;
 use Zol\Apifony\Resolved\Schema;
 use Zol\Apifony\Resolved\SchemaRef;
 
@@ -127,10 +129,10 @@ class Bundle implements File
     {
         $rawFormatNames = [];
 
-        // A slot written as a reference is skipped rather than followed. Nothing is lost: the
-        // components buckets are walked in full below, so every target is reached there, and
-        // skipping is what keeps the walk from going round a recursive schema forever.
-        $addSchemaFormats = static function (SchemaRef $ref) use (&$addSchemaFormats, &$rawFormatNames): void {
+        // A slot written as a reference is not followed. Nothing is lost, since the components
+        // buckets are walked in full and every target is reached there, and not following one is
+        // what keeps the walk from going round a recursive schema forever.
+        $collect = static function (SchemaRef $ref) use (&$collect, &$rawFormatNames): void {
             if ($ref->isReference) {
                 return;
             }
@@ -140,87 +142,15 @@ class Bundle implements File
                 $rawFormatNames[$schema->format] = null;
             }
             foreach ($schema->properties as $property) {
-                $addSchemaFormats($property);
+                $collect($property);
             }
             if ($schema->items !== null) {
-                $addSchemaFormats($schema->items);
+                $collect($schema->items);
             }
         };
 
-        foreach ($document->components->schemas ?? [] as $schema) {
-            $addSchemaFormats(SchemaRef::inline($schema));
-        }
-        foreach ($document->components->parameters ?? [] as $parameter) {
-            if ($parameter->schema === null) {
-                throw new Exception('Parameter objects without schema are not supported.', $parameter->path);
-            }
-            $addSchemaFormats($parameter->schema);
-        }
-        foreach ($document->components->requestBodies ?? [] as $requestBody) {
-            foreach ($requestBody->content as $mediaType) {
-                if ($mediaType->schema === null) {
-                    throw new Exception('Mediatype objects without schema are not supported.', $mediaType->path);
-                }
-                $addSchemaFormats($mediaType->schema);
-            }
-        }
-        foreach ($document->components->responses ?? [] as $response) {
-            foreach ($response->headers as $header) {
-                if ($header->schema === null) {
-                    throw new Exception('Header objects without schema are not supported.', $header->path);
-                }
-                $addSchemaFormats($header->schema);
-            }
-            foreach ($response->content as $mediaType) {
-                if ($mediaType->schema === null) {
-                    throw new Exception('MediaType objects without schema are not supported.', $mediaType->path);
-                }
-                $addSchemaFormats($mediaType->schema);
-            }
-        }
-        foreach ($document->components->headers ?? [] as $header) {
-            if ($header->schema === null) {
-                throw new Exception('Header objects without schema are not supported.', $header->path);
-            }
-            $addSchemaFormats($header->schema);
-        }
-        foreach ($document->paths->pathItems ?? [] as $pathItem) {
-            foreach ($pathItem->parameters as $parameter) {
-                if ($parameter->schema === null) {
-                    throw new Exception('Parameter objects without schema are not supported.', $parameter->path);
-                }
-                $addSchemaFormats($parameter->schema);
-            }
-            foreach ($pathItem->operations as $operation) {
-                foreach ($operation->parameters as $parameter) {
-                    if ($parameter->schema === null) {
-                        throw new Exception('Parameter objects without schema are not supported.', $parameter->path);
-                    }
-                    $addSchemaFormats($parameter->schema);
-                }
-                if ($operation->requestBody !== null) {
-                    foreach ($operation->requestBody->content as $mediaType) {
-                        if ($mediaType->schema === null) {
-                            throw new Exception('MediaType objects without schema are not supported.', $mediaType->path);
-                        }
-                        $addSchemaFormats($mediaType->schema);
-                    }
-                }
-                foreach ($operation->responses->responses ?? [] as $response) {
-                    foreach ($response->headers as $header) {
-                        if ($header->schema === null) {
-                            throw new Exception('Header objects without schema are not supported.', $header->path);
-                        }
-                        $addSchemaFormats($header->schema);
-                    }
-                    foreach ($response->content as $mediaType) {
-                        if ($mediaType->schema === null) {
-                            throw new Exception('Mediatype objects without schema are not supported.', $mediaType->path);
-                        }
-                        $addSchemaFormats($mediaType->schema);
-                    }
-                }
-            }
+        foreach (self::getSchemaSlots($document) as $slot) {
+            $collect($slot);
         }
 
         $formats = [];
@@ -229,6 +159,101 @@ class Bundle implements File
         }
 
         return $formats;
+    }
+
+    /**
+     * Every place the document declares a schema, in the order the buckets and then the paths are
+     * written. That order is not incidental: it is the order the formats are met in, and therefore
+     * the order their validators are declared in.
+     *
+     * @return list<SchemaRef>
+     *
+     * @throws Exception
+     */
+    private static function getSchemaSlots(Document $document): array
+    {
+        $slots = [];
+
+        foreach ($document->components->schemas ?? [] as $schema) {
+            $slots[] = SchemaRef::inline($schema);
+        }
+        foreach ($document->components->parameters ?? [] as $parameter) {
+            $slots[] = self::requireSchema($parameter->schema, 'Parameter', $parameter->path);
+        }
+        foreach ($document->components->requestBodies ?? [] as $requestBody) {
+            $slots = array_merge($slots, self::getContentSlots($requestBody->content));
+        }
+        foreach ($document->components->responses ?? [] as $response) {
+            $slots = array_merge($slots, self::getResponseSlots($response));
+        }
+        foreach ($document->components->headers ?? [] as $header) {
+            $slots[] = self::requireSchema($header->schema, 'Header', $header->path);
+        }
+
+        foreach ($document->paths->pathItems ?? [] as $pathItem) {
+            foreach ($pathItem->parameters as $parameter) {
+                $slots[] = self::requireSchema($parameter->schema, 'Parameter', $parameter->path);
+            }
+            foreach ($pathItem->operations as $operation) {
+                foreach ($operation->parameters as $parameter) {
+                    $slots[] = self::requireSchema($parameter->schema, 'Parameter', $parameter->path);
+                }
+                if ($operation->requestBody !== null) {
+                    $slots = array_merge($slots, self::getContentSlots($operation->requestBody->content));
+                }
+                foreach ($operation->responses->responses ?? [] as $response) {
+                    $slots = array_merge($slots, self::getResponseSlots($response));
+                }
+            }
+        }
+
+        return $slots;
+    }
+
+    /**
+     * @return list<SchemaRef>
+     *
+     * @throws Exception
+     */
+    private static function getResponseSlots(Response $response): array
+    {
+        $slots = [];
+        foreach ($response->headers as $header) {
+            $slots[] = self::requireSchema($header->schema, 'Header', $header->path);
+        }
+
+        return array_merge($slots, self::getContentSlots($response->content));
+    }
+
+    /**
+     * @param array<string, MediaType> $content
+     *
+     * @return list<SchemaRef>
+     *
+     * @throws Exception
+     */
+    private static function getContentSlots(array $content): array
+    {
+        $slots = [];
+        foreach ($content as $mediaType) {
+            $slots[] = self::requireSchema($mediaType->schema, 'MediaType', $mediaType->path);
+        }
+
+        return $slots;
+    }
+
+    /**
+     * @param list<string> $path
+     *
+     * @throws Exception
+     */
+    private static function requireSchema(?SchemaRef $ref, string $subject, array $path): SchemaRef
+    {
+        if ($ref === null) {
+            throw new Exception(\sprintf('%s objects without schema are not supported.', $subject), $path);
+        }
+
+        return $ref;
     }
 
     /**
