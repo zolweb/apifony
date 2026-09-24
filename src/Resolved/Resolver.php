@@ -146,6 +146,9 @@ final class Resolver
 
             $operations = [];
             foreach ($pathItem->operations as $method => $operation) {
+                if (self::isIgnored($operation)) {
+                    continue;
+                }
                 $operations[$method] = $this->buildOperation($operation);
             }
 
@@ -153,6 +156,25 @@ final class Resolver
         }
 
         return new Paths($pathItems, $paths->extensions, $paths->path);
+    }
+
+    /**
+     * An operation the specification asks to skip is left out of the resolved document entirely,
+     * rather than skipped again by each pass that walks it. Nothing downstream has to remember it
+     * exists: no controller, no route, and no validator emitted for a format only it mentions.
+     *
+     * @throws Exception
+     */
+    private static function isIgnored(OpenApi\Operation $operation): bool
+    {
+        if (!\array_key_exists('x-apifony-ignore', $operation->extensions)) {
+            return false;
+        }
+        if (!\is_bool($operation->extensions['x-apifony-ignore'])) {
+            throw new Exception('Operation x-apifony-ignore attribute must be a bool.', $operation->path);
+        }
+
+        return $operation->extensions['x-apifony-ignore'];
     }
 
     /**

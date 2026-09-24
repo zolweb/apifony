@@ -29,11 +29,6 @@ services:
         public: true
         tags:
             - validator.constraint_validator
-    Zol\Apifony\Tests\TestOpenApiServer\Format\IgnoredFormatValidator:
-        class: Zol\Apifony\Tests\TestOpenApiServer\Format\IgnoredFormatValidator
-        public: true
-        tags:
-            - validator.constraint_validator
     zol_apifony_tests_test_open_api_server.constraint_validator_factory:
         class: Zol\Apifony\Tests\TestOpenApiServer\Api\ConstraintValidatorFactory
         calls:
@@ -41,10 +36,6 @@ services:
                 - addValidator
                 -
                     - '@Zol\Apifony\Tests\TestOpenApiServer\Format\CustomValidator'
-            -
-                - addValidator
-                -
-                    - '@Zol\Apifony\Tests\TestOpenApiServer\Format\IgnoredFormatValidator'
     zol_apifony_tests_test_open_api_server.validator_builder:
         class: Symfony\Component\Validator\ValidatorBuilder
         factory:
